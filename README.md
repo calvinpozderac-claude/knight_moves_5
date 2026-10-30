@@ -51,10 +51,13 @@ experiments/               every other search program from the session, as-is
    modules, version 570 or newer. The PyTorch build that pip installs uses CUDA 13, which
    needs driver 580 or newer.
    ```
-   sudo ubuntu-drivers install    # usually picks an -open driver; if not: sudo apt install nvidia-driver-580-open (or newer)
-   sudo reboot
+   nvidia-smi                     # if this already lists the card with driver 580 or newer, skip to step 2
+   sudo ubuntu-drivers install    # installs Ubuntu's recommended open driver, replacing any other NVIDIA driver
+   sudo systemctl reboot -i       # or restart from the desktop; a plain `sudo reboot` can be blocked by a logged-in desktop
    nvidia-smi                     # should list the card and "CUDA Version: 13.x" or higher
    ```
+   Before the reboot, `nvidia-smi` reports "Driver/library version mismatch". That only means
+   the new driver isn't loaded yet.
 2. **Get the tools and code, and set up Python.**
    ```
    sudo apt install -y build-essential git python3-venv python3-dev tmux
