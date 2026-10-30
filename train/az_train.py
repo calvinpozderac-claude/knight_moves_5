@@ -56,21 +56,22 @@ def featurize(alt, vis, pos, T):
 
 
 class Net:
-    """2-layer MLP (1418 -> 256 -> 256 -> 24 policy logits + 1 value), Adam, in NumPy."""
-    ORDER = ['W1', 'b1', 'W2', 'b2', 'Wp', 'bp', 'wv', 'bv']
+    """MLP: 1418 inputs -> `layers` hidden ReLU layers of width `hidden` -> 24 policy logits + 1 value. Adam, in NumPy.
+    The weight file layout matches src/az.cpp: W1, b1, (W, b) per extra hidden layer, Wp, bp, wv, bv."""
 
-    def __init__(self, rng, lr=1e-3, wd=1e-5):
-        self.lr, self.wd = lr, wd
-        self.p = {
-            'W1': (rng.standard_normal((D_IN, H)) * np.sqrt(2 / 139)).astype(np.float32),
-            'b1': np.zeros(H, np.float32),
-            'W2': (rng.standard_normal((H, H)) * np.sqrt(2 / H)).astype(np.float32),
-            'b2': np.zeros(H, np.float32),
-            'Wp': (rng.standard_normal((H, NA)) * 0.01).astype(np.float32),
-            'bp': np.zeros(NA, np.float32),
-            'wv': (rng.standard_normal(H) * 0.01).astype(np.float32),
-            'bv': np.zeros(1, np.float32),
-        }
+    def __init__(self, rng, lr=1e-3, wd=1e-5, hidden=256, layers=2):
+        self.lr, self.wd, self.H, self.L = lr, wd, hidden, layers
+        H = hidden
+        self.p = {'W1': (rng.standard_normal((D_IN, H)) * np.sqrt(2 / 139)).astype(np.float32),
+                  'b1': np.zeros(H, np.float32)}
+        for l in range(2, layers + 1):
+            self.p[f'W{l}'] = (rng.standard_normal((H, H)) * np.sqrt(2 / H)).astype(np.float32)
+            self.p[f'b{l}'] = np.zeros(H, np.float32)
+        self.p['Wp'] = (rng.standard_normal((H, NA)) * 0.01).astype(np.float32)
+        self.p['bp'] = np.zeros(NA, np.float32)
+        self.p['wv'] = (rng.standard_normal(H) * 0.01).astype(np.float32)
+        self.p['bv'] = np.zeros(1, np.float32)
+        self.ORDER = ['W1', 'b1'] + [k for l in range(2, layers + 1) for k in (f'W{l}', f'b{l}')] + ['Wp', 'bp', 'wv', 'bv']
         self.m = {k: np.zeros_like(v) for k, v in self.p.items()}
         self.v = {k: np.zeros_like(v) for k, v in self.p.items()}
         self.t = 0
@@ -83,32 +84,45 @@ class Net:
         os.replace(tmp, fn)
 
     def load(self, fn):
-        a = np.fromfile(fn, np.float32); o = 0
+        a = np.fromfile(fn, np.float32)
+        need = sum(self.p[k].size for k in self.ORDER)
+        if a.size != need:
+            sys.exit(f'{fn} has {a.size} weights, but a {self.L}x{self.H} network needs {need}: check --hidden/--layers')
+        o = 0
         for k in self.ORDER:
             n = self.p[k].size; self.p[k] = a[o:o + n].reshape(self.p[k].shape).copy(); o += n
 
+    def infer(self, idx, g):
+        """Batched evaluation for self-play: idx (n, 129) active one-hot inputs, g (n, 10) summary features.
+        Returns (n, 25): 24 move logits, then the value."""
+        P = self.p
+        h = np.maximum(P['W1'][idx].sum(1) + g @ P['W1'][64 * 21 + 64:] + P['b1'], 0)
+        for l in range(2, self.L + 1):
+            h = np.maximum(h @ P[f'W{l}'] + P[f'b{l}'], 0)
+        return np.concatenate([h @ P['Wp'] + P['bp'], (h @ P['wv'] + P['bv'][0])[:, None]], 1)
+
     def step(self, X, mask, pi, z, cv=1.0):
         P = self.p; B = X.shape[0]
-        a1 = X @ P['W1'] + P['b1']; h1 = np.maximum(a1, 0)
-        a2 = h1 @ P['W2'] + P['b2']; h2 = np.maximum(a2, 0)
-        lg = h2 @ P['Wp'] + P['bp']
+        acts, pre = [X], []
+        for l in range(1, self.L + 1):
+            a_ = acts[-1] @ P[f'W{l}'] + P[f'b{l}']; pre.append(a_); acts.append(np.maximum(a_, 0))
+        h = acts[-1]
+        lg = h @ P['Wp'] + P['bp']
         lg = np.where(mask, lg, -1e9)
         lg = lg - lg.max(1, keepdims=True)
         e = np.exp(lg) * mask; sm = e / e.sum(1, keepdims=True)
-        v = h2 @ P['wv'] + P['bv'][0]
+        v = h @ P['wv'] + P['bv'][0]
         lp = -(pi * np.log(sm + 1e-12)).sum(1).mean()
         lv = ((v - z) ** 2).mean()
         dlg = (sm - pi) / B
         dv = cv * 2 * (v - z) / B
-        g = {}
-        g['Wp'] = h2.T @ dlg; g['bp'] = dlg.sum(0)
-        g['wv'] = h2.T @ dv; g['bv'] = np.array([dv.sum()], np.float32)
-        dh2 = dlg @ P['Wp'].T + np.outer(dv, P['wv'])
-        da2 = dh2 * (a2 > 0)
-        g['W2'] = h1.T @ da2; g['b2'] = da2.sum(0)
-        dh1 = da2 @ P['W2'].T
-        da1 = dh1 * (a1 > 0)
-        g['W1'] = X.T @ da1; g['b1'] = da1.sum(0)
+        g = {'Wp': h.T @ dlg, 'bp': dlg.sum(0), 'wv': h.T @ dv, 'bv': np.array([dv.sum()], np.float32)}
+        dh = dlg @ P['Wp'].T + np.outer(dv, P['wv'])
+        for l in range(self.L, 0, -1):
+            da = dh * (pre[l - 1] > 0)
+            g[f'W{l}'] = acts[l - 1].T @ da; g[f'b{l}'] = da.sum(0)
+            if l > 1:
+                dh = da @ P[f'W{l}'].T
         self.t += 1; b1, b2, eps = 0.9, 0.999, 1e-8
         for k in P:
             gk = g[k].astype(np.float32) + (self.wd * P[k] if k.startswith('W') else 0)
@@ -183,6 +197,50 @@ def load_samples(fn):
     return np.fromfile(fn, SAMPLE)
 
 
+EVAL_REQ = np.dtype([('idx', '<i2', 64 * 2 + 1), ('g', '<f4', 10)])  # matches EvalReq in src/az.cpp
+
+
+def _read_exact(fd, n):
+    buf = bytearray()
+    while len(buf) < n:
+        chunk = os.read(fd, n - len(buf))
+        if not chunk:
+            return None
+        buf += chunk
+    return bytes(buf)
+
+
+def serve_inference(net, fifos):
+    """Answer the self-play workers' batched evaluation requests until every worker is done.
+    Each pass reads one request from every live worker, evaluates them together, and replies."""
+    fds = []
+    for rq, rs in fifos:  # same order as the workers open them: request first, then response
+        r = os.open(rq, os.O_RDONLY); w = os.open(rs, os.O_WRONLY); fds.append((r, w))
+    alive, total = list(range(len(fds))), 0
+    while alive:
+        batch = []
+        for w in list(alive):
+            hdr = _read_exact(fds[w][0], 4)
+            if hdr is None:
+                alive.remove(w); continue
+            n = int.from_bytes(hdr, 'little')
+            batch.append((w, np.frombuffer(_read_exact(fds[w][0], n * EVAL_REQ.itemsize), EVAL_REQ)))
+        if not batch:
+            break
+        allr = np.concatenate([b for _, b in batch])
+        out = np.ascontiguousarray(net.infer(allr['idx'].astype(np.int64), np.ascontiguousarray(allr['g'])), dtype=np.float32)
+        total += len(allr); o = 0
+        for w, b in batch:
+            data = out[o:o + len(b)].tobytes(); o += len(b)
+            while data:
+                k = os.write(fds[w][1], data); data = data[k:]
+    for r, w in fds:
+        os.close(r); os.close(w)
+    for rq, rs in fifos:
+        os.remove(rq); os.remove(rs)
+    return total
+
+
 def find_az(path):
     cands = [path] if path else [os.path.join(ROOT, 'build', 'az'), os.path.join(ROOT, 'build', 'az.exe'),
                                  os.path.join(ROOT, 'build', 'Release', 'az.exe')]
@@ -193,7 +251,7 @@ def find_az(path):
 
 
 # settings that define the algorithm; --resume restores these from <run>/config.json
-ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
+ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'hidden', 'layers', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
              'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k',
              'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
              'curriculum_balance']
@@ -216,6 +274,10 @@ def main():
     g.add_argument('--az', default=None, help='path to the az binary (default: build/az)')
     g.add_argument('--backend', choices=['numpy', 'torch'], default='numpy', help='trainer: numpy (CPU) or torch')
     g.add_argument('--device', default='cuda', help='torch device for --backend torch (cuda or cpu)')
+    g.add_argument('--gpu-selfplay', action='store_true',
+                   help='evaluate the network for self-play here, in batches (on the GPU with --backend torch); '
+                        'each worker plays all its games at once, so raise --games (e.g. 512)')
+    g.add_argument('--infer-leaves', type=int, default=8, help='leaf positions each game sends per batch')
     g = ap.add_argument_group('self-play and training')
     g.add_argument('--games', type=int, default=32, help='self-play games per round (split across workers)')
     g.add_argument('--sims', type=int, default=1600, help='tree-search simulations per move')
@@ -224,6 +286,8 @@ def main():
     g.add_argument('--buffer', type=int, default=150000, help='replay buffer size (positions)')
     g.add_argument('--lr', type=float, default=1e-3)
     g.add_argument('--wd', type=float, default=1e-5)
+    g.add_argument('--hidden', type=int, default=256, help='network hidden width')
+    g.add_argument('--layers', type=int, default=2, help='number of hidden layers')
     g = ap.add_argument_group('where games start')
     g.add_argument('--start', choices=['a1', 'opening'], default='a1',
                    help='a1: every game starts at a1, T=0; opening: after the fixed 23-move opening')
@@ -281,12 +345,14 @@ def main():
     if a.start == 'opening':
         open_len = len(re.findall(r'\d+\s+[a-h][1-8]', open(opening_file).read()))
 
-    net = Net(np.random.default_rng(0), lr=a.lr, wd=a.wd)
+    net = Net(np.random.default_rng(0), lr=a.lr, wd=a.wd, hidden=a.hidden, layers=a.layers)
     w_cur = os.path.join(run, 'w_cur.bin')
     if a.resume:
         net.load(w_cur)
     elif a.init_weights:
         net.load(a.init_weights)
+    if a.gpu_selfplay and os.name == 'nt':
+        sys.exit('--gpu-selfplay needs Linux or WSL2 (it uses named pipes)')
     if a.backend == 'torch':
         from torch_backend import TorchNet
         net = TorchNet(net, device=a.device, lr=a.lr, wd=a.wd)
@@ -321,27 +387,42 @@ def main():
                                 'max_minutes,mean_dist,mean_target,max_target,policy_loss,value_loss,selfplay_s,train_s,'
                                 'prefix\n')
     print(f'run {run}: az={az} workers={a.workers} backend={a.backend} start={a.start} '
-          f'cpuct={a.cpuct} tau={a.tau1}/{a.tau2} credit={a.credit} dist_k={a.dist_k}', flush=True)
+          f'cpuct={a.cpuct} tau={a.tau1}/{a.tau2} credit={a.credit} dist_k={a.dist_k} net={a.layers}x{a.hidden} '
+          f'selfplay_eval={"batched" if a.gpu_selfplay else "in-worker CPU"}', flush=True)
 
     for it in range(state['round'], state['round'] + a.rounds):
         kappa = a.credit if first_fin is None else a.credit * max(0.0, 1 - (it - first_fin) / a.credit_ramp)
         env = dict(os.environ, CPUCT=str(a.cpuct), TAU1=str(a.tau1), TAU2=str(a.tau2), DIRA=str(a.dir_alpha),
                    DIRE=str(a.dir_eps), OPENING='1' if a.start == 'opening' else '0', OPENING_FILE=opening_file,
-                   CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k))
+                   CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k), NET_H=str(a.hidden), NET_LAYERS=str(a.layers))
         if tours_fn and cur_k > 0:
             env.update(PREFIX_TOURS=tours_fn, PREFIX_LEN=str(cur_k), PREFIX_BALANCE=str(a.curriculum_balance),
                        PREFIX_FROM_END='1' if a.curriculum_mode == 'end' else '0')
         t0 = time.time()
         nw = max(1, min(a.workers, a.games))
         per = [a.games // nw + (1 if w < a.games % nw else 0) for w in range(nw)]
-        procs = []
+        procs, logs, fifos, evals = [], [], [], 0
         for w in range(nw):
             args = [az, 'selfplay', w_cur, os.path.join(run, f's_{w}.bin'), str(per[w]), str(a.sims),
                     str(it * 1000 + w + 1), str(a.temp_moves), os.path.join(run, f'best_{w}.txt')]
             if a.restart_prob > 0 and os.path.exists(best_fn):
                 args += [best_fn, str(a.restart_prob)]
-            procs.append(subprocess.Popen(args, stdout=subprocess.PIPE, text=True, env=env, cwd=ROOT))
-        outs = [p.communicate()[0] for p in procs]
+            wenv = env
+            if a.gpu_selfplay:  # this worker sends its leaf positions here for evaluation
+                rq, rs = os.path.join(run, f'infer_req_{w}'), os.path.join(run, f'infer_resp_{w}')
+                for f in (rq, rs):
+                    if os.path.exists(f): os.remove(f)
+                    os.mkfifo(f)
+                fifos.append((rq, rs)); wenv = dict(env, INFER_REQ=rq, INFER_RESP=rs, INFER_LEAVES=str(a.infer_leaves))
+            logs.append(open(os.path.join(run, f'selfplay_{w}.log'), 'w+'))
+            procs.append(subprocess.Popen(args, stdout=logs[-1], env=wenv, cwd=ROOT))
+        if a.gpu_selfplay:
+            evals = serve_inference(net, fifos)
+        for p in procs:
+            p.wait()
+        outs = []
+        for f in logs:
+            f.seek(0); outs.append(f.read()); f.close()
         if any(p.returncode != 0 for p in procs):
             sys.exit('a self-play worker failed; see the message above')
         rows = [l.split() for o in outs for l in o.splitlines() if l.startswith('EP')]
@@ -405,6 +486,8 @@ def main():
                f'minutes {ends.mean():.0f} maxmin {ends.max()} dist {dists.mean():.3f} target {targets.mean():.0f} '
                f'maxtarget {targets.max():.0f} besttarget {best_target:.0f} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
                f'selfplay {t1 - t0:.0f}s train {t2 - t1:.0f}s')
+        if a.gpu_selfplay:
+            msg += f' evals {evals}'
         if tours_fn:
             msg += f' start {a.curriculum_mode}{k_used}' if k_used > 0 else ' start a1'
         print(msg, flush=True); log.write(msg + '\n'); log.flush()

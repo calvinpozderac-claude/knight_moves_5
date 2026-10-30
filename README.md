@@ -184,6 +184,8 @@ The main options (`--help` lists them all):
 | `--restart-prob`, `--seed-tour` | 0, none | Go-Explore restarts from a random point on the best tour |
 | `--self-imitation` | 0 | copies of the best tour added to the training data each round |
 | `--backend`, `--device` | numpy, cuda | train in NumPy on the CPU, or in PyTorch |
+| `--gpu-selfplay`, `--infer-leaves` | off, 8 | evaluate self-play positions in batches in the trainer (GPU with torch) |
+| `--hidden`, `--layers` | 256, 2 | network width and number of hidden layers |
 
 ### On a Ryzen 9 9950X with an RTX 5070 Ti
 
@@ -193,9 +195,26 @@ The main options (`--help` lists them all):
   cores took 10–40 seconds per round.
 - **With more cores, consider more games per round.** For example, `--games 64 --steps 300`
   keeps the same ratio of training to fresh data.
-- **The GPU only speeds up the training step.** Use `--backend torch --device cuda`. To use the
-  GPU during self-play, the search would need batching: evaluating leaf positions from many
-  games at once. That's a bigger change, and it only pays off with a larger network.
+- **Put the network on the GPU for self-play too:** `--gpu-selfplay --backend torch --device cuda`.
+  - Each worker plays all its games at once and sends its leaf positions to the trainer
+    process, which evaluates them in large batches on the GPU with the same network it trains.
+    The workers keep only the tree search on the CPU.
+  - Give it many games per round (`--games 512` gives each of 16 workers 32 at once).
+  - `--infer-leaves` (default 8) sets how many positions each game sends per batch. Raise it
+    for bigger batches.
+- **Bigger networks:** `--hidden` (width, default 256) and `--layers` (hidden layers,
+  default 2). Without `--gpu-selfplay`, a bigger network slows the CPU self-play.
+  - A run's network size is fixed when the run starts, so use a new `--run` directory to
+    change it.
+  - The included weights are 256 × 2.
+
+A run that uses both cards fully:
+```
+python3 train/az_train.py --run runs/gpu_curriculum --start-tours data/tours/curriculum.txt \
+    --curriculum-mode end --curriculum-start 1 --curriculum-every 10 --curriculum-min-finish 0.5 \
+    --hidden 512 --layers 4 --games 512 --steps 600 --batch 1024 --buffer 500000 \
+    --gpu-selfplay --backend torch --device cuda
+```
 
 ### Reproducing the earlier runs
 
@@ -249,8 +268,9 @@ four question tours (high finish, no repeats, all points equal, short waits).
   - each point's visit count
   - the knight's square
   - 10 summary features
-- **Network:** two hidden layers of 256 units. It outputs 24 move logits and a value: the
-  expected minutes still to come.
+- **Network:** by default two hidden layers of 256 units, about 435,000 parameters (set with
+  `--hidden` and `--layers`). It outputs 24 move logits and a value: the expected minutes
+  still to come.
 - **Search:** PUCT, with values rescaled to 0–1.
   - Each wait earns its minutes / 10,000.
   - Reaching h8 ends the game.

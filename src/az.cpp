@@ -11,6 +11,7 @@
 //   CPUCT              PUCT exploration constant (default 1.5; Q is min-max normalized to [0,1])
 //   TAU1, TAU2         move-selection temperature for the first <tempMoves> moves, and after (0 = greedy)
 //   DIRA, DIRE         Dirichlet root noise alpha and weight (default 0.3, 0.25)
+//   NET_H, NET_LAYERS  network hidden width and number of hidden layers (default 256, 2)
 //   CREDIT             fraction of its minutes a stuck tour keeps (training-only partial credit, default 0)
 //   DISTK              if > 0, a stuck tour keeps exp(-DISTK * d) of its minutes instead, d = 3D distance
 //                      from the knight to h8 divided by the a1 -> h8 distance at the start (so d = 1 at a1)
@@ -27,7 +28,7 @@
 static const int NA = 24;
 static int ADX[NA], ADY[NA], ADZ[NA];
 static const int D_IN = 64 * 21 + 64 + 10;  // 1418
-static const int H = 256;
+static int H = 256, NLAYERS = 2;  // hidden width and number of hidden layers (env NET_H, NET_LAYERS)
 static const double TSCALE = 10000.0;
 static inline float score_value(double T) { return (float)min(1.0, log(max(T, 1.0)) / log(20000.0)); }
 
@@ -54,12 +55,17 @@ static inline int act_legal(const S& s, int a, int& q) {
 
 // ---------------- network ----------------
 struct Net {
-  vector<float> W1, b1, W2, b2, Wp, bp, wv; float bv;
+  // file layout: W1 (D_IN x H), b1, then per extra hidden layer W (H x H), b, then Wp (H x NA), bp, wv (H), bv
+  vector<float> W1, b1, Wp, bp, wv; vector<vector<float>> Wh, bh; float bv;
   bool load(const char* fn) {
     FILE* f = fopen(fn, "rb"); if (!f) return false;
     auto rd = [&](vector<float>& v, size_t n) { v.resize(n); return fread(v.data(), 4, n, f) == n; };
-    bool ok = rd(W1, (size_t)D_IN * H) && rd(b1, H) && rd(W2, (size_t)H * H) && rd(b2, H) && rd(Wp, (size_t)H * NA) && rd(bp, NA) && rd(wv, H);
-    ok = ok && fread(&bv, 4, 1, f) == 1; fclose(f); return ok;
+    bool ok = rd(W1, (size_t)D_IN * H) && rd(b1, H);
+    Wh.assign(NLAYERS - 1, {}); bh.assign(NLAYERS - 1, {});
+    for (int l = 0; l < NLAYERS - 1 && ok; l++) ok = rd(Wh[l], (size_t)H * H) && rd(bh[l], H);
+    ok = ok && rd(Wp, (size_t)H * NA) && rd(bp, NA) && rd(wv, H) && fread(&bv, 4, 1, f) == 1;
+    char extra; if (ok && fread(&extra, 1, 1, f) == 1) ok = false;  // file is bigger: wrong NET_H / NET_LAYERS
+    fclose(f); return ok;
   }
 } NET;
 
@@ -84,17 +90,22 @@ static void featurize(const S& s, Feat& F) {
 }
 
 static void forward(const Feat& F, float* logits, float& value) {
-  alignas(32) float h1[H], h2[H];
-  for (int j = 0; j < H; j++) h1[j] = NET.b1[j];
-  for (int t = 0; t < F.nidx; t++) { const float* w = &NET.W1[(size_t)F.idx[t] * H]; for (int j = 0; j < H; j++) h1[j] += w[j]; }
-  for (int g = 0; g < 10; g++) { const float* w = &NET.W1[(size_t)(64 * 21 + 64 + g) * H]; float v = F.g[g]; for (int j = 0; j < H; j++) h1[j] += v * w[j]; }
-  for (int j = 0; j < H; j++) h1[j] = h1[j] > 0 ? h1[j] : 0;
-  for (int j = 0; j < H; j++) h2[j] = NET.b2[j];
-  for (int i = 0; i < H; i++) { float a = h1[i]; if (a == 0) continue; const float* w = &NET.W2[(size_t)i * H]; for (int j = 0; j < H; j++) h2[j] += a * w[j]; }
-  for (int j = 0; j < H; j++) h2[j] = h2[j] > 0 ? h2[j] : 0;
+  static vector<float> ha, hb; ha.assign(H, 0); hb.assign(H, 0);
+  float* h = ha.data(); float* h2 = hb.data();
+  for (int j = 0; j < H; j++) h[j] = NET.b1[j];
+  for (int t = 0; t < F.nidx; t++) { const float* w = &NET.W1[(size_t)F.idx[t] * H]; for (int j = 0; j < H; j++) h[j] += w[j]; }
+  for (int g = 0; g < 10; g++) { const float* w = &NET.W1[(size_t)(64 * 21 + 64 + g) * H]; float v = F.g[g]; for (int j = 0; j < H; j++) h[j] += v * w[j]; }
+  for (int j = 0; j < H; j++) h[j] = h[j] > 0 ? h[j] : 0;
+  for (int l = 0; l < NLAYERS - 1; l++) {
+    const vector<float>& W = NET.Wh[l];
+    for (int j = 0; j < H; j++) h2[j] = NET.bh[l][j];
+    for (int i = 0; i < H; i++) { float a = h[i]; if (a == 0) continue; const float* w = &W[(size_t)i * H]; for (int j = 0; j < H; j++) h2[j] += a * w[j]; }
+    for (int j = 0; j < H; j++) h2[j] = h2[j] > 0 ? h2[j] : 0;
+    std::swap(h, h2);
+  }
   for (int a = 0; a < NA; a++) logits[a] = NET.bp[a];
   float v = NET.bv;
-  for (int i = 0; i < H; i++) { float x = h2[i]; if (x == 0) continue; const float* w = &NET.Wp[(size_t)i * NA]; for (int a = 0; a < NA; a++) logits[a] += x * w[a]; v += x * NET.wv[i]; }
+  for (int i = 0; i < H; i++) { float x = h[i]; if (x == 0) continue; const float* w = &NET.Wp[(size_t)i * NA]; for (int a = 0; a < NA; a++) logits[a] += x * w[a]; v += x * NET.wv[i]; }
   value = v;
 }
 
@@ -104,7 +115,7 @@ struct Node {
   int parent = -1, act = -1; float prior = 0;
   int N = 0; double W = 0;
   bool expanded = false, terminal = false; float tval = 0; float r = 0; double bestG = -1e18;
-  int first = -1, nch = 0;
+  int first = -1, nch = 0; bool pendingEval = false;
 };
 static vector<Node> T;
 static double QMIN, QMAX;
@@ -132,20 +143,28 @@ static void ensure_state(int id) {
   if (q == H8) { nd.terminal = true; nd.tval = 0.f; }
 }
 
-// expand node: returns value estimate
-static float expand(int id) {
+// expansion in two halves so evaluations can be batched: prep (terminal check + features), finish (priors)
+static bool expand_prep(int id, Feat& F, float& tv) {
   Node& nd = T[id];
-  if (nd.terminal) return nd.tval;
+  if (nd.terminal) { tv = nd.tval; return false; }
+  bool any = false;
+  for (int a = 0; a < NA && !any; a++) { int q; if (act_legal(nd.s, a, q) >= 0) any = true; }
+  if (!any) { nd.terminal = true; nd.tval = (float)(-(1.0 - stuck_credit(nd.s)) * nd.s.T / TSCALE); tv = nd.tval; return false; }
+  featurize(nd.s, F); return true;
+}
+static void expand_finish(int id, const float* lg) {
   int legal[NA], nl = 0;
-  for (int a = 0; a < NA; a++) { int q; if (act_legal(nd.s, a, q) >= 0) legal[nl++] = a; }
-  if (nl == 0) { nd.terminal = true; nd.tval = (float)(-(1.0 - stuck_credit(nd.s)) * nd.s.T / TSCALE); return nd.tval; }
-  Feat F; featurize(nd.s, F); float lg[NA], v; forward(F, lg, v);
+  for (int a = 0; a < NA; a++) { int q; if (act_legal(T[id].s, a, q) >= 0) legal[nl++] = a; }
   float mx = -1e30f; for (int i = 0; i < nl; i++) mx = max(mx, lg[legal[i]]);
   float sum = 0, pr[NA]; for (int i = 0; i < nl; i++) { pr[i] = expf(lg[legal[i]] - mx); sum += pr[i]; }
   int first = (int)T.size();
   for (int i = 0; i < nl; i++) { Node c; c.parent = id; c.act = legal[i]; c.prior = pr[i] / sum; T.push_back(c); }
   T[id].first = first; T[id].nch = nl; T[id].expanded = true;
-  return v;
+}
+// expand node: returns value estimate
+static float expand(int id) {
+  Feat F; float tv; if (!expand_prep(id, F, tv)) return tv;
+  float lg[NA], v; forward(F, lg, v); expand_finish(id, lg); return v;
 }
 
 static void add_noise(int id, double alpha, double eps) {
@@ -155,32 +174,52 @@ static void add_noise(int id, double alpha, double eps) {
   for (int i = 0; i < nd.nch; i++) T[nd.first + i].prior = (float)((1 - eps) * T[nd.first + i].prior + eps * d[i] / s);
 }
 
+static int select_child(int id) {
+  Node& nd = T[id]; double best = -1e18; int bc = -1;
+  double rng_q = QMAX - QMIN;
+  double qp = nd.N ? nd.W / nd.N : 0;
+  double qpn = rng_q > 1e-9 ? (qp - QMIN) / rng_q : 0.5;
+  double sq = sqrt((double)nd.N + 1);
+  for (int c = nd.first; c < nd.first + nd.nch; c++) {
+    Node& ch = T[c];
+    double q;
+    if (ch.N) { double qe = ch.r + (1 - BETA) * ch.W / ch.N + BETA * ch.bestG; q = rng_q > 1e-9 ? (qe - QMIN) / rng_q : 0.5; }
+    else q = qpn;
+    double u = q + CPUCT * ch.prior * sq / (1 + ch.N);
+    if (u > best) { best = u; bc = c; }
+  }
+  return bc;
+}
+static void backup(int id, double g) {
+  while (id >= 0) {
+    Node& nd = T[id]; nd.N++; nd.W += g; if (g > nd.bestG) nd.bestG = g;
+    if (nd.parent >= 0) { double qe = nd.r + (1 - BETA) * nd.W / nd.N + BETA * nd.bestG; QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
+    g = nd.r + g; id = nd.parent;
+  }
+}
 static void run_sims(int root, int sims) {
   for (int it = 0; it < sims; it++) {
     int id = root;
-    while (T[id].expanded && !T[id].terminal) {
-      Node& nd = T[id]; double best = -1e18; int bc = -1;
-      double rng_q = QMAX - QMIN;
-      double qp = nd.N ? nd.W / nd.N : 0;
-      double qpn = rng_q > 1e-9 ? (qp - QMIN) / rng_q : 0.5;
-      double sq = sqrt((double)nd.N + 1);
-      for (int c = nd.first; c < nd.first + nd.nch; c++) {
-        Node& ch = T[c];
-        double q;
-        if (ch.N) { double qe = ch.r + (1 - BETA) * ch.W / ch.N + BETA * ch.bestG; q = rng_q > 1e-9 ? (qe - QMIN) / rng_q : 0.5; }
-        else q = qpn;
-        double u = q + CPUCT * ch.prior * sq / (1 + ch.N);
-        if (u > best) { best = u; bc = c; }
-      }
-      id = bc; ensure_state(id);
-    }
+    while (T[id].expanded && !T[id].terminal) { id = select_child(id); ensure_state(id); }
     double g = T[id].terminal ? T[id].tval : expand(id);
-    while (id >= 0) {
-      Node& nd = T[id]; nd.N++; nd.W += g; if (g > nd.bestG) nd.bestG = g;
-      if (nd.parent >= 0) { double qe = nd.r + (1 - BETA) * nd.W / nd.N + BETA * nd.bestG; QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
-      g = nd.r + g; id = nd.parent;
-    }
+    backup(id, g);
   }
+}
+
+// ---- batched evaluation over a pipe (GPU self-play) ----
+#pragma pack(push, 1)
+struct EvalReq { int16_t idx[64 * 2 + 1]; float g[10]; };
+#pragma pack(pop)
+static FILE *INF_REQ = nullptr, *INF_RESP = nullptr;
+static void remote_eval(const vector<EvalReq>& reqs, vector<float>& out) {
+  int32_t n = (int32_t)reqs.size();
+  if (fwrite(&n, 4, 1, INF_REQ) != 1 || fwrite(reqs.data(), sizeof(EvalReq), n, INF_REQ) != (size_t)n) { fprintf(stderr, "inference pipe write failed\n"); exit(1); }
+  fflush(INF_REQ);
+  out.resize((size_t)n * (NA + 1));
+  if (fread(out.data(), 4, out.size(), INF_RESP) != out.size()) { fprintf(stderr, "inference pipe read failed\n"); exit(1); }
+}
+static EvalReq pack_feat(const Feat& F) {
+  EvalReq r; for (int i = 0; i < 64 * 2 + 1; i++) r.idx[i] = (int16_t)F.idx[i]; for (int g = 0; g < 10; g++) r.g[g] = F.g[g]; return r;
 }
 
 static int USE_OPENING = 1;  // env OPENING=0: every game starts at a1, T=0
@@ -229,8 +268,9 @@ int main(int argc, char** argv) {
     fprintf(stderr, "usage: az selfplay|eval|beam|improve|test <weights> ...  (see the comment at the top of az.cpp)\n");
     return 1;
   }
+  H = (int)envd("NET_H", 256); NLAYERS = max(1, (int)envd("NET_LAYERS", 2));
   string mode = argv[1];
-  if (!NET.load(argv[2])) { fprintf(stderr, "cannot load weights\n"); return 1; }
+  if (!NET.load(argv[2])) { fprintf(stderr, "cannot load weights %s for NET_H=%d NET_LAYERS=%d\n", argv[2], H, NLAYERS); return 1; }
   if (mode == "selfplay") {
     const char* out = argv[3]; int EP = atoi(argv[4]), SIMS = atoi(argv[5]); rng.seed(atoi(argv[6]));
     int TEMPM = atoi(argv[7]); const char* bestf = argv[8];
@@ -255,9 +295,10 @@ int main(int argc, char** argv) {
     const char* tours_out = getenv("TOURS_OUT");  // if set, every finished tour is appended here
     FILE* fo = fopen(out, "wb");
     long long bestT = -1; double bestTarget = -1;
-    for (int ep = 0; ep < EP; ep++) {
-      vector<pair<int, string>> moves; S s = start_with_opening(moves);
-      std::uniform_real_distribution<double> U01(0, 1);
+    std::uniform_real_distribution<double> U01(0, 1);
+    // where a game starts: the opening (or a1), a restart point on the best tour, or a curriculum prefix
+    auto make_start = [&](vector<pair<int, string>>& moves) -> S {
+      S s = start_with_opening(moves);
       if (!pref.empty() && (int)pref.size() > OPEN_LEN + 1 && U01(rng) < PSTART) {
         int k = OPEN_LEN + (int)(U01(rng) * (pref.size() - 1 - OPEN_LEN));
         s = start_state(); moves.clear();
@@ -274,34 +315,29 @@ int main(int argc, char** argv) {
         s = start_state(); moves.clear();
         for (int i = 0; i < k; i++) { int qi = (tr[i].second[0] - 'a') + 8 * (tr[i].second[1] - '1'); int n = group_n(s, s.pos); apply_move(s, tr[i].first / n, qi); moves.push_back(tr[i]); }
       }
-      vector<Sample> traj; vector<float> rootv; int mv = 0; bool done = false; long long score = 0;
-      while (!done) {
-        T.clear(); T.reserve(SIMS * 8 + 16); Node r; r.s = s; r.hasState = true; T.push_back(r);
-        QMIN = 1e9; QMAX = -1e9;
-        expand(0);
-        if (T[0].terminal) { score = 0; break; }  // stuck
-        add_noise(0, DIRA, DIRE);
-        run_sims(0, SIMS);
-        Sample sm; for (int i = 0; i < 64; i++) { sm.alt[i] = s.alt[i]; sm.vis[i] = s.vis[i]; } sm.pos = s.pos; sm.T = s.T; sm.mask = 0;
-        for (int a = 0; a < NA; a++) sm.pi[a] = 0;
-        int tot = 0; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) { sm.mask |= 1u << T[c].act; sm.pi[T[c].act] = T[c].N; tot += T[c].N; }
-        for (int a = 0; a < NA; a++) sm.pi[a] /= max(1, tot);
-        traj.push_back(sm); rootv.push_back((float)(T[0].W / max(1, T[0].N)));
-        // choose action
-        int pick = -1;
-        double tau = mv < TEMPM ? TAU1 : TAU2;
-        if (tau > 0) {  // sample in proportion to N^(1/tau)
-          double wt[NA], wsum = 0;
-          for (int i = 0; i < T[0].nch; i++) { int c = T[0].first + i; wt[i] = T[c].N > 0 ? pow((double)T[c].N, 1.0 / tau) : 0.0; wsum += wt[i]; }
-          std::uniform_real_distribution<double> U(0, 1); double r0 = U(rng) * wsum, acc = 0;
-          for (int i = 0; i < T[0].nch; i++) { acc += wt[i]; if (wt[i] > 0 && acc >= r0) { pick = T[0].first + i; break; } }
-        }
-        if (pick < 0) { int bn = -1; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) if (T[c].N > bn) { bn = T[c].N; pick = c; } }
-        int a = T[pick].act, q; int delta = act_legal(s, a, q);
-        int before = s.T; apply_move(s, delta, q); moves.push_back({s.T - before, nm(q)}); mv++;
-        if (q == H8) { score = s.T; done = true; }
-        if (mv > 400) break;
+      return s;
+    };
+    // after the search at a root (tree in T): record the training sample and choose the move
+    auto record_and_pick = [&](const S& s, int mv, vector<Sample>& traj, vector<float>& rootv) -> int {
+      Sample sm; for (int i = 0; i < 64; i++) { sm.alt[i] = s.alt[i]; sm.vis[i] = s.vis[i]; } sm.pos = s.pos; sm.T = s.T; sm.mask = 0;
+      for (int a = 0; a < NA; a++) sm.pi[a] = 0;
+      int tot = 0; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) { sm.mask |= 1u << T[c].act; sm.pi[T[c].act] = T[c].N; tot += T[c].N; }
+      for (int a = 0; a < NA; a++) sm.pi[a] /= max(1, tot);
+      traj.push_back(sm); rootv.push_back((float)(T[0].W / max(1, T[0].N)));
+      int pick = -1;
+      double tau = mv < TEMPM ? TAU1 : TAU2;
+      if (tau > 0) {  // sample in proportion to N^(1/tau)
+        double wt[NA], wsum = 0;
+        for (int i = 0; i < T[0].nch; i++) { int c = T[0].first + i; wt[i] = T[c].N > 0 ? pow((double)T[c].N, 1.0 / tau) : 0.0; wsum += wt[i]; }
+        std::uniform_real_distribution<double> U(0, 1); double r0 = U(rng) * wsum, acc = 0;
+        for (int i = 0; i < T[0].nch; i++) { acc += wt[i]; if (wt[i] > 0 && acc >= r0) { pick = T[0].first + i; break; } }
       }
+      if (pick < 0) { int bn = -1; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) if (T[c].N > bn) { bn = T[c].N; pick = c; } }
+      return pick;
+    };
+    int epcount = 0;
+    auto finish_episode = [&](const S& s, const vector<pair<int, string>>& moves, vector<Sample>& traj, const vector<float>& rootv, int mv, long long score) {
+      int ep = epcount++;
       long long Tend = s.T; double dist = h8_dist(s), cr = stuck_credit(s);
       for (size_t i = 0; i < traj.size(); i++) {
         float z = (float)(score > 0 ? (score - traj[i].T) / TSCALE : (cr * Tend - traj[i].T) / TSCALE);
@@ -326,6 +362,92 @@ int main(int argc, char** argv) {
         for (size_t i = 0; i < moves.size(); i++) fprintf(fb, "%s(%d, %s)", i ? ", " : "", moves[i].first, moves[i].second.c_str());
         fprintf(fb, "\n"); fclose(fb);
       }
+    };
+
+    if (!getenv("INFER_REQ")) {  // ---- CPU: one game at a time, network evaluated here ----
+      for (int ep = 0; ep < EP; ep++) {
+        vector<pair<int, string>> moves; S s = make_start(moves);
+        vector<Sample> traj; vector<float> rootv; int mv = 0; long long score = 0;
+        while (true) {
+          T.clear(); T.reserve(SIMS * 8 + 16); Node r; r.s = s; r.hasState = true; T.push_back(r);
+          QMIN = 1e9; QMAX = -1e9;
+          expand(0);
+          if (T[0].terminal) { score = 0; break; }  // stuck
+          add_noise(0, DIRA, DIRE);
+          run_sims(0, SIMS);
+          int pick = record_and_pick(s, mv, traj, rootv);
+          int a = T[pick].act, q; int delta = act_legal(s, a, q);
+          int before = s.T; apply_move(s, delta, q); moves.push_back({s.T - before, nm(q)}); mv++;
+          if (q == H8) { score = s.T; break; }
+          if (mv > 400) break;
+        }
+        finish_episode(s, moves, traj, rootv, mv, score);
+      }
+    } else {  // ---- GPU: all EP games at once; leaf evaluations batched over the inference pipe ----
+      INF_REQ = fopen(getenv("INFER_REQ"), "wb"); INF_RESP = fopen(getenv("INFER_RESP"), "rb");
+      if (!INF_REQ || !INF_RESP) { fprintf(stderr, "cannot open inference pipes\n"); return 1; }
+      int KLEAF = max(1, (int)envd("INFER_LEAVES", 8));
+      struct Game {
+        S s; vector<pair<int, string>> moves; vector<Sample> traj; vector<float> rootv; int mv = 0; long long score = 0;
+        bool done = false, rootPending = false; int phase = 0, simsDone = 0, pending = 0;
+        vector<Node> tree; double qmin = 1e9, qmax = -1e9;
+      };
+      struct Pend { int game, leaf; vector<pair<int, double>> vl; };
+      vector<Game> games(EP);
+      for (auto& G : games) G.s = make_start(G.moves);
+      int active = EP; vector<EvalReq> reqs; vector<Pend> owners; vector<float> out;
+      while (active > 0) {
+        reqs.clear(); owners.clear();
+        for (int gi = 0; gi < EP; gi++) {
+          Game& G = games[gi]; if (G.done) continue;
+          std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
+          if (G.phase == 1 && !G.rootPending && G.simsDone >= SIMS && G.pending == 0) {  // search done: move
+            int pick = record_and_pick(G.s, G.mv, G.traj, G.rootv);
+            int a = T[pick].act, q; int delta = act_legal(G.s, a, q);
+            int before = G.s.T; apply_move(G.s, delta, q); G.moves.push_back({G.s.T - before, nm(q)}); G.mv++;
+            if (q == H8) { G.score = G.s.T; G.done = true; } else if (G.mv > 400) G.done = true;
+            G.phase = 0;
+          }
+          if (!G.done && G.phase == 0) {  // new root: needs one evaluation
+            T.clear(); T.reserve(SIMS * 8 + 16); Node r; r.s = G.s; r.hasState = true; T.push_back(r);
+            QMIN = 1e9; QMAX = -1e9;
+            Feat F; float tv;
+            if (!expand_prep(0, F, tv)) G.done = true;  // stuck
+            else { reqs.push_back(pack_feat(F)); owners.push_back({gi, 0, {}}); G.phase = 1; G.rootPending = true; G.simsDone = 0; G.pending = 0; }
+          } else if (!G.done && !G.rootPending) {  // collect up to KLEAF leaves, with virtual visits
+            int tries = 0;
+            while (G.simsDone + G.pending < SIMS && G.pending < KLEAF && tries++ < 2 * KLEAF) {
+              vector<int> path{0}; int id = 0;
+              while (T[id].expanded && !T[id].terminal) { id = select_child(id); ensure_state(id); path.push_back(id); }
+              if (T[id].terminal) { backup(id, T[id].tval); G.simsDone++; continue; }
+              if (T[id].pendingEval) break;
+              Feat F; float tv;
+              if (!expand_prep(id, F, tv)) { backup(id, tv); G.simsDone++; continue; }  // stuck leaf
+              Pend pd{gi, id, {}};
+              bool haveQ = QMAX >= QMIN;
+              for (int x : path) { double amt = (x == 0 || !haveQ) ? 0.0 : QMIN - T[x].r; T[x].N++; T[x].W += amt; pd.vl.push_back({x, amt}); }
+              T[id].pendingEval = true;
+              reqs.push_back(pack_feat(F)); owners.push_back(pd); G.pending++;
+            }
+          }
+          if (G.done) { finish_episode(G.s, G.moves, G.traj, G.rootv, G.mv, G.score); active--; vector<Node>().swap(T); }
+          G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
+        }
+        if (reqs.empty()) continue;
+        remote_eval(reqs, out);
+        for (size_t k = 0; k < owners.size(); k++) {
+          Pend& pd = owners[k]; Game& G = games[pd.game];
+          std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
+          const float* lg = &out[k * (NA + 1)]; float v = lg[NA];
+          if (G.rootPending && pd.leaf == 0) { expand_finish(0, lg); add_noise(0, DIRA, DIRE); G.rootPending = false; }
+          else {
+            for (auto& [x, amt] : pd.vl) { T[x].N--; T[x].W -= amt; }
+            T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg); backup(pd.leaf, v); G.simsDone++; G.pending--;
+          }
+          G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
+        }
+      }
+      fclose(INF_REQ); fclose(INF_RESP);
     }
     fclose(fo);
   } else if (mode == "test") {

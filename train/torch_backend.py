@@ -10,26 +10,36 @@ import torch
 
 
 class TorchNet:
-    ORDER = ['W1', 'b1', 'W2', 'b2', 'Wp', 'bp', 'wv', 'bv']
 
     def __init__(self, np_net, device='cuda', lr=1e-3, wd=1e-5):
         if device.startswith('cuda') and not torch.cuda.is_available():
             raise SystemExit('PyTorch cannot see a CUDA GPU; install a CUDA build of PyTorch, '
                              'or use --device cpu / --backend numpy')
         self.dev = torch.device(device)
+        self.ORDER, self.L = list(np_net.ORDER), np_net.L
         self.p = {k: torch.tensor(np_net.p[k], dtype=torch.float32, device=self.dev, requires_grad=True)
                   for k in self.ORDER}
         # L2 weight decay on the weight matrices only, exactly like the NumPy trainer
         self.opt = torch.optim.Adam(
-            [{'params': [self.p[k] for k in ('W1', 'W2', 'Wp')], 'weight_decay': wd},
-             {'params': [self.p[k] for k in ('b1', 'b2', 'bp', 'wv', 'bv')], 'weight_decay': 0.0}],
+            [{'params': [self.p[k] for k in self.ORDER if k.startswith('W')], 'weight_decay': wd},
+             {'params': [self.p[k] for k in self.ORDER if not k.startswith('W')], 'weight_decay': 0.0}],
             lr=lr, betas=(0.9, 0.999), eps=1e-8)
 
     def forward(self, X):
-        P = self.p
-        h1 = torch.relu(X @ P['W1'] + P['b1'])
-        h2 = torch.relu(h1 @ P['W2'] + P['b2'])
-        return h2 @ P['Wp'] + P['bp'], h2 @ P['wv'] + P['bv'][0]
+        P = self.p; h = X
+        for l in range(1, self.L + 1):
+            h = torch.relu(h @ P[f'W{l}'] + P[f'b{l}'])
+        return h @ P['Wp'] + P['bp'], h @ P['wv'] + P['bv'][0]
+
+    @torch.no_grad()
+    def infer(self, idx, g):
+        """Batched evaluation for self-play (see az_train.Net.infer). Runs on self.dev."""
+        d, P = self.dev, self.p
+        I = torch.from_numpy(np.array(idx, dtype=np.int64)).to(d); G = torch.from_numpy(np.array(g, dtype=np.float32)).to(d)
+        h = torch.relu(torch.nn.functional.embedding_bag(I, P['W1'], mode='sum') + G @ P['W1'][64 * 21 + 64:] + P['b1'])
+        for l in range(2, self.L + 1):
+            h = torch.relu(h @ P[f'W{l}'] + P[f'b{l}'])
+        return torch.cat([h @ P['Wp'] + P['bp'], (h @ P['wv'] + P['bv'][0]).unsqueeze(1)], 1).cpu().numpy()
 
     def step(self, X, mask, pi, z):
         d = self.dev

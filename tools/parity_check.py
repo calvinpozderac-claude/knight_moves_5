@@ -12,6 +12,8 @@ from az_train import Net, featurize, NA  # noqa: E402
 ap = argparse.ArgumentParser()
 ap.add_argument('--device', default=None)
 ap.add_argument('--steps', type=int, default=20)
+ap.add_argument('--hidden', type=int, default=256)
+ap.add_argument('--layers', type=int, default=2)
 args = ap.parse_args()
 
 import torch  # noqa: E402
@@ -31,8 +33,8 @@ pi = (rng.random((B, NA)) * mask).astype(np.float32)
 pi /= pi.sum(1, keepdims=True)
 z = (rng.standard_normal(B) * 0.1).astype(np.float32)
 
-a = Net(np.random.default_rng(0))
-b = TorchNet(Net(np.random.default_rng(0)), device=dev)
+a = Net(np.random.default_rng(0), hidden=args.hidden, layers=args.layers)
+b = TorchNet(Net(np.random.default_rng(0), hidden=args.hidden, layers=args.layers), device=dev)
 worst = 0.0
 for i in range(args.steps):
     la, lb = a.step(X, mask, pi, z), b.step(X, mask, pi, z)
@@ -42,8 +44,9 @@ for i in range(args.steps):
         print(f'step {i}: numpy loss {la[0]:.6f} {la[1]:.6f} | torch loss {lb[0]:.6f} {lb[1]:.6f}')
 
 # compare predictions after training
-P = a.p
-h2 = np.maximum(np.maximum(X @ P['W1'] + P['b1'], 0) @ P['W2'] + P['b2'], 0)
+P = a.p; h2 = X
+for l in range(1, args.layers + 1):
+    h2 = np.maximum(h2 @ P[f'W{l}'] + P[f'b{l}'], 0)
 lg_np, v_np = h2 @ P['Wp'] + P['bp'], h2 @ P['wv'] + P['bv'][0]
 with torch.no_grad():
     lg_t, v_t = b.forward(torch.from_numpy(X).to(b.dev))
