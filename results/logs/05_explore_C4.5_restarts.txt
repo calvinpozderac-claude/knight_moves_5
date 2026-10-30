@@ -1,0 +1,13 @@
+it 0 eps 32 meanT 9 maxT 280 fail 0.97 best 280 buf 1071 lp 1.307 lv 0.0017 selfplay 35s train 4s
+it 1 eps 32 meanT 104 maxT 346 fail 0.62 best 346 buf 1932 lp 1.258 lv 0.0003 selfplay 29s train 5s
+it 2 eps 32 meanT 139 maxT 613 fail 0.62 best 613 buf 2804 lp 1.228 lv 0.0002 selfplay 25s train 5s
+it 3 eps 32 meanT 238 maxT 833 fail 0.53 best 833 buf 3873 lp 1.213 lv 0.0002 selfplay 37s train 4s
+it 4 eps 32 meanT 227 maxT 833 fail 0.53 best 833 buf 4900 lp 1.201 lv 0.0002 selfplay 37s train 3s
+it 5 eps 32 meanT 310 maxT 1049 fail 0.50 best 1049 buf 5802 lp 1.198 lv 0.0002 selfplay 28s train 4s
+it 6 eps 32 meanT 337 maxT 1197 fail 0.47 best 1197 buf 6586 lp 1.190 lv 0.0002 selfplay 25s train 5s
+it 7 eps 32 meanT 297 maxT 1197 fail 0.62 best 1197 buf 7761 lp 1.195 lv 0.0002 selfplay 37s train 4s
+it 8 eps 32 meanT 290 maxT 1229 fail 0.69 best 1229 buf 8688 lp 1.185 lv 0.0003 selfplay 27s train 3s
+it 9 eps 32 meanT 285 maxT 1370 fail 0.69 best 1370 buf 9834 lp 1.185 lv 0.0003 selfplay 34s train 5s
+it 10 eps 32 meanT 284 maxT 1379 fail 0.59 best 1379 buf 10836 lp 1.193 lv 0.0003 selfplay 31s train 4s
+it 11 eps 32 meanT 282 maxT 1379 fail 0.69 best 1379 buf 11805 lp 1.198 lv 0.0003 selfplay 31s train 6s
+it 12 eps 32 meanT 325 maxT 1379 fail 0.56 best 1379 buf 12719 lp 1.191 lv 0.0003 selfplay 24s train 5s
