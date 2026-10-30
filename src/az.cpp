@@ -412,6 +412,23 @@ int main(int argc, char** argv) {
       for (int x = id; T[x].parent >= 0; x = T[x].parent) tail.push_back({T[x].s.T - T[T[x].parent].s.T, nm(T[x].s.pos)});
       G.bestFoundTour = G.moves; G.bestFoundTour.insert(G.bestFoundTour.end(), tail.rbegin(), tail.rend());
     };
+    // deterministic single player: when a node is expanded, any move that lands on h8 is a finished tour.
+    // Record it at once (exact value, propagated upward without counting visits) so finishes next to an
+    // expanded position are never missed.
+    auto scan_finish = [&](Game& G, int id) {
+      if (!SP || !T[id].expanded) return;
+      for (int c = T[id].first; c < T[id].first + T[id].nch; c++) {
+        int q; if (act_legal(T[id].s, T[c].act, q) < 0 || q != H8) continue;
+        ensure_state(c); found_tour(G, c);
+        double g = T[c].tval;
+        for (int x = c; x >= 0; x = T[x].parent) {
+          if (g > T[x].exactG) T[x].exactG = g;
+          if (g > T[x].finG) T[x].finG = g;
+            g += T[x].r;
+        }
+        mark_solved(c);
+      }
+    };
     auto best_exact_child = [&]() {
       int bc = -1; double bv = -1e18;
       for (int c = T[0].first; c < T[0].first + T[0].nch; c++) {
@@ -529,7 +546,7 @@ int main(int argc, char** argv) {
             if (!expand_prep(0, F, tv)) G.done = true;  // stuck
             else {
               uint64_t key = SP ? state_key(T[0].s) : 0; auto it = SP ? evalCache.find(key) : evalCache.end();
-              if (it != evalCache.end()) { expand_finish(0, it->second.data()); add_noise(0, DIRA, DIRE); }
+              if (it != evalCache.end()) { expand_finish(0, it->second.data()); scan_finish(G, 0); add_noise(0, DIRA, DIRE); }
               else { reqs.push_back(pack_feat(F)); feats.push_back(F); owners.push_back({gi, 0, key, {}}); G.rootPending = true; }
             }
           }
@@ -558,7 +575,7 @@ int main(int argc, char** argv) {
               auto is = SOLVED_CACHE.find(key);
               if (is != SOLVED_CACHE.end()) { backup(id, is->second.first, true, is->second.second); mark_solved(id); G.simsDone++; continue; }
               auto ie = evalCache.find(key);
-              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); backup(id, max(ie->second[NA], value_floor(T[id].s))); G.simsDone++; continue; }
+              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); scan_finish(G, id); backup(id, max(ie->second[NA], value_floor(T[id].s))); G.simsDone++; continue; }
             }
             Pend pd{gi, id, key, {}};
             bool haveQ = QMAX >= QMIN;
@@ -577,10 +594,10 @@ int main(int argc, char** argv) {
         std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
         const float* lg = &evout[k * (NA + 1)]; float v = lg[NA];
         if (SP && evalCache.size() < EVAL_CAP) { array<float, NA + 1> e; std::copy(lg, lg + NA + 1, e.begin()); evalCache[pd.key] = e; }
-        if (G.rootPending && pd.leaf == 0) { expand_finish(0, lg); add_noise(0, DIRA, DIRE); G.rootPending = false; }
+        if (G.rootPending && pd.leaf == 0) { expand_finish(0, lg); scan_finish(G, 0); add_noise(0, DIRA, DIRE); G.rootPending = false; }
         else {
           for (auto& [x, amt] : pd.vl) { T[x].N--; T[x].W -= amt; }
-          T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg);
+          T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg); scan_finish(G, pd.leaf);
           backup(pd.leaf, SP ? max(v, value_floor(T[pd.leaf].s)) : v); G.simsDone++; G.pending--;
         }
         G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
