@@ -253,7 +253,7 @@ def find_az(path):
 # settings that define the algorithm; --resume restores these from <run>/config.json
 ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'hidden', 'layers', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
              'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k',
-             'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
+             'classic', 'q_max_weight', 'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
              'curriculum_balance']
 
 
@@ -296,6 +296,12 @@ def main():
                    help='chance a game instead starts from a random point of the best tour (Go-Explore); 0 = off')
     g.add_argument('--seed-tour', default=None, help='tour file to use as the initial best tour (for restarts)')
     g.add_argument('--self-imitation', type=int, default=0, help='copies of the best tour added to the buffer each round')
+    g = ap.add_argument_group('search')
+    g.add_argument('--classic', action='store_true',
+                   help='classic AlphaZero averaging instead of the single-player search (max/exact values, solved '
+                        'subtrees, tree reuse, caches, tours found inside the search, exact-floor value targets)')
+    g.add_argument('--q-max-weight', type=float, default=0.5,
+                   help='single-player search: weight of the best result vs the average in node values')
     g = ap.add_argument_group('exploration')
     g.add_argument('--cpuct', type=float, default=1.5, help='PUCT constant C')
     g.add_argument('--tau1', type=float, default=1.0, help='move temperature for the first --temp-moves moves')
@@ -388,13 +394,15 @@ def main():
                                 'prefix\n')
     print(f'run {run}: az={az} workers={a.workers} backend={a.backend} start={a.start} '
           f'cpuct={a.cpuct} tau={a.tau1}/{a.tau2} credit={a.credit} dist_k={a.dist_k} net={a.layers}x{a.hidden} '
-          f'selfplay_eval={"batched" if a.gpu_selfplay else "in-worker CPU"}', flush=True)
+          f'selfplay_eval={"batched" if a.gpu_selfplay else "in-worker CPU"} '
+          f'search={"classic" if a.classic else "single-player"}', flush=True)
 
     for it in range(state['round'], state['round'] + a.rounds):
         kappa = a.credit if first_fin is None else a.credit * max(0.0, 1 - (it - first_fin) / a.credit_ramp)
         env = dict(os.environ, CPUCT=str(a.cpuct), TAU1=str(a.tau1), TAU2=str(a.tau2), DIRA=str(a.dir_alpha),
                    DIRE=str(a.dir_eps), OPENING='1' if a.start == 'opening' else '0', OPENING_FILE=opening_file,
-                   CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k), NET_H=str(a.hidden), NET_LAYERS=str(a.layers))
+                   CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k), NET_H=str(a.hidden), NET_LAYERS=str(a.layers),
+                   SP='0' if a.classic else '1', QMAX_W=str(0.0 if a.classic else a.q_max_weight))
         if tours_fn and cur_k > 0:
             env.update(PREFIX_TOURS=tours_fn, PREFIX_LEN=str(cur_k), PREFIX_BALANCE=str(a.curriculum_balance),
                        PREFIX_FROM_END='1' if a.curriculum_mode == 'end' else '0')
@@ -428,6 +436,7 @@ def main():
         rows = [l.split() for o in outs for l in o.splitlines() if l.startswith('EP')]
         scores = np.array([int(r[5]) for r in rows]); ends = np.array([int(r[7]) for r in rows])
         nmoves = np.array([int(r[3]) for r in rows])
+        founds = np.array([int(r[11]) if len(r) > 11 else int(r[5]) for r in rows])
         dists = np.array([float(r[9]) if len(r) > 9 else 0.0 for r in rows])
         if a.dist_k > 0:
             targets = np.where(scores > 0, scores, ends * np.exp(-a.dist_k * dists))
@@ -486,6 +495,7 @@ def main():
                f'minutes {ends.mean():.0f} maxmin {ends.max()} dist {dists.mean():.3f} target {targets.mean():.0f} '
                f'maxtarget {targets.max():.0f} besttarget {best_target:.0f} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
                f'selfplay {t1 - t0:.0f}s train {t2 - t1:.0f}s')
+        msg += f' found {founds.max()}'
         if a.gpu_selfplay:
             msg += f' evals {evals}'
         if tours_fn:

@@ -186,6 +186,7 @@ The main options (`--help` lists them all):
 | `--backend`, `--device` | numpy, cuda | train in NumPy on the CPU, or in PyTorch |
 | `--gpu-selfplay`, `--infer-leaves` | off, 8 | evaluate self-play positions in batches in the trainer (GPU with torch) |
 | `--hidden`, `--layers` | 256, 2 | network width and number of hidden layers |
+| `--classic`, `--q-max-weight` | off, 0.5 | classic AlphaZero averaging; weight of the best result in node values |
 
 ### On a Ryzen 9 9950X with an RTX 5070 Ti
 
@@ -275,4 +276,24 @@ four question tours (high finish, no repeats, all points equal, short waits).
   - Each wait earns its minutes / 10,000.
   - Reaching h8 ends the game.
   - Getting stuck forfeits every minute so far, or all but the `--credit` fraction.
-- **Value target:** half the actual remaining minutes, half the search's own estimate at the root.
+- **Single-player search (default; `--classic` turns it off).** This is a one-player
+  deterministic game, so it doesn't average the way two-player AlphaZero does:
+  - **Node values** blend the average and the best result found (`--q-max-weight`, default
+    0.5). A move is never rated below a line proven to reach a real end, since that line can
+    always be replayed exactly.
+  - **Solved subtrees:** once every move under a node has been searched to the end, its exact
+    best value is final. The search stops visiting it, and passes "solved" upward. A solved
+    root means the best move is known, and it gets played.
+  - **Tree reuse:** the subtree under the chosen move becomes the next root.
+  - **Caches** (per worker, keyed on the full position including the clock): network outputs
+    are never recomputed, and solved values are reused across moves and games.
+  - **Tours found inside the search:** every h8 the search reaches is a real tour. The best one
+    per game is reported (`found` in the log) and saved, even if the moves played went
+    elsewhere.
+- **Value target:**
+  - **Single-player:** the best result actually achieved from the position is a floor. That's
+    what was played, plus any exact line that this search or a later one found, passed back
+    along the game. The search's estimate can only raise the target, by half the difference.
+  - **Classic:** half the actual remaining minutes, half the search's average at the root.
+- **Policy target:** the share of search visits each move got, or the proven best move when the
+  root is solved.

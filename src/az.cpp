@@ -12,6 +12,10 @@
 //   TAU1, TAU2         move-selection temperature for the first <tempMoves> moves, and after (0 = greedy)
 //   DIRA, DIRE         Dirichlet root noise alpha and weight (default 0.3, 0.25)
 //   NET_H, NET_LAYERS  network hidden width and number of hidden layers (default 256, 2)
+//   SP                 1 (default): single-player deterministic search (max/exact values, solved subtrees,
+//                      tree reuse, caches, tours found inside the search); 0: classic AlphaZero averaging
+//   QMAX_W             weight of the best result vs the average in node values (default 0.5 with SP=1)
+//   EVAL_CACHE, SOLVED_CACHE   cache sizes per worker (default 200000 network outputs, 1000000 solved values)
 //   CREDIT             fraction of its minutes a stuck tour keeps (training-only partial credit, default 0)
 //   DISTK              if > 0, a stuck tour keeps exp(-DISTK * d) of its minutes instead, d = 3D distance
 //                      from the knight to h8 divided by the a1 -> h8 distance at the start (so d = 1 at a1)
@@ -22,7 +26,9 @@
 //                      probability ~ size^PREFIX_BALANCE (default 1 = every tour equally likely; 0 = every opening)
 //   TOURS_OUT          if set, self-play appends every finished tour to this file ("minutes tour" per line)
 #include "eng.h"
+#include <array>
 #include <map>
+#include <unordered_map>
 #include <random>
 
 static const int NA = 24;
@@ -116,6 +122,9 @@ struct Node {
   int N = 0; double W = 0;
   bool expanded = false, terminal = false; float tval = 0; float r = 0; double bestG = -1e18;
   int first = -1, nch = 0; bool pendingEval = false;
+  // single-player extras: best result over paths that reached a real end (achievable), and whether the
+  // whole subtree has been searched (then exactG is this node's true value)
+  double exactG = -1e18; bool solved = false; int nsolved = 0;
 };
 static vector<Node> T;
 static double QMIN, QMAX;
@@ -134,6 +143,11 @@ static inline double h8_dist(const S& s) { return h8_dist_raw(s) / D0; }
 static inline double stuck_credit(const S& s) { return DISTK > 0 ? exp(-DISTK * h8_dist(s)) : CREDIT; }
 static double envd(const char* k, double d) { const char* v = getenv(k); return v ? atof(v) : d; }
 static std::mt19937 rng;
+// Single-player deterministic mode (env SP, default 1): see the self-play section in main for what it changes.
+static bool SP = true;
+static inline uint64_t state_key(const S& s) { return hashS(s, true) ^ (0x9E3779B97F4A7C15ULL * (uint64_t)(s.T + 1)); }
+static unordered_map<uint64_t, double> SOLVED_CACHE;  // exact future value of positions whose subtree was fully searched
+static size_t SOLVED_CAP = 1000000;
 
 static void ensure_state(int id) {
   Node& nd = T[id]; if (nd.hasState) return;
@@ -174,28 +188,68 @@ static void add_noise(int id, double alpha, double eps) {
   for (int i = 0; i < nd.nch; i++) T[nd.first + i].prior = (float)((1 - eps) * T[nd.first + i].prior + eps * d[i] / s);
 }
 
+// value of moving into ch, seen from its parent: exact if solved, else a mean/max blend (BETA = max weight)
+static inline double node_q(const Node& ch) {
+  if (ch.solved) return ch.r + ch.exactG;
+  double mean = ch.W / ch.N;
+  if (ch.bestG < -1e17) return ch.r + mean;  // only virtual visits so far: no real result yet
+  double v = (1 - BETA) * mean + BETA * ch.bestG;
+  if (SP && ch.exactG > v) v = ch.exactG;  // a proven line is replayable exactly: never rate a move below it
+  return ch.r + v;
+}
 static int select_child(int id) {
-  Node& nd = T[id]; double best = -1e18; int bc = -1;
+  Node& nd = T[id]; double best = -HUGE_VAL; int bc = nd.first;
   double rng_q = QMAX - QMIN;
-  double qp = nd.N ? nd.W / nd.N : 0;
+  double qp = nd.N ? (SP && nd.bestG > -1e17 ? (1 - BETA) * nd.W / nd.N + BETA * nd.bestG : nd.W / nd.N) : 0;
   double qpn = rng_q > 1e-9 ? (qp - QMIN) / rng_q : 0.5;
   double sq = sqrt((double)nd.N + 1);
   for (int c = nd.first; c < nd.first + nd.nch; c++) {
     Node& ch = T[c];
     double q;
-    if (ch.N) { double qe = ch.r + (1 - BETA) * ch.W / ch.N + BETA * ch.bestG; q = rng_q > 1e-9 ? (qe - QMIN) / rng_q : 0.5; }
+    if (ch.N || ch.solved) { double qe = node_q(ch); q = rng_q > 1e-9 ? (qe - QMIN) / rng_q : 0.5; }
     else q = qpn;
     double u = q + CPUCT * ch.prior * sq / (1 + ch.N);
     if (u > best) { best = u; bc = c; }
   }
   return bc;
 }
-static void backup(int id, double g) {
+// back up value g from node id to the root; exact = g comes from a real ending (terminal or solved)
+static void backup(int id, double g, bool exact = false) {
   while (id >= 0) {
     Node& nd = T[id]; nd.N++; nd.W += g; if (g > nd.bestG) nd.bestG = g;
-    if (nd.parent >= 0) { double qe = nd.r + (1 - BETA) * nd.W / nd.N + BETA * nd.bestG; QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
+    if (exact && g > nd.exactG) nd.exactG = g;
+    if (nd.parent >= 0) { double qe = node_q(nd); QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
     g = nd.r + g; id = nd.parent;
   }
+}
+// mark id solved (its exactG is its true value) and solve ancestors whose children are now all solved
+static void mark_solved(int id) {
+  while (id >= 0 && !T[id].solved) {
+    Node& nd = T[id]; nd.solved = true;
+    if (!nd.terminal && SOLVED_CACHE.size() < SOLVED_CAP) SOLVED_CACHE[state_key(nd.s)] = nd.exactG;
+    if (nd.parent >= 0) { double qe = nd.r + nd.exactG; QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
+    int p = nd.parent; if (p < 0) break;
+    Node& pn = T[p]; pn.nsolved++;
+    if (!(pn.expanded && pn.nsolved == pn.nch)) break;
+    double best = -1e18; for (int c = pn.first; c < pn.first + pn.nch; c++) best = max(best, T[c].r + T[c].exactG);
+    pn.exactG = max(pn.exactG, best);
+    id = p;
+  }
+}
+// keep only the subtree under child c, which becomes the new root (index 0)
+static void reroot(int c) {
+  vector<Node> nt; nt.reserve(T.size());
+  Node r = T[c]; r.parent = -1; nt.push_back(r);
+  vector<pair<int, int>> q{{c, 0}}; size_t h = 0;
+  while (h < q.size()) {
+    auto [o, n] = q[h++]; const Node& on = T[o];
+    if (!on.expanded || on.nch == 0) continue;
+    int nf = (int)nt.size(); nt[n].first = nf;
+    for (int k = 0; k < on.nch; k++) { Node x = T[on.first + k]; x.parent = n; nt.push_back(x); q.push_back({on.first + k, nf + k}); }
+  }
+  T.swap(nt);
+  QMIN = 1e9; QMAX = -1e9;
+  for (size_t i = 1; i < T.size(); i++) if (T[i].N || T[i].solved) { double qe = node_q(T[i]); QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
 }
 static void run_sims(int root, int sims) {
   for (int it = 0; it < sims; it++) {
@@ -261,6 +315,7 @@ struct Sample { int16_t alt[64]; uint8_t vis[64]; uint8_t pos; int32_t T; uint32
 int main(int argc, char** argv) {
   init_board(); init_actions();
   CPUCT = envd("CPUCT", 1.5); TAU1 = envd("TAU1", 1.0); TAU2 = envd("TAU2", 0.0); DIRA = envd("DIRA", 0.3); DIRE = envd("DIRE", 0.25);
+  SP = envd("SP", 1) != 0; BETA = envd("QMAX_W", SP ? 0.5 : 0.0);
   USE_OPENING = (int)envd("OPENING", 1); CREDIT = envd("CREDIT", 0.0); DISTK = envd("DISTK", 0.0);
   D0 = h8_dist_raw(start_state());
   if (const char* of = getenv("OPENING_FILE")) OPENING_FILE = of;
@@ -317,15 +372,60 @@ int main(int argc, char** argv) {
       }
       return s;
     };
+    // Self-play engine. All EP games advance together; leaf positions are evaluated in batches (here on the
+    // CPU, or by the trainer over a pipe when INFER_REQ is set). In single-player mode (SP=1):
+    //  - values back up as a mean/max blend (QMAX_W), plus the best exact result (paths that really ended)
+    //  - fully searched subtrees are solved: their exact value is final, they are not searched again, and a
+    //    solved root means the best move is known exactly
+    //  - the subtree under the chosen move is kept for the next move
+    //  - network outputs and solved values are cached by position
+    //  - every h8 reached inside the search is a real tour; the best per game is reported
+    //  - value targets never go below the best result actually achieved from that position
+    bool remote = getenv("INFER_REQ") != nullptr;
+    int KLEAF = max(1, (int)envd("INFER_LEAVES", remote ? 8 : 1));
+    size_t EVAL_CAP = (size_t)envd("EVAL_CACHE", 200000); SOLVED_CAP = (size_t)envd("SOLVED_CACHE", 1000000);
+    unordered_map<uint64_t, array<float, NA + 1>> evalCache;
+    if (remote) {
+      INF_REQ = fopen(getenv("INFER_REQ"), "wb"); INF_RESP = fopen(getenv("INFER_RESP"), "rb");
+      if (!INF_REQ || !INF_RESP) { fprintf(stderr, "cannot open inference pipes\n"); return 1; }
+    }
+    struct Game {
+      S s; vector<pair<int, string>> moves; vector<Sample> traj; vector<float> rootEst; vector<double> rootExact;
+      int mv = 0; long long score = 0; bool done = false, rootPending = false; int phase = 0, simsDone = 0, pending = 0;
+      vector<Node> tree; double qmin = 1e9, qmax = -1e9;
+      long long bestFound = 0; vector<pair<int, string>> bestFoundTour;
+    };
+    struct Pend { int game, leaf; uint64_t key; vector<pair<int, double>> vl; };
+    // a terminal at h8 inside the tree: the played moves plus the tree path form a complete tour
+    auto found_tour = [&](Game& G, int id) {
+      if (!SP || T[id].s.pos != H8 || T[id].s.T <= G.bestFound) return;
+      G.bestFound = T[id].s.T; vector<pair<int, string>> tail;
+      for (int x = id; T[x].parent >= 0; x = T[x].parent) tail.push_back({T[x].s.T - T[T[x].parent].s.T, nm(T[x].s.pos)});
+      G.bestFoundTour = G.moves; G.bestFoundTour.insert(G.bestFoundTour.end(), tail.rbegin(), tail.rend());
+    };
+    auto best_exact_child = [&]() {
+      int bc = -1; double bv = -1e18;
+      for (int c = T[0].first; c < T[0].first + T[0].nch; c++) {
+        double v = T[c].r + T[c].exactG;
+        if (v > bv + 1e-12 || (fabs(v - bv) <= 1e-12 && bc >= 0 && T[c].N > T[bc].N)) { bv = v; bc = c; }
+      }
+      return bc;
+    };
     // after the search at a root (tree in T): record the training sample and choose the move
-    auto record_and_pick = [&](const S& s, int mv, vector<Sample>& traj, vector<float>& rootv) -> int {
+    auto record_and_pick = [&](Game& G) -> int {
+      const S& s = G.s; bool rootSolved = SP && T[0].solved;
       Sample sm; for (int i = 0; i < 64; i++) { sm.alt[i] = s.alt[i]; sm.vis[i] = s.vis[i]; } sm.pos = s.pos; sm.T = s.T; sm.mask = 0;
       for (int a = 0; a < NA; a++) sm.pi[a] = 0;
       int tot = 0; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) { sm.mask |= 1u << T[c].act; sm.pi[T[c].act] = T[c].N; tot += T[c].N; }
-      for (int a = 0; a < NA; a++) sm.pi[a] /= max(1, tot);
-      traj.push_back(sm); rootv.push_back((float)(T[0].W / max(1, T[0].N)));
+      int bestc = rootSolved ? best_exact_child() : -1;
+      if (rootSolved) { for (int a = 0; a < NA; a++) sm.pi[a] = 0; sm.pi[T[bestc].act] = 1; }
+      else for (int a = 0; a < NA; a++) sm.pi[a] /= max(1, tot);
+      G.traj.push_back(sm);
+      double est = rootSolved ? T[0].exactG : (T[0].N ? (SP && T[0].bestG > -1e17 ? (1 - BETA) * T[0].W / T[0].N + BETA * T[0].bestG : T[0].W / T[0].N) : 0.0);
+      G.rootEst.push_back((float)est); G.rootExact.push_back(T[0].exactG);
+      if (rootSolved) return bestc;
       int pick = -1;
-      double tau = mv < TEMPM ? TAU1 : TAU2;
+      double tau = G.mv < TEMPM ? TAU1 : TAU2;
       if (tau > 0) {  // sample in proportion to N^(1/tau)
         double wt[NA], wsum = 0;
         for (int i = 0; i < T[0].nch; i++) { int c = T[0].first + i; wt[i] = T[c].N > 0 ? pow((double)T[c].N, 1.0 / tau) : 0.0; wsum += wt[i]; }
@@ -336,119 +436,140 @@ int main(int argc, char** argv) {
       return pick;
     };
     int epcount = 0;
-    auto finish_episode = [&](const S& s, const vector<pair<int, string>>& moves, vector<Sample>& traj, const vector<float>& rootv, int mv, long long score) {
-      int ep = epcount++;
+    auto write_tour = [&](FILE* f, const vector<pair<int, string>>& mvs) {
+      for (size_t i = 0; i < mvs.size(); i++) fprintf(f, "%s(%d, %s)", i ? ", " : "", mvs[i].first, mvs[i].second.c_str());
+      fprintf(f, "\n");
+    };
+    auto finish_episode = [&](Game& G) {
+      int ep = epcount++; const S& s = G.s; long long score = G.score;
       long long Tend = s.T; double dist = h8_dist(s), cr = stuck_credit(s);
-      for (size_t i = 0; i < traj.size(); i++) {
-        float z = (float)(score > 0 ? (score - traj[i].T) / TSCALE : (cr * Tend - traj[i].T) / TSCALE);
-        traj[i].z = (float)(ZMIX * z + (1 - ZMIX) * rootv[i]); fwrite(&traj[i], sizeof(Sample), 1, fo); }
-      printf("EP %d moves %d T %lld end %lld dist %.4f\n", ep, mv, score, Tend, score > 0 ? 0.0 : dist); fflush(stdout);
-      if (score > 0 && tours_out) {
-        FILE* ft = fopen(tours_out, "a"); fprintf(ft, "%lld ", score);
-        for (size_t i = 0; i < moves.size(); i++) fprintf(ft, "%s(%d, %s)", i ? ", " : "", moves[i].first, moves[i].second.c_str());
-        fprintf(ft, "\n"); fclose(ft);
+      int n = (int)G.traj.size();
+      if (!SP) {
+        for (int i = 0; i < n; i++) {
+          float z = (float)(score > 0 ? (score - G.traj[i].T) / TSCALE : (cr * Tend - G.traj[i].T) / TSCALE);
+          G.traj[i].z = (float)(ZMIX * z + (1 - ZMIX) * G.rootEst[i]);
+        }
+      } else {  // exact floor: best of what was played and what any search found, passed back along the game
+        double next = score > 0 ? 0.0 : -(1.0 - cr) * Tend / TSCALE;
+        for (int i = n - 1; i >= 0; i--) {
+          double Tn = i + 1 < n ? G.traj[i + 1].T : Tend;
+          double ex = max(G.rootExact[i], (Tn - G.traj[i].T) / TSCALE + next);
+          G.traj[i].z = (float)max(ex, (1 - ZMIX) * G.rootEst[i] + ZMIX * ex);
+          next = ex;
+        }
       }
-      // best training target (finished minutes, or credited minutes of a stuck tour) -> <bestfile>.target
+      for (int i = 0; i < n; i++) fwrite(&G.traj[i], sizeof(Sample), 1, fo);
+      long long found = max(G.bestFound, score);
+      printf("EP %d moves %d T %lld end %lld dist %.4f found %lld\n", ep, G.mv, score, Tend, score > 0 ? 0.0 : dist, found); fflush(stdout);
+      const vector<pair<int, string>>& bestTour = G.bestFound > score ? G.bestFoundTour : G.moves;
+      if (tours_out) {
+        FILE* ft = fopen(tours_out, "a");
+        if (score > 0) { fprintf(ft, "%lld ", score); write_tour(ft, G.moves); }
+        if (G.bestFound > score) { fprintf(ft, "%lld ", G.bestFound); write_tour(ft, G.bestFoundTour); }
+        fclose(ft);
+      }
       double target = score > 0 ? (double)score : cr * Tend;
+      if (G.bestFound > target) target = (double)G.bestFound;
       if (target > bestTarget) {
         bestTarget = target;
         FILE* fb = fopen((string(bestf) + ".target").c_str(), "w"); fprintf(fb, "%.1f\n", target);
-        for (size_t i = 0; i < moves.size(); i++) fprintf(fb, "%s(%d, %s)", i ? ", " : "", moves[i].first, moves[i].second.c_str());
-        fprintf(fb, "\n"); fclose(fb);
+        write_tour(fb, G.bestFound > score ? G.bestFoundTour : G.moves); fclose(fb);
       }
-      if (score > bestT) {
-        bestT = score;
-        FILE* fb = fopen(bestf, "w"); fprintf(fb, "%lld\n", score);
-        for (size_t i = 0; i < moves.size(); i++) fprintf(fb, "%s(%d, %s)", i ? ", " : "", moves[i].first, moves[i].second.c_str());
-        fprintf(fb, "\n"); fclose(fb);
-      }
+      if (found > bestT) { bestT = found; FILE* fb = fopen(bestf, "w"); fprintf(fb, "%lld\n", found); write_tour(fb, bestTour); fclose(fb); }
+    };
+    auto evaluate = [&](const vector<EvalReq>& reqs, const vector<Feat>& feats, vector<float>& out) {
+      if (remote) { remote_eval(reqs, out); return; }
+      out.resize(feats.size() * (NA + 1));
+      for (size_t k = 0; k < feats.size(); k++) forward(feats[k], &out[k * (NA + 1)], out[k * (NA + 1) + NA]);
     };
 
-    if (!getenv("INFER_REQ")) {  // ---- CPU: one game at a time, network evaluated here ----
-      for (int ep = 0; ep < EP; ep++) {
-        vector<pair<int, string>> moves; S s = make_start(moves);
-        vector<Sample> traj; vector<float> rootv; int mv = 0; long long score = 0;
-        while (true) {
-          T.clear(); T.reserve(SIMS * 8 + 16); Node r; r.s = s; r.hasState = true; T.push_back(r);
-          QMIN = 1e9; QMAX = -1e9;
-          expand(0);
-          if (T[0].terminal) { score = 0; break; }  // stuck
-          add_noise(0, DIRA, DIRE);
-          run_sims(0, SIMS);
-          int pick = record_and_pick(s, mv, traj, rootv);
-          int a = T[pick].act, q; int delta = act_legal(s, a, q);
-          int before = s.T; apply_move(s, delta, q); moves.push_back({s.T - before, nm(q)}); mv++;
-          if (q == H8) { score = s.T; break; }
-          if (mv > 400) break;
+    vector<Game> games(EP);
+    for (auto& G : games) G.s = make_start(G.moves);
+    int active = EP; vector<EvalReq> reqs; vector<Feat> feats; vector<Pend> owners; vector<float> evout;
+    while (active > 0) {
+      reqs.clear(); feats.clear(); owners.clear();
+      for (int gi = 0; gi < EP; gi++) {
+        Game& G = games[gi]; if (G.done) continue;
+        std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
+        // 1) search finished (or root solved): record the position and make the move
+        if (G.phase == 1 && !G.rootPending && G.pending == 0 && (G.simsDone >= SIMS || (SP && T[0].solved))) {
+          int pick = record_and_pick(G);
+          int a = T[pick].act, q; int delta = act_legal(G.s, a, q);
+          int before = G.s.T; apply_move(G.s, delta, q); G.moves.push_back({G.s.T - before, nm(q)}); G.mv++;
+          if (q == H8) { G.score = G.s.T; G.done = true; } else if (G.mv > 400) G.done = true;
+          else if (SP) { ensure_state(pick); reroot(pick); }
+          else T.clear();
+          G.phase = 0;
         }
-        finish_episode(s, moves, traj, rootv, mv, score);
-      }
-    } else {  // ---- GPU: all EP games at once; leaf evaluations batched over the inference pipe ----
-      INF_REQ = fopen(getenv("INFER_REQ"), "wb"); INF_RESP = fopen(getenv("INFER_RESP"), "rb");
-      if (!INF_REQ || !INF_RESP) { fprintf(stderr, "cannot open inference pipes\n"); return 1; }
-      int KLEAF = max(1, (int)envd("INFER_LEAVES", 8));
-      struct Game {
-        S s; vector<pair<int, string>> moves; vector<Sample> traj; vector<float> rootv; int mv = 0; long long score = 0;
-        bool done = false, rootPending = false; int phase = 0, simsDone = 0, pending = 0;
-        vector<Node> tree; double qmin = 1e9, qmax = -1e9;
-      };
-      struct Pend { int game, leaf; vector<pair<int, double>> vl; };
-      vector<Game> games(EP);
-      for (auto& G : games) G.s = make_start(G.moves);
-      int active = EP; vector<EvalReq> reqs; vector<Pend> owners; vector<float> out;
-      while (active > 0) {
-        reqs.clear(); owners.clear();
-        for (int gi = 0; gi < EP; gi++) {
-          Game& G = games[gi]; if (G.done) continue;
-          std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
-          if (G.phase == 1 && !G.rootPending && G.simsDone >= SIMS && G.pending == 0) {  // search done: move
-            int pick = record_and_pick(G.s, G.mv, G.traj, G.rootv);
-            int a = T[pick].act, q; int delta = act_legal(G.s, a, q);
-            int before = G.s.T; apply_move(G.s, delta, q); G.moves.push_back({G.s.T - before, nm(q)}); G.mv++;
-            if (q == H8) { G.score = G.s.T; G.done = true; } else if (G.mv > 400) G.done = true;
-            G.phase = 0;
-          }
-          if (!G.done && G.phase == 0) {  // new root: needs one evaluation
-            T.clear(); T.reserve(SIMS * 8 + 16); Node r; r.s = G.s; r.hasState = true; T.push_back(r);
-            QMIN = 1e9; QMAX = -1e9;
+        // 2) new move: set up the root (reused subtree, cached output, or one evaluation)
+        if (!G.done && G.phase == 0) {
+          if (T.empty()) { Node r; r.s = G.s; r.hasState = true; T.push_back(r); QMIN = 1e9; QMAX = -1e9; }
+          T.reserve(T.size() + (size_t)SIMS * 8 + 16);
+          if (T[0].solved && !T[0].expanded) T[0].solved = false;  // solved via cache: expand to find the move
+          G.phase = 1; G.simsDone = 0; G.pending = 0; G.rootPending = false;
+          if (T[0].expanded) { if (!T[0].solved) add_noise(0, DIRA, DIRE); }
+          else {
             Feat F; float tv;
             if (!expand_prep(0, F, tv)) G.done = true;  // stuck
-            else { reqs.push_back(pack_feat(F)); owners.push_back({gi, 0, {}}); G.phase = 1; G.rootPending = true; G.simsDone = 0; G.pending = 0; }
-          } else if (!G.done && !G.rootPending) {  // collect up to KLEAF leaves, with virtual visits
-            int tries = 0;
-            while (G.simsDone + G.pending < SIMS && G.pending < KLEAF && tries++ < 2 * KLEAF) {
-              vector<int> path{0}; int id = 0;
-              while (T[id].expanded && !T[id].terminal) { id = select_child(id); ensure_state(id); path.push_back(id); }
-              if (T[id].terminal) { backup(id, T[id].tval); G.simsDone++; continue; }
-              if (T[id].pendingEval) break;
-              Feat F; float tv;
-              if (!expand_prep(id, F, tv)) { backup(id, tv); G.simsDone++; continue; }  // stuck leaf
-              Pend pd{gi, id, {}};
-              bool haveQ = QMAX >= QMIN;
-              for (int x : path) { double amt = (x == 0 || !haveQ) ? 0.0 : QMIN - T[x].r; T[x].N++; T[x].W += amt; pd.vl.push_back({x, amt}); }
-              T[id].pendingEval = true;
-              reqs.push_back(pack_feat(F)); owners.push_back(pd); G.pending++;
+            else {
+              uint64_t key = SP ? state_key(T[0].s) : 0; auto it = SP ? evalCache.find(key) : evalCache.end();
+              if (it != evalCache.end()) { expand_finish(0, it->second.data()); add_noise(0, DIRA, DIRE); }
+              else { reqs.push_back(pack_feat(F)); feats.push_back(F); owners.push_back({gi, 0, key, {}}); G.rootPending = true; }
             }
           }
-          if (G.done) { finish_episode(G.s, G.moves, G.traj, G.rootv, G.mv, G.score); active--; vector<Node>().swap(T); }
-          G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
         }
-        if (reqs.empty()) continue;
-        remote_eval(reqs, out);
-        for (size_t k = 0; k < owners.size(); k++) {
-          Pend& pd = owners[k]; Game& G = games[pd.game];
-          std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
-          const float* lg = &out[k * (NA + 1)]; float v = lg[NA];
-          if (G.rootPending && pd.leaf == 0) { expand_finish(0, lg); add_noise(0, DIRA, DIRE); G.rootPending = false; }
-          else {
-            for (auto& [x, amt] : pd.vl) { T[x].N--; T[x].W -= amt; }
-            T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg); backup(pd.leaf, v); G.simsDone++; G.pending--;
+        // 3) simulations: collect up to KLEAF leaves (virtual visits keep them apart); real endings, solved
+        //    nodes and cached positions are handled right away
+        if (!G.done && G.phase == 1 && !G.rootPending) {
+          int tries = 0;
+          while (G.simsDone + G.pending < SIMS && G.pending < KLEAF && tries++ < 4 * KLEAF) {
+            if (SP && T[0].solved) break;
+            vector<int> path{0}; int id = 0;
+            while (T[id].expanded && !T[id].terminal && !T[id].solved) { id = select_child(id); ensure_state(id); path.push_back(id); }
+            if (T[id].terminal || T[id].solved) {
+              double g = T[id].terminal ? T[id].tval : T[id].exactG;
+              backup(id, g, true); if (T[id].terminal) found_tour(G, id);
+              if (SP) mark_solved(id);
+              G.simsDone++; continue;
+            }
+            if (T[id].pendingEval) break;
+            Feat F; float tv;
+            if (!expand_prep(id, F, tv)) { backup(id, tv, true); if (SP) mark_solved(id); G.simsDone++; continue; }  // stuck
+            uint64_t key = 0;
+            if (SP) {
+              key = state_key(T[id].s);
+              auto is = SOLVED_CACHE.find(key);
+              if (is != SOLVED_CACHE.end()) { backup(id, is->second, true); mark_solved(id); G.simsDone++; continue; }
+              auto ie = evalCache.find(key);
+              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); backup(id, ie->second[NA]); G.simsDone++; continue; }
+            }
+            Pend pd{gi, id, key, {}};
+            bool haveQ = QMAX >= QMIN;
+            for (int x : path) { double amt = (x == 0 || !haveQ) ? 0.0 : QMIN - T[x].r; T[x].N++; T[x].W += amt; pd.vl.push_back({x, amt}); }
+            T[id].pendingEval = true;
+            reqs.push_back(pack_feat(F)); feats.push_back(F); owners.push_back(pd); G.pending++;
           }
-          G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
         }
+        if (G.done) { finish_episode(G); active--; vector<Node>().swap(T); }
+        G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
       }
-      fclose(INF_REQ); fclose(INF_RESP);
+      if (reqs.empty()) continue;
+      evaluate(reqs, feats, evout);
+      for (size_t k = 0; k < owners.size(); k++) {
+        Pend& pd = owners[k]; Game& G = games[pd.game];
+        std::swap(T, G.tree); QMIN = G.qmin; QMAX = G.qmax;
+        const float* lg = &evout[k * (NA + 1)]; float v = lg[NA];
+        if (SP && evalCache.size() < EVAL_CAP) { array<float, NA + 1> e; std::copy(lg, lg + NA + 1, e.begin()); evalCache[pd.key] = e; }
+        if (G.rootPending && pd.leaf == 0) { expand_finish(0, lg); add_noise(0, DIRA, DIRE); G.rootPending = false; }
+        else {
+          for (auto& [x, amt] : pd.vl) { T[x].N--; T[x].W -= amt; }
+          T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg); backup(pd.leaf, v); G.simsDone++; G.pending--;
+        }
+        G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
+      }
+      if (SP && evalCache.size() >= EVAL_CAP) evalCache.clear();
     }
+    if (remote) { fclose(INF_REQ); fclose(INF_RESP); }
     fclose(fo);
   } else if (mode == "test") {
     vector<pair<int, string>> moves; S s = start_with_opening(moves);
