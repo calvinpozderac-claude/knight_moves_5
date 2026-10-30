@@ -12,6 +12,8 @@
 //   TAU1, TAU2         move-selection temperature for the first <tempMoves> moves, and after (0 = greedy)
 //   DIRA, DIRE         Dirichlet root noise alpha and weight (default 0.3, 0.25)
 //   CREDIT             fraction of its minutes a stuck tour keeps (training-only partial credit, default 0)
+//   DISTK              if > 0, a stuck tour keeps exp(-DISTK * d) of its minutes instead, d = 3D distance
+//                      from the knight to h8 divided by the a1 -> h8 distance at the start (so d = 1 at a1)
 #include "eng.h"
 #include <random>
 
@@ -103,6 +105,15 @@ static double CPUCT = 1.5; static double ZMIX = 0.5; static double BETA = 0.0;
 // exploration knobs (env vars): TAU1 = move temperature for the first TEMPM moves, TAU2 = after (0 = greedy)
 static double TAU1 = 1.0, TAU2 = 0.0, DIRA = 0.3, DIRE = 0.25;
 static double CREDIT = 0.0;  // env CREDIT: fraction of its minutes a stuck tour keeps (training only)
+// env DISTK > 0: a stuck tour instead keeps exp(-DISTK * d) of its minutes, where d is the straight-line
+// 3D distance (x, y, altitude) from the knight to h8, divided by that distance at the start (a1 -> h8).
+static double DISTK = 0.0, D0 = 1.0;
+static inline double h8_dist_raw(const S& s) {
+  int p = s.pos; double dx = 7 - p % 8, dy = 7 - p / 8, dz = (double)s.alt[H8] - s.alt[p];
+  return sqrt(dx * dx + dy * dy + dz * dz);
+}
+static inline double h8_dist(const S& s) { return h8_dist_raw(s) / D0; }
+static inline double stuck_credit(const S& s) { return DISTK > 0 ? exp(-DISTK * h8_dist(s)) : CREDIT; }
 static double envd(const char* k, double d) { const char* v = getenv(k); return v ? atof(v) : d; }
 static std::mt19937 rng;
 
@@ -120,7 +131,7 @@ static float expand(int id) {
   if (nd.terminal) return nd.tval;
   int legal[NA], nl = 0;
   for (int a = 0; a < NA; a++) { int q; if (act_legal(nd.s, a, q) >= 0) legal[nl++] = a; }
-  if (nl == 0) { nd.terminal = true; nd.tval = (float)(-(1.0 - CREDIT) * nd.s.T / TSCALE); return nd.tval; }
+  if (nl == 0) { nd.terminal = true; nd.tval = (float)(-(1.0 - stuck_credit(nd.s)) * nd.s.T / TSCALE); return nd.tval; }
   Feat F; featurize(nd.s, F); float lg[NA], v; forward(F, lg, v);
   float mx = -1e30f; for (int i = 0; i < nl; i++) mx = max(mx, lg[legal[i]]);
   float sum = 0, pr[NA]; for (int i = 0; i < nl; i++) { pr[i] = expf(lg[legal[i]] - mx); sum += pr[i]; }
@@ -192,7 +203,8 @@ struct Sample { int16_t alt[64]; uint8_t vis[64]; uint8_t pos; int32_t T; uint32
 int main(int argc, char** argv) {
   init_board(); init_actions();
   CPUCT = envd("CPUCT", 1.5); TAU1 = envd("TAU1", 1.0); TAU2 = envd("TAU2", 0.0); DIRA = envd("DIRA", 0.3); DIRE = envd("DIRE", 0.25);
-  USE_OPENING = (int)envd("OPENING", 1); CREDIT = envd("CREDIT", 0.0);
+  USE_OPENING = (int)envd("OPENING", 1); CREDIT = envd("CREDIT", 0.0); DISTK = envd("DISTK", 0.0);
+  D0 = h8_dist_raw(start_state());
   if (const char* of = getenv("OPENING_FILE")) OPENING_FILE = of;
   if (argc < 3) {
     fprintf(stderr, "usage: az selfplay|eval|beam|improve|test <weights> ...  (see the comment at the top of az.cpp)\n");
@@ -206,7 +218,7 @@ int main(int argc, char** argv) {
     vector<pair<int, string>> pref; double PSTART = 0; if (argc > 10) { pref = read_tour(argv[9]); PSTART = atof(argv[10]); }
     int OPEN_LEN = 0; { vector<pair<int, string>> tmp; start_with_opening(tmp); OPEN_LEN = tmp.size(); }
     FILE* fo = fopen(out, "wb");
-    long long bestT = -1;
+    long long bestT = -1; double bestTarget = -1;
     for (int ep = 0; ep < EP; ep++) {
       vector<pair<int, string>> moves; S s = start_with_opening(moves);
       std::uniform_real_distribution<double> U01(0, 1);
@@ -243,11 +255,19 @@ int main(int argc, char** argv) {
         if (q == H8) { score = s.T; done = true; }
         if (mv > 400) break;
       }
-      long long Tend = s.T;
+      long long Tend = s.T; double dist = h8_dist(s), cr = stuck_credit(s);
       for (size_t i = 0; i < traj.size(); i++) {
-        float z = (float)(score > 0 ? (score - traj[i].T) / TSCALE : (CREDIT * Tend - traj[i].T) / TSCALE);
+        float z = (float)(score > 0 ? (score - traj[i].T) / TSCALE : (cr * Tend - traj[i].T) / TSCALE);
         traj[i].z = (float)(ZMIX * z + (1 - ZMIX) * rootv[i]); fwrite(&traj[i], sizeof(Sample), 1, fo); }
-      printf("EP %d moves %d T %lld end %lld\n", ep, mv, score, Tend); fflush(stdout);
+      printf("EP %d moves %d T %lld end %lld dist %.4f\n", ep, mv, score, Tend, score > 0 ? 0.0 : dist); fflush(stdout);
+      // best training target (finished minutes, or credited minutes of a stuck tour) -> <bestfile>.target
+      double target = score > 0 ? (double)score : cr * Tend;
+      if (target > bestTarget) {
+        bestTarget = target;
+        FILE* fb = fopen((string(bestf) + ".target").c_str(), "w"); fprintf(fb, "%.1f\n", target);
+        for (size_t i = 0; i < moves.size(); i++) fprintf(fb, "%s(%d, %s)", i ? ", " : "", moves[i].first, moves[i].second.c_str());
+        fprintf(fb, "\n"); fclose(fb);
+      }
       if (score > bestT) {
         bestT = score;
         FILE* fb = fopen(bestf, "w"); fprintf(fb, "%lld\n", score);

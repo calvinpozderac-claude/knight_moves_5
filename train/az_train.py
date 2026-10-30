@@ -194,7 +194,7 @@ def find_az(path):
 
 # settings that define the algorithm; --resume restores these from <run>/config.json
 ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
-             'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation']
+             'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k']
 
 
 def main():
@@ -236,6 +236,9 @@ def main():
     g.add_argument('--credit', type=float, default=0.0,
                    help='fraction of its minutes a stuck tour keeps until the first finish (0 = puzzle rules)')
     g.add_argument('--credit-ramp', type=int, default=60, help='rounds over which the credit then fades to 0')
+    g.add_argument('--dist-k', type=float, default=0.0,
+                   help='if > 0, a stuck tour keeps exp(-k * d) of its minutes instead (replaces --credit); '
+                        'd = 3D distance from the knight to h8, scaled so d = 1 at the start')
     a = ap.parse_args()
 
     run = os.path.abspath(a.run); os.makedirs(run, exist_ok=True)
@@ -245,7 +248,8 @@ def main():
             sys.exit(f'nothing to resume in {run}')
         saved = json.load(open(cfg_fn))
         for k in ALGO_KEYS:
-            setattr(a, k, saved[k])
+            if k in saved:
+                setattr(a, k, saved[k])
         state = json.load(open(state_fn))
     else:
         if os.path.exists(state_fn):
@@ -277,19 +281,21 @@ def main():
     buf = np.load(buf_fn) if a.resume and os.path.exists(buf_fn) else np.zeros(0, SAMPLE)
     rng = np.random.default_rng(state['round'] + 12345)
     best, first_fin = state['best'], state['first_finish']
+    best_target = state.get('best_target', 0.0)
+    tgt_fn = os.path.join(run, 'best_target.txt')  # tour with the highest training target so far
     log = open(os.path.join(run, 'log.txt'), 'a')
     csv_fn = os.path.join(run, 'log.csv')
     if not os.path.exists(csv_fn):
         open(csv_fn, 'w').write('round,games,finished,mean_finish,max_finish,best,credit,mean_moves,mean_minutes,'
-                                'max_minutes,policy_loss,value_loss,selfplay_s,train_s\n')
+                                'max_minutes,mean_dist,mean_target,max_target,policy_loss,value_loss,selfplay_s,train_s\n')
     print(f'run {run}: az={az} workers={a.workers} backend={a.backend} start={a.start} '
-          f'cpuct={a.cpuct} tau={a.tau1}/{a.tau2} credit={a.credit}', flush=True)
+          f'cpuct={a.cpuct} tau={a.tau1}/{a.tau2} credit={a.credit} dist_k={a.dist_k}', flush=True)
 
     for it in range(state['round'], state['round'] + a.rounds):
         kappa = a.credit if first_fin is None else a.credit * max(0.0, 1 - (it - first_fin) / a.credit_ramp)
         env = dict(os.environ, CPUCT=str(a.cpuct), TAU1=str(a.tau1), TAU2=str(a.tau2), DIRA=str(a.dir_alpha),
                    DIRE=str(a.dir_eps), OPENING='1' if a.start == 'opening' else '0', OPENING_FILE=opening_file,
-                   CREDIT=f'{kappa:.4f}')
+                   CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k))
         t0 = time.time()
         nw = max(1, min(a.workers, a.games))
         per = [a.games // nw + (1 if w < a.games % nw else 0) for w in range(nw)]
@@ -306,6 +312,11 @@ def main():
         rows = [l.split() for o in outs for l in o.splitlines() if l.startswith('EP')]
         scores = np.array([int(r[5]) for r in rows]); ends = np.array([int(r[7]) for r in rows])
         nmoves = np.array([int(r[3]) for r in rows])
+        dists = np.array([float(r[9]) if len(r) > 9 else 0.0 for r in rows])
+        if a.dist_k > 0:
+            targets = np.where(scores > 0, scores, ends * np.exp(-a.dist_k * dists))
+        else:
+            targets = np.where(scores > 0, scores, ends * kappa)
         if first_fin is None and scores.max() > 0:
             first_fin = it
         for w in range(nw):
@@ -316,6 +327,12 @@ def main():
                     best = sc
                     shutil.copy(fb, best_fn)
                 os.remove(fb)
+            if os.path.exists(fb + '.target') and os.path.getsize(fb + '.target') > 0:
+                tv = float(open(fb + '.target').readline())
+                if tv > best_target:
+                    best_target = tv
+                    shutil.copy(fb + '.target', tgt_fn)
+                os.remove(fb + '.target')
         new = np.concatenate([load_samples(os.path.join(run, f's_{w}.bin')) for w in range(nw)])
         if a.self_imitation and os.path.exists(best_fn):
             new = np.concatenate([new] + [tour_samples(best_fn, open_len)] * a.self_imitation)
@@ -334,18 +351,20 @@ def main():
         # write-then-rename so a run killed mid-save can always be resumed
         np.save(buf_fn + '.tmp.npy', buf); os.replace(buf_fn + '.tmp.npy', buf_fn)
         with open(state_fn + '.tmp', 'w') as f:
-            json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin}, f)
+            json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin, 'best_target': best_target}, f)
         os.replace(state_fn + '.tmp', state_fn)
         t2 = time.time()
         fin = scores[scores > 0]
         msg = (f'round {it} games {len(scores)} finished {len(fin)} meanT {fin.mean() if len(fin) else 0:.0f} '
                f'maxT {scores.max()} best {best} credit {kappa:.2f} moves {nmoves.mean():.0f} '
-               f'minutes {ends.mean():.0f} maxmin {ends.max()} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
+               f'minutes {ends.mean():.0f} maxmin {ends.max()} dist {dists.mean():.3f} target {targets.mean():.0f} '
+               f'maxtarget {targets.max():.0f} besttarget {best_target:.0f} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
                f'selfplay {t1 - t0:.0f}s train {t2 - t1:.0f}s')
         print(msg, flush=True); log.write(msg + '\n'); log.flush()
         with open(csv_fn, 'a') as f:
             f.write(f'{it},{len(scores)},{len(fin)},{fin.mean() if len(fin) else 0:.1f},{scores.max()},{best},'
-                    f'{kappa:.4f},{nmoves.mean():.1f},{ends.mean():.1f},{ends.max()},{np.mean(lps):.5f},'
+                    f'{kappa:.4f},{nmoves.mean():.1f},{ends.mean():.1f},{ends.max()},{dists.mean():.4f},'
+                    f'{targets.mean():.1f},{targets.max():.1f},{np.mean(lps):.5f},'
                     f'{np.mean(lvs):.6f},{t1 - t0:.1f},{t2 - t1:.1f}\n')
 
 

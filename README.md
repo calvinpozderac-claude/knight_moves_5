@@ -73,26 +73,26 @@ Run from the repo root. Each run directory gets `log.txt`, `log.csv`, `best_over
 best finished tour), the current weights `w_cur.bin`, a snapshot every 10 rounds, and its
 settings. Add `--resume` to continue a run.
 
-The current experiment has two settings in common:
-- Every game starts at a1, T=0, with no opening and no restarts from the best tour.
-- Partial credit: a stuck tour keeps half its minutes until the agent first reaches h8. That
-  credit then fades to zero over 60 rounds.
+**Current experiment: a distance-weighted target.** Every game starts at a1, T=0, with no
+opening and no restarts from the best tour. It uses the original exploration settings (C = 1.5;
+τ = 1 for the first 25 moves, then greedy).
+- A finished tour scores its minutes, as in the puzzle.
+- A stuck tour scores minutes × exp(−5d). Here d is the straight-line 3D distance (x, y,
+  altitude) from the knight to h8, scaled so d = 1 at the start.
 
-The two runs differ only in how hard they explore:
+So a long tour only counts if it ends close to h8:
 ```
-python3 train/az_train.py --run runs/a1_tau --start a1 --credit 0.5 --tau1 2 --tau2 1 --workers 16
-python3 train/az_train.py --run runs/a1_C   --start a1 --credit 0.5 --cpuct 4.5     --workers 16
+python3 train/az_train.py --run runs/a1_dist5 --start a1 --dist-k 5
 ```
+`<run>/best_target.txt` holds the tour with the highest target so far, finished or not.
 
-In the session, on 2 cloud cores, these ran for 31 and 26 rounds before the workspace
-restarted. Neither had reached h8 yet, but both were surviving much longer:
-- Games grew from about 7 moves (untrained) to about 40.
-- Stuck tours averaged about 1,000 and 800 minutes.
-- The longest stuck tours reached 2,697 and 3,728 minutes.
+**Before that: flat partial credit, which never finished.** Two runs let stuck tours keep 50%
+of their minutes (`--credit 0.5`, plus `--cpuct 4.5` or `--tau1 2 --tau2 1`). They ran 684 and
+892 rounds, about 22,000 and 28,500 games, and neither reached h8. The agents learned to sink
+their own group for minutes and ended a median 30–48 units below h8. Logs: `results/logs/06_*`.
 
-Logs: `results/logs/06_*`. For comparison, with the opening and restarts (`05_*`), all three
-higher-exploration settings reached h8 in their first round. The original settings took 14
-rounds.
+For comparison, with the opening and restarts (`05_*`), all three higher-exploration settings
+reached h8 in their first round. The original settings took 14 rounds.
 
 The main options (`--help` lists them all):
 
@@ -106,6 +106,7 @@ The main options (`--help` lists them all):
 | `--tau1`, `--tau2`, `--temp-moves` | 1, 0, 25 | move temperature for the first 25 moves, then for the rest (0 = always the most-visited move) |
 | `--dir-alpha`, `--dir-eps` | 0.3, 0.25 | Dirichlet noise on the root move probabilities |
 | `--credit`, `--credit-ramp` | 0, 60 | partial credit for stuck tours (0 = the puzzle's rules) |
+| `--dist-k` | 0 | if > 0, a stuck tour keeps exp(−k·d) of its minutes instead (d = scaled 3D distance to h8) |
 | `--restart-prob`, `--seed-tour` | 0, none | Go-Explore restarts from a random point on the best tour |
 | `--self-imitation` | 0 | copies of the best tour added to the training data each round |
 | `--backend`, `--device` | numpy, cuda | train in NumPy on the CPU, or in PyTorch |
