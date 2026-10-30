@@ -263,7 +263,7 @@ def find_az(path):
 # settings that define the algorithm; --resume restores these from <run>/config.json
 ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'hidden', 'layers', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
              'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k',
-             'classic', 'q_max_weight', 'est_weight', 'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
+             'classic', 'q_max_weight', 'est_weight', 'no_follow_exact', 'reuse', 'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
              'curriculum_balance']
 
 
@@ -291,7 +291,10 @@ def main():
     g = ap.add_argument_group('self-play and training')
     g.add_argument('--games', type=int, default=32, help='self-play games per round (split across workers)')
     g.add_argument('--sims', type=int, default=1600, help='tree-search simulations per move')
-    g.add_argument('--steps', type=int, default=150, help='training steps per round')
+    g.add_argument('--steps', type=int, default=150, help='training steps per round (ignored when --reuse is set)')
+    g.add_argument('--reuse', type=float, default=0,
+                   help='if > 0, training steps per round = reuse x new positions / batch, so each position is '
+                        'trained on about this many times over its life in the buffer (guards against overfitting)')
     g.add_argument('--batch', type=int, default=256)
     g.add_argument('--buffer', type=int, default=150000, help='replay buffer size (positions)')
     g.add_argument('--lr', type=float, default=1e-3)
@@ -312,6 +315,8 @@ def main():
     g.add_argument('--classic', action='store_true',
                    help='classic AlphaZero averaging instead of the single-player search (max/exact values, solved '
                         'subtrees, tree reuse, caches, tours found inside the search, exact-floor value targets)')
+    g.add_argument('--no-follow-exact', action='store_true',
+                   help='single-player: do not make near-greedy moves follow the best proven line')
     g.add_argument('--est-weight', type=float, default=0.5,
                    help='single-player value target: how much of the search estimate (when above the best achieved '
                         'result) goes into the target; 0 = train only on results actually achieved')
@@ -433,7 +438,7 @@ def main():
                    DIRE=str(a.dir_eps), OPENING='1' if a.start == 'opening' else '0', OPENING_FILE=opening_file,
                    CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k), NET_H=str(a.hidden), NET_LAYERS=str(a.layers),
                    SP='0' if a.classic else '1', QMAX_W=str(0.0 if a.classic else a.q_max_weight),
-                   EST_W=str(a.est_weight))
+                   EST_W=str(a.est_weight), FOLLOW_EXACT='0' if a.no_follow_exact else '1')
         if tours_fn and cur_k > 0:
             env.update(PREFIX_TOURS=tours_fn, PREFIX_LEN=str(cur_k), PREFIX_BALANCE=str(a.curriculum_balance),
                        PREFIX_FROM_END='1' if a.curriculum_mode == 'end' else '0')
@@ -517,7 +522,8 @@ def main():
         buf = np.concatenate([buf, new])[-a.buffer:]
         t1 = time.time()
         lps, lvs = [], []
-        for s in range(a.steps):
+        n_steps = max(1, int(np.ceil(a.reuse * len(new) / a.batch))) if a.reuse > 0 else a.steps
+        for s in range(n_steps):
             b = buf[rng.integers(0, len(buf), a.batch)]
             X = featurize(b['alt'], b['vis'], b['pos'].astype(np.int64), b['T'].astype(np.float32))
             mask = ((b['mask'][:, None] >> np.arange(NA)) & 1).astype(bool)
@@ -546,7 +552,7 @@ def main():
                f'minutes {ends.mean():.0f} maxmin {ends.max()} dist {dists.mean():.3f} target {targets.mean():.0f} '
                f'maxtarget {targets.max():.0f} besttarget {best_target:.0f} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
                f'selfplay {t1 - t0:.0f}s train {t2 - t1:.0f}s')
-        msg += f' found {founds.max()} vlp {vlp:.3f} vlv {vlv:.4f}'
+        msg += f' found {founds.max()} vlp {vlp:.3f} vlv {vlv:.4f} steps {n_steps}'
         if a.gpu_selfplay:
             msg += f' evals {evals}'
         if tours_fn:

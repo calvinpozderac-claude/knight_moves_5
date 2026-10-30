@@ -15,6 +15,7 @@
 //   SP                 1 (default): single-player deterministic search (max/exact values, solved subtrees,
 //                      tree reuse, caches, tours found inside the search); 0: classic AlphaZero averaging
 //   EST_W              single-player value target: weight of the search estimate above the achieved floor (0.5)
+//   FOLLOW_EXACT       single-player: near-greedy moves (temperature <= 0.1) follow the best proven line (default 1)
 //   QMAX_W             weight of the best result vs the average in node values (default 0.5 with SP=1)
 //   EVAL_CACHE, SOLVED_CACHE   cache sizes per worker (default 200000 network outputs, 1000000 solved values)
 //   CREDIT             fraction of its minutes a stuck tour keeps (training-only partial credit, default 0)
@@ -130,7 +131,8 @@ struct Node {
 static vector<Node> T;
 static double QMIN, QMAX;
 static double CPUCT = 1.5; static double ZMIX = 0.5; static double BETA = 0.0;
-static double EST_W = 0.5;  // single-player target: weight of the search estimate above the achieved floor
+static double EST_W = 0.5;
+static bool FOLLOW_EXACT = true;  // single-player: near-greedy moves follow the best proven line when there is one  // single-player target: weight of the search estimate above the achieved floor
 // exploration knobs (env vars): TAU1 = move temperature for the first TEMPM moves, TAU2 = after (0 = greedy)
 static double TAU1 = 1.0, TAU2 = 0.0, DIRA = 0.3, DIRE = 0.25;
 static double CREDIT = 0.0;  // env CREDIT: fraction of its minutes a stuck tour keeps (training only)
@@ -317,7 +319,7 @@ struct Sample { int16_t alt[64]; uint8_t vis[64]; uint8_t pos; int32_t T; uint32
 int main(int argc, char** argv) {
   init_board(); init_actions();
   CPUCT = envd("CPUCT", 1.5); TAU1 = envd("TAU1", 1.0); TAU2 = envd("TAU2", 0.0); DIRA = envd("DIRA", 0.3); DIRE = envd("DIRE", 0.25);
-  SP = envd("SP", 1) != 0; BETA = envd("QMAX_W", SP ? 0.5 : 0.0); EST_W = envd("EST_W", 0.5);
+  SP = envd("SP", 1) != 0; BETA = envd("QMAX_W", SP ? 0.5 : 0.0); EST_W = envd("EST_W", 0.5); FOLLOW_EXACT = envd("FOLLOW_EXACT", 1) != 0;
   USE_OPENING = (int)envd("OPENING", 1); CREDIT = envd("CREDIT", 0.0); DISTK = envd("DISTK", 0.0);
   D0 = h8_dist_raw(start_state());
   if (const char* of = getenv("OPENING_FILE")) OPENING_FILE = of;
@@ -435,6 +437,9 @@ int main(int argc, char** argv) {
         for (int i = 0; i < T[0].nch; i++) { acc += wt[i]; if (wt[i] > 0 && acc >= r0) { pick = T[0].first + i; break; } }
       }
       if (pick < 0) { int bn = -1; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) if (T[c].N > bn) { bn = T[c].N; pick = c; } }
+      // deterministic single player: a proven complete line from here can always be replayed, so near-greedy
+      // play follows the best one found (later searches can still replace it with a better proven line)
+      if (SP && FOLLOW_EXACT && tau <= 0.1 && T[0].exactG > -1e17) { int bc = best_exact_child(); if (bc >= 0 && T[bc].exactG > -1e17) pick = bc; }
       return pick;
     };
     int epcount = 0;

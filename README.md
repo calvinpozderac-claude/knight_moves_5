@@ -188,6 +188,8 @@ The main options (`--help` lists them all):
 | `--gpu-selfplay`, `--infer-leaves` | off, 8 | evaluate self-play positions in batches in the trainer (GPU with torch) |
 | `--hidden`, `--layers` | 256, 2 | network width and number of hidden layers |
 | `--classic`, `--q-max-weight` | off, 0.5 | classic AlphaZero averaging; weight of the best result in node values |
+| `--reuse` | off | training steps per round = reuse × new positions / batch (about how many times each position is trained on); guards against overfitting |
+| `--no-follow-exact` | off | single-player: don't make near-greedy moves follow the best proven line |
 | `--est-weight` | 0.5 | share of the search's own estimate (when above the achieved result) in value targets; 0 = achieved results only |
 | `--val-frac`, `--val-size` | 0.05, 20000 | games held out for the validation loss (`vlp`, `vlv` in the log) |
 
