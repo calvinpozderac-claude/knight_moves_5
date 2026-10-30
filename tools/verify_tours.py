@@ -130,6 +130,8 @@ TOURS = {
 import glob as _glob, os as _os
 for _fn in sorted(_glob.glob(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'data', 'tours', '*.txt'))):
     _lines = open(_fn).read().split('\n')
+    if not _lines[0].strip().isdigit():
+        continue  # one-tour-per-line sets (curriculum.txt) are verified by tools/harvest_tours.py
     TOURS[f'data/tours/{_os.path.basename(_fn)} (claimed {_lines[0].strip()} minutes)'] = _lines[1]
 
 

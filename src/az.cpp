@@ -14,7 +14,14 @@
 //   CREDIT             fraction of its minutes a stuck tour keeps (training-only partial credit, default 0)
 //   DISTK              if > 0, a stuck tour keeps exp(-DISTK * d) of its minutes instead, d = 3D distance
 //                      from the knight to h8 divided by the a1 -> h8 distance at the start (so d = 1 at a1)
+//   PREFIX_TOURS, PREFIX_LEN   curriculum: each self-play game starts after the first PREFIX_LEN moves of a
+//                      tour picked at random from PREFIX_TOURS (one tour per line). With PREFIX_FROM_END=1 it
+//                      starts PREFIX_LEN moves before that tour's finish; PREFIX_LEN=-1 picks a random point.
+//                      PREFIX_BALANCE: tours are grouped by their first 10 moves and a group is picked with
+//                      probability ~ size^PREFIX_BALANCE (default 1 = every tour equally likely; 0 = every opening)
+//   TOURS_OUT          if set, self-play appends every finished tour to this file ("minutes tour" per line)
 #include "eng.h"
+#include <map>
 #include <random>
 
 static const int NA = 24;
@@ -196,6 +203,18 @@ static vector<pair<int, string>> read_tour(const char* fn) {
   while ((p = strchr(p, '(')) && sscanf(p, "(%d, %2s)", &t, sq) == 2) { mv.push_back({t, string(sq, 2)}); p++; }
   return mv;
 }
+// a set of tours, one per line ("(t, sq), ..." pairs; anything before the first '(' is ignored)
+static vector<vector<pair<int, string>>> read_tour_set(const char* fn) {
+  vector<vector<pair<int, string>>> out; FILE* f = fopen(fn, "r");
+  if (!f) { fprintf(stderr, "cannot open tour file %s\n", fn); exit(1); }
+  static char line[200000];
+  while (fgets(line, sizeof line, f)) {
+    vector<pair<int, string>> mv; char* p = line; int t; char sq[8];
+    while ((p = strchr(p, '(')) && sscanf(p, "(%d, %2s)", &t, sq) == 2) { mv.push_back({t, string(sq, 2)}); p++; }
+    if (mv.size() > 1) out.push_back(mv);
+  }
+  fclose(f); return out;
+}
 #pragma pack(push, 1)
 struct Sample { int16_t alt[64]; uint8_t vis[64]; uint8_t pos; int32_t T; uint32_t mask; float pi[NA]; float z; };
 #pragma pack(pop)
@@ -217,6 +236,23 @@ int main(int argc, char** argv) {
     int TEMPM = atoi(argv[7]); const char* bestf = argv[8];
     vector<pair<int, string>> pref; double PSTART = 0; if (argc > 10) { pref = read_tour(argv[9]); PSTART = atof(argv[10]); }
     int OPEN_LEN = 0; { vector<pair<int, string>> tmp; start_with_opening(tmp); OPEN_LEN = tmp.size(); }
+    // curriculum: start each game after the first PREFIX_LEN moves of a random tour from PREFIX_TOURS
+    vector<vector<pair<int, string>>> pset; int PREFIX_LEN = (int)envd("PREFIX_LEN", 0);
+    bool PREFIX_FROM_END = envd("PREFIX_FROM_END", 0) != 0;
+    if (const char* pt = getenv("PREFIX_TOURS")) pset = read_tour_set(pt);
+    // group the start tours by their first 10 moves; a group is picked with probability proportional to
+    // size^PREFIX_BALANCE (1 = every tour equally likely, 0 = every opening equally likely), then a tour in it
+    vector<vector<int>> pgroups; vector<double> pgcum;
+    if (!pset.empty()) {
+      double PB = envd("PREFIX_BALANCE", 1.0); map<string, vector<int>> g;
+      for (int i = 0; i < (int)pset.size(); i++) {
+        string key; for (int j = 0; j < min(10, (int)pset[i].size()); j++) key += to_string(pset[i][j].first) + pset[i][j].second + ",";
+        g[key].push_back(i);
+      }
+      double acc = 0;
+      for (auto& kv : g) { pgroups.push_back(kv.second); acc += pow((double)kv.second.size(), PB); pgcum.push_back(acc); }
+    }
+    const char* tours_out = getenv("TOURS_OUT");  // if set, every finished tour is appended here
     FILE* fo = fopen(out, "wb");
     long long bestT = -1; double bestTarget = -1;
     for (int ep = 0; ep < EP; ep++) {
@@ -226,6 +262,17 @@ int main(int argc, char** argv) {
         int k = OPEN_LEN + (int)(U01(rng) * (pref.size() - 1 - OPEN_LEN));
         s = start_state(); moves.clear();
         for (int i = 0; i < k; i++) { int qi = (pref[i].second[0] - 'a') + 8 * (pref[i].second[1] - '1'); int n = group_n(s, s.pos); apply_move(s, pref[i].first / n, qi); moves.push_back(pref[i]); }
+      }
+      if (!pset.empty() && PREFIX_LEN != 0) {
+        std::uniform_real_distribution<double> UG(0, pgcum.back());
+        int gi = (int)(lower_bound(pgcum.begin(), pgcum.end(), UG(rng)) - pgcum.begin()); gi = min(gi, (int)pgroups.size() - 1);
+        std::uniform_int_distribution<int> UI(0, (int)pgroups[gi].size() - 1); const auto& tr = pset[pgroups[gi][UI(rng)]];
+        int L = (int)tr.size(), k;
+        if (PREFIX_LEN < 0) { std::uniform_int_distribution<int> UK(0, L - 1); k = UK(rng); }  // random branch point
+        else if (PREFIX_FROM_END) k = max(0, L - PREFIX_LEN);                                    // PREFIX_LEN moves before h8
+        else k = min(PREFIX_LEN, L - 1);                                                       // PREFIX_LEN moves in
+        s = start_state(); moves.clear();
+        for (int i = 0; i < k; i++) { int qi = (tr[i].second[0] - 'a') + 8 * (tr[i].second[1] - '1'); int n = group_n(s, s.pos); apply_move(s, tr[i].first / n, qi); moves.push_back(tr[i]); }
       }
       vector<Sample> traj; vector<float> rootv; int mv = 0; bool done = false; long long score = 0;
       while (!done) {
@@ -260,6 +307,11 @@ int main(int argc, char** argv) {
         float z = (float)(score > 0 ? (score - traj[i].T) / TSCALE : (cr * Tend - traj[i].T) / TSCALE);
         traj[i].z = (float)(ZMIX * z + (1 - ZMIX) * rootv[i]); fwrite(&traj[i], sizeof(Sample), 1, fo); }
       printf("EP %d moves %d T %lld end %lld dist %.4f\n", ep, mv, score, Tend, score > 0 ? 0.0 : dist); fflush(stdout);
+      if (score > 0 && tours_out) {
+        FILE* ft = fopen(tours_out, "a"); fprintf(ft, "%lld ", score);
+        for (size_t i = 0; i < moves.size(); i++) fprintf(ft, "%s(%d, %s)", i ? ", " : "", moves[i].first, moves[i].second.c_str());
+        fprintf(ft, "\n"); fclose(ft);
+      }
       // best training target (finished minutes, or credited minutes of a stuck tour) -> <bestfile>.target
       double target = score > 0 ? (double)score : cr * Tend;
       if (target > bestTarget) {

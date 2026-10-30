@@ -194,7 +194,14 @@ def find_az(path):
 
 # settings that define the algorithm; --resume restores these from <run>/config.json
 ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
-             'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k']
+             'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k',
+             'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
+             'curriculum_balance']
+
+
+def tour_lengths(fn):
+    """Number of jumps in each tour of a one-tour-per-line file."""
+    return [n for n in (len(re.findall(r'\(\d+, [a-h][1-8]\)', line)) for line in open(fn)) if n > 1]
 
 
 def main():
@@ -239,6 +246,18 @@ def main():
     g.add_argument('--dist-k', type=float, default=0.0,
                    help='if > 0, a stuck tour keeps exp(-k * d) of its minutes instead (replaces --credit); '
                         'd = 3D distance from the knight to h8, scaled so d = 1 at the start')
+    g = ap.add_argument_group('curriculum: start games partway along known tours, moving back toward a1')
+    g.add_argument('--start-tours', default=None, help='tour file, one tour per line (e.g. data/tours/curriculum.txt)')
+    g.add_argument('--curriculum-mode', choices=['start', 'end'], default='start',
+                   help='start: begin K moves into a random tour, K falling by 1 each step until games start at a1; '
+                        'end: begin K moves before that tour finishes, K rising by 1 each step')
+    g.add_argument('--curriculum-start', type=int, default=20, help='first K (start mode) or first K (end mode, e.g. 1)')
+    g.add_argument('--curriculum-every', type=int, default=10, help='rounds at each K before stepping')
+    g.add_argument('--curriculum-min-finish', type=float, default=0.0,
+                   help='also require this fraction of a round\'s games to finish before stepping (0 = pure schedule)')
+    g.add_argument('--curriculum-balance', type=float, default=0.5,
+                   help='tours are grouped by their first 10 moves; a group is picked with probability ~ size^this '
+                        '(1 = every tour equally likely, 0 = every opening equally likely)')
     a = ap.parse_args()
 
     run = os.path.abspath(a.run); os.makedirs(run, exist_ok=True)
@@ -283,11 +302,24 @@ def main():
     best, first_fin = state['best'], state['first_finish']
     best_target = state.get('best_target', 0.0)
     tgt_fn = os.path.join(run, 'best_target.txt')  # tour with the highest training target so far
+    # curriculum state: K (moves into / before the end of a start tour) and rounds spent at this K
+    tours_fn, max_len = None, 0
+    if a.start_tours:
+        tours_fn = os.path.abspath(os.path.join(ROOT, a.start_tours)) if not os.path.isabs(a.start_tours) else a.start_tours
+        lens = tour_lengths(tours_fn)
+        if not lens:
+            sys.exit(f'no tours found in {tours_fn}')
+        max_len = max(lens)
+        print(f'curriculum: {len(lens)} start tours ({min(lens)}-{max_len} jumps), mode {a.curriculum_mode}, '
+              f'K from {a.curriculum_start}, stepping every {a.curriculum_every} rounds', flush=True)
+    cur_k = state.get('prefix_len', a.curriculum_start if tours_fn else 0)
+    cur_rounds = state.get('rounds_at_prefix', 0)
     log = open(os.path.join(run, 'log.txt'), 'a')
     csv_fn = os.path.join(run, 'log.csv')
     if not os.path.exists(csv_fn):
         open(csv_fn, 'w').write('round,games,finished,mean_finish,max_finish,best,credit,mean_moves,mean_minutes,'
-                                'max_minutes,mean_dist,mean_target,max_target,policy_loss,value_loss,selfplay_s,train_s\n')
+                                'max_minutes,mean_dist,mean_target,max_target,policy_loss,value_loss,selfplay_s,train_s,'
+                                'prefix\n')
     print(f'run {run}: az={az} workers={a.workers} backend={a.backend} start={a.start} '
           f'cpuct={a.cpuct} tau={a.tau1}/{a.tau2} credit={a.credit} dist_k={a.dist_k}', flush=True)
 
@@ -296,6 +328,9 @@ def main():
         env = dict(os.environ, CPUCT=str(a.cpuct), TAU1=str(a.tau1), TAU2=str(a.tau2), DIRA=str(a.dir_alpha),
                    DIRE=str(a.dir_eps), OPENING='1' if a.start == 'opening' else '0', OPENING_FILE=opening_file,
                    CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k))
+        if tours_fn and cur_k > 0:
+            env.update(PREFIX_TOURS=tours_fn, PREFIX_LEN=str(cur_k), PREFIX_BALANCE=str(a.curriculum_balance),
+                       PREFIX_FROM_END='1' if a.curriculum_mode == 'end' else '0')
         t0 = time.time()
         nw = max(1, min(a.workers, a.games))
         per = [a.games // nw + (1 if w < a.games % nw else 0) for w in range(nw)]
@@ -319,6 +354,15 @@ def main():
             targets = np.where(scores > 0, scores, ends * kappa)
         if first_fin is None and scores.max() > 0:
             first_fin = it
+        k_used = cur_k
+        if tours_fn and cur_k > 0:  # step the curriculum
+            cur_rounds += 1
+            if cur_rounds >= a.curriculum_every and np.mean(scores > 0) >= a.curriculum_min_finish:
+                cur_rounds = 0
+                if a.curriculum_mode == 'start':
+                    cur_k -= 1  # 0 = games start at a1
+                else:
+                    cur_k = cur_k + 1 if cur_k < max_len else 0
         for w in range(nw):
             fb = os.path.join(run, f'best_{w}.txt')
             if os.path.exists(fb) and os.path.getsize(fb) > 0:
@@ -351,7 +395,8 @@ def main():
         # write-then-rename so a run killed mid-save can always be resumed
         np.save(buf_fn + '.tmp.npy', buf); os.replace(buf_fn + '.tmp.npy', buf_fn)
         with open(state_fn + '.tmp', 'w') as f:
-            json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin, 'best_target': best_target}, f)
+            json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin, 'best_target': best_target,
+                       'prefix_len': cur_k, 'rounds_at_prefix': cur_rounds}, f)
         os.replace(state_fn + '.tmp', state_fn)
         t2 = time.time()
         fin = scores[scores > 0]
@@ -360,12 +405,14 @@ def main():
                f'minutes {ends.mean():.0f} maxmin {ends.max()} dist {dists.mean():.3f} target {targets.mean():.0f} '
                f'maxtarget {targets.max():.0f} besttarget {best_target:.0f} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
                f'selfplay {t1 - t0:.0f}s train {t2 - t1:.0f}s')
+        if tours_fn:
+            msg += f' start {a.curriculum_mode}{k_used}' if k_used > 0 else ' start a1'
         print(msg, flush=True); log.write(msg + '\n'); log.flush()
         with open(csv_fn, 'a') as f:
             f.write(f'{it},{len(scores)},{len(fin)},{fin.mean() if len(fin) else 0:.1f},{scores.max()},{best},'
                     f'{kappa:.4f},{nmoves.mean():.1f},{ends.mean():.1f},{ends.max()},{dists.mean():.4f},'
                     f'{targets.mean():.1f},{targets.max():.1f},{np.mean(lps):.5f},'
-                    f'{np.mean(lvs):.6f},{t1 - t0:.1f},{t2 - t1:.1f}\n')
+                    f'{np.mean(lvs):.6f},{t1 - t0:.1f},{t2 - t1:.1f},{k_used if tours_fn else 0}\n')
 
 
 if __name__ == '__main__':
