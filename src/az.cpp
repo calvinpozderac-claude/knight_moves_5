@@ -14,6 +14,7 @@
 //   NET_H, NET_LAYERS  network hidden width and number of hidden layers (default 256, 2)
 //   SP                 1 (default): single-player deterministic search (max/exact values, solved subtrees,
 //                      tree reuse, caches, tours found inside the search); 0: classic AlphaZero averaging
+//   EST_W              single-player value target: weight of the search estimate above the achieved floor (0.5)
 //   QMAX_W             weight of the best result vs the average in node values (default 0.5 with SP=1)
 //   EVAL_CACHE, SOLVED_CACHE   cache sizes per worker (default 200000 network outputs, 1000000 solved values)
 //   CREDIT             fraction of its minutes a stuck tour keeps (training-only partial credit, default 0)
@@ -129,6 +130,7 @@ struct Node {
 static vector<Node> T;
 static double QMIN, QMAX;
 static double CPUCT = 1.5; static double ZMIX = 0.5; static double BETA = 0.0;
+static double EST_W = 0.5;  // single-player target: weight of the search estimate above the achieved floor
 // exploration knobs (env vars): TAU1 = move temperature for the first TEMPM moves, TAU2 = after (0 = greedy)
 static double TAU1 = 1.0, TAU2 = 0.0, DIRA = 0.3, DIRE = 0.25;
 static double CREDIT = 0.0;  // env CREDIT: fraction of its minutes a stuck tour keeps (training only)
@@ -315,7 +317,7 @@ struct Sample { int16_t alt[64]; uint8_t vis[64]; uint8_t pos; int32_t T; uint32
 int main(int argc, char** argv) {
   init_board(); init_actions();
   CPUCT = envd("CPUCT", 1.5); TAU1 = envd("TAU1", 1.0); TAU2 = envd("TAU2", 0.0); DIRA = envd("DIRA", 0.3); DIRE = envd("DIRE", 0.25);
-  SP = envd("SP", 1) != 0; BETA = envd("QMAX_W", SP ? 0.5 : 0.0);
+  SP = envd("SP", 1) != 0; BETA = envd("QMAX_W", SP ? 0.5 : 0.0); EST_W = envd("EST_W", 0.5);
   USE_OPENING = (int)envd("OPENING", 1); CREDIT = envd("CREDIT", 0.0); DISTK = envd("DISTK", 0.0);
   D0 = h8_dist_raw(start_state());
   if (const char* of = getenv("OPENING_FILE")) OPENING_FILE = of;
@@ -454,7 +456,7 @@ int main(int argc, char** argv) {
         for (int i = n - 1; i >= 0; i--) {
           double Tn = i + 1 < n ? G.traj[i + 1].T : Tend;
           double ex = max(G.rootExact[i], (Tn - G.traj[i].T) / TSCALE + next);
-          G.traj[i].z = (float)max(ex, (1 - ZMIX) * G.rootEst[i] + ZMIX * ex);
+          G.traj[i].z = (float)max(ex, EST_W * G.rootEst[i] + (1 - EST_W) * ex);
           next = ex;
         }
       }

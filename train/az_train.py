@@ -101,6 +101,16 @@ class Net:
             h = np.maximum(h @ P[f'W{l}'] + P[f'b{l}'], 0)
         return np.concatenate([h @ P['Wp'] + P['bp'], (h @ P['wv'] + P['bv'][0])[:, None]], 1)
 
+    def loss(self, X, mask, pi, z):
+        """Policy and value loss without training (for the validation set)."""
+        P = self.p; h = X
+        for l in range(1, self.L + 1):
+            h = np.maximum(h @ P[f'W{l}'] + P[f'b{l}'], 0)
+        lg = np.where(mask, h @ P['Wp'] + P['bp'], -1e9); lg = lg - lg.max(1, keepdims=True)
+        e = np.exp(lg) * mask; sm = e / e.sum(1, keepdims=True)
+        v = h @ P['wv'] + P['bv'][0]
+        return float(-(pi * np.log(sm + 1e-12)).sum(1).mean()), float(((v - z) ** 2).mean())
+
     def step(self, X, mask, pi, z, cv=1.0):
         P = self.p; B = X.shape[0]
         acts, pre = [X], []
@@ -253,7 +263,7 @@ def find_az(path):
 # settings that define the algorithm; --resume restores these from <run>/config.json
 ALGO_KEYS = ['games', 'sims', 'steps', 'batch', 'buffer', 'lr', 'wd', 'hidden', 'layers', 'start', 'opening_file', 'cpuct', 'tau1', 'tau2',
              'temp_moves', 'dir_alpha', 'dir_eps', 'credit', 'credit_ramp', 'restart_prob', 'self_imitation', 'dist_k',
-             'classic', 'q_max_weight', 'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
+             'classic', 'q_max_weight', 'est_weight', 'start_tours', 'curriculum_start', 'curriculum_every', 'curriculum_mode', 'curriculum_min_finish',
              'curriculum_balance']
 
 
@@ -285,6 +295,8 @@ def main():
     g.add_argument('--batch', type=int, default=256)
     g.add_argument('--buffer', type=int, default=150000, help='replay buffer size (positions)')
     g.add_argument('--lr', type=float, default=1e-3)
+    g.add_argument('--val-frac', type=float, default=0.05, help='share of games held out for the validation loss')
+    g.add_argument('--val-size', type=int, default=20000, help='positions kept in the validation set')
     g.add_argument('--wd', type=float, default=1e-5)
     g.add_argument('--hidden', type=int, default=256, help='network hidden width')
     g.add_argument('--layers', type=int, default=2, help='number of hidden layers')
@@ -300,6 +312,9 @@ def main():
     g.add_argument('--classic', action='store_true',
                    help='classic AlphaZero averaging instead of the single-player search (max/exact values, solved '
                         'subtrees, tree reuse, caches, tours found inside the search, exact-floor value targets)')
+    g.add_argument('--est-weight', type=float, default=0.5,
+                   help='single-player value target: how much of the search estimate (when above the best achieved '
+                        'result) goes into the target; 0 = train only on results actually achieved')
     g.add_argument('--q-max-weight', type=float, default=0.5,
                    help='single-player search: weight of the best result vs the average in node values')
     g = ap.add_argument_group('exploration')
@@ -336,9 +351,21 @@ def main():
         if not os.path.exists(cfg_fn) or not os.path.exists(state_fn):
             sys.exit(f'nothing to resume in {run}')
         saved = json.load(open(cfg_fn))
+        explicit = {act.dest for act in ap._actions
+                    if any(arg == o or arg.startswith(o + '=') for o in act.option_strings for arg in sys.argv[1:])}
+        changed = []
         for k in ALGO_KEYS:
-            if k in saved:
+            if k not in saved:
+                continue
+            if k in explicit and getattr(a, k) != saved[k]:
+                if k in ('hidden', 'layers'):
+                    sys.exit(f'--{k.replace("_", "-")} cannot change on resume (the saved network is {saved["layers"]}x{saved["hidden"]})')
+                changed.append(f'{k}: {saved[k]} -> {getattr(a, k)}')
+            else:
                 setattr(a, k, saved[k])
+        if changed:
+            print('resume overrides: ' + ', '.join(changed), flush=True)
+        json.dump({k: getattr(a, k) for k in ALGO_KEYS}, open(cfg_fn, 'w'), indent=1)
         state = json.load(open(state_fn))
     else:
         if os.path.exists(state_fn):
@@ -371,6 +398,9 @@ def main():
     buf_fn = os.path.join(run, 'buffer.npy')
     buf = np.load(buf_fn) if a.resume and os.path.exists(buf_fn) else np.zeros(0, SAMPLE)
     rng = np.random.default_rng(state['round'] + 12345)
+    vrng = np.random.default_rng(state['round'] + 999)
+    val_fn = os.path.join(run, 'val.npy')
+    val = np.load(val_fn) if a.resume and os.path.exists(val_fn) else np.zeros(0, SAMPLE)
     best, first_fin = state['best'], state['first_finish']
     best_target = state.get('best_target', 0.0)
     tgt_fn = os.path.join(run, 'best_target.txt')  # tour with the highest training target so far
@@ -402,7 +432,8 @@ def main():
         env = dict(os.environ, CPUCT=str(a.cpuct), TAU1=str(a.tau1), TAU2=str(a.tau2), DIRA=str(a.dir_alpha),
                    DIRE=str(a.dir_eps), OPENING='1' if a.start == 'opening' else '0', OPENING_FILE=opening_file,
                    CREDIT=f'{kappa:.4f}', DISTK=str(a.dist_k), NET_H=str(a.hidden), NET_LAYERS=str(a.layers),
-                   SP='0' if a.classic else '1', QMAX_W=str(0.0 if a.classic else a.q_max_weight))
+                   SP='0' if a.classic else '1', QMAX_W=str(0.0 if a.classic else a.q_max_weight),
+                   EST_W=str(a.est_weight))
         if tours_fn and cur_k > 0:
             env.update(PREFIX_TOURS=tours_fn, PREFIX_LEN=str(cur_k), PREFIX_BALANCE=str(a.curriculum_balance),
                        PREFIX_FROM_END='1' if a.curriculum_mode == 'end' else '0')
@@ -467,7 +498,20 @@ def main():
                     best_target = tv
                     shutil.copy(fb + '.target', tgt_fn)
                 os.remove(fb + '.target')
-        new = np.concatenate([load_samples(os.path.join(run, f's_{w}.bin')) for w in range(nw)])
+        # hold out ~5% of games (whole games, so neighbouring positions don't leak) for a validation loss
+        parts = []
+        for w in range(nw):
+            sw = load_samples(os.path.join(run, f's_{w}.bin')); o = 0
+            for line in outs[w].splitlines():
+                if not line.startswith('EP'):
+                    continue
+                m = int(line.split()[3]); g_ = sw[o:o + m]; o += m
+                if vrng.random() < a.val_frac:
+                    val = np.concatenate([val, g_])[-a.val_size:]
+                else:
+                    parts.append(g_)
+            parts.append(sw[o:])
+        new = np.concatenate(parts) if parts else np.zeros(0, SAMPLE)
         if a.self_imitation and os.path.exists(best_fn):
             new = np.concatenate([new] + [tour_samples(best_fn, open_len)] * a.self_imitation)
         buf = np.concatenate([buf, new])[-a.buffer:]
@@ -479,11 +523,18 @@ def main():
             mask = ((b['mask'][:, None] >> np.arange(NA)) & 1).astype(bool)
             lp, lv = net.step(X, mask, np.ascontiguousarray(b['pi']), np.ascontiguousarray(b['z']))
             lps.append(lp); lvs.append(lv)
+        vlp = vlv = float('nan')
+        if len(val):
+            vb = val[-4096:]
+            vX = featurize(vb['alt'], vb['vis'], vb['pos'].astype(np.int64), vb['T'].astype(np.float32))
+            vmask = ((vb['mask'][:, None] >> np.arange(NA)) & 1).astype(bool)
+            vlp, vlv = net.loss(vX, vmask, np.ascontiguousarray(vb['pi']), np.ascontiguousarray(vb['z']))
         net.save(w_cur)
         if it % 10 == 0:
             net.save(os.path.join(run, f'w_{it:04d}.bin'))
         # write-then-rename so a run killed mid-save can always be resumed
         np.save(buf_fn + '.tmp.npy', buf); os.replace(buf_fn + '.tmp.npy', buf_fn)
+        np.save(val_fn + '.tmp.npy', val); os.replace(val_fn + '.tmp.npy', val_fn)
         with open(state_fn + '.tmp', 'w') as f:
             json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin, 'best_target': best_target,
                        'prefix_len': cur_k, 'rounds_at_prefix': cur_rounds}, f)
@@ -495,7 +546,7 @@ def main():
                f'minutes {ends.mean():.0f} maxmin {ends.max()} dist {dists.mean():.3f} target {targets.mean():.0f} '
                f'maxtarget {targets.max():.0f} besttarget {best_target:.0f} lp {np.mean(lps):.3f} lv {np.mean(lvs):.4f} '
                f'selfplay {t1 - t0:.0f}s train {t2 - t1:.0f}s')
-        msg += f' found {founds.max()}'
+        msg += f' found {founds.max()} vlp {vlp:.3f} vlv {vlv:.4f}'
         if a.gpu_selfplay:
             msg += f' evals {evals}'
         if tours_fn:

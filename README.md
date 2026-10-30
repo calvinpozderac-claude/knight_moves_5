@@ -105,7 +105,8 @@ python3 tools/parity_check.py
 
 Run from the repo root. Each run directory gets `log.txt`, `log.csv`, `best_overall.txt` (the
 best finished tour), the current weights `w_cur.bin`, a snapshot every 10 rounds, and its
-settings. Add `--resume` to continue a run.
+settings. Add `--resume` to continue a run; other options given with `--resume` override the saved
+settings (except the network size).
 
 **Current approach: a reverse curriculum from known tours.** `data/tours/curriculum.txt` holds
 1,272 complete tours with 654 different openings. Every one is checked exactly with
@@ -187,6 +188,8 @@ The main options (`--help` lists them all):
 | `--gpu-selfplay`, `--infer-leaves` | off, 8 | evaluate self-play positions in batches in the trainer (GPU with torch) |
 | `--hidden`, `--layers` | 256, 2 | network width and number of hidden layers |
 | `--classic`, `--q-max-weight` | off, 0.5 | classic AlphaZero averaging; weight of the best result in node values |
+| `--est-weight` | 0.5 | share of the search's own estimate (when above the achieved result) in value targets; 0 = achieved results only |
+| `--val-frac`, `--val-size` | 0.05, 20000 | games held out for the validation loss (`vlp`, `vlv` in the log) |
 
 ### On a Ryzen 9 9950X with an RTX 5070 Ti
 

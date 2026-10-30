@@ -41,6 +41,14 @@ class TorchNet:
             h = torch.relu(h @ P[f'W{l}'] + P[f'b{l}'])
         return torch.cat([h @ P['Wp'] + P['bp'], (h @ P['wv'] + P['bv'][0]).unsqueeze(1)], 1).cpu().numpy()
 
+    @torch.no_grad()
+    def loss(self, X, mask, pi, z):
+        d = self.dev
+        lg, v = self.forward(torch.from_numpy(X).to(d))
+        logp = torch.log_softmax(lg.masked_fill(~torch.from_numpy(mask).to(d), -1e9), dim=1)
+        PI = torch.from_numpy(np.array(pi, dtype=np.float32)).to(d); Z = torch.from_numpy(np.array(z, dtype=np.float32)).to(d)
+        return float(-(PI * logp).sum(1).mean()), float(((v - Z) ** 2).mean())
+
     def step(self, X, mask, pi, z):
         d = self.dev
         X = torch.from_numpy(X).to(d)
