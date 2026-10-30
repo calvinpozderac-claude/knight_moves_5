@@ -127,6 +127,7 @@ struct Node {
   // single-player extras: best result over paths that reached a real end (achievable), and whether the
   // whole subtree has been searched (then exactG is this node's true value)
   double exactG = -1e18; bool solved = false; int nsolved = 0;
+  double finG = -1e18;  // best result over paths that reached h8 (the only lines worth following)
 };
 static vector<Node> T;
 static double QMIN, QMAX;
@@ -150,7 +151,7 @@ static std::mt19937 rng;
 // Single-player deterministic mode (env SP, default 1): see the self-play section in main for what it changes.
 static bool SP = true;
 static inline uint64_t state_key(const S& s) { return hashS(s, true) ^ (0x9E3779B97F4A7C15ULL * (uint64_t)(s.T + 1)); }
-static unordered_map<uint64_t, double> SOLVED_CACHE;  // exact future value of positions whose subtree was fully searched
+static unordered_map<uint64_t, pair<double, double>> SOLVED_CACHE;  // (exact, best finish)  // exact future value of positions whose subtree was fully searched
 static size_t SOLVED_CAP = 1000000;
 
 static void ensure_state(int id) {
@@ -218,25 +219,29 @@ static int select_child(int id) {
   return bc;
 }
 // back up value g from node id to the root; exact = g comes from a real ending (terminal or solved)
-static void backup(int id, double g, bool exact = false) {
+static void backup(int id, double g, bool exact = false, double fin = -1e18) {
   while (id >= 0) {
     Node& nd = T[id]; nd.N++; nd.W += g; if (g > nd.bestG) nd.bestG = g;
     if (exact && g > nd.exactG) nd.exactG = g;
+    if (fin > -1e17 && fin > nd.finG) nd.finG = fin;
     if (nd.parent >= 0) { double qe = node_q(nd); QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
-    g = nd.r + g; id = nd.parent;
+    g = nd.r + g; if (fin > -1e17) fin = nd.r + fin; id = nd.parent;
   }
 }
+// no position is worth less than getting stuck from it, which loses the minutes earned so far
+static inline float value_floor(const S& s) { return (float)(-s.T / TSCALE); }
 // mark id solved (its exactG is its true value) and solve ancestors whose children are now all solved
 static void mark_solved(int id) {
   while (id >= 0 && !T[id].solved) {
     Node& nd = T[id]; nd.solved = true;
-    if (!nd.terminal && SOLVED_CACHE.size() < SOLVED_CAP) SOLVED_CACHE[state_key(nd.s)] = nd.exactG;
+    if (!nd.terminal && SOLVED_CACHE.size() < SOLVED_CAP) SOLVED_CACHE[state_key(nd.s)] = {nd.exactG, nd.finG};
     if (nd.parent >= 0) { double qe = nd.r + nd.exactG; QMIN = min(QMIN, qe); QMAX = max(QMAX, qe); }
     int p = nd.parent; if (p < 0) break;
     Node& pn = T[p]; pn.nsolved++;
     if (!(pn.expanded && pn.nsolved == pn.nch)) break;
-    double best = -1e18; for (int c = pn.first; c < pn.first + pn.nch; c++) best = max(best, T[c].r + T[c].exactG);
-    pn.exactG = max(pn.exactG, best);
+    double best = -1e18, bfin = -1e18;
+    for (int c = pn.first; c < pn.first + pn.nch; c++) { best = max(best, T[c].r + T[c].exactG); if (T[c].finG > -1e17) bfin = max(bfin, T[c].r + T[c].finG); }
+    pn.exactG = max(pn.exactG, best); pn.finG = max(pn.finG, bfin);
     id = p;
   }
 }
@@ -439,7 +444,11 @@ int main(int argc, char** argv) {
       if (pick < 0) { int bn = -1; for (int c = T[0].first; c < T[0].first + T[0].nch; c++) if (T[c].N > bn) { bn = T[c].N; pick = c; } }
       // deterministic single player: a proven complete line from here can always be replayed, so near-greedy
       // play follows the best one found (later searches can still replace it with a better proven line)
-      if (SP && FOLLOW_EXACT && tau <= 0.1 && T[0].exactG > -1e17) { int bc = best_exact_child(); if (bc >= 0 && T[bc].exactG > -1e17) pick = bc; }
+      if (SP && FOLLOW_EXACT && tau <= 0.1 && T[0].finG > -1e17) {
+        int bc = -1; double bv = -1e18;
+        for (int c = T[0].first; c < T[0].first + T[0].nch; c++) if (T[c].finG > -1e17 && T[c].r + T[c].finG > bv) { bv = T[c].r + T[c].finG; bc = c; }
+        if (bc >= 0) pick = bc;
+      }
       return pick;
     };
     int epcount = 0;
@@ -535,7 +544,8 @@ int main(int argc, char** argv) {
             while (T[id].expanded && !T[id].terminal && !T[id].solved) { id = select_child(id); ensure_state(id); path.push_back(id); }
             if (T[id].terminal || T[id].solved) {
               double g = T[id].terminal ? T[id].tval : T[id].exactG;
-              backup(id, g, true); if (T[id].terminal) found_tour(G, id);
+              double fin = T[id].terminal ? (T[id].s.pos == H8 ? g : -1e18) : T[id].finG;
+              backup(id, g, true, fin); if (T[id].terminal) found_tour(G, id);
               if (SP) mark_solved(id);
               G.simsDone++; continue;
             }
@@ -546,9 +556,9 @@ int main(int argc, char** argv) {
             if (SP) {
               key = state_key(T[id].s);
               auto is = SOLVED_CACHE.find(key);
-              if (is != SOLVED_CACHE.end()) { backup(id, is->second, true); mark_solved(id); G.simsDone++; continue; }
+              if (is != SOLVED_CACHE.end()) { backup(id, is->second.first, true, is->second.second); mark_solved(id); G.simsDone++; continue; }
               auto ie = evalCache.find(key);
-              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); backup(id, ie->second[NA]); G.simsDone++; continue; }
+              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); backup(id, max(ie->second[NA], value_floor(T[id].s))); G.simsDone++; continue; }
             }
             Pend pd{gi, id, key, {}};
             bool haveQ = QMAX >= QMIN;
@@ -570,7 +580,8 @@ int main(int argc, char** argv) {
         if (G.rootPending && pd.leaf == 0) { expand_finish(0, lg); add_noise(0, DIRA, DIRE); G.rootPending = false; }
         else {
           for (auto& [x, amt] : pd.vl) { T[x].N--; T[x].W -= amt; }
-          T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg); backup(pd.leaf, v); G.simsDone++; G.pending--;
+          T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg);
+          backup(pd.leaf, SP ? max(v, value_floor(T[pd.leaf].s)) : v); G.simsDone++; G.pending--;
         }
         G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
       }
