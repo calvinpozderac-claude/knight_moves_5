@@ -45,13 +45,41 @@ experiments/               every other search program from the session, as-is
 
 ## Setup
 
-You need a C++17 compiler, Python 3.9+, and NumPy.
+### Ubuntu with an NVIDIA GPU (for example a Ryzen 9 9950X with an RTX 5070 Ti)
 
-**Linux, macOS, or WSL2 (recommended on Windows):**
-```
-sudo apt install build-essential python3-numpy   # Ubuntu / WSL2
-make                                             # builds build/az
-```
+1. **Install the NVIDIA driver (once).** RTX 50-series cards need NVIDIA's open kernel
+   modules, version 570 or newer. The PyTorch build that pip installs uses CUDA 13, which
+   needs driver 580 or newer.
+   ```
+   sudo ubuntu-drivers install    # usually picks an -open driver; if not: sudo apt install nvidia-driver-580-open (or newer)
+   sudo reboot
+   nvidia-smi                     # should list the card and "CUDA Version: 13.x" or higher
+   ```
+2. **Get the tools and code, and set up Python.**
+   ```
+   sudo apt install -y build-essential git python3-venv python3-dev tmux
+   git clone https://github.com/calvinpozderac-claude/knight_moves_5 && cd knight_moves_5
+   bash scripts/setup_ubuntu.sh
+   ```
+   The script:
+   - builds `build/az`
+   - creates `.venv` with NumPy and PyTorch
+   - checks that PyTorch can use the GPU
+   - checks the GPU trainer against the NumPy one
+3. **Train inside tmux,** so training continues if you close the terminal. Detach with
+   Ctrl-b d, and come back with `tmux attach -t knight`.
+   ```
+   tmux new -s knight
+   source .venv/bin/activate
+   python3 train/az_train.py --run runs/a1_dist1 --start a1 --dist-k 1 --backend torch --device cuda
+   ```
+   Watch progress with `tail -f runs/a1_dist1/log.txt`. After a reboot, run the same command
+   with `--resume` added.
+
+### Other platforms
+
+You need a C++17 compiler, Python 3.9+, and NumPy. On other Linux distributions, macOS, or
+WSL2 (recommended on Windows), run `make` to build `build/az`, then `pip install numpy`.
 
 **Windows without WSL:** use CMake with Visual Studio 2022, then run the trainer with `python`
 instead of `python3`. It finds `build/Release/az.exe` on its own. This route hasn't been
@@ -61,9 +89,10 @@ cmake -B build
 cmake --build build --config Release
 ```
 
-**GPU (optional):** install PyTorch with CUDA, then check that its trainer matches the NumPy one:
+**GPU (optional):** install a CUDA build of PyTorch, then check that its trainer matches the
+NumPy one:
 ```
-pip install torch          # RTX 50-series cards need a CUDA 12.8 or newer build
+pip install torch          # on Linux this is a CUDA 13 build, which supports RTX 50-series cards
 python3 tools/parity_check.py
 ```
 
