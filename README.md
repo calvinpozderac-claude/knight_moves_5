@@ -84,6 +84,16 @@ python3 train/az_train.py --run runs/a1_tau --start a1 --credit 0.5 --tau1 2 --t
 python3 train/az_train.py --run runs/a1_C   --start a1 --credit 0.5 --cpuct 4.5     --workers 16
 ```
 
+In the session, on 2 cloud cores, these ran for 31 and 26 rounds before the workspace
+restarted. Neither had reached h8 yet, but both were surviving much longer:
+- Games grew from about 7 moves (untrained) to about 40.
+- Stuck tours averaged about 1,000 and 800 minutes.
+- The longest stuck tours reached 2,697 and 3,728 minutes.
+
+Logs: `results/logs/06_*`. For comparison, with the opening and restarts (`05_*`), all three
+higher-exploration settings reached h8 in their first round. The original settings took 14
+rounds.
+
 The main options (`--help` lists them all):
 
 | Option | Default | Meaning |
