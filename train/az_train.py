@@ -331,8 +331,11 @@ def main():
         net.save(w_cur)
         if it % 10 == 0:
             net.save(os.path.join(run, f'w_{it:04d}.bin'))
-        np.save(buf_fn, buf)
-        json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin}, open(state_fn, 'w'))
+        # write-then-rename so a run killed mid-save can always be resumed
+        np.save(buf_fn + '.tmp.npy', buf); os.replace(buf_fn + '.tmp.npy', buf_fn)
+        with open(state_fn + '.tmp', 'w') as f:
+            json.dump({'round': it + 1, 'best': best, 'first_finish': first_fin}, f)
+        os.replace(state_fn + '.tmp', state_fn)
         t2 = time.time()
         fin = scores[scores > 0]
         msg = (f'round {it} games {len(scores)} finished {len(fin)} meanT {fin.mean() if len(fin) else 0:.0f} '
