@@ -77,13 +77,16 @@ settings. Add `--resume` to continue a run.
 opening and no restarts from the best tour. It uses the original exploration settings (C = 1.5;
 τ = 1 for the first 25 moves, then greedy).
 - A finished tour scores its minutes, as in the puzzle.
-- A stuck tour scores minutes × exp(−5d). Here d is the straight-line 3D distance (x, y,
+- A stuck tour scores minutes × exp(−d). Here d is the straight-line 3D distance (x, y,
   altitude) from the knight to h8, scaled so d = 1 at the start.
 
-So a long tour only counts if it ends close to h8:
+So a long tour counts more the closer it ends to h8:
 ```
-python3 train/az_train.py --run runs/a1_dist5 --start a1 --dist-k 5
+python3 train/az_train.py --run runs/a1_dist1 --start a1 --dist-k 1
 ```
+A first try with exp(−5d) (`--dist-k 5`) was too steep. A stuck tour at the start keeps 0.7%,
+and the agent's games ended around d = 2.5, keeping about 0.0004%. That amounted to "stuck = 0"
+again, and over 110 rounds the knight kept drifting away from h8.
 `<run>/best_target.txt` holds the tour with the highest target so far, finished or not.
 
 **Before that: flat partial credit, which never finished.** Two runs let stuck tours keep 50%
