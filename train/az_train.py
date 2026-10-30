@@ -255,7 +255,7 @@ def main():
     g.add_argument('--curriculum-every', type=int, default=10, help='rounds at each K before stepping')
     g.add_argument('--curriculum-min-finish', type=float, default=0.0,
                    help='also require this fraction of a round\'s games to finish before stepping (0 = pure schedule)')
-    g.add_argument('--curriculum-balance', type=float, default=0.5,
+    g.add_argument('--curriculum-balance', type=float, default=1.0,
                    help='tours are grouped by their first 10 moves; a group is picked with probability ~ size^this '
                         '(1 = every tour equally likely, 0 = every opening equally likely)')
     a = ap.parse_args()

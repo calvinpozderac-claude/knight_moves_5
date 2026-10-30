@@ -33,10 +33,11 @@ Check them all exactly (fractions, every rule) with `python3 tools/verify_tours.
 
 ```
 src/eng.h, src/az.cpp      game engine and tree search (self-play, eval, beam, improve)
+src/opening_search.cpp     finds varied openings that can still finish
 train/az_train.py          training loop (NumPy; or PyTorch with --backend torch)
 train/torch_backend.py     GPU trainer: same network, same Adam, same weight file
 tools/                     exact checker, tour verifier, tour harvester and selector, PyTorch parity check
-data/                      the 23-move opening, the best tours, and the 632-tour curriculum set
+data/                      the 23-move opening, the best tours, and the curriculum tour sets
 scripts/                   Ubuntu setup; generating more curriculum tours
 weights/                   trained networks (from_scratch_net.bin, seeded_record_net.bin)
 results/logs/              training logs from the session
@@ -107,11 +108,18 @@ best finished tour), the current weights `w_cur.bin`, a snapshot every 10 rounds
 settings. Add `--resume` to continue a run.
 
 **Current approach: a reverse curriculum from known tours.** `data/tours/curriculum.txt` holds
-632 complete tours, every one checked exactly with `tools/harvest_tours.py`.
-- **Range:** 10 to 7,066 minutes and 15 to 135 jumps, with 23 different openings.
+1,272 complete tours with 654 different openings. Every one is checked exactly with
+`tools/harvest_tours.py`.
+- **Range:** 10 to 7,066 minutes and 15 to 135 jumps.
 - **Harvested (114 tours):** found in the logs, searches, and training runs from the session.
-- **Generated (518 tours):** the trained networks branching off those tours at random points,
-  and playing from the opening with randomness.
+- **Network-generated (518 tours):** the trained networks branching off those tours at random
+  points, and playing from the opening with randomness. Mostly long tours, which all use the
+  record's opening.
+- **Opening search (640 tours, also in `data/tours/openings.txt`):** `build/opening_search`
+  plays random 12–30-move openings from a1, then searches for a finish. It walks without
+  waiting, sits to bring a square next to h8 to the right height, and repeats up to three
+  times. About 1 random opening in 2,000 can still finish. These tours are short (10–148
+  minutes), and nearly every one has its own opening.
 
 Each game starts K moves into a tour picked at random. Every `--curriculum-every` rounds, K drops
 by 1, until games start at a1:
@@ -119,9 +127,9 @@ by 1, until games start at a1:
 python3 train/az_train.py --run runs/curriculum --start-tours data/tours/curriculum.txt \
     --curriculum-start 20 --curriculum-every 10 --backend torch --device cuda
 ```
-- **Balanced picking.** Tours are grouped by their first 10 moves, and a group is picked in
-  proportion to the square root of its size (`--curriculum-balance 0.5`). Otherwise 88% of
-  games would start on the record's opening; this way it's about 41%.
+- **Picking.** By default every tour is equally likely, which puts about 44% of games on the
+  record's opening (where the long tours are) and the rest across 653 other openings. Lower
+  `--curriculum-balance` toward 0 to weight openings more evenly instead.
 - **End mode.** `--curriculum-mode end --curriculum-start 1` starts each game 1 move before
   that tour's finish, and moves the start back 1 move per step. This is the classic reverse
   curriculum: finishes come early, and it takes longer to reach a1.
@@ -172,7 +180,7 @@ The main options (`--help` lists them all):
 | `--dist-k` | 0 | if > 0, a stuck tour keeps exp(−k·d) of its minutes instead (d = scaled 3D distance to h8) |
 | `--start-tours` | none | tour file for the curriculum (one tour per line) |
 | `--curriculum-mode`, `--curriculum-start`, `--curriculum-every` | start, 20, 10 | where games start (K moves in, or K before the finish) and how often K steps |
-| `--curriculum-min-finish`, `--curriculum-balance` | 0, 0.5 | finish rate needed to step; how evenly openings are picked |
+| `--curriculum-min-finish`, `--curriculum-balance` | 0, 1 | finish rate needed to step; how evenly openings are picked |
 | `--restart-prob`, `--seed-tour` | 0, none | Go-Explore restarts from a random point on the best tour |
 | `--self-imitation` | 0 | copies of the best tour added to the training data each round |
 | `--backend`, `--device` | numpy, cuda | train in NumPy on the CPU, or in PyTorch |
