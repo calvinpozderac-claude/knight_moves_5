@@ -2,7 +2,8 @@
 
 The network predicts, for a position, the best final score reachable from it, split into two heads:
   - fin: logit of "a finish is reachable" (label > 0)
-  - fut: future minutes (label - T) / 1000, trained only on positions that can finish
+  - fut: future minutes (label - T) / 1000, trained only on positions that can finish, on an upper
+    quantile of the labels (--fut-quantile) so that uncertain positions are rated by their upside
 The search value is  p_fin ** gamma * (T + 1000 * fut).
 """
 import math
@@ -139,13 +140,22 @@ def search_value(fin_logit, fut, T, gamma=1.0):
     return p.pow(gamma) * total
 
 
-def loss_fn(fin_logit, fut, T, label, fut_w=1.0):
+def fut_loss(pred, target, tau=0.5, reduction='mean'):
+    """Smooth-L1 quantile loss: under-predictions weigh tau, over-predictions 1 - tau (x2, so tau = 0.5 is plain
+    smooth L1). tau > 0.5 fits an upper quantile of the labels: an optimistic estimate of the future minutes."""
+    l = F.smooth_l1_loss(pred, target, beta=0.5, reduction='none')
+    w = torch.where(target > pred, torch.full_like(l, tau), torch.full_like(l, 1.0 - tau))
+    l = 2.0 * w * l
+    return l.mean() if reduction == 'mean' else l.sum()
+
+
+def loss_fn(fin_logit, fut, T, label, fut_w=1.0, tau=0.5):
     fin = (label > 0).float()
     l_fin = F.binary_cross_entropy_with_logits(fin_logit.float(), fin)
     target = ((label - T.float()).clamp(min=0) / FUT_SCALE)
     m = fin > 0
     if m.any():
-        l_fut = F.smooth_l1_loss(fut.float()[m], target[m], beta=0.5)
+        l_fut = fut_loss(fut.float()[m], target[m], tau)
     else:
         l_fut = fut.sum() * 0
     return l_fin + fut_w * l_fut, l_fin.detach(), l_fut.detach()

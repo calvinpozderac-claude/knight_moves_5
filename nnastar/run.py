@@ -31,8 +31,8 @@ import numpy as np
 import torch
 
 from . import lib as K
-from .model import featurize, loss_fn, make_model, n_params, search_value, unpack, REC
-from .replay import Replay, ShardWriter, dedup_max, load_shards
+from .model import featurize, fut_loss, loss_fn, make_model, n_params, search_value, unpack, REC
+from .replay import Replay, ShardWriter, dedup_max, load_shards, row_hash
 
 ROOT = K.ROOT
 sys.path.insert(0, os.path.join(ROOT, 'tools'))
@@ -74,8 +74,8 @@ def record_minutes():
 
 def setup_engine(a, log):
     K.init(a.seed)
-    tot = 0
-    for spec in a.tours:
+    tot = K.lib().km_num_tours()
+    for spec in (a.tours if tot == 0 else []):
         path, _, w = spec.partition(':')
         path = path if os.path.isabs(path) else os.path.join(ROOT, path)
         if not os.path.exists(path):
@@ -87,7 +87,8 @@ def setup_engine(a, log):
     if tot == 0:
         raise SystemExit('no seed tours loaded: pass --tours FILE[:weight] ...')
     for name in ['p_level0', 'p_level1', 'p_level2', 'p_level3', 'probes', 'probe_states', 'prefix_rate', 'label_path_rate',
-                 'label_level', 'label_level_shallow', 'shallow_depth', 'nice', 'anchor_pow', 'p_label', 'pool_min', 'frac_label']:
+                 'label_level', 'label_level_shallow', 'shallow_depth', 'nice', 'anchor_pow', 'p_label', 'pool_min', 'frac_label',
+                 'novelty_w', 'novelty_k1', 'novelty_k2']:
         K.set_param(name, getattr(a, name))
 
 
@@ -113,15 +114,29 @@ def cmd_gen(a):
     os.makedirs(data, exist_ok=True)
     np.save(os.path.join(data, 'tours.npy'), K.tour_samples(a.tour_min_score))
     sw = ShardWriter(data, 'gen')
+    vp = os.path.join(data, 'val.npy')
+    val_parts, nval = [], (len(np.load(vp, mmap_mode='r')) if os.path.exists(vp) else 0)
     w = K.Workers(a.gen_threads, a.seed)
     t0 = time.time()
     last, prev = t0, {}
     n = 0
+    k = 0
     try:
         while not STOP and time.time() - t0 < a.gen_minutes * 60 and n < a.gen_samples:
             time.sleep(1.0)
             d = w.drain()
             n += len(d)
+            k += 1
+            if nval < a.val_samples and k % 20 == 10:
+                # validation: whole drain batches, i.e. whole paths, never trained on
+                val_parts.append(d)
+                nval += len(d)
+                if nval >= a.val_samples:
+                    old = [np.load(vp)] if os.path.exists(vp) else []
+                    np.save(vp, np.concatenate(old + val_parts))
+                    log(f'validation set: {nval} samples from whole held-out paths -> {os.path.relpath(vp, ROOT)}')
+                    val_parts = []
+                continue
             sw.add(d)
             if time.time() - last >= 15:
                 st = w.stats()
@@ -131,39 +146,67 @@ def cmd_gen(a):
         w.stop()
         sw.add(w.drain())
         sw.flush()
+        if val_parts:
+            old = [np.load(vp)] if os.path.exists(vp) else []
+            np.save(vp, np.concatenate(old + val_parts))
         st = w.stats()
         log(f'gen done: {sw.written / 1e6:.2f}M samples in {time.time() - t0:.0f}s; paths {st["paths"]:.0f}, '
             f'finished {st["paths_fin"] / max(1, st["paths"]):.1%}')
 
 
 # ------------------------------------------------------------------------------------------------ data / model
-def load_base(a, log, device, merge_labels=False):
+def load_base(a, log, device, merge_labels=False, search_samples=0):
+    """-> (base replay, known-tour replay, validation samples). search_samples: also train on that many
+    samples from earlier searches (positions the search visited, labelled by the workers)."""
     data = os.path.join(a.run, 'data')
     tp = os.path.join(data, 'tours.npy')
     tours = np.load(tp) if os.path.exists(tp) else np.zeros(0, K.SAMPLE_DTYPE)
-    arr = load_shards(os.path.join(data, 'gen_*.npy'), int(a.base_cap * 1.25), extra=tours)
-    if len(arr) <= len(tours):
+    arr = load_shards(os.path.join(data, 'gen_*.npy'), int(a.base_cap * 1.25))
+    if len(arr) == 0:
         raise SystemExit(f'no generated data in {data}: run the gen step first')
-    n0 = len(arr) - len(tours)
+    n0 = len(arr)
+    ns = 0
+    if search_samples > 0:
+        srch = load_shards(os.path.join(data, 'search_*.npy'), search_samples)
+        ns = len(srch)
+        if ns:
+            arr = np.concatenate([arr, srch])
+            del srch
     arr = dedup_max(arr)
-    log(f'base data: {n0 / 1e6:.2f}M generated + {len(tours)} known-tour samples -> {len(arr) / 1e6:.2f}M unique states')
+    log(f'base data: {n0 / 1e6:.2f}M generated + {ns / 1e6:.2f}M search samples -> {len(arr) / 1e6:.2f}M unique states')
     if merge_labels:
         K.label_merge(arr)  # the best-label table starts with every base label
+        K.label_merge(tours.copy())
     rng = np.random.default_rng(a.seed)
     rng.shuffle(arr)
     if len(arr) > a.base_cap:
         arr = arr[:a.base_cap]
-    nval = min(100_000, len(arr) // 50)
-    val, arr = arr[:nval].copy(), arr[nval:]
-    # known tours are a tiny but crucial part of the data: repeat them
-    rep = np.concatenate([tours] * a.tour_repeat) if len(tours) and a.tour_repeat > 0 else tours[:0]
-    base = Replay(len(arr) + len(rep), device)
+    vp = os.path.join(data, 'val.npy')
+    if os.path.exists(vp):
+        # held-out paths; drop positions shared with training paths (seed-tour prefixes, exact duplicates)
+        val = np.load(vp)
+        val = val[(val['src'] != 0) & (val['src'] != 5)]
+        val = val[~np.isin(row_hash(val), row_hash(arr))]
+        val = val[rng.permutation(len(val))[:a.val_samples]]
+        how = 'whole held-out paths'
+    else:
+        nval = min(100_000, len(arr) // 50)
+        val, arr = arr[:nval].copy(), arr[nval:]
+        how = 'random positions (no val.npy: run gen to make a path-disjoint set)'
+    base = Replay(max(a.base_cap, len(arr)), device)
     base.add(arr)
-    base.add(rep)
+    tours_rb = Replay(max(1, len(tours)), device)
+    tours_rb.add(tours)
     fin = (arr['label'] > 0).mean()
-    log(f'base replay {base.n / 1e6:.2f}M on GPU ({fin:.0%} can finish), validation {len(val)}')
+    log(f'base replay {base.n / 1e6:.2f}M on GPU ({fin:.0%} can finish) + {tours_rb.n} known-tour positions '
+        f'({a.tour_frac:.0%} of each batch); validation {len(val)} ({how})')
     del arr
-    return base, val
+    return base, tours_rb, val
+
+
+def sample_base(base, tours_rb, n, tour_frac):
+    nt = int(round(n * tour_frac)) if tours_rb.n else 0
+    return torch.cat([base.sample(n - nt), tours_rb.sample(nt)]) if nt else base.sample(n)
 
 
 def save_model(path, model, opt=None, extra=None):
@@ -195,8 +238,9 @@ def maybe_compile(model, on, log):
 
 
 class Trainer:
-    def __init__(self, model, lr, wd, batch, fut_w, fwd=None):
+    def __init__(self, model, lr, wd, batch, fut_w, fwd=None, tau=0.5):
         self.model = model
+        self.tau = tau
         self.fwd = model if fwd is None else fwd
         self.opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
         self.batch, self.fut_w = batch, fut_w
@@ -215,7 +259,7 @@ class Trainer:
         with torch.autocast('cuda', dtype=torch.bfloat16):
             x = featurize(d['alt'], d['vis'], d['pos'], d['T']).to(memory_format=torch.channels_last)
             fl, fu = self.fwd(x)
-            loss, lf, lu = loss_fn(fl, fu, d['T'], d['label'], self.fut_w)
+            loss, lf, lu = loss_fn(fl, fu, d['T'], d['label'], self.fut_w, self.tau)
         self.opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
@@ -234,7 +278,7 @@ class Trainer:
 
 
 @torch.inference_mode()
-def predict(model, rec, gamma=1.0, depth_bonus=0.0, chunk=16384):
+def predict(model, rec, gamma=1.0, depth_bonus=0.0, chunk=16384, noise=0.0):
     """rec: (n,204) uint8 tensor on any device -> (search value, p_fin, future minutes) as GPU tensors."""
     model.eval()
     dev = next(model.parameters()).device
@@ -251,6 +295,8 @@ def predict(model, rec, gamma=1.0, depth_bonus=0.0, chunk=16384):
             x = featurize(d['alt'], d['vis'], d['pos'], d['T']).to(memory_format=torch.channels_last)
             fl, fu = model(x)
         v = search_value(fl, fu, d['T'], gamma) + depth_bonus * d['depth'].float()
+        if noise > 0:  # exploration: a random perturbation per position (minutes)
+            v = v + noise * torch.randn_like(v)
         vs.append(v[:m].float())
         ps.append(torch.sigmoid(fl[:m].float()))
         fs.append(1000.0 * fu[:m].float())
@@ -279,6 +325,29 @@ def val_metrics(model, val_rec):
     return out
 
 
+@torch.inference_mode()
+def val_loss(model, rec, fut_w, chunk=16384, tau=0.5):
+    """Same loss as training (BCE + fut_w * smooth L1 on finishable positions), over the whole set."""
+    import torch.nn.functional as F
+    model.eval()
+    s_fin = s_fut = 0.0
+    n = nf = 0
+    for i in range(0, len(rec), chunk):
+        d = unpack(rec[i:i + chunk])
+        with torch.autocast('cuda', dtype=torch.bfloat16):
+            x = featurize(d['alt'], d['vis'], d['pos'], d['T']).to(memory_format=torch.channels_last)
+            fl, fu = model(x)
+        fin = (d['label'] > 0).float()
+        s_fin += F.binary_cross_entropy_with_logits(fl.float(), fin, reduction='sum').item()
+        m = fin > 0
+        tgt = ((d['label'] - d['T'].float()).clamp(min=0) / 1000.0)[m]
+        s_fut += fut_loss(fu.float()[m], tgt, tau, reduction='sum').item()
+        n += len(fin)
+        nf += int(m.sum().item())
+    lf, lu = s_fin / max(1, n), s_fut / max(1, nf)
+    return lf + fut_w * lu, lf, lu
+
+
 def fmt_metrics(m):
     if not m:
         return '-'
@@ -293,36 +362,81 @@ def cmd_train(a):
     log = Log(a.run)
     dev = 'cuda'
     torch.backends.cudnn.benchmark = True
-    log(f'== train: {a.train_minutes} min, batch {a.batch}, lr {a.lr}')
-    base, val = load_base(a, log, dev)
+    tune = a.cmd == 'tune'
+    lr0 = a.lr_tune if tune else a.lr
+    minutes = a.tune_minutes if tune else a.train_minutes
+    log(f'== {"fine-tune" if tune else "train"}: up to {minutes} min, batch {a.batch}, lr {lr0}, future-minutes quantile '
+        f'{a.fut_quantile}, early stopping after {a.patience} evaluations without a better validation loss; '
+        f'{a.train_gen_threads} threads keep generating fresh data meanwhile')
+    base, tours_rb, val = load_base(a, log, dev, search_samples=a.tune_search_samples if tune else 0)
     val_rec = torch.from_numpy(val.view(np.uint8).reshape(-1, REC)).to(dev)
     mp = os.path.join(a.run, 'model.pt')
-    if a.resume_model and os.path.exists(mp):
+    if (a.resume_model or tune) and os.path.exists(mp):
         model, _ = load_model(mp, dev)
         log(f'resumed {mp}')
     else:
         model = make_model(a.channels, a.blocks, dev)
-    log(f'network: {a.channels} channels x {a.blocks} blocks, {n_params(model) / 1e6:.2f}M parameters')
-    tr = Trainer(model, a.lr, a.wd, a.batch, a.fut_w)  # eager: compiled training gave NaN gradients here
+    log(f'network: {model.cfg["channels"]} channels x {model.cfg["blocks"]} blocks, {n_params(model) / 1e6:.2f}M parameters')
+    tr = Trainer(model, lr0, a.wd, a.batch, a.fut_w, tau=a.fut_quantile)  # eager: compiled training gave NaN gradients here
+    w = sw = None
+    if a.train_gen_threads > 0:  # the CPU is otherwise idle: keep making fresh paths (less overfitting)
+        setup_engine(a, log)
+        K.set_param('frac_label', 0.0)
+        sw = ShardWriter(os.path.join(a.run, 'data'), 'gen')
+        w = K.Workers(a.train_gen_threads, a.seed + 7)
     t0 = time.time()
-    total = a.train_minutes * 60
-    last = t0
-    while not STOP:
-        el = time.time() - t0
-        if el >= total:
-            break
-        lr = a.lr * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * el / total)))
-        tr.set_lr(lr)
-        tr.step(base.sample(a.batch))
-        if time.time() - last >= 60:
-            l, lf, lu = tr.pop_losses()
-            seen = tr.steps * a.batch
-            log(f'step {tr.steps} ({seen / base.n:.2f} epochs) lr {lr:.2e} loss {l:.4f} (fin {lf:.4f} fut {lu:.4f}) | '
-                f'val {fmt_metrics(val_metrics(model, val_rec))}')
-            last = time.time()
+    total = minutes * 60
+    last = last_drain = t0
+    best = (float('inf'), 0, None)  # (validation loss, step, weights)
+    bad = 0
+    streamed = 0
+    stopped_early = False
+    try:
+        while not STOP:
+            el = time.time() - t0
+            if el >= total:
+                break
+            lr = lr0 * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * el / total)))
+            tr.set_lr(lr)
+            tr.step(sample_base(base, tours_rb, a.batch, a.tour_frac))
+            if w is not None and time.time() - last_drain >= 5:
+                d = w.drain()
+                base.add(d)
+                sw.add(d)
+                streamed += len(d)
+                last_drain = time.time()
+            if time.time() - last >= a.eval_seconds:
+                l, lf, lu = tr.pop_losses()
+                vl, vf, vu = val_loss(model, val_rec, a.fut_w, tau=a.fut_quantile)
+                better = vl < best[0] - 1e-4
+                if better:
+                    best = (vl, tr.steps, copy.deepcopy(model.state_dict()))
+                    bad = 0
+                else:
+                    bad += 1
+                log(f'step {tr.steps} ({tr.steps * a.batch / 1e6:.0f}M samples; {streamed / 1e6:.1f}M fresh) lr {lr:.2e} | '
+                    f'train loss {l:.4f} (fin {lf:.4f} fut {lu:.4f}) | val loss {vl:.4f} (fin {vf:.4f} fut {vu:.4f}) '
+                    f'{"best" if better else f"no gain {bad}/{a.patience}"} | {fmt_metrics(val_metrics(model, val_rec))}')
+                last = time.time()
+                if bad >= a.patience:
+                    stopped_early = True
+                    log(f'early stop: validation loss has not improved for {a.patience} evaluations')
+                    break
+    finally:
+        if w is not None:
+            w.stop()
+            d = w.drain()
+            base.add(d)
+            sw.add(d)
+            sw.flush()
+    if best[2] is not None:
+        model.load_state_dict(best[2])
+    vl, vf, vu = val_loss(model, val_rec, a.fut_w, tau=a.fut_quantile)
     save_model(mp, model, tr.opt)
     save_model(os.path.join(a.run, 'model_init.pt'), model)
-    log(f'train done: {tr.steps} steps; val {fmt_metrics(val_metrics(model, val_rec))}; saved {mp}')
+    log(f'train done: {tr.steps} steps in {(time.time() - t0) / 60:.1f} min ({"early stop" if stopped_early else "time limit"}); '
+        f'kept the weights from step {best[1]} with validation loss {vl:.4f} (fin {vf:.4f} fut {vu:.4f}); '
+        f'{fmt_metrics(val_metrics(model, val_rec))}; saved {os.path.relpath(mp, ROOT)}')
 
 
 # ------------------------------------------------------------------------------------------------ search
@@ -343,7 +457,8 @@ def cmd_search(a):
     torch.set_num_threads(2)
     rec_best = record_minutes()
     log(f'== search: {a.hours} h; batch {a.pop_batch} pops, {a.workers} worker threads, {a.expand_threads} expand threads; '
-        f'record to beat {rec_best}')
+        f'record to beat {rec_best}; exploration: quantile {a.fut_quantile}, gamma {a.gamma}, noise {a.noise}, '
+        f'novelty {a.novelty_w} per doubling (subtrees {a.novelty_k1} and {a.novelty_k2} moves up)')
     setup_engine(a, log)
     K.label_init(a.label_log2)
     mp = os.path.join(a.run, 'model.pt')
@@ -352,7 +467,7 @@ def cmd_search(a):
     train_model, ck = load_model(mp, dev)
     eval_model = copy.deepcopy(train_model).eval()
     eval_fwd = maybe_compile(eval_model, a.compile, log)
-    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w)  # eager (compiled training gave NaN gradients)
+    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w, tau=a.fut_quantile)  # eager (compiled training gave NaN gradients)
     if 'opt' in ck:
         try:
             tr.opt.load_state_dict(ck['opt'])
@@ -361,7 +476,7 @@ def cmd_search(a):
     tr.set_lr(a.lr_online)
     log(f'network {ck["cfg"]}, {n_params(train_model) / 1e6:.2f}M parameters')
 
-    base, val = load_base(a, log, dev, merge_labels=True)
+    base, tours_rb, val = load_base(a, log, dev, merge_labels=True)
     val_rec = torch.from_numpy(val.view(np.uint8).reshape(-1, REC)).to(dev)
     fresh = Replay(a.fresh_cap, dev)
     fval = Replay(200_000, dev)
@@ -417,7 +532,7 @@ def cmd_search(a):
             pending = ex.submit(astar.expand, nxt, a.pop_batch, a.expand_threads, bufs[nxt].numpy())
             ti = time.time()
             if n_cur > 0:
-                v, _, _ = predict(eval_fwd, bufs[slot][:n_cur], a.gamma, a.depth_bonus)
+                v, _, _ = predict(eval_fwd, bufs[slot][:n_cur], a.gamma, a.depth_bonus, noise=a.noise)
                 f = v.cpu().numpy()
             else:
                 f = np.zeros(0, np.float32)
@@ -485,7 +600,7 @@ def cmd_search(a):
                 target = a.train_frac / (1 - a.train_frac) * t_inf
                 while t_train + (time.time() - tt) < target and not STOP:
                     nf = int(a.batch * a.fresh_frac)
-                    rec = torch.cat([fresh.sample(nf), base.sample(a.batch - nf)])
+                    rec = torch.cat([fresh.sample(nf), sample_base(base, tours_rb, a.batch - nf, a.tour_frac)])
                     tr.step(rec)
                     if time.time() - tt > 2.0:
                         break
@@ -497,7 +612,7 @@ def cmd_search(a):
                 if not all(torch.isfinite(p).all() for p in train_model.parameters()):
                     log('WARNING: training produced non-finite weights; reverting to the search network')
                     train_model.load_state_dict(eval_model.state_dict())
-                    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w)
+                    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w, tau=a.fut_quantile)
                     last_sync = time.time()
                     continue
                 eval_model.load_state_dict(train_model.state_dict())
@@ -506,7 +621,7 @@ def cmd_search(a):
                 shift = 0.0
                 if len(rec):
                     rt = torch.from_numpy(rec.view(np.uint8).reshape(-1, REC))
-                    v, _, _ = predict(eval_fwd, rt, a.gamma, a.depth_bonus)
+                    v, _, _ = predict(eval_fwd, rt, a.gamma, a.depth_bonus, noise=a.noise)
                     shift = astar.rescore_import(v.cpu().numpy())
                 save_model(mp, train_model, tr.opt)
                 log(f'network updated ({tr.steps} online steps); re-scored {len(rec) / 1e6:.2f}M open nodes in '
@@ -520,7 +635,8 @@ def cmd_search(a):
                 de = st['expansions'] - prev_as.get('expansions', 0)
                 log(f"A* {de / dt / 1e3:.1f}k exp/s | since best {(now - last_improve) / 60:.0f} min | open {st['open'] / 1e6:.2f}M nodes {st['nodes'] / 1e6:.1f}M "
                     f"maxdepth {st['maxdepth']:.0f} | best {st['best']:.0f} top f {st['top_f']:.0f} | finishes {st['finishes']:.0f} "
-                    f"dead {st['dead']:.0f} dup {st['dup']:.0f} stale {st['stale']:.0f} gc {st['gc']:.0f} prune {st['prune']:.0f}")
+                    f"dead {st['dead']:.0f} dup {st['dup']:.0f} stale {st['stale']:.0f} gc {st['gc']:.0f} prune {st['prune']:.0f} "
+                    f"requeued {st['lazy']:.0f}")
                 log(f"   workers: {worker_line(ws, prev_ws, dt)} | label queue {ws['label_queue']:.0f}")
                 log(f"   train: {tr.steps} steps, loss {l:.4f} (fin {lf:.4f} fut {lu:.4f}), GPU {t_train / max(1e-9, t_train + t_inf):.0%} "
                     f"| fresh {fresh.n / 1e6:.2f}M | val base {fmt_metrics(val_metrics(train_model, val_rec[:20000]))} "
@@ -549,10 +665,11 @@ def cmd_search(a):
 # ------------------------------------------------------------------------------------------------ main
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('cmd', choices=['gen', 'train', 'search', 'all'])
+    p.add_argument('cmd', choices=['gen', 'train', 'search', 'all', 'tune'],
+                   help='tune = fine-tune the run folder\'s network (generated + search data), then search')
     p.add_argument('--run', default='runs/nnastar', help='run folder (data, network, logs, tours)')
     p.add_argument('--seed', type=int, default=1)
-    p.add_argument('--tours', nargs='+', default=['data/tours/record_8002.txt:3', 'data/tours/record_7911.txt', 'data/tours/record_7200.txt', 'data/tours/record_7066.txt',
+    p.add_argument('--tours', nargs='+', default=['data/tours/record_8123.txt:2', 'data/tours/record_8002.txt', 'data/tours/record_7911.txt', 'data/tours/record_7200.txt', 'data/tours/record_7066.txt',
                                                    'data/tours/tour_6303.txt', 'runs/pool.txt', 'data/tours/curriculum.txt:0.03',
                                                    'data/tours/openings.txt:0.03'],
                    help='seed tours FILE[:weight]; seed jobs pick a tour by weight')
@@ -572,14 +689,24 @@ def main():
     g = p.add_argument_group('network and training')
     g.add_argument('--channels', type=int, default=128)
     g.add_argument('--blocks', type=int, default=12)
-    g.add_argument('--train-minutes', type=float, default=25)
+    g.add_argument('--train-minutes', type=float, default=35, help='training budget (cosine schedule); early stopping can end it sooner')
+    g.add_argument('--patience', type=int, default=8, help='evaluations without a better validation loss before stopping')
+    g.add_argument('--eval-seconds', type=float, default=60)
+    g.add_argument('--val-samples', type=int, default=150_000, help='size of the held-out validation set (whole paths)')
+    g.add_argument('--train-gen-threads', type=int, default=24, help='threads generating fresh data while training (0: off)')
     g.add_argument('--batch', type=int, default=2048)
     g.add_argument('--lr', type=float, default=2e-3)
     g.add_argument('--lr-online', type=float, default=3e-4)
     g.add_argument('--wd', type=float, default=1e-4)
     g.add_argument('--fut-w', type=float, default=1.0, help='weight of the future-minutes loss')
+    g.add_argument('--fut-quantile', type=float, default=0.95,
+                   help='future minutes are fit to this quantile of the labels of similar positions: 0.5 = typical, '
+                        'near 1 = their maximum (exactly 1 is degenerate: only under-predictions would be penalised)')
+    g.add_argument('--lr-tune', type=float, default=5e-4, help='learning rate for tune')
+    g.add_argument('--tune-minutes', type=float, default=20, help='fine-tuning budget for tune (early stopping applies)')
+    g.add_argument('--tune-search-samples', type=int, default=6_000_000, help='search samples added to the data for tune')
     g.add_argument('--base-cap', type=int, default=16_000_000, help='generated samples kept on the GPU')
-    g.add_argument('--tour-repeat', type=int, default=20, help='copies of the known-tour positions in the base data')
+    g.add_argument('--tour-frac', type=float, default=0.01, help='share of each base batch drawn from known-tour positions')
     g.add_argument('--tour-min-score', type=int, default=5000, help='known tours at least this long give labelled positions')
     g.add_argument('--resume-model', action='store_true', help='train: continue from the run folder model.pt')
     g = p.add_argument_group('search')
@@ -591,7 +718,12 @@ def main():
     g.add_argument('--max-open', type=int, default=40_000_000, help='open-list cap (worst entries are dropped)')
     g.add_argument('--dedup-log2', type=int, default=27, help='duplicate table: 2^k slots, 12 bytes each')
     g.add_argument('--label-log2', type=int, default=26, help='best-label table: 2^k slots, 12 bytes each')
-    g.add_argument('--gamma', type=float, default=1.0, help='search value = p_finish^gamma * (T + future)')
+    g.add_argument('--gamma', type=float, default=0.5, help='search value = p_finish^gamma * (T + future); <1 risks more')
+    g.add_argument('--noise', type=float, default=60, help='exploration: random perturbation (std, minutes) of each position\'s value')
+    g.add_argument('--novelty-w', type=float, default=10,
+                   help='exploration: minutes of priority lost per doubling of the expansions in a node\'s subtree (0: off)')
+    g.add_argument('--novelty-k1', type=int, default=8, help='novelty counts expansions under the ancestor this many moves up...')
+    g.add_argument('--novelty-k2', type=int, default=32, help='... and under the ancestor this many moves up')
     g.add_argument('--depth-bonus', type=float, default=0.0, help='minutes added to f per move from a1 (>0 dives deeper)')
     g.add_argument('--anchor-tour', default='', help='start the search after the first --anchor-len moves of this tour')
     g.add_argument('--anchor-len', type=int, default=0)
@@ -623,9 +755,9 @@ def main():
     signal.signal(signal.SIGINT, _sigint)
     if a.cmd in ('gen', 'all'):
         cmd_gen(a)
-    if a.cmd in ('train', 'all') and not STOP:
+    if a.cmd in ('train', 'all', 'tune') and not STOP:
         cmd_train(a)
-    if a.cmd in ('search', 'all') and not STOP:
+    if a.cmd in ('search', 'all', 'tune') and not STOP:
         cmd_search(a)
 
 

@@ -112,7 +112,7 @@ class Workers:
 
 class AStar:
     STAT_NAMES = ['expansions', 'children', 'finishes', 'dead', 'dup', 'stale', 'gc', 'prune', 'nodes', 'open', 'best',
-                  'maxdepth', 'dedup', 'dedup_clears', 'top_f']
+                  'maxdepth', 'dedup', 'dedup_clears', 'top_f', 'lazy']
 
     def __init__(self, prefix_file='', prefix_len=0, max_nodes=400_000_000, max_open=40_000_000, dedup_log2=27):
         r = lib().km_astar_init(prefix_file.encode(), prefix_len, max_nodes, max_open, dedup_log2)

@@ -272,7 +272,9 @@ static void worker_main(int tid, unsigned seed) {
 static const uint32_t NIL = 0xFFFFFFFFu;
 struct Node { uint32_t parent; uint16_t delta; uint8_t q; uint8_t flags; float best; };
 static_assert(sizeof(Node) == 12, "Node layout");
-struct HE { float f; uint32_t id; };
+// open-list entry: f = fraw - novelty penalty; fraw = network value (+ noise, depth bonus);
+// a1, a2 = the node's ancestors NOV_K1 and NOV_K2 moves up (subtrees whose expansions are counted)
+struct HE { float f; uint32_t id; float fraw; uint32_t a1, a2; };
 static inline bool operator<(const HE& a, const HE& b) { return a.f < b.f; }
 static Node* NODES = nullptr; static uint64_t NNODE = 0, MAXN = 0;
 static vector<HE> HEAP; static uint64_t MAXOPEN = 0; static double PRUNE_KEEP = 0.75;
@@ -281,7 +283,7 @@ static S ROOT; static int ROOT_DEPTH = 0; static vector<Mv> ROOT_PREFIX;
 struct DE { uint64_t k; int32_t T; };
 #pragma pack(pop)
 static DE* DD = nullptr; static uint64_t DMASK = 0, DCOUNT = 0, DCAP = 0;
-struct Pending { uint32_t parent; uint16_t delta; uint8_t q; };
+struct Pending { uint32_t parent; uint16_t delta; uint8_t q; uint32_t a1, a2; };
 static vector<Pending> PEND[2];
 static double P_LABEL = 0.05;
 static long long BEST_SCORE = -1; static vector<Mv> BEST_SEQ; static long long POOL_MIN = 7500;
@@ -289,7 +291,22 @@ static std::set<long long> SEEN_SCORES; static vector<pair<long long, string>> F
 static vector<Sample> TREE_OUT;  // A* finished paths (labelled with node.best), drained by Python
 static long long A_EXP = 0, A_CHILD = 0, A_FIN = 0, A_DEAD = 0, A_DUP = 0, A_STALE = 0, A_GC = 0, A_PRUNE = 0, A_MAXDEPTH = 0, A_DDCLEAR = 0;
 static std::mt19937_64 ARNG(12345);
-static vector<pair<uint32_t, float>> RESC;  // rescoring: (heap index, old f)
+static vector<pair<uint32_t, float>> RESC;  // rescoring: (heap index, old fraw)
+
+// Novelty: every expansion is counted against the node's ancestors NOV_K1 and NOV_K2 moves up, and an
+// entry's priority drops by NOVELTY_W * (log2(1 + count1) + log2(1 + count2)). Heavily searched subtrees
+// sink, so the search spreads out. Counts only grow, so stale priorities are fixed lazily when popped.
+static double NOVELTY_W = 0; static int NOV_K1 = 8, NOV_K2 = 32; static const int CNT_LOG2 = 25;
+static vector<uint32_t> CNT1, CNT2; static long long A_LAZY = 0;
+static inline uint32_t cb(uint32_t id) { return (id * 2654435761u) >> (32 - CNT_LOG2); }
+static inline float novelty_pen(const HE& e) {
+  if (NOVELTY_W <= 0 || CNT1.empty()) return 0.f;
+  return (float)(NOVELTY_W * (log2f(1.f + (float)CNT1[cb(e.a1)]) + log2f(1.f + (float)CNT2[cb(e.a2)])));
+}
+static void clear_counts() {
+  if (NOVELTY_W > 0) { CNT1.assign(1u << CNT_LOG2, 0); CNT2.assign(1u << CNT_LOG2, 0); }
+  else { vector<uint32_t>().swap(CNT1); vector<uint32_t>().swap(CNT2); }
+}
 
 static inline uint64_t skey(const S& s) { uint64_t h = hashS(s, true); return h ? h : 1; }
 // dedup lookup: returns stored T or INT32_MIN
@@ -308,9 +325,11 @@ static inline void dd_put(uint64_t k, int32_t T) {
 }
 
 // rebuild the state of node id; returns depth (moves from a1); fills path (moves from the root) if given
-static int rebuild(uint32_t id, S& s, vector<Mv>* path = nullptr) {
+// chain (if given) receives the node ids from id up to (not including) the root
+static int rebuild(uint32_t id, S& s, vector<Mv>* path = nullptr, vector<uint32_t>* chain = nullptr) {
   static thread_local vector<Mv> mv; mv.clear();
-  for (uint32_t c = id; c != 0; c = NODES[c].parent) mv.push_back({NODES[c].delta, NODES[c].q});
+  if (chain) chain->clear();
+  for (uint32_t c = id; c != 0; c = NODES[c].parent) { mv.push_back({NODES[c].delta, NODES[c].q}); if (chain) chain->push_back(c); }
   s = ROOT;
   for (size_t i = mv.size(); i-- > 0;) apply_move(s, mv[i].delta, mv[i].q);
   if (path) { path->assign(mv.rbegin(), mv.rend()); }
@@ -335,9 +354,10 @@ static void gc() {
     NODES[rank((uint32_t)i)] = nd;
   }
   NNODE = rk[nw];
-  for (auto& h : HEAP) h.id = rank(h.id);
-  for (int sl = 0; sl < 2; sl++) for (auto& p : PEND[sl]) p.parent = rank(p.parent);
+  for (auto& h : HEAP) { h.id = rank(h.id); h.a1 = rank(h.a1); h.a2 = rank(h.a2); }  // ancestors are always kept
+  for (int sl = 0; sl < 2; sl++) for (auto& p : PEND[sl]) { p.parent = rank(p.parent); p.a1 = rank(p.a1); p.a2 = rank(p.a2); }
   RESC.clear();
+  clear_counts();  // node ids changed
   A_GC++;
 }
 
@@ -391,6 +411,7 @@ int km_set(const char* name, double v) {
   else if (n == "prefix_rate") PREFIX_RATE = v; else if (n == "label_path_rate") LABEL_PATH_RATE = v;
   else if (n == "frac_label") FRAC_LABEL = v; else if (n == "anchor_pow") ANCHOR_POW = v;
   else if (n == "nice") NICE = (int)v; else if (n == "lq_cap") LQ_CAP = (size_t)v; else if (n == "out_cap") OUT_CAP = (size_t)v;
+  else if (n == "novelty_w") NOVELTY_W = v; else if (n == "novelty_k1") NOV_K1 = max(1, (int)v); else if (n == "novelty_k2") NOV_K2 = max(1, (int)v);
   else if (n == "p_label") P_LABEL = v; else if (n == "pool_min") POOL_MIN = (long long)v; else if (n == "prune_keep") PRUNE_KEEP = v;
   else return 0;
   return 1;
@@ -469,8 +490,9 @@ int km_astar_init(const char* fn, int prefix_len, unsigned long long max_nodes, 
     ROOT_DEPTH = (int)ROOT_PREFIX.size();
   }
   NNODE = 1; NODES[0] = {NIL, 0, 0, 0, -1.f};
-  HEAP.clear(); HEAP.push_back({1e9f, 0});
+  HEAP.clear(); HEAP.push_back({1e9f, 0, 1e9f, 0, 0});
   PEND[0].clear(); PEND[1].clear(); RESC.clear();
+  clear_counts(); A_LAZY = 0;
   dd_put(skey(ROOT), ROOT.T);
   BEST_SCORE = -1; BEST_SEQ.clear(); SEEN_SCORES.clear(); FOUND.clear(); TREE_OUT.clear();
   A_EXP = A_CHILD = A_FIN = A_DEAD = A_DUP = A_STALE = A_GC = A_PRUNE = A_MAXDEPTH = A_DDCLEAR = 0;
@@ -483,11 +505,19 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
   PEND[slot].clear();
   vector<uint32_t> pop;
   while ((int)pop.size() < B && !HEAP.empty()) {
-    std::pop_heap(HEAP.begin(), HEAP.end()); pop.push_back(HEAP.back().id); HEAP.pop_back();
+    std::pop_heap(HEAP.begin(), HEAP.end()); HE e = HEAP.back(); HEAP.pop_back();
+    if (NOVELTY_W > 0 && !CNT1.empty()) {
+      float fn = e.fraw - novelty_pen(e);
+      if (fn < e.f - 0.5f && !HEAP.empty() && fn < HEAP.front().f) {  // its subtree got busier: re-queue
+        e.f = fn; HEAP.push_back(e); std::push_heap(HEAP.begin(), HEAP.end()); A_LAZY++; continue;
+      }
+      CNT1[cb(e.a1)]++; CNT2[cb(e.a2)]++;
+    }
+    pop.push_back(e.id);
   }
   if (pop.empty()) return 0;
   RESC.clear();
-  struct Ch { uint32_t parent; uint16_t delta; uint8_t q; uint64_t key; Sample smp; };
+  struct Ch { uint32_t parent; uint16_t delta; uint8_t q; uint32_t a1, a2; uint64_t key; Sample smp; };
   struct Fin { uint32_t parent; int delta; long long score; };
   int nt = max(1, min(threads, (int)pop.size() / 8 + 1));
   vector<vector<Ch>> lch(nt); vector<vector<Fin>> lfin(nt); vector<vector<LJob>> llab(nt);
@@ -496,9 +526,12 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
   auto work = [&](int t) {
     std::mt19937_64 rng(seeds[t]);
     std::uniform_real_distribution<double> U(0, 1);
-    vector<pair<int, int>> mv, mv2;
+    vector<pair<int, int>> mv, mv2; vector<uint32_t> chain;
     for (size_t j = t; j < pop.size(); j += nt) {
-      uint32_t id = pop[j]; S s; int depth = rebuild(id, s);
+      uint32_t id = pop[j]; S s; int depth = rebuild(id, s, nullptr, &chain);
+      // the children's ancestors k moves up = this node's ancestors k-1 moves up (chain[0] is this node)
+      uint32_t ca1 = (size_t)(NOV_K1 - 1) < chain.size() ? chain[NOV_K1 - 1] : 0;
+      uint32_t ca2 = (size_t)(NOV_K2 - 1) < chain.size() ? chain[NOV_K2 - 1] : 0;
       if (id != 0 && dd_get(skey(s)) > s.T) { lstale[t]++; continue; }  // reached again with more minutes
       lmaxd[t] = max<long long>(lmaxd[t], depth);
       if (U(rng) < P_LABEL) llab[t].push_back({s, depth});
@@ -508,7 +541,7 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
         S c = s; apply_move(c, d, q);
         pinned_moves(c, 3, true, mv2);
         if (mv2.empty()) { ldead[t]++; continue; }
-        Ch ch; ch.parent = id; ch.delta = (uint16_t)d; ch.q = (uint8_t)q; ch.key = skey(c);
+        Ch ch; ch.parent = id; ch.delta = (uint16_t)d; ch.q = (uint8_t)q; ch.a1 = ca1; ch.a2 = ca2; ch.key = skey(c);
         to_sample(c, depth + 1, 4, 0.f, ch.smp);
         lch[t].push_back(ch);
       }
@@ -526,7 +559,7 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
       if (old != INT32_MIN && old >= c.smp.T) { A_DUP++; continue; }
       if (n >= cap) break;
       dd_put(c.key, c.smp.T);
-      out[n++] = c.smp; PEND[slot].push_back({c.parent, c.delta, c.q});
+      out[n++] = c.smp; PEND[slot].push_back({c.parent, c.delta, c.q, c.a1, c.a2});
     }
   }
   A_CHILD += n;
@@ -549,7 +582,8 @@ void km_astar_push(int slot, const float* f, long long n) {
     if (NNODE >= MAXN) break;
     uint32_t id = (uint32_t)NNODE++;
     NODES[id] = {P[i].parent, P[i].delta, P[i].q, 0, -1.f};
-    HEAP.push_back({f[i], id}); std::push_heap(HEAP.begin(), HEAP.end());
+    HE e{f[i], id, f[i], P[i].a1, P[i].a2}; e.f = f[i] - novelty_pen(e);
+    HEAP.push_back(e); std::push_heap(HEAP.begin(), HEAP.end());
   }
   P.clear();
   if (HEAP.size() > MAXOPEN) prune_heap((uint64_t)(MAXOPEN * PRUNE_KEEP));
@@ -560,7 +594,7 @@ void km_astar_push(int slot, const float* f, long long n) {
 void km_astar_stats(double* o) {
   o[0] = A_EXP; o[1] = A_CHILD; o[2] = A_FIN; o[3] = A_DEAD; o[4] = A_DUP; o[5] = A_STALE; o[6] = A_GC; o[7] = A_PRUNE;
   o[8] = NNODE; o[9] = HEAP.size(); o[10] = BEST_SCORE; o[11] = A_MAXDEPTH; o[12] = DCOUNT; o[13] = A_DDCLEAR;
-  o[14] = HEAP.empty() ? 0 : HEAP.front().f;
+  o[14] = HEAP.empty() ? 0 : HEAP.front().f; o[15] = A_LAZY;
 }
 int km_astar_best(char* buf, int cap) {
   string t = BEST_SEQ.empty() ? "" : tour_text(BEST_SEQ);
@@ -596,7 +630,7 @@ long long km_astar_rescore_export(long long k, int threads, Sample* out) {
   if (HEAP.empty()) return 0;
   k = min<long long>(k, (long long)HEAP.size());
   std::sort(HEAP.begin(), HEAP.end(), [](const HE& a, const HE& b) { return a.f > b.f; });  // a sorted array is a valid heap
-  for (long long i = 0; i < k; i++) RESC.push_back({(uint32_t)i, HEAP[i].f});
+  for (long long i = 0; i < k; i++) RESC.push_back({(uint32_t)i, HEAP[i].fraw});
   int nt = max(1, threads);
   auto work = [&](int t) {
     for (long long i = t; i < k; i += nt) { S s; int d = rebuild(HEAP[i].id, s); to_sample(s, d, 4, 0.f, out[i]); }
@@ -607,14 +641,17 @@ long long km_astar_rescore_export(long long k, int threads, Sample* out) {
 double km_astar_rescore_import(const float* f, long long n) {
   if (RESC.empty() || n != (long long)RESC.size()) return 0;
   vector<float> dl; dl.reserve(n);
-  for (long long i = 0; i < n; i++) { dl.push_back(f[i] - RESC[i].second); HEAP[RESC[i].first].f = f[i]; }
+  for (long long i = 0; i < n; i++) {
+    HE& e = HEAP[RESC[i].first];
+    dl.push_back(f[i] - RESC[i].second); e.fraw = f[i]; e.f = f[i] - novelty_pen(e);
+  }
   // shift the rest by the median change among the lowest-scored quarter of the re-scored entries
   // (the entries closest to the ones that were not re-scored)
   vector<float> tail(dl.begin() + (dl.size() * 3) / 4, dl.end());
   if (tail.empty()) tail = dl;
   std::nth_element(tail.begin(), tail.begin() + tail.size() / 2, tail.end());
   float shift = tail[tail.size() / 2];
-  for (size_t i = (size_t)n; i < HEAP.size(); i++) HEAP[i].f += shift;
+  for (size_t i = (size_t)n; i < HEAP.size(); i++) { HEAP[i].f += shift; HEAP[i].fraw += shift; }
   std::make_heap(HEAP.begin(), HEAP.end());
   RESC.clear();
   return shift;

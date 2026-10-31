@@ -23,7 +23,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_8002.txt` | **8,002** | NN-guided A* (`nnastar/`, see below) from a1: found about 4 minutes into the first (smoke-test) search, after 1.5 minutes of data generation and 2 minutes of training |
+| `data/tours/record_8123.txt` | **8,123** | NN-guided A* (`nnastar/`), full run: 25 min generation, 31 min training (early-stopped), then found within 2 minutes of searching from a1 |
+| `data/tours/record_8002.txt` | 8,002 | NN-guided A* (`nnastar/`, see below) from a1: found about 4 minutes into the first (smoke-test) search, after 1.5 minutes of data generation and 2 minutes of training |
 | `data/tours/record_7911.txt` | 7,911 | NRPA level 4 re-searching everything after move 35 of the 7,512 tour, from fresh weights: 68 minutes on 1 thread |
 | `data/tours/record_7200.txt` | 7,200 | NRPA (`build/nrpa`), warm-started from the 7,066 tour: 6 minutes on 2 threads |
 | `data/tours/record_7066.txt` | 7,066 | AlphaZero self-play seeded from the 6,303 tour, alternated with beam search guided by its network, over three rounds |
@@ -144,8 +145,14 @@ search runs. It found 8,002.
 2. **train** (GPU, about 25 minutes). A ResNet (128 channels × 12 blocks, global-pooling layers, about 5M
    parameters) reads 52 feature planes: altitudes relative to the knight (one-hot), group sizes, the
    opposite point's altitude, visits, the knight, and global counts. It has two heads: whether a finish is
-   reachable, and the future minutes. The search value is `p_finish × (T + future)`.
-3. **search** (CPU + GPU, `--hours`, default 8). The open list is a max-heap capped at 40M entries; when
+   reachable, and the future minutes. The labels are already maxima (the best score known from each
+   position). A plain regression would predict the *average* of those maxima over similar positions, so the
+   future-minutes head instead fits their 0.95 quantile (`--fut-quantile`), which approximates their maximum.
+   (Exactly 1 is degenerate.) The search value is `p_finish^0.5 × (T + future)` (`--gamma`).
+3. **search** (CPU + GPU, `--hours`, default 8). Each position's priority f is the network's value plus
+   random exploration noise (`--noise`, 60 minutes), minus a **novelty penalty**. That penalty is
+   `--novelty-w` (10) minutes for each doubling of the expansions already made under the node's ancestors
+   8 and 32 moves up, so crowded subtrees lose priority and the search spreads out. Further rules: The open list is a max-heap capped at 40M entries; when
    full, the worst are dropped. A node is 12 bytes (parent + move); its state is rebuilt by replaying the
    path. Duplicate states are skipped unless they arrive with more minutes. Each round expands 4,096
    nodes on 8 threads while the GPU scores the previous round's children. Meanwhile:
@@ -164,6 +171,7 @@ checker (`tools/check_tour.py`) before it goes to `best.txt`, and a new record a
 make build/libnnastar.so
 .venv/bin/python -m nnastar.run all                  # gen + train + search into runs/nnastar (about 9 hours)
 .venv/bin/python -m nnastar.run search --hours 12    # more search with the trained network (resumes its data)
+.venv/bin/python -m nnastar.run tune                 # fine-tune the run's network on generated + search data, then search
 .venv/bin/python -m nnastar.run search --anchor-tour data/tours/record_8002.txt --anchor-len 35   # search after move 35
 tail -f runs/nnastar/log.txt
 ```
