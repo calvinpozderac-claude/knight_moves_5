@@ -429,19 +429,45 @@ static int run_design() {
 
 // ---------------------------------------------------------------- search mode
 static vector<Target> TG;
-// distance (in minutes) from s to target t, in the frame where h8's altitude is 0
+// Distance (in minutes) from s to target t. The target is a partition: its upper-group points U should share
+// one altitude r and its lower-group points L should sit at r - 2, wherever r is (so the measure does not
+// jump when h8 sinks with a group). altD = min over r of sum_i min(|alt_i - want_i(r)|, altCap); r is tried at
+// the median and at the most common values of the adjusted altitudes (alt_i for U, alt_i + 2 for L).
+// Plus visits used beyond the target's on group points, and the knight: its altitude vs r and its board
+// distance to the target's knight square. With --frame h8 the old h8-relative frame is used instead.
+static int FRAME = 0;  // 0 partition (default), 1 h8-relative
 static inline double target_dist(const S& s, const Target& t, double* altD = nullptr, int* visX = nullptr) {
-  int hs = s.alt[H8], ht = t.s.alt[H8]; double ad = 0; int vx = 0;
-  for (int i = 0; i < 64; i++) {
-    if (!t.key[i]) continue;
-    int d = abs((s.alt[i] - hs) - (t.s.alt[i] - ht)); ad += min<double>(d, O.altCap);
-    int over = (int)s.vis[i] - (int)t.s.vis[i]; if (over > 0) vx += over;
+  int vx = 0; double ad = 0; int ta = t.s.alt[t.s.pos];
+  for (int i = 0; i < 64; i++) if (t.key[i]) { int over = (int)s.vis[i] - (int)t.s.vis[i]; if (over > 0) vx += over; }
+  double kd;
+  if (FRAME == 1) {
+    int hs = s.alt[H8], ht = t.s.alt[H8];
+    for (int i = 0; i < 64; i++) if (t.key[i]) ad += min<double>(abs((s.alt[i] - hs) - (t.s.alt[i] - ht)), O.altCap);
+    kd = abs((s.alt[s.pos] - hs) - (ta - ht));
+  } else {
+    int v[64], n = 0;
+    for (int i = 0; i < 64; i++) if (t.key[i]) v[n++] = s.alt[i] + (t.s.alt[i] == ta ? 0 : 2);
+    int w[64]; memcpy(w, v, sizeof(int) * n); sort(w, w + n);
+    // candidates: the median and the three most common values
+    int cand[4], nc = 0; cand[nc++] = w[n / 2];
+    int bestc[3] = {0, 0, 0}, bestv[3] = {w[0], w[0], w[0]};
+    for (int i = 0; i < n;) {
+      int j = i; while (j < n && w[j] == w[i]) j++;
+      int c = j - i;
+      for (int k = 0; k < 3; k++) if (c > bestc[k]) { for (int m = 2; m > k; m--) { bestc[m] = bestc[m - 1]; bestv[m] = bestv[m - 1]; } bestc[k] = c; bestv[k] = w[i]; break; }
+      i = j;
+    }
+    for (int k = 0; k < 3; k++) if (bestc[k] > 0) cand[nc++] = bestv[k];
+    double bestD = 1e18; int bestR = cand[0];
+    for (int c = 0; c < nc; c++) {
+      double d = 0; for (int i = 0; i < n; i++) d += min<double>(abs(v[i] - cand[c]), O.altCap);
+      if (d < bestD) { bestD = d; bestR = cand[c]; }
+    }
+    ad = bestD; kd = abs(s.alt[s.pos] - bestR);
   }
-  // the knight: altitude relative to h8 and board distance to the target's knight square
-  int kd = abs((s.alt[s.pos] - hs) - (t.s.alt[t.s.pos] - ht));
   int bx = abs(s.pos % 8 - t.s.pos % 8), by = abs(s.pos / 8 - t.s.pos / 8);
   if (altD) *altD = ad; if (visX) *visX = vx;
-  return O.wAlt * ad + O.wVis * vx + O.wKnight * (min(kd, 8) + 0.5 * max(bx, by));
+  return O.wAlt * ad + O.wVis * vx + O.wKnight * (min<double>(kd, 8) + 0.5 * max(bx, by));
 }
 // priority: T + target estimate - distance, max over targets
 static inline double priority(const S& s, int* which = nullptr) {
@@ -644,7 +670,7 @@ int main(int argc, char** argv) {
     else if (a == "--targets") O.targets = nx(); else if (a == "--out-dir") O.outDir = nx();
     else if (a == "--variants") O.variants = stoi(nx()); else if (a == "--edits") O.edits = stoi(nx());
     else if (a == "--score-level") O.scoreLevel = stoi(nx()); else if (a == "--score-runs") O.scoreRuns = stoi(nx());
-    else if (a == "--dmin") DMIN = stoi(nx()); else if (a == "--dbeam") DBEAM = stoi(nx()); else if (a == "--dbeam-lambda") DBEAM_LAMBDA = stod(nx());
+    else if (a == "--dmin") DMIN = stoi(nx()); else if (a == "--frame") FRAME = nx() == "h8" ? 1 : 0; else if (a == "--dbeam") DBEAM = stoi(nx()); else if (a == "--dbeam-lambda") DBEAM_LAMBDA = stod(nx());
     else if (a == "--scorer") { string m = nx(); SCORE_MODE = m == "ideal" ? 0 : m == "bound2" ? 1 : 2; }
     else if (a == "--start-tour") O.startTour = nx(); else if (a == "--start-k") O.startK = stoi(nx());
     else if (a == "--threads") O.threads = stoi(nx()); else if (a == "--time") O.time = stod(nx()); else if (a == "--rng") O.rng = (unsigned)stoul(nx());

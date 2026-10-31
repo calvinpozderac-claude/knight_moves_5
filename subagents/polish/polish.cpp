@@ -372,15 +372,15 @@ static int THREADS = 1, WMAX = 8, EXT = 2, EXT0 = 4, NRPA_LEVEL = 3; static long
 static bool DO_NRPA = true, DO_WIN = true, QUIET = false; static float PEN = 4;
 static vector<int> TAILS = {20, 30, 45, 60};
 static string OUT = "best.txt", POOL, POLISHED; static long long POOLMIN = 7500; static unsigned RNG = 1;
-static std::mutex IOM; static long long GLOBAL_BEST = -1;
+static std::mutex IOM; static long long GLOBAL_BEST = -1; static size_t GLOBAL_N = 0;
 static double now_s(CLK::time_point t0) { return std::chrono::duration<double>(CLK::now() - t0).count(); }
 
 static void report(const Tour& t, long long T, const char* how) {
   std::lock_guard<std::mutex> lk(IOM);
   string txt = tour_text(t);
   if (!POOL.empty() && T >= POOLMIN && strcmp(how, "input")) { FILE* f = fopen(POOL.c_str(), "a"); if (f) { fprintf(f, "%lld\t%s\n", T, txt.c_str()); fclose(f); } }
-  if (T > GLOBAL_BEST) {
-    GLOBAL_BEST = T; FILE* f = fopen(OUT.c_str(), "w"); if (f) { fprintf(f, "%lld\n%s\n", T, txt.c_str()); fclose(f); }
+  if (better(T, t.size(), GLOBAL_BEST, GLOBAL_N)) {
+    GLOBAL_BEST = T; GLOBAL_N = t.size(); FILE* f = fopen(OUT.c_str(), "w"); if (f) { fprintf(f, "%lld\n%s\n", T, txt.c_str()); fclose(f); }
     if (!QUIET) printf("  new overall best %lld (%s) -> %s\n", T, how, OUT.c_str());
   }
   fflush(stdout);

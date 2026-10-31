@@ -22,8 +22,9 @@
 //  - mutation: delete / insert / replace a window of 1-3 moves, flip a dz, or regenerate the tail by NRPA-1.
 //  - memetic step: first-improvement local search (delete 1-3, replace or insert every legal move at every
 //    cut, followed by repair) on the island best and a tournament-chosen elite every --ls-every generations.
-// Island model: --threads islands (one thread each), steady-state replacement (the worst of 4 random members,
-// duplicates rejected), ring migration of the best every --mig-every generations, restart after --stall
+// Island model: --threads islands (one thread each), steady-state replacement (a child replaces its parent if
+// better, else the most similar of --crowd random members if better; duplicates and more than --max-same members
+// with the same minutes rejected), ring migration of the best every --mig-every generations, restart after --stall
 // generations without an island improvement.
 //
 // Outputs: --out FILE (line 1 minutes, line 2 tour; rewritten on every new best), --pool FILE (finished tours
@@ -525,8 +526,12 @@ struct Island {
   // its exact minutes (neutral clones of one tour would otherwise take over). Otherwise it replaces, among
   // --crowd random members (never the best), the one sharing the longest common prefix with it (crowding;
   // ties -> the worse one), if the child scores higher.
-  bool insert(Ind&& x, Ctx& c) {
+  // par >= 0: deterministic crowding first (the child replaces its parent if it beats it)
+  bool insert(Ind&& x, Ctx& c, int par = -1) {
     if (x.g.empty() || hs.count(x.h)) return false;
+    if (par >= 0 && par < (int)pop.size() && x.score > pop[par].score) {
+      hs.erase(pop[par].h); hs.insert(x.h); report(x, id); pop[par] = std::move(x); return true;
+    }
     int same = 0; for (auto& y : pop) same += y.fin == x.fin && y.T == x.T;
     if ((int)pop.size() < POP) { if (same >= MAXSAME) return false; hs.insert(x.h); report(x, id); pop.push_back(std::move(x)); return true; }
     int b = best_idx(), v = -1, vl = -1;
@@ -561,17 +566,17 @@ static void island_loop(int id, uint64_t seed) {
   I.seed(c);
   while (!STOP) {
     for (int k = 0; k < POP / 2 && !STOP; k++) {
-      Ind child; double ps = 0;
+      Ind child; double ps = 0; int par = -1;
       if (c.u() < PX && I.pop.size() >= 2) {
         int a = I.tour(c);
         const Ind* B;
         if (c.u() < PARCH && !ARCH.empty()) B = &ARCH[c.ri(0, (int)ARCH.size() - 1)];
         else { int b = I.tour(c); for (int t = 0; t < 4 && b == a; t++) b = I.tour(c); B = &I.pop[b]; }
-        child = crossover(I.pop[a], *B, c); ps = I.pop[a].score;
+        child = crossover(I.pop[a], *B, c); ps = I.pop[a].score; par = a;
         if (c.u() < 0.2) { int op = LASTOP; child = mutate(child, c); LASTOP = op; }
-      } else { int a = I.tour(c); child = mutate(I.pop[a], c); ps = I.pop[a].score; }
+      } else { int a = I.tour(c); child = mutate(I.pop[a], c); ps = I.pop[a].score; par = a; }
       int op = LASTOP; bool better = child.score > ps, fin = child.fin;
-      bool acc = I.insert(std::move(child), c);
+      bool acc = I.insert(std::move(child), c, par);
       OPST[op][0]++; OPST[op][1] += acc; OPST[op][2] += better; OPST[op][3] += fin;
     }
     I.gens++;
@@ -583,7 +588,7 @@ static void island_loop(int id, uint64_t seed) {
         I.lsDone.insert(I.pop[k].h);
         Ind y = local_search(I.pop[k], LSEVALS, c);
         OPST[7][0]++;
-        if (y.h != I.pop[k].h) { OPST[7][2]++; I.lsDone.insert(y.h); OPST[7][1] += I.insert(std::move(y), c); }
+        if (y.h != I.pop[k].h) { OPST[7][2]++; I.lsDone.insert(y.h); OPST[7][1] += I.insert(std::move(y), c, k); }
       }
     }
     if (MIGEVERY > 0 && I.gens % MIGEVERY == 0 && ISL.size() > 1) {

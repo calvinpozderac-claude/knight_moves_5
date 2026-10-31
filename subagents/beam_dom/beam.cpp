@@ -203,9 +203,15 @@ struct TTable {
   void init(int log2) { e.assign((size_t)4 << log2, TTE{0, {0, 0}, 0, 0, 0}); mask = (1ULL << log2) - 1; }
   void clear() { std::fill(e.begin(), e.end(), TTE{0, {0, 0}, 0, 0, 0}); }
   size_t b(uint64_t k) const { return (size_t)(((k >> 21) ^ k) & mask) * 4; }
+  uint16_t gen = 1;  // entries from earlier restarts (--keep-tt) prune only states they strictly dominate
   bool dominated(uint64_t key, const uint64_t vis[2], int32_t T) const {
     size_t o = b(key);
-    for (int i = 0; i < 4; i++) { const TTE& x = e[o + i]; if (x.used && x.key == key && x.T >= T && vis_le(x.vis, vis)) return true; }
+    for (int i = 0; i < 4; i++) {
+      const TTE& x = e[o + i];
+      if (x.used && x.key == key && x.T >= T && vis_le(x.vis, vis)) {
+        if (x.used == gen || x.T > T || x.vis[0] != vis[0] || x.vis[1] != vis[1]) return true;
+      }
+    }
     return false;
   }
   bool any_key(uint64_t key) const { size_t o = b(key); for (int i = 0; i < 4; i++) if (e[o + i].used && e[o + i].key == key) return true; return false; }
@@ -218,7 +224,7 @@ struct TTable {
       if (oldest < 0 || x.depth < e[o + oldest].depth) oldest = i;
     }
     if (slot < 0) slot = oldest;
-    TTE& x = e[o + slot]; x.key = key; x.vis[0] = vis[0]; x.vis[1] = vis[1]; x.T = T; x.depth = (uint16_t)depth; x.used = 1;
+    TTE& x = e[o + slot]; x.key = key; x.vis[0] = vis[0]; x.vis[1] = vis[1]; x.T = T; x.depth = (uint16_t)depth; x.used = gen;
   }
 };
 
@@ -265,7 +271,7 @@ static BeamResult run_beam(const vector<Mv>& seed, int k, int width, double nois
   // root: the first k moves of the seed
   TR.clear(); uint32_t rootTr = NONE; S root = start_state(); uint64_t h0 = 0;
   for (int i = 0; i < k; i++) { rootTr = tr_push(rootTr, seed[i].delta, seed[i].q); apply_move(root, seed[i].delta, seed[i].q); h0 = (h0 << 6) | seed[i].q; }
-  if (!KEEPTT) tt.clear();
+  if (!KEEPTT) tt.clear(); else tt.gen++;
   vector<Meta> meta{{rootTr, root.T, h0 & 0xffffffffffffULL}}, nmeta;
   vector<PState> st, nst; if (!REPLAY) { st.resize(1); pack(root, st[0]); }
   int seedIdx = (KEEPSEED && k < (int)seed.size()) ? 0 : -1;

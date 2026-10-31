@@ -158,14 +158,28 @@ struct PriorModel {
     bool ok = rd(mean, F) && rd(sd, F);
     if (H > 0) ok = ok && rd(W1, (size_t)H * F) && rd(b1, H) && rd(w2, H); else ok = ok && rd(w2, F);
     fclose(fp); if (!ok) fprintf(stderr, "prior file %s: truncated\n", fn.c_str());
+    if (H > 64) { fprintf(stderr, "prior file %s: at most 64 hidden units\n", fn.c_str()); return false; }
+    if (ok) prep();
     return ok;
   }
+  vector<float> WT, isd;  // W1 transposed (feature-major) and 1/sd, built by prep()
+  void prep() {
+    WT.assign((size_t)PF * max(H, 1), 0.f); isd.resize(PF);
+    for (int i = 0; i < PF; i++) isd[i] = 1.f / sd[i];
+    for (int h = 0; h < H; h++) for (int i = 0; i < PF; i++) WT[(size_t)i * H + h] = W1[(size_t)h * PF + i];
+  }
+  static inline float tanh_pade(float x) {  // Pade (7,6); |error| < 1e-6 for |x| < 4.97, clamped beyond
+    x = x > 4.97f ? 4.97f : x < -4.97f ? -4.97f : x; float x2 = x * x;
+    return x * (135135.f + x2 * (17325.f + x2 * (378.f + x2))) / (135135.f + x2 * (62370.f + x2 * (3150.f + 28.f * x2)));
+  }
   float score(const float* f) const {
-    float x[PF]; const float* mu = mean.data(); const float* sg = sd.data();
-    for (int i = 0; i < PF; i++) x[i] = (f[i] - mu[i]) / sg[i];
+    float x[PF]; const float* mu = mean.data(); const float* is = isd.data();
+    for (int i = 0; i < PF; i++) x[i] = (f[i] - mu[i]) * is[i];
     if (H == 0) { float o = 0; for (int i = 0; i < PF; i++) o += w2[i] * x[i]; return o; }
-    float o = 0; const float* W = W1.data();
-    for (int h = 0; h < H; h++) { const float* w = W + (size_t)h * PF; float z = b1[h]; for (int i = 0; i < PF; i++) z += w[i] * x[i]; o += w2[h] * tanhf(z); }
+    float z[64]; const float* W = WT.data();
+    for (int h = 0; h < H; h++) z[h] = b1[h];
+    for (int i = 0; i < PF; i++) { float xi = x[i]; if (xi == 0.f) continue; const float* w = W + (size_t)i * H; for (int h = 0; h < H; h++) z[h] += w[h] * xi; }
+    float o = 0; for (int h = 0; h < H; h++) o += w2[h] * tanh_pade(z[h]);
     return o;
   }
 };

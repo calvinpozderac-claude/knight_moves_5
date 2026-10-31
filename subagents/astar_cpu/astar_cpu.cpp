@@ -434,7 +434,7 @@ struct Trainer {
 
 // best-future table: position (alt, vis, pos; not T) -> most future minutes known reachable
 struct BestFuture {
-  std::unordered_map<uint64_t, int32_t> mp; std::mutex mx; size_t cap = 20000000;
+  std::unordered_map<uint64_t, int32_t> mp; std::mutex mx; size_t cap = 5000000;
   static uint64_t key(const S& s) { uint64_t k = hashS(s, true) ^ 0x5bd1e9955bd1e995ULL; return k ? k : 1; }
   void put(const S& s, int32_t fut) {
     if (fut < 0) return;
@@ -874,8 +874,16 @@ static int mode_search(Args& A) {
       restarts++; X.reset(pick_prefix()); lastRestart = elapsed();
       printf("[%6.0fs] restart %d (%s): root after %d moves\n", elapsed(), restarts, stale ? "stale" : "open list empty", X.ROOT_DEPTH); fflush(stdout);
     }
+    // room for this round's children (at most 16 per expansion); done before popping, so no node id is pending
+    int B = X.BATCH * threads;
+    uint64_t need = (uint64_t)B * 16 + 16;
+    if (X.NNODE + need > X.MAXN) {
+      X.gc();
+      if (X.NNODE + need > X.MAXN * 0.9) { X.prune_heap((uint64_t)(X.HEAP.size() * 0.5)); X.gc(); }
+      if (X.NNODE + need > X.MAXN) die("--max-nodes too small for --batch x --threads");
+    }
     // pop
-    vector<uint32_t> pop; int B = X.BATCH * threads;
+    vector<uint32_t> pop;
     while ((int)pop.size() < B && !X.HEAP.empty()) {
       std::pop_heap(X.HEAP.begin(), X.HEAP.end()); HE e = X.HEAP.back(); X.HEAP.pop_back();
       if (X.NOVELTY_W > 0) {
@@ -916,8 +924,6 @@ static int mode_search(Args& A) {
     if (nt == 1) work(0); else { vector<std::thread> th; for (int t = 0; t < nt; t++) th.emplace_back(work, t); for (auto& x : th) x.join(); }
     X.EXP += (long long)pop.size();
     // merge
-    size_t need = 0; for (int t = 0; t < nt; t++) need += lch[t].size();
-    if (X.NNODE + need + 16 > X.MAXN) { X.gc(); if (X.NNODE + need + 16 > X.MAXN * 0.9) { X.prune_heap((uint64_t)(X.HEAP.size() * 0.5)); X.gc(); } }
     for (int t = 0; t < nt; t++) {
       X.DEAD += ldead[t]; X.STALE += lstale[t]; X.MAXDEPTH = max(X.MAXDEPTH, lmaxd[t]);
       for (auto& f : lfin[t]) record_finish(f.parent, f.delta, f.score);

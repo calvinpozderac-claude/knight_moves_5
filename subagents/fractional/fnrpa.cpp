@@ -120,6 +120,7 @@ static vector<Mv> read_tour(const char* fn) {  // integer tour (line 2 of a data
       t.push_back({d, q}); apply(s, d, q); p++; } break; }
   fclose(f); return t;
 }
+static string mins(ll tsc) { ll g = std::gcd(tsc, (ll)SC); return SC / g == 1 ? to_string(tsc / g) : to_string(tsc / g) + "/" + to_string(SC / g); }
 static string text(const vector<Mv>& seq) {
   string o; St s = start(); char b[64];
   for (size_t i = 0; i < seq.size(); i++) { ll w = apply(s, seq[i].d, seq[i].q); ll g = std::gcd(w, (ll)SC); if (!g) g = 1; ll nu = w / g, de = SC / g;
@@ -135,9 +136,11 @@ int main(int argc, char** argv) {
     else if (a == "--seed") seedF = nx(); else if (a == "--amin") AMIN = stoi(nx()); else if (a == "--amax") AMAX = stoi(nx());
     else if (a == "--rng") RNG = stoul(nx()); else if (a == "--out") out = nx(); else if (a == "--pool") pool = nx(); else if (a == "--pool-min") PMIN = stod(nx());
     else { fprintf(stderr, "bad option %s\n", a.c_str()); return 1; } }
+  printf("argv:"); for (int i = 0; i < argc; i++) printf(" %s", argv[i]); printf("\n");
   for (int p = 0; p < 64; p++) for (int k = 0; k < NBN[p]; k++) KIDX[p][NBQ[p][k]] = k;
   { St s = start(); D0 = 1; D0 = hd(s); }
   vector<Mv> seed = read_tour(seedF.c_str()); { St s = start(); for (auto& m : seed) apply(s, m.d, m.q); printf("seed %s: %zu moves, %.3f minutes\n", seedF.c_str(), seed.size(), (double)s.Tsc / SC); }
+  if (AMAX > (int)seed.size() - 1) AMAX = seed.size() - 1; if (AMIN > AMAX) AMIN = AMAX;
   std::mt19937 rng(RNG); T0 = std::chrono::steady_clock::now(); Res gb; gb.score = -1e18;
   for (int rs = 0; el() < TLIM; rs++) {
     int k = std::uniform_int_distribution<int>(AMIN, AMAX)(rng);
@@ -147,8 +150,8 @@ int main(int argc, char** argv) {
     Res r = nrpa(LEV, root, pol, rng, WARM ? &init : nullptr); r.seq.insert(r.seq.begin(), seed.begin(), seed.begin() + k);
     int nfree = 0; { St s = start(); for (auto& m : r.seq) { if (m.d > 0 && s.alt[m.q] == s.alt[s.pos]) nfree++; apply(s, m.d, m.q); } }
     printf("[%6.0fs] restart %d anchor %d: %s %.3f min, %zu jumps, %d free sinks (best %.3f, %lld rollouts, chk %lld bad %lld)\n", el(), rs, k, r.fin ? "fin" : "unfin", (double)r.Tsc / SC, r.seq.size(), nfree, gb.fin ? (double)gb.Tsc / SC : 0.0, ROLL, NCHK, NBAD);
-    if (r.fin && !pool.empty() && (double)r.Tsc / SC >= PMIN) { FILE* f = fopen(pool.c_str(), "a"); fprintf(f, "%.6g\n%s\n", (double)r.Tsc / SC, text(r.seq).c_str()); fclose(f); }
-    if (r.fin && r.score > gb.score) { gb = r; FILE* f = fopen(out.c_str(), "w"); fprintf(f, "%.6g\n%s\n", (double)r.Tsc / SC, text(r.seq).c_str()); fclose(f); printf("NEW BEST %.3f\n", (double)r.Tsc / SC); }
+    if (r.fin && !pool.empty() && (double)r.Tsc / SC >= PMIN) { FILE* f = fopen(pool.c_str(), "a"); fprintf(f, "%s\n%s\n", mins(r.Tsc).c_str(), text(r.seq).c_str()); fclose(f); }
+    if (r.fin && r.score > gb.score) { gb = r; FILE* f = fopen(out.c_str(), "w"); fprintf(f, "%s\n%s\n", mins(r.Tsc).c_str(), text(r.seq).c_str()); fclose(f); printf("NEW BEST %.3f\n", (double)r.Tsc / SC); }
     fflush(stdout);
   }
 }

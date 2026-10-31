@@ -466,7 +466,8 @@ static long long report(const vector<Mv>& t, const char* tag) {
   std::lock_guard<std::mutex> lk(MTX);
   if (T < 0) { printf("[%7.0fs] %s: INVALID tour produced (bug), skipped\n", elapsed(), tag); return -1; }
   string txt = tour_text(t);
-  if (!POOLF.empty() && T >= POOLMIN) { FILE* f = fopen(POOLF.c_str(), "a"); if (f) { fprintf(f, "%lld\t%s\n", T, txt.c_str()); fclose(f); } }
+  static std::unordered_set<size_t> pooled;  // one line per distinct tour
+  if (!POOLF.empty() && T >= POOLMIN && pooled.insert(std::hash<string>()(txt)).second) { FILE* f = fopen(POOLF.c_str(), "a"); if (f) { fprintf(f, "%lld\t%s\n", T, txt.c_str()); fclose(f); } }
   if (T > GBEST) {
     GBEST = T; GBESTT = t;
     FILE* f = fopen(OUTF.c_str(), "w"); if (f) { fprintf(f, "%lld\n%s\n", T, txt.c_str()); fclose(f); }
@@ -488,6 +489,10 @@ static long long polish_tail(const vector<Mv>& t, int K, long long budget, const
   vector<int> si = sit_indices(t);
   if ((int)si.size() < K) K = (int)si.size();
   if (K <= 0) return -1;
+  {  // skip a (tour, K) pair that was already polished
+    static std::mutex m; static std::unordered_set<size_t> done; std::lock_guard<std::mutex> lk(m);
+    if (!done.insert(std::hash<string>()(tour_text(t)) * 31 + K).second) { if (nodesOut) *nodesOut = 0; return -1; }
+  }
   int j = si[si.size() - K];
   S root = replay(t, j);
   DfsCtx C; C.bestT = validate(t); C.budget = budget; C.maxDepth = POLISH_DEPTH; C.slack = SLACK;
