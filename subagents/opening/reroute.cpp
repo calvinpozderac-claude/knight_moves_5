@@ -20,7 +20,10 @@ static string text(const vector<Mv>& seq) {
     snprintf(buf, sizeof buf, "%s(%d, %s)", i ? ", " : "", w, nm(seq[i].q).c_str()); out += buf; }
   return out;
 }
-static int loss(const S& s) { int L = 0; for (int p = 1; p < 32; p++) L += min(s.vis[p], s.vis[63 - p]); return L; }
+static int MODE = 0, CAP[64], WSIT[64], TPOS = -1;
+static int loss(const S& s) {
+  if (MODE == 1) { int L = 0; for (int p = 0; p < 64; p++) L += WSIT[p] * (s.vis[p] - (p == TPOS && s.vis[p] > 0 ? 1 : 0)); return L; }
+  int L = 0; for (int p = 1; p < 32; p++) L += min(s.vis[p], s.vis[63 - p]); return L; }
 struct Part { S s; vector<Mv> mv; int cost; };
 int SLACK, BEAM;
 static void zero_nb(const S& s, int u, vector<int>& out) {
@@ -33,7 +36,12 @@ int main(int argc, char** argv) {
   vector<Mv> tour = parse(buf);
   S s = start_state(); vector<pair<int,int>> sits;  // (point, delta)
   for (int i = 0; i < M; i++) { if (tour[i].d > 0) sits.push_back({s.pos, tour[i].d}); apply_move(s, tour[i].d, tour[i].q); }
-  S target = s; fprintf(stderr, "M=%d target pos %s T=%d loss(record prefix)=%d, %zu sits\n", M, nm(target.pos).c_str(), target.T, loss(target), sits.size());
+  S target = s; TPOS = s.pos;
+  if (getenv("MODE1")) { MODE = 1; S u = s; for (int p = 0; p < 64; p++) { CAP[p] = 3; WSIT[p] = 0; }
+    for (size_t i = M; i < tour.size(); i++) { if (tour[i].d > 0) WSIT[u.pos] = 1; CAP[tour[i].q]--; apply_move(u, tour[i].d, tour[i].q); } }
+  else if (getenv("MODE2")) { MODE = 1; S u = start_state(); for (int p = 0; p < 64; p++) { CAP[p] = 3; WSIT[p] = 0; }
+    for (size_t i = 0; i < tour.size(); i++) { if (tour[i].d > 0) WSIT[u.pos] = 1; apply_move(u, tour[i].d, tour[i].q); } WSIT[TPOS] = 0; }
+  else for (int p = 0; p < 64; p++) CAP[p] = 3; fprintf(stderr, "M=%d target pos %s T=%d loss(record prefix)=%d, %zu sits\n", M, nm(target.pos).c_str(), target.T, loss(target), sits.size());
   vector<Part> beam = {{start_state(), {}, 0}};
   for (size_t k = 0; k <= sits.size(); k++) {
     int tgt = k < sits.size() ? sits[k].first : target.pos;
@@ -51,7 +59,7 @@ int main(int argc, char** argv) {
         if (c.pos == tgt) {
           if (k < sits.size()) {
             vector<pair<int,int>> mv; pinned_moves(c, 3, false, mv);
-            for (auto& [d, q] : mv) if (d == sits[k].second && q != H8) {
+            for (auto& [d, q] : mv) if (d == sits[k].second && q != H8 && c.vis[q] < CAP[q]) {
               S n = c; apply_move(n, d, q); uint64_t h = hashS(n);
               if (!seen.insert(h).second) continue;
               Part np{n, P.mv, loss(n)}; np.mv.insert(np.mv.end(), path.begin(), path.end()); np.mv.push_back({d, q}); next.push_back(np);
@@ -65,7 +73,7 @@ int main(int argc, char** argv) {
         if (depth >= maxlen) return;
         vector<int> nb2; zero_nb(c, c.pos, nb2);
         for (int q : nb2) {
-          if (c.vis[q] >= 3) continue;
+          if (c.vis[q] >= CAP[q]) continue;
           if (depth + 1 + dist[q] > maxlen) continue;
           S n = c; apply_move(n, 0, q); path.push_back({0, q}); dfs(n, depth + 1); path.pop_back();
         }
@@ -80,7 +88,9 @@ int main(int argc, char** argv) {
   }
   for (int i = 0; i < NOUT && i < (int)beam.size(); i++) {
     string fn = outp + "_" + to_string(i) + ".txt"; FILE* o = fopen(fn.c_str(), "w");
-    fprintf(o, "%s\n", text(beam[i].mv).c_str()); fclose(o);
+    vector<Mv> full = beam[i].mv; for (size_t j = M; j < tour.size(); j++) full.push_back(tour[j]);
+    S z = start_state(); for (auto& m : full) apply_move(z, m.d, m.q);
+    fprintf(o, "%d\n%s\n", z.T, text(full).c_str()); fclose(o);
     // also: pair-bound on sits from M: sum over pairs of 3 - min(...) style
     printf("%d cost %d len %zu T %d  %s\n", i, beam[i].cost, beam[i].mv.size(), beam[i].s.T, fn.c_str());
   }

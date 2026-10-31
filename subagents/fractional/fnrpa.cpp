@@ -105,9 +105,9 @@ static bool free_ok(const St& root, const vector<Mv>& seq) {
 }
 static double TLIM = 0; static std::chrono::steady_clock::time_point T0;
 static double el() { return std::chrono::duration<double>(std::chrono::steady_clock::now() - T0).count(); }
-static Res nrpa(int lev, const St& root, Pol pol, std::mt19937& rng) {
+static Res nrpa(int lev, const St& root, Pol pol, std::mt19937& rng, const Res* init = nullptr) {
   if (lev == 0) return playout(root, pol, rng);
-  Res best;
+  Res best; if (init) best = *init;
   for (int i = 0; i < ITERS && el() < TLIM; i++) { Res r = lev == 1 ? playout(root, pol, rng) : nrpa(lev - 1, root, pol, rng);
     if (FREE && r.fin && r.score >= best.score && !free_ok(root, r.seq)) { r.fin = false; r.score = -1e6 + r.score; }
     if (r.score >= best.score) best = r; adapt(pol, root, best.seq); }
@@ -128,10 +128,10 @@ static string text(const vector<Mv>& seq) {
   return o;
 }
 int main(int argc, char** argv) {
-  init_board(); int LEV = 3, AMIN = 35, AMAX = 60; unsigned RNG = 1; string seedF = "data/tours/record_8123.txt", out = "best.txt", pool; double PMIN = 8000;
+  init_board(); int WARM = 0, LEV = 3, AMIN = 35, AMAX = 60; unsigned RNG = 1; string seedF = "data/tours/record_8123.txt", out = "best.txt", pool; double PMIN = 8000;
   for (int i = 1; i < argc; i++) { string a = argv[i]; auto nx = [&]() { return string(argv[++i]); };
     if (a == "--sc") SC = stoi(nx()); else if (a == "--free") FREE = stoi(nx()); else if (a == "--fstep") FSTEP = stoi(nx()); else if (a == "--fmax") FMAX = stoi(nx());
-    else if (a == "--level") LEV = stoi(nx()); else if (a == "--iters") ITERS = stoi(nx()); else if (a == "--time") TLIM = stod(nx());
+    else if (a == "--warm") WARM = stoi(nx()); else if (a == "--level") LEV = stoi(nx()); else if (a == "--iters") ITERS = stoi(nx()); else if (a == "--time") TLIM = stod(nx());
     else if (a == "--seed") seedF = nx(); else if (a == "--amin") AMIN = stoi(nx()); else if (a == "--amax") AMAX = stoi(nx());
     else if (a == "--rng") RNG = stoul(nx()); else if (a == "--out") out = nx(); else if (a == "--pool") pool = nx(); else if (a == "--pool-min") PMIN = stod(nx());
     else { fprintf(stderr, "bad option %s\n", a.c_str()); return 1; } }
@@ -142,7 +142,9 @@ int main(int argc, char** argv) {
   for (int rs = 0; el() < TLIM; rs++) {
     int k = std::uniform_int_distribution<int>(AMIN, AMAX)(rng);
     St root = start(); for (int i = 0; i < k; i++) apply(root, seed[i].d, seed[i].q);
-    Res r = nrpa(LEV, root, Pol(), rng); r.seq.insert(r.seq.begin(), seed.begin(), seed.begin() + k);
+    Pol pol; Res init; vector<Mv> rest(seed.begin() + k, seed.end());
+    if (WARM) { for (int a = 0; a < WARM; a++) adapt(pol, root, rest); St s = root; for (auto& m : rest) apply(s, m.d, m.q); init.seq = rest; init.fin = true; init.Tsc = s.Tsc; init.score = (double)s.Tsc / SC; }
+    Res r = nrpa(LEV, root, pol, rng, WARM ? &init : nullptr); r.seq.insert(r.seq.begin(), seed.begin(), seed.begin() + k);
     int nfree = 0; { St s = start(); for (auto& m : r.seq) { if (m.d > 0 && s.alt[m.q] == s.alt[s.pos]) nfree++; apply(s, m.d, m.q); } }
     printf("[%6.0fs] restart %d anchor %d: %s %.3f min, %zu jumps, %d free sinks (best %.3f, %lld rollouts, chk %lld bad %lld)\n", el(), rs, k, r.fin ? "fin" : "unfin", (double)r.Tsc / SC, r.seq.size(), nfree, gb.fin ? (double)gb.Tsc / SC : 0.0, ROLL, NCHK, NBAD);
     if (r.fin && !pool.empty() && (double)r.Tsc / SC >= PMIN) { FILE* f = fopen(pool.c_str(), "a"); fprintf(f, "%.6g\n%s\n", (double)r.Tsc / SC, text(r.seq).c_str()); fclose(f); }

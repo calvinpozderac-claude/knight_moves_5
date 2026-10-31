@@ -19,3 +19,13 @@ with its method, commands and results. `subagents/RESULTS.md` is the running sco
 | `runner/` | Job queue, scheduler, verifier and leaderboard |
 | `prior/` | Learned move prior for NRPA (GNRPA bias) |
 | `goal/` | Goal-conditioned opening search toward a designed dance start |
+
+## Reviewers (see `REVIEW_BRIEF.md`; output in `reviews/`)
+| Reviewer | Covers |
+|---|---|
+| `rev_search` | nrpa, exact, lns, opening, fractional |
+| `rev_code_a` | astar_cpu, beam_dom, nmcs, goexplore, genetic |
+| `rev_code_b` | macro, polish, runner, prior, goal |
+| `rev_portfolio` | whole portfolio: headroom analysis, CPU allocation, evidence standard (`reviews/PORTFOLIO.md`) |
+
+Reviews are relayed to the agents by the orchestrator at each iteration.

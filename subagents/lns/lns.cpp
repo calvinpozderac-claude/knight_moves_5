@@ -172,6 +172,80 @@ static vector<S> states_of(const vector<M>& X) {
   return st;
 }
 
+
+// ---- idealised dance potential (after nrpa.cpp's dance_pot), knight may be in either group
+static double dance_pot2(const S& s) {
+  int a = s.alt[s.pos], up;
+  int cm2 = 0, cp2 = 0;
+  for (int i = 0; i < 64; i++) { if (s.alt[i] == a - 2) cm2++; else if (s.alt[i] == a + 2) cp2++; }
+  if (cm2 >= cp2 && cm2 > 0) up = a; else if (cp2 > 0) up = a + 2; else return -1e9;
+  int ah = s.alt[H8]; if (ah != up && ah != up - 2) return -1e9;
+  int grp[64], cap[64]; bool alive[64], open_[64]; int nG[2] = {0, 0};
+  for (int i = 0; i < 64; i++) {
+    alive[i] = s.alt[i] == up || s.alt[i] == up - 2; grp[i] = s.alt[i] == up ? 0 : 1;
+    if (alive[i]) nG[grp[i]]++;
+    cap[i] = alive[i] ? 3 - s.vis[i] + (i == s.pos && grp[i] == 0) : 0;
+  }
+  cap[H8] = cap[A1] = 0;
+  for (int i = 0; i < 64; i++) open_[i] = alive[i] && !alive[63 - i];
+  if (alive[s.pos] && grp[s.pos] == 0) open_[s.pos] = true;  // the knight's own sit already happened logically
+  double fut = 0; int g = 0;
+  for (int step = 0; step < 200; step++) {
+    int best = -1, bc = 0;
+    if (step == 0 && alive[s.pos] && grp[s.pos] == 0 && cap[s.pos] > 0) best = s.pos;
+    else {
+      for (int i = 0; i < 64; i++) if (alive[i] && grp[i] == g && open_[i] && cap[i] > bc) { best = i; bc = cap[i]; }
+      if (best < 0) for (int i = 0; i < 64; i++) if (alive[i] && grp[i] == g && cap[i] > bc) { best = i; bc = cap[i]; }
+    }
+    if (best < 0 || cap[best] <= 0) break;
+    int n = nG[g], p = 63 - best;
+    if (!open_[best]) {
+      if (alive[p]) { if (grp[p] == g) n--; nG[grp[p]]--; alive[p] = false; cap[p] = 0; }
+      open_[best] = true;
+    }
+    fut += 4.0 * n; cap[best]--; g ^= 1;
+  }
+  return s.T + fut;
+}
+
+struct BNode { S s; int par; M m; double h; };
+// beam search from s (path = moves leading to s); records finishes into SR via finish_check
+static void beam_tail(Search& SR, const S& s0, int W, double noise, int maxDepth = 200) {
+  struct Rec { int par; M m; };
+  vector<vector<Rec>> layers; vector<BNode> curL{{s0, -1, {0, 0}, 0}}, nxt;
+  size_t base = SR.path.size();
+  vector<pair<int, int>> mv; std::unordered_set<uint64_t> seen;
+  auto rebuild = [&](int L, int idx) {  // set SR.path = base + moves to node idx of layer L
+    vector<M> tail; for (int l = L; l >= 1; l--) { tail.push_back(layers[l - 1][idx].m); idx = layers[l - 1][idx].par; }
+    SR.path.resize(base); for (int k = (int)tail.size() - 1; k >= 0; k--) SR.path.push_back(tail[k]);
+  };
+  for (int depth = 0; depth < maxDepth && !curL.empty(); depth++) {
+    // finishes from this layer
+    for (size_t k = 0; k < curL.size(); k++) {
+      const S& s = curL[k].s;
+      if (TYP[s.pos][H8] < 0) continue;
+      long long before = SR.bestT; rebuild(depth, (int)k);
+      SR.finish_check(s); (void)before;
+    }
+    nxt.clear(); seen.clear();
+    for (size_t k = 0; k < curL.size(); k++) {
+      const S& s = curL[k].s; pinned_moves(s, 3, false, mv);
+      for (auto& [d, q] : mv) {
+        BNode b; b.s = s; int p = s.pos; apply_move(b.s, d, q);
+        uint64_t h = hashS(b.s); if (!seen.insert(h).second) continue;
+        b.par = (int)k; b.m = {(uint8_t)q, (int8_t)(b.s.alt[q] - b.s.alt[p])};
+        b.h = dance_pot2(b.s) + noise * U();
+        if (b.h < -1e8) continue;
+        nxt.push_back(b);
+      }
+    }
+    if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const BNode& x, const BNode& y) { return x.h > y.h; }); nxt.resize(W); }
+    vector<Rec> lay; lay.reserve(nxt.size()); for (auto& b : nxt) lay.push_back({b.par, b.m});
+    layers.push_back(std::move(lay)); curL.swap(nxt);
+  }
+  SR.path.resize(base);
+}
+
 struct Elite { long long T; vector<M> X; };
 
 int main(int argc, char** argv) {
@@ -236,9 +310,19 @@ int main(int argc, char** argv) {
     }
   }
 
+  if (getenv("BEAMTEST")) {
+    int W = atoi(getenv("BEAMTEST"));
+    auto st0 = states_of(gbest.X);
+    for (int i : {36, 40, 45, 50, 60, 80, 100, 115}) {
+      Search SR; SR.setY(gbest.X); SR.X = &gbest.X; SR.path.assign(gbest.X.begin(), gbest.X.begin() + i);
+      auto tb = el(); beam_tail(SR, st0[i], W, 0.0);
+      printf("beam W %d from %d: %lld (%.2fs) pot at start %.0f\n", W, i, SR.bestT, el() - tb, dance_pot2(st0[i])); fflush(stdout);
+    }
+    return 0;
+  }
   // ---- SA
   Elite cur = gbest; long long it = 0, acc = 0, impr = 0;
-  long long stat_gain[8] = {0}, stat_cnt[8] = {0};
+  long long stat_gain[9] = {0}, stat_cnt[9] = {0};
   double lastImpr = el(); int restarts = 0;
   vector<S> st = states_of(cur.X);
   while (el() < TIME) {
@@ -247,7 +331,32 @@ int main(int argc, char** argv) {
     double temp = T0 * pow(T1 / T0, fmod(frac * 4, 1.0));  // 4 annealing cycles
     int N = (int)cur.X.size();
     Search SR; SR.setY(cur.X); SR.X = &cur.X; SR.budget = BUDGET;
-    int op = RI(0, 6);
+    int op = RI(0, 7);
+    if (op == 7) {  // two-point crossover: X[0..a) + Z[c..d) + X[b..] with Z another elite/record tour
+      const vector<M>& Z = (U() < 0.5 ? recs[RI(0, (int)recs.size() - 1)] : elite[RI(0, (int)elite.size() - 1)]).X;
+      int a = RI(1, N - 2); int pa = cur.X[a - 1].q;
+      vector<int> cs; for (int c = 1; c < (int)Z.size() - 1; c++) if (Z[c - 1].q == pa) cs.push_back(c);
+      if (cs.empty()) continue;
+      int c = cs[RI(0, (int)cs.size() - 1)];
+      int d = RI(c + 1, min<int>((int)Z.size() - 1, c + 30));
+      int pd_ = Z[d - 1].q;
+      vector<int> bs; for (int b = a; b < N; b++) if (cur.X[b - 1].q == pd_) bs.push_back(b);
+      int b = bs.empty() ? RI(a, N - 1) : bs[RI(0, (int)bs.size() - 1)];
+      vector<M> Y2(cur.X.begin(), cur.X.begin() + a); Y2.insert(Y2.end(), Z.begin() + c, Z.begin() + d); Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.end());
+      SR.setY(Y2); SR.PD = RI(1, 3); SR.R = RI(2, 8);
+      SR.path.assign(cur.X.begin(), cur.X.begin() + a);
+      S s0 = st[a]; SR.replay(s0, a, RI(2, 4));
+      if (SR.bestT < 0) continue;
+      long long dT = SR.bestT - cur.T;
+      if (dT >= 0 || U() < exp(dT / temp)) {
+        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
+        acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
+        cur = {SR.bestT, SR.best}; st = states_of(cur.X);
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
+        if (cur.T >= gbest.T - 30) add_elite(cur);
+      }
+      continue;
+    }
     if (op >= 4) {  // segment ops on the whole tour, then replay with patching at the seams
       int lo = RI(0, 1) ? 34 : 1;
       if (N - 2 - lo < 6) continue;
@@ -295,7 +404,17 @@ int main(int argc, char** argv) {
     else if (op == 2) { SR.D = RI(2, DMAX + 1); SR.jlo = i - 4; SR.jhi = i + 4; } // detours, repeat
     else { SR.D = RI(1, 2); SR.jlo = 0; SR.jhi = N - 1; }                         // jump anywhere in own tour
     S s0 = st[i];
-    SR.win_dfs(s0, 0, true, pd);
+    bool walked = false;
+    if (op == 3 && U() < 0.5) {  // op 3b: random walk of r moves first, then DFS + resync further down
+      op = 8; int r = RI(1, 6); vector<pair<int, int>> mv;
+      for (int k = 0; k < r; k++) {
+        pinned_moves(s0, 3, false, mv); if (mv.empty()) break;
+        auto [dl, q] = mv[RI(0, (int)mv.size() - 1)]; int p = s0.pos; apply_move(s0, dl, q);
+        SR.path.push_back({(uint8_t)q, (int8_t)(s0.alt[q] - s0.alt[p])});
+      }
+      walked = true; SR.D = RI(1, 3); SR.jlo = i; SR.jhi = i + r + 10;
+    }
+    SR.win_dfs(s0, 0, !walked, pd);
     if (SR.bestT < 0) continue;
     long long dT = SR.bestT - cur.T;
     if (dT >= 0 || U() < exp(dT / temp)) {
@@ -307,9 +426,9 @@ int main(int argc, char** argv) {
       if (cur.T >= gbest.T - 30) add_elite(cur);
     }
     if (it % 2000 == 0) {
-      printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
-             elite.size(), stat_gain[0], stat_gain[1], stat_gain[2], stat_gain[3], stat_gain[4], stat_gain[5], stat_gain[6],
-             stat_cnt[0], stat_cnt[1], stat_cnt[2], stat_cnt[3], stat_cnt[4], stat_cnt[5], stat_cnt[6]);
+      printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
+             elite.size(), stat_gain[0], stat_gain[1], stat_gain[2], stat_gain[3], stat_gain[4], stat_gain[5], stat_gain[6], stat_gain[7], stat_gain[8],
+             stat_cnt[0], stat_cnt[1], stat_cnt[2], stat_cnt[3], stat_cnt[4], stat_cnt[5], stat_cnt[6], stat_cnt[7], stat_cnt[8]);
       fflush(stdout);
     }
     // restart from elite if stuck far below best
