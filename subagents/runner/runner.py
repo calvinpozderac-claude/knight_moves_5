@@ -816,6 +816,16 @@ def _collect(P, a):
                 ver[h].update(ok=False, msg='CLI checker disagrees: ' + out)
                 continue
             alerted.add(h)
+            cls = 'strict' if ver[h].get('strict') else 'loose'
+            top = cache.setdefault('alert_top', {}).get(cls)
+            if top is not None and sc <= Fraction(top):
+                # not better than an already-announced tour of its class: one line + log, no banner
+                print(f'[{ts()}] also verified > record: {fmt_score(sc)} ({flags(ver[h])}) in {srcs[h][0][0]}',
+                      flush=True)
+                with open(P.alerts, 'a') as f:
+                    f.write(f'{ts()}\t{tours[h]["score"]}\t{flags(ver[h])}\t-\t{srcs[h][0][0]}\n')
+                continue
+            cache['alert_top'][cls] = tours[h]['score']
             fn = os.path.join(P.out, f'RECORD_ALERT_{tours[h]["score"].replace("/", "_")}_{h[:8]}.txt')
             with open(fn, 'w') as f:
                 f.write(f'{tours[h]["score"]}\n{tours[h]["tour"]}\n')

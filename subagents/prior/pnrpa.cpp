@@ -74,11 +74,12 @@ struct PCEntry { uint64_t key = 0; int n = -1; float ex[MAXMV]; };
 static const float* prior_ex(const S& s, const vector<pair<int, int>>& mv) {
   static thread_local vector<PCEntry> cache; static thread_local float tmp[MAXMV];
   if (cache.empty()) cache.resize((size_t)1 << CACHE_LOG2);
-  PRIOR_LOOKUPS++;
+  static thread_local long long nl = 0, ne = 0;
+  if (++nl == 4096) { PRIOR_LOOKUPS += nl; PRIOR_EVALS += ne; nl = ne = 0; }
   uint64_t h = hashS(s) ^ (uint64_t)mv.size() * 0x9E3779B97F4A7C15ULL;
   PCEntry& e = cache[h & (((uint64_t)1 << CACHE_LOG2) - 1)];
   if (e.key == h && e.n == (int)mv.size()) return e.ex;
-  PRIOR_EVALS++;
+  ne++;
   int n = min<int>((int)mv.size(), MAXMV); float f[PF]; float sc[MAXMV]; float mx = -1e30f;
   for (int i = 0; i < n; i++) {
     if (mv[i].second == H8) { sc[i] = 0; continue; }
