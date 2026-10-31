@@ -19,9 +19,10 @@
 //    stands on the same square in both parents, chosen with probability ~ exp(-dist / --xtau), dist = number of
 //    points whose altitude relative to the knight differs (+0.5 per differing visit count). Partner B comes
 //    from the island population or (--parch) from the seed archive.
-//  - mutation: delete / insert / replace a window of 1-3 moves, flip a dz, or regenerate the tail by NRPA-1.
+//  - mutation: delete / insert / replace a window of 1-3 moves, flip a dz, or regenerate the tail by NRPA-1
+//    (with probability --p-deep by a warm-started NRPA of level --deep-level, --deep-iters per level).
 //  - memetic step: first-improvement local search (delete 1-3, replace or insert every legal move at every
-//    cut, followed by repair) on the island best and a tournament-chosen elite every --ls-every generations.
+//    cut, --ls2 random two-move replacements per cut, each followed by repair) on the island best and a tournament-chosen elite every --ls-every generations.
 // Island model: --threads islands (one thread each), steady-state replacement (a child replaces its parent if
 // better, else the most similar of --crowd random members if better; duplicates and more than --max-same members
 // with the same minutes rejected), ring migration of the best every --mig-every generations, restart after --stall

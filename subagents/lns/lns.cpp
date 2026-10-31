@@ -253,11 +253,12 @@ int main(int argc, char** argv) {
   for (int i = 0; i < 64; i++) for (int j = 0; j < 64; j++) TYP[i][j] = -1;
   for (int i = 0; i < 64; i++) for (int k = 0; k < NBN[i]; k++) TYP[i][NBQ[i][k]] = NBT[i][k];
   vector<string> files; double TIME = 60, T0 = 30, T1 = 1; string out = "best_lns.txt"; uint64_t seed = 1;
-  long long BUDGET = 200000; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
+  long long BUDGET = 200000, ITERS = 0; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
   for (int a = 1; a < argc; a++) {
     string s = argv[a];
     if (s == "--tours") { while (a + 1 < argc && argv[a + 1][0] != '-') files.push_back(argv[++a]); }
     else if (s == "--time") TIME = atof(argv[++a]);
+    else if (s == "--iters") ITERS = atoll(argv[++a]);
     else if (s == "--t0") T0 = atof(argv[++a]);
     else if (s == "--t1") T1 = atof(argv[++a]);
     else if (s == "--out") out = argv[++a];
@@ -282,11 +283,12 @@ int main(int argc, char** argv) {
   std::sort(recs.begin(), recs.end(), [](const Elite& a, const Elite& b) { return a.T > b.T; });
   auto t0 = std::chrono::steady_clock::now();
   auto el = [&]() { return std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(); };
+  long long itg = 0;
   Elite gbest = recs[0];
   auto save = [&](const Elite& e, const char* why) {
     long long T; string s = fmt_tour(e.X, &T);
     FILE* f = fopen(out.c_str(), "w"); fprintf(f, "%lld\n%s\n", T, s.c_str()); fclose(f);
-    printf("[%.0fs] NEW BEST %lld (%s) len %zu\n", el(), T, why, e.X.size()); fflush(stdout);
+    printf("[%.0fs it %lld] NEW BEST %lld (%s) len %zu\n", el(), itg, T, why, e.X.size()); fflush(stdout);
   };
   vector<Elite> elite = recs;  // pool
   auto add_elite = [&](const Elite& e) {
@@ -329,13 +331,15 @@ int main(int argc, char** argv) {
   long long stat_gain[9] = {0}, stat_cnt[9] = {0};
   double lastImpr = el(); int restarts = 0;
   vector<S> st = states_of(cur.X);
-  while (el() < TIME) {
-    it++;
-    double frac = el() / TIME;
+  long long lastImprIt = 0;
+  while (el() < TIME && (ITERS == 0 || it < ITERS)) {
+    it++; itg = it;
+    double frac = ITERS ? (double)it / ITERS : el() / TIME;  // --iters: deterministic schedule
     double temp = T0 * pow(T1 / T0, fmod(frac * 4, 1.0));  // 4 annealing cycles
     int N = (int)cur.X.size();
     Search SR; SR.setY(cur.X); SR.X = &cur.X; SR.budget = BUDGET;
     int op = RI(0, 7);
+    if (op == 5 && U() < 0.7) op = RI(1, 2);  // reversal is mostly invalid: give its share to ops 1/2
     if (op == 7) {  // two-point crossover: X[0..a) + Z[c..d) + X[b..] with Z another elite/record tour
       const vector<M>& Z = (U() < 0.5 ? recs[RI(0, (int)recs.size() - 1)] : elite[RI(0, (int)elite.size() - 1)]).X;
       int a = RI(1, N - 2); int pa = cur.X[a - 1].q;
@@ -356,7 +360,7 @@ int main(int argc, char** argv) {
         if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
         cur = {SR.bestT, SR.best}; st = states_of(cur.X);
-        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
         if (cur.T >= gbest.T - 30) add_elite(cur);
       }
       continue;
@@ -394,7 +398,7 @@ int main(int argc, char** argv) {
         if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
         cur = {SR.bestT, SR.best}; st = states_of(cur.X);
-        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); char w[64]; snprintf(w, 64, "op %d a %d len %d", op, a, len); save(gbest, w); }
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d a %d len %d", op, a, len); save(gbest, w); }
         if (cur.T >= gbest.T - 30) add_elite(cur);
       }
       continue;
@@ -426,7 +430,7 @@ int main(int argc, char** argv) {
       acc++; stat_cnt[op]++;
       if (dT > 0) stat_gain[op] += dT;
       cur = {SR.bestT, SR.best}; st = states_of(cur.X);
-      if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); char w[64]; snprintf(w, 64, "op %d i %d D %d", op, i, SR.D); save(gbest, w); }
+      if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d i %d D %d", op, i, SR.D); save(gbest, w); }
       if (cur.T >= gbest.T - 30) add_elite(cur);
     }
     if (it % 2000 == 0) {
@@ -436,7 +440,8 @@ int main(int argc, char** argv) {
       fflush(stdout);
     }
     // restart from elite if stuck far below best
-    if (cur.T < gbest.T - 400 || (el() - lastImpr > 120 && U() < 0.001)) {
+    if (cur.T < gbest.T - 400 || ((ITERS ? (it - lastImprIt > 12000) : (el() - lastImpr > 120)) && U() < 0.001)) {
+      lastImprIt = it;
       cur = elite[RI(0, (int)elite.size() - 1)]; st = states_of(cur.X); restarts++; lastImpr = el();
     }
   }

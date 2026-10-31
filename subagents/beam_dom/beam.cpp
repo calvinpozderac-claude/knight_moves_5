@@ -33,7 +33,7 @@ static const uint32_t NONE = 0xffffffffu;
 static int WIDTH = 10000, THREADS = 1, KMIN = 0, KMAX = -1, RESTARTS = 1, RECENTK = 6, TTLOG2 = 20, MAXDEPTH = 400;
 static int POOLPER = 20, LOGEVERY = 1;
 static double TIME = 0, NOISE0 = 0, NOISER = 20, WIDEN = 1, MAXWIDTH = 2e7, CAPR_FRAC = 0.05, CAPG_FRAC = 0.10;
-static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static double WALK_W = 0; static bool ADJ = true;
+static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static double WALK_W = 0; static bool ADJ = true, ADJ2 = true;
 static double DANCE_W = 0.8, UNREACH_PEN = 300, CLIMB_W = 30, OUTSIDE_W = 0, RESEED = 0;
 static long long POOLMIN = 7500;
 static bool REPLAY = false, KEEPSEED = false, KEEPTT = false, RANDTIE = false;
@@ -104,6 +104,15 @@ static int ideal_dance(const S& s, int U, bool knightSits, int sink = 0) {
       bool ok = false;
       for (int k = 0; k < NBN[i] && !ok; k++) { int q = NBQ[i][k]; if (NBT[i][k] == 1 && grp[q] == (grp[i] ^ 1) && (q == H8 || s.vis[q] < 3)) ok = true; }
       if (!ok) cap[i] = 0;
+    }
+    if (ADJ2) {  // every sit at i is followed by an arrival at an orthogonal neighbour in the other group
+      int c2[64];
+      for (int i = 0; i < 64; i++) {
+        c2[i] = cap[i]; if (cap[i] <= 0) continue;
+        int sum = 0; for (int k = 0; k < NBN[i]; k++) { int q = NBQ[i][k]; if (NBT[i][k] == 1 && grp[q] == (grp[i] ^ 1)) sum += q == H8 ? 1 : max(0, 3 - (int)s.vis[q]); }
+        c2[i] = min(cap[i], sum + (i == s.pos));
+      }
+      memcpy(cap, c2, sizeof cap);
     }
   }
   int Ocap[2] = {0, 0}; uint8_t item[2][5][32]; int ni[2][5] = {{0}}; bool used[32] = {false};
@@ -481,7 +490,7 @@ int main(int argc, char** argv) {
     else if (a == "--reseed-best") RESEED = stod(nx());
     else if (a == "--recent-k") RECENTK = stoi(nx()); else if (a == "--cap-recent") CAPR_FRAC = stod(nx()); else if (a == "--cap-group") CAPG_FRAC = stod(nx());
     else if (a == "--dance-w") DANCE_W = stod(nx()); else if (a == "--unreach-pen") UNREACH_PEN = stod(nx());
-    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-need-h8") NEEDH8 = false; else if (a == "--walk-w") WALK_W = stod(nx());
+    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-adj2") ADJ2 = false; else if (a == "--no-need-h8") NEEDH8 = false; else if (a == "--walk-w") WALK_W = stod(nx());
     else if (a == "--tt-log2") TTLOG2 = stoi(nx()); else if (a == "--max-depth") MAXDEPTH = stoi(nx());
     else if (a == "--replay") REPLAY = true; else if (a == "--keep-seed") KEEPSEED = true; else if (a == "--keep-tt") KEEPTT = true;
     else if (a == "--out") outFile = nx(); else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
