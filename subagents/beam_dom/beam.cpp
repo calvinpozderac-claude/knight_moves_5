@@ -33,7 +33,9 @@ static const uint32_t NONE = 0xffffffffu;
 static int WIDTH = 10000, THREADS = 1, KMIN = 0, KMAX = -1, RESTARTS = 1, RECENTK = 6, TTLOG2 = 20, MAXDEPTH = 400;
 static int POOLPER = 20, LOGEVERY = 1;
 static double TIME = 0, NOISE0 = 0, NOISER = 20, WIDEN = 1, MAXWIDTH = 2e7, CAPR_FRAC = 0.05, CAPG_FRAC = 0.10;
-static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static double WALK_W = 0.3, LATE_T = 5000; static bool ADJ = true, ADJ2 = true; static int ADJ2_MIN = 40;
+static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static double WALK_W = 0.3; static int LATE_D = 90;
+// moves made so far (every move adds one visit; the start counts one): uniform across a beam layer
+static inline int depth_of(const S& s) { int v = 0; for (int i = 0; i < 64; i++) v += s.vis[i]; return v - 1; } static bool ADJ = true, ADJ2 = true; static int ADJ2_MIN = 40;
 static double DANCE_W = 0.8, UNREACH_PEN = 300, CLIMB_W = 30, OUTSIDE_W = 0, RESEED = 0;
 static long long POOLMIN = 7500;
 static bool REPLAY = false, KEEPSEED = false, KEEPTT = false, RANDTIE = false;
@@ -105,7 +107,7 @@ static int ideal_dance(const S& s, int U, bool knightSits, int sink = 0) {
       for (int k = 0; k < NBN[i] && !ok; k++) { int q = NBQ[i][k]; if (NBT[i][k] == 1 && grp[q] == (grp[i] ^ 1) && (q == H8 || s.vis[q] < 3)) ok = true; }
       if (!ok) cap[i] = 0;
     }
-    if (ADJ2 && s.T >= LATE_T && n[0] + n[1] >= ADJ2_MIN) {  // (late in the dance) every sit at i is followed by an arrival at an orthogonal neighbour in the other group
+    if (ADJ2 && depth_of(s) >= LATE_D && n[0] + n[1] >= ADJ2_MIN) {  // (late in the dance) every sit at i is followed by an arrival at an orthogonal neighbour in the other group
       int c2[64];
       for (int i = 0; i < 64; i++) {
         c2[i] = cap[i]; if (cap[i] <= 0) continue;
@@ -236,7 +238,7 @@ static double estimate(const S& s) {
       }
   }
   double e = DANCE_W * d;
-  if (WALK_W > 0 && s.T >= LATE_T) {  // late in the dance: blend in the adjacency-respecting greedy walk
+  if (WALK_W > 0 && depth_of(s) >= LATE_D) {  // late in the dance: blend in the adjacency-respecting greedy walk
     int w = walk_dance(s, a);
     if (w > 0) e = (1 - WALK_W) * e + WALK_W * w;
   }
@@ -489,7 +491,7 @@ int main(int argc, char** argv) {
     else if (a == "--reseed-best") RESEED = stod(nx());
     else if (a == "--recent-k") RECENTK = stoi(nx()); else if (a == "--cap-recent") CAPR_FRAC = stod(nx()); else if (a == "--cap-group") CAPG_FRAC = stod(nx());
     else if (a == "--dance-w") DANCE_W = stod(nx()); else if (a == "--unreach-pen") UNREACH_PEN = stod(nx());
-    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-adj2") ADJ2 = false; else if (a == "--adj2-min") ADJ2_MIN = stoi(nx()); else if (a == "--no-need-h8") NEEDH8 = false; else if (a == "--walk-w") WALK_W = stod(nx()); else if (a == "--late-t") LATE_T = stod(nx());
+    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-adj2") ADJ2 = false; else if (a == "--adj2-min") ADJ2_MIN = stoi(nx()); else if (a == "--no-need-h8") NEEDH8 = false; else if (a == "--walk-w") WALK_W = stod(nx()); else if (a == "--late-d") LATE_D = stoi(nx());
     else if (a == "--tt-log2") TTLOG2 = stoi(nx()); else if (a == "--max-depth") MAXDEPTH = stoi(nx());
     else if (a == "--replay") REPLAY = true; else if (a == "--keep-seed") KEEPSEED = true; else if (a == "--keep-tt") KEEPTT = true;
     else if (a == "--out") outFile = nx(); else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());

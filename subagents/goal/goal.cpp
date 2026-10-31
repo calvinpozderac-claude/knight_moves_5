@@ -486,11 +486,13 @@ static inline double priority(const S& s, int* which = nullptr) {
 }
 // one-sit lookahead (--lookahead): the best priority (for target w) after one more waiting move from s, so a
 // state one big merging sit away from the target is not pruned before it can make that sit
-static inline double lookahead(const S& s, int w, vector<pair<int, int>>& mv) {
+// --lookahead 2 also tries one zero-wait hop before that sit (the record's climb has plateaus of hops)
+static inline double lookahead(const S& s, int w, vector<pair<int, int>>& mv, int level = 1) {
   pinned_moves(s, 3, false, mv); double best = -1e18;
-  for (auto& [d, q] : mv) {
-    if (d == 0) continue;
+  vector<pair<int, int>> here = mv, mv2;
+  for (auto& [d, q] : here) {
     S c = s; apply_move(c, d, q);
+    if (d == 0) { if (level >= 2) best = max(best, lookahead(c, w, mv2, 1)); continue; }
     double v = O.wT * c.T + (TG[w].est - O.wT * TG[w].s.T) - target_dist(c, TG[w]);
     best = max(best, v);
   }
@@ -565,7 +567,7 @@ static int run_search() {
           for (auto& [d, q] : mv) {
             S c = ps; apply_move(c, d, q);
             int w; double pr = priority(c, &w);
-            if (O.lookahead) { vector<pair<int, int>> mv2; pr = max(pr, lookahead(c, w, mv2) - O.laMargin); }
+            if (O.lookahead) { vector<pair<int, int>> mv2; pr = max(pr, lookahead(c, w, mv2, O.lookahead) - O.laMargin); }
             if (is_dance_start(c)) {  // a candidate prefix
               double sc = dscore(c);
               uint64_t h = hashS(c);
@@ -619,7 +621,7 @@ static int run_search() {
       }
     if (!traceSeq.empty() && prefix.size() + depth <= traceSeq.size()) {  // where does the trace tour's state rank?
       S ts = replay(traceSeq, prefix.size() + depth); int tw; double tp = priority(ts, &tw); uint64_t th = hashS(ts, O.visKey);
-      if (O.lookahead) { vector<pair<int, int>> mv2; tp = max(tp, lookahead(ts, tw, mv2) - O.laMargin); }
+      if (O.lookahead) { vector<pair<int, int>> mv2; tp = max(tp, lookahead(ts, tw, mv2, O.lookahead) - O.laMargin); }
       size_t better = 0; for (auto& c : all) if (c.pri > tp) better++;
       bool kept = false; for (auto& x : nxt) if (hashS(x, O.visKey) == th) { kept = true; break; }
       bool cand = foundIdx.count(hashS(ts));
