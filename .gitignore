@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 experiments/cpp/bin/
 .venv/
+subagents/*/tmp/
