@@ -370,6 +370,7 @@ static Result beam(const S& root, int width, double noise, std::mt19937& rng, in
       nxt.push_back(n); h.push_back({c.parent, c.m});
     }
     hist.push_back(h); cur.swap(nxt);
+    if (getenv("BEAM_TRACE")) printf("  level %d: %zu cands, beam %zu, top score %.0f T %d, best finish %lld\n", level, cand.size(), cur.size(), cand[0].score, cur.empty() ? 0 : cur[0].s.T, bf.T);
   }
   if (bfLevel < 0) return best;
   vector<Macro> mac; int idx = bfNode;
@@ -483,7 +484,7 @@ static long long report(const vector<Mv>& t, const char* tag) {
 
 // re-search the last K macros of a raw tour with the DFS; reports an improvement
 static long long POLISH_NODES = 200000; static int POLISH_DEPTH = 40; static double SLACK = 0;
-static long long polish_tail(const vector<Mv>& t, int K, long long budget, const char* tag) {
+static long long polish_tail(const vector<Mv>& t, int K, long long budget, const char* tag, long long* nodesOut = nullptr) {
   vector<int> si = sit_indices(t);
   if ((int)si.size() < K) K = (int)si.size();
   if (K <= 0) return -1;
@@ -491,6 +492,7 @@ static long long polish_tail(const vector<Mv>& t, int K, long long budget, const
   S root = replay(t, j);
   DfsCtx C; C.bestT = validate(t); C.budget = budget; C.maxDepth = POLISH_DEPTH; C.slack = SLACK;
   dfs(root, C, 0, true);
+  if (nodesOut) *nodesOut = C.nodes;
   if (!C.found) return -1;
   vector<Mv> full(t.begin(), t.begin() + j), tail = expand(root, C.bestMac, true, C.bestD);
   full.insert(full.end(), tail.begin(), tail.end());
@@ -582,7 +584,9 @@ int main(int argc, char** argv) {
          algo.c_str(), THREADS, LEVEL, ITERS, AMIN, AMAX, MAXHOPS, USEW, HOPPEN, SITBIAS, TAIL, seeds.size()); fflush(stdout);
   for (auto& t : seeds) { long long T = validate(t); std::lock_guard<std::mutex> lk(MTX); if (T > GBEST) { GBEST = T; GBESTT = t; } }
   if (GBEST) printf("best seed: %lld minutes (engine replay)\n", GBEST);
-  long long seedBest = GBEST; GBEST = 0;  // the first finished result is always written; record still RECORD
+  long long seedBest = GBEST;
+  if (algo != "dfs") { GBEST = 0; GBESTT.clear(); }  // search modes: the first finished result is always written
+  else GBEST = seedBest;                            // dfs: only improvements on the seed are written
 
   auto pick_seed = [&](std::mt19937& rng) {
     std::lock_guard<std::mutex> lk(MTX);
@@ -594,13 +598,15 @@ int main(int argc, char** argv) {
     std::mt19937 rng(RNG * 1000003u + tid);
     for (int restart = 0; !STOP; restart++) {
       vector<Mv> seed = pick_seed(rng);
-      if (algo == "dfs") {
-        int K = std::uniform_int_distribution<int>(TMIN, TMAX)(rng);
-        double t0 = elapsed();
-        long long T = polish_tail(seed, K, DFSN, "dfs");
+      if (algo == "dfs") {  // sweep K = tail-min .. tail-max over the threads, on the best tour so far
+        int K = TMIN + tid + restart * THREADS;
+        if (K > TMAX) break;
+        { std::lock_guard<std::mutex> lk(MTX); if (!GBESTT.empty()) seed = GBESTT; }
+        double t0 = elapsed(); long long nodes = 0;
+        long long T = polish_tail(seed, K, DFSN, "dfs", &nodes);
         std::lock_guard<std::mutex> lk(MTX);
-        printf("[%7.0fs] thread %d dfs restart %d: tail %d macros, %.1fs, %s (best %lld, %lld dfs nodes)\n", elapsed(), tid, restart, K, elapsed() - t0,
-               T > 0 ? "improved" : "no improvement", GBEST, (long long)DFSNODES);
+        printf("[%7.0fs] thread %d dfs: last %d macros of a %lld-minute tour, %lld nodes, %.1fs, %s, %s (best %lld)\n", elapsed(), tid, K, validate(seed),
+               nodes, elapsed() - t0, nodes < DFSN && !STOP ? "complete" : "budget hit", T > 0 ? "IMPROVED" : "no improvement", GBEST);
         fflush(stdout); continue;
       }
       int k = 0;
@@ -635,8 +641,9 @@ int main(int argc, char** argv) {
       fflush(stdout);
     }
   };
-  vector<std::thread> th; for (int t = 0; t < THREADS; t++) th.emplace_back(worker, t);
-  while (!STOP && (TIME <= 0 || elapsed() < TIME)) std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  std::atomic<int> running{THREADS};
+  vector<std::thread> th; for (int t = 0; t < THREADS; t++) th.emplace_back([&, t]() { worker(t); running--; });
+  while (!STOP && running > 0 && (TIME <= 0 || elapsed() < TIME)) std::this_thread::sleep_for(std::chrono::milliseconds(200));
   STOP = true;
   for (auto& t : th) t.join();
   printf("done: best %lld minutes after %.0fs (seed best %lld), %lld rollouts, %lld dfs nodes\n", GBEST, elapsed(), seedBest, (long long)PLAYOUTS, (long long)DFSNODES);

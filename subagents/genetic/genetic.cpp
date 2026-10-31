@@ -38,6 +38,7 @@
 #include <dirent.h>
 #include <mutex>
 #include <thread>
+#include <unordered_map>
 #include <sys/stat.h>
 
 struct G { uint8_t q; int8_t dz; };
@@ -47,7 +48,7 @@ static bool H8ADJ[64];
 
 // ---------------------------------------------------------------- parameters
 static int POP = 64, MINCUT = 1, BRIDGE = 2, SKIP = 3, LOOK = 6, MAXREP = 6, COMPIT = 30, LSEVERY = 5, LSEVALS = 3000;
-static int MAXSAME = 2, CROWD = 6, MIGEVERY = 10, STALL = 3000, SEEDTOP = 300;
+static int LS2 = 20, MAXSAME = 2, CROWD = 6, MIGEVERY = 10, STALL = 3000, SEEDTOP = 300;
 static double PX = 0.5, PARCH = 0.2, XTAU = 2.0, TAILBIAS = 2.0, CALPHA = 1.0;
 static long long POOLMIN = 7500, POOLSLACK = 150;
 
@@ -304,6 +305,37 @@ static Roll complete(const S& root, const vector<G>& plan, size_t from, Ctx& c) 
   return best;
 }
 
+// deeper, warm-started NRPA (level >= 1) on sparse policies, used by the "tail" mutation with probability --p-deep:
+// the policy is first shifted toward the parent's own tail, which is also the starting best (so it can only improve)
+typedef std::unordered_map<uint32_t, float> SP;
+static void loadW(Ctx& c, const SP& P) { for (auto& [k, v] : P) { c.W[k] = v; c.touched.push_back(k); } }
+static void clearW(Ctx& c) { for (uint32_t k : c.touched) c.W[k] = 0.f; c.touched.clear(); }
+static void adaptP(Ctx& c, SP& P, const S& root, const vector<G>& seq) {
+  loadW(c, P); size_t t0 = c.touched.size(); cadapt(c, root, seq);
+  for (size_t k = t0; k < c.touched.size(); k++) P[c.touched[k]] = c.W[c.touched[k]];
+  clearW(c);
+}
+static Roll nested(int level, const S& root, SP P, int iters, Ctx& c, const Roll* init) {
+  Roll best; if (init) best = *init;
+  for (int it = 0; it < iters && !STOP; it++) {
+    Roll r;
+    if (level <= 1) { loadW(c, P); r = rollout(root, c); clearW(c); }
+    else r = nested(level - 1, root, P, iters, c, nullptr);
+    if (r.score >= best.score) best = std::move(r);
+    adaptP(c, P, root, best.seq);
+  }
+  return best;
+}
+static int DEEPLEVEL = 2, DEEPITERS = 30, DEEPADAPT = 3; static double PDEEP = 0.05;
+static Roll deep_tail(const S& root, const vector<G>& g, size_t from, Ctx& c) {
+  NCOMP++;
+  Roll init; init.seq.assign(g.begin() + from, g.end());
+  { S s = root; bool ok = true; for (auto& m : init.seq) { int d = gdelta(s, m); if (d < 0) { ok = false; break; } apply_move(s, d, m.q); }
+    init.fin = ok && !init.seq.empty() && init.seq.back().q == H8; init.T = s.T; init.score = init.fin ? (double)s.T : -1e18; }
+  SP P; if (init.fin) for (int k = 0; k < DEEPADAPT; k++) adaptP(c, P, root, init.seq);
+  return nested(DEEPLEVEL, root, P, DEEPITERS, c, init.fin ? &init : nullptr);
+}
+
 // turn a run into an individual: the run itself, its best passed finish, or an NRPA-1 completion
 static Ind finalize(Run& r, const vector<G>& plan, size_t i, bool doComplete, Ctx& c) {
   Ind x; NCHILD++;
@@ -400,6 +432,10 @@ static Ind mutate(const Ind& P, Ctx& c) {
     if (t > 0) { m.dz = -m.dz; if (r.step(m)) nx = i + 1; }
   } else {                                                                      // regenerate the tail
     LASTOP = 6;
+    if (PDEEP > 0 && c.u() < PDEEP) {
+      Roll k = deep_tail(r.s, P.g, i, c);
+      Ind x; x.g = r.mv; x.g.insert(x.g.end(), k.seq.begin(), k.seq.end()); eval_ind(x); NCHILD++; return x;
+    }
     if (COMPIT > 0) return finalize(r, P.g, i, true, c);
     nx = i + 1; random_move(r, c);
   }
@@ -438,6 +474,16 @@ static Ind local_search(Ind cur, int budget, Ctx& c) {
         if (m == cur.g[i]) continue;
         if (tryit({m}, i + 1) || tryit({m}, i) || (i + 2 <= n && tryit({m}, i + 2))) { improved = true; break; }
         if (budget <= 0) break;
+      }
+      if (improved) break;
+      for (int t = 0; t < LS2 && !mvs.empty() && budget > 0; t++) {  // random two-move replacements
+        auto [d1, q1] = mvs[c.ri(0, (int)mvs.size() - 1)];
+        G m1 = gene_of(base.s, d1, q1); S s1 = base.s; apply_move(s1, d1, q1);
+        pinned_moves(s1, 3, false, mv); if (mv.empty()) continue;
+        auto [d2, q2] = mv[c.ri(0, (int)mv.size() - 1)];
+        G m2 = gene_of(s1, d2, q2);
+        int L = c.ri(1, 3); if (i + L > n) continue;
+        if (tryit({m1, m2}, i + L)) { improved = true; break; }
       }
       if (improved) break;
     }
@@ -572,7 +618,9 @@ int main(int argc, char** argv) {
     else if (a == "--bridge") BRIDGE = min(4, stoi(nx())); else if (a == "--skip") SKIP = stoi(nx()); else if (a == "--look") LOOK = stoi(nx());
     else if (a == "--max-repairs") MAXREP = stoi(nx());
     else if (a == "--comp-iters") COMPIT = stoi(nx()); else if (a == "--tail-bias") TAILBIAS = stod(nx()); else if (a == "--comp-alpha") CALPHA = stod(nx());
-    else if (a == "--ls-every") LSEVERY = stoi(nx()); else if (a == "--ls-evals") LSEVALS = stoi(nx());
+    else if (a == "--ls-every") LSEVERY = stoi(nx()); else if (a == "--ls-evals") LSEVALS = stoi(nx()); else if (a == "--ls2") LS2 = stoi(nx());
+    else if (a == "--p-deep") PDEEP = stod(nx()); else if (a == "--deep-level") DEEPLEVEL = stoi(nx());
+    else if (a == "--deep-iters") DEEPITERS = stoi(nx()); else if (a == "--deep-adapt") DEEPADAPT = stoi(nx());
     else if (a == "--max-same") MAXSAME = stoi(nx()); else if (a == "--crowd") CROWD = stoi(nx());
     else if (a == "--mig-every") MIGEVERY = stoi(nx()); else if (a == "--stall") STALL = stoi(nx());
     else if (a == "--out") OUTFILE = nx(); else if (a == "--pool") POOLFILE = nx();

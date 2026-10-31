@@ -139,7 +139,9 @@ print('final:'); show('train', evaluate(tr_g))
 if len(va_g): show('val', evaluate(va_g))
 if args.out:
     with open(args.out, 'w') as f:
-        f.write(f'{F} {H}\n')
+        dropped = set(int(k) for k in args.drop.split(',')) if args.drop else set()
+        flags = 1 if {28, 29, 35, 36, 37} <= dropped else 0
+        f.write(f'{F} {H} {flags}\n')
         f.write(' '.join(f'{x:.6g}' for x in mean) + '\n'); f.write(' '.join(f'{x:.6g}' for x in sd) + '\n')
         if H > 0:
             for r in P['W1']: f.write(' '.join(f'{x:.6g}' for x in r) + '\n')

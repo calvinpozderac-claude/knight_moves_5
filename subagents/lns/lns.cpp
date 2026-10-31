@@ -270,11 +270,14 @@ int main(int argc, char** argv) {
   rng.seed(seed);
   vector<Elite> recs;
   for (auto& f : files) {
-    std::ifstream in(f); string l, tl; while (getline(in, l)) if (l.find('(') != string::npos) { tl = l; break; }
-    long long T; auto X = parse_tour(tl, &T);
-    long long T2 = score_full(X);
-    printf("%s: %zu moves, %lld minutes (replay %lld)\n", f.c_str(), X.size(), T, T2);
-    recs.push_back({T2, X});
+    std::ifstream in(f); string l; int cnt = 0;
+    while (getline(in, l)) if (l.find('(') != string::npos) {
+      long long T; auto X = parse_tour(l, &T);
+      long long T2 = score_full(X);
+      if (cnt++ < 3) printf("%s: %zu moves, %lld minutes (replay %lld)\n", f.c_str(), X.size(), T, T2);
+      if (T2 > 0) recs.push_back({T2, X});
+      if (cnt >= 12) break;
+    }
   }
   std::sort(recs.begin(), recs.end(), [](const Elite& a, const Elite& b) { return a.T > b.T; });
   auto t0 = std::chrono::steady_clock::now();

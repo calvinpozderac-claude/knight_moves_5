@@ -186,7 +186,8 @@ static inline void from_sample(const Sample& a, S& s) {
 static vector<Sample> read_samples(const string& fn, size_t cap = SIZE_MAX) {
   vector<Sample> v; FILE* f = fopen(fn.c_str(), "rb"); if (!f) { fprintf(stderr, "cannot open %s\n", fn.c_str()); return v; }
   fseek(f, 0, SEEK_END); long long n = ftell(f) / (long long)sizeof(Sample); fseek(f, 0, SEEK_SET);
-  n = min<long long>(n, (long long)cap); v.resize(n);
+  if ((unsigned long long)n > cap) n = (long long)cap;
+  v.resize(n);
   size_t got = fread(v.data(), sizeof(Sample), n, f); v.resize(got); fclose(f); return v;
 }
 

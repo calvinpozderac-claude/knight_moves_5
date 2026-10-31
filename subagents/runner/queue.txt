@@ -1,0 +1,10 @@
+# Job queue for subagents/runner/runner.py  (re-read every poll; append jobs while the scheduler runs)
+# One job per line, JSON or shorthand:
+#   {"name": "nrpa_l4_s1", "cmd": "../../build/nrpa --threads {threads} --time {time} --pool {pool}", "threads": 1,
+#    "time": 3600, "nice": 5, "cwd": "subagents/nrpa", "pool": "tmp/pool_s1.txt", "retries": 1}
+#   name=echo_test threads=1 time=60 cwd=. -- echo hello {name}
+# Keys: name (unique, [A-Za-z0-9_.+-]), cmd, threads (1), time (3600 s, program budget; hard SIGINT at
+#   time+grace, SIGKILL 30 s later), grace (60), nice (5), cwd (repo-relative, '.'), pool (relative to cwd),
+#   agent / method (leaderboard labels; default from cwd and name), retries (0), retry_delay (30),
+#   retry_on_timeout (false), priority (0, higher first), after ([] job names that must be 'done'), env ({}).
+# Placeholders in cmd: {threads} {time} {pool} {name} {root} {cwd} {logdir}

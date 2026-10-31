@@ -3,7 +3,7 @@
 #include "common.h"
 #include <chrono>
 static const int NEG = -1000000000;
-static int ALPHA; static bool NOBOUND=false, CHECK=false; static double TLIM=1e18;
+static int ALPHA; static bool NOBOUND=false, CHECK=false; static double TLIM=1e18; static double LAM=1.0;
 static long long nodes=0, viol=0, checked=0; static chrono::steady_clock::time_point t0;
 static bool timed_out=false;
 static vector<pair<int,int>> prefixW, tourW, stackW; static string OUTF;
@@ -88,7 +88,7 @@ static int dfs(S& s, int depth, bool onTour){
   uint64_t key = keyS(s); TTE& e = TT[key & TTMASK];
   if (e.key==key && s.T + e.ub <= ALPHA) return e.ub;
   int b = NOBOUND ? 1000000 : ub_future(s);
-  if (s.T + b <= ALPHA) { return b; }
+  if (s.T + (int)(LAM*b) <= ALPHA) { return b; }
   vector<pair<int,int>> mv; pinned_moves(s, 3, true, mv);
   int n = group_n(s, s.pos);
   // order: tour move first, then by gain
@@ -122,7 +122,7 @@ int main(int argc, char** argv){
   for (int i=3;i<argc;i++){ string a=argv[i];
     if (a=="--alpha") ALPHA=atoi(argv[++i]); else if (a=="--time") TLIM=atof(argv[++i]);
     else if (a=="--tt") ttlog=atoi(argv[++i]); else if (a=="--nobound") NOBOUND=true; else if (a=="--check") CHECK=true;
-    else if (a=="--out") OUTF=argv[++i]; }
+    else if (a=="--out") OUTF=argv[++i]; else if (a=="--lambda") LAM=atof(argv[++i]); }
   TT.assign(1ULL<<ttlog, TTE{0, 0}); TTMASK = (1ULL<<ttlog)-1;
   tourW = read_tour(tf); prefixW.assign(tourW.begin(), tourW.begin()+KPRE);
   S s = start_state(); if (!replay_moves(s, tourW, KPRE)) return 1;

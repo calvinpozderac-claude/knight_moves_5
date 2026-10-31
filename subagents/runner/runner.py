@@ -429,12 +429,13 @@ class Scheduler:
             if self.collector.poll() is None:
                 return
             self.collector = None
-        if force or self.want_collect or now() - self.last_collect >= self.a.collect_every:
+        gap = now() - self.last_collect
+        if force or (self.want_collect and gap >= self.a.collect_min_gap) or gap >= self.a.collect_every:
             self.want_collect = False
             self.last_collect = now()
             cmd = ['nice', '-n', '10', sys.executable, os.path.abspath(__file__), '--root', self.P.root,
-                   '--out', self.P.out, '--tmp', self.P.tmp, '--queue', self.P.queue, 'collect', '--quiet',
-                   '--record', str(self.a.record)]
+                   '--out', self.P.out, '--tmp', self.P.tmp, '--queue', self.P.queue, '--record',
+                   str(self.a.record)] + sum((['--scan', x] for x in self.P.extra_scan), []) + ['collect', '--quiet']
             self.collector = subprocess.Popen(cmd)
 
     def run(self):
@@ -456,7 +457,8 @@ class Scheduler:
         try:
             while not self.stop:
                 jobs, S = self.tick()
-                self.maybe_collect()
+                if not self.a.once:
+                    self.maybe_collect()
                 running = [n for n, st in S.items() if st.get('status') == 'running']
                 pending = [n for n in jobs if S.get(n, {}).get('status') == 'pending']
                 if self.a.once:
@@ -489,7 +491,7 @@ class Scheduler:
                          '`cancel --all` stops them)')
             if self.collector is not None:
                 self.collector.wait()
-            if not self.stop or self.a.exit_when_idle:
+            if self.a.exit_when_idle and not self.stop:
                 self.maybe_collect(force=True)
                 if self.collector is not None:
                     self.collector.wait()
@@ -767,6 +769,8 @@ def _collect(P, a):
         checks += 1
         ver[h] = verify(tours[h]['tour'])
         ver[h]['when'] = ts()
+        if checks % 20 == 0:
+            save_json(P.cache, cache)   # keep verification work if this run is interrupted
         return ver[h]
     # global best: verify candidates in descending order down to the first verified tour (and on down to the
     # first verified *strict* tour); with --verify-ties also every distinct tour tied with the best
@@ -1052,7 +1056,10 @@ def cmd_status(P, a):
                               if b else '-'))
     al = load_alerts(P)
     if al:
-        print(f'!!! {len(al)} RECORD ALERT(S): ' + '; '.join(al[-3:]))
+        print(f'!!! {len(al)} verified tour(s) beat the record; latest:')
+        for x in al[-4:]:
+            f = x.split('\t')
+            print(f'!!!   {f[1]:>8s}  ({f[2]})  {f[4] if len(f) > 4 else ""}  {f[0]}')
 
 
 def tail(path, n=1):
@@ -1137,6 +1144,8 @@ def main():
     r.add_argument('--cores', type=int, default=0, help='max threads in use (default nproc)')
     r.add_argument('--poll', type=float, default=2.0)
     r.add_argument('--collect-every', type=float, default=300, help='seconds between collector runs')
+    r.add_argument('--collect-min-gap', type=float, default=30,
+                   help='min seconds between collector runs triggered by finished jobs')
     r.add_argument('--exit-when-idle', action='store_true', help='exit when nothing is pending/running')
     r.add_argument('--once', action='store_true', help='one scheduling pass, then exit')
     r.add_argument('--kill-on-exit', action='store_true', help='on Ctrl-C/SIGTERM also stop running jobs')

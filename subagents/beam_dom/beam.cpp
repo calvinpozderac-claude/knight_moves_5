@@ -33,8 +33,8 @@ static const uint32_t NONE = 0xffffffffu;
 static int WIDTH = 10000, THREADS = 1, KMIN = 0, KMAX = -1, RESTARTS = 1, RECENTK = 6, TTLOG2 = 20, MAXDEPTH = 400;
 static int POOLPER = 20, LOGEVERY = 1;
 static double TIME = 0, NOISE0 = 0, NOISER = 20, WIDEN = 1, MAXWIDTH = 2e7, CAPR_FRAC = 0.05, CAPG_FRAC = 0.10;
-static int MERGE_LOOK = 6; static bool ADJ = true;
-static double DANCE_W = 1.0, UNREACH_PEN = 300, CLIMB_W = 30, OUTSIDE_W = 0, RESEED = 0;
+static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool ADJ = true;
+static double DANCE_W = 0.8, UNREACH_PEN = 300, CLIMB_W = 30, OUTSIDE_W = 0, RESEED = 0;
 static long long POOLMIN = 7500;
 static bool REPLAY = false, KEEPSEED = false, KEEPTT = false, RANDTIE = false;
 static unsigned RNG = 1;
@@ -162,8 +162,15 @@ static double estimate(const S& s) {
   int a = s.alt[s.pos], h = s.alt[H8];
   int d = max(ideal_dance(s, a, true), ideal_dance(s, a + 2, false));
   if (h != a && h != a - 2 && h != a + 2) d = max(d, max(ideal_dance(s, h, false), ideal_dance(s, h + 2, false)));
-  for (int dl = 1; dl <= MERGE_LOOK; dl++)  // one sink ahead: the knight's group merges into a lower level
-    d = max(d, max(ideal_dance(s, a - dl + 2, false, dl), ideal_dance(s, a - dl, false, dl)));
+  if (MERGE_LOOK > 0) {  // one sink ahead: the knight's group merges into a lower level (skipped once the dance has formed)
+    int cnt[24] = {0};  // points at a + 4 - j
+    for (int i = 0; i < 64; i++) { int j = a + 4 - s.alt[i]; if (j >= 0 && j < 24) cnt[j]++; }
+    if (cnt[4] + cnt[6] < MERGE_SKIP)
+      for (int dl = 1; dl <= MERGE_LOOK && dl + 6 < 24; dl++) {
+        if (cnt[4 + dl] + cnt[4 + dl - 2] + cnt[4 + dl + 2] == 0) continue;  // nothing to merge with
+        d = max(d, max(ideal_dance(s, a - dl + 2, false, dl), ideal_dance(s, a - dl, false, dl)));
+      }
+  }
   double e = DANCE_W * d;
   int maxAlt; bool h8r = relaxed_reach(s, maxAlt);
   if (!h8r) e -= UNREACH_PEN;
@@ -408,7 +415,7 @@ int main(int argc, char** argv) {
     else if (a == "--reseed-best") RESEED = stod(nx());
     else if (a == "--recent-k") RECENTK = stoi(nx()); else if (a == "--cap-recent") CAPR_FRAC = stod(nx()); else if (a == "--cap-group") CAPG_FRAC = stod(nx());
     else if (a == "--dance-w") DANCE_W = stod(nx()); else if (a == "--unreach-pen") UNREACH_PEN = stod(nx());
-    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--no-adj") ADJ = false;
+    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false;
     else if (a == "--tt-log2") TTLOG2 = stoi(nx()); else if (a == "--max-depth") MAXDEPTH = stoi(nx());
     else if (a == "--replay") REPLAY = true; else if (a == "--keep-seed") KEEPSEED = true; else if (a == "--keep-tt") KEEPTT = true;
     else if (a == "--out") outFile = nx(); else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());

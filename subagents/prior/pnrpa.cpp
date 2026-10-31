@@ -80,10 +80,11 @@ static const float* prior_ex(const S& s, const vector<pair<int, int>>& mv) {
   PCEntry& e = cache[h & (((uint64_t)1 << CACHE_LOG2) - 1)];
   if (e.key == h && e.n == (int)mv.size()) return e.ex;
   ne++;
-  int n = min<int>((int)mv.size(), MAXMV); float f[PF]; float sc[MAXMV]; float mx = -1e30f;
+  int n = min<int>((int)mv.size(), MAXMV); static thread_local float F_[PF * 64]; float sc[MAXMV]; float mx = -1e30f;
+  all_move_features(s, mv, F_, PM.cheap());
   for (int i = 0; i < n; i++) {
     if (mv[i].second == H8) { sc[i] = 0; continue; }
-    move_features(s, mv[i].first, mv[i].second, f); sc[i] = (float)BETA * PM.score(f); mx = max(mx, sc[i]);
+    sc[i] = (float)BETA * PM.score(F_ + PF * i); mx = max(mx, sc[i]);
   }
   for (int i = 0; i < n; i++) tmp[i] = mv[i].second == H8 ? 0.f : expf(sc[i] - mx);  // normalised: max 1
   if ((int)mv.size() > MAXMV) return tmp;  // never happens (at most 24 pinned moves)
@@ -308,7 +309,7 @@ int main(int argc, char** argv) {
   if (AMAX < AMIN) AMAX = AMIN;
   prior_init();
   if (!priorFile.empty()) { if (!PM.load(priorFile)) { fprintf(stderr, "cannot load prior %s\n", priorFile.c_str()); return 1; } USE_PRIOR = BETA != 0; }
-  printf("prior: %s, beta %.3f (%s)\n", priorFile.empty() ? "none" : priorFile.c_str(), BETA, USE_PRIOR ? "on" : "off");
+  printf("prior: %s, beta %.3f (%s%s)\n", priorFile.empty() ? "none" : priorFile.c_str(), BETA, USE_PRIOR ? "on" : "off", PM.cheap() ? ", cheap features" : "");
   signal(SIGINT, [](int) { STOP = true; }); signal(SIGTERM, [](int) { STOP = true; });
   if (getenv("NRPA_BENCH")) {  // time rollouts from the anchor of the first seed tour with a zero policy
     auto sd = read_tours(seedFile.c_str()); S root = start_state(); for (int i = 0; i < AMIN; i++) apply_move(root, sd[0][i].delta, sd[0][i].q);

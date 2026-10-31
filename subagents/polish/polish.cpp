@@ -11,7 +11,7 @@
 // Steps, iterated until no gain:
 //  (1) reroute: replay the whole tour re-routing every stretch with a cost that avoids points that sit
 //      later (supersedes tools/reroute_zero_wait.py); same minutes, freed visits. Several cost variants.
-//  (2) sit insertion: window search with w = 0 (insert up to --ext moves, e.g. extra sit/hop pairs)
+//  (2) sit insertion: window search with w = 0 (insert up to --ext0 moves, e.g. extra sit/hop pairs)
 //  (3) window search: for every window of w moves (w = 1..--wmax), exhaustive DFS over all replacement
 //      sequences of up to w + --ext pinned moves (transposition table, visit caps that reserve the
 //      landings the rest still needs); after every sit in the replacement the rest is replayed
@@ -19,7 +19,7 @@
 // Accept: more minutes, or the same minutes with fewer jumps (frees visits).
 //
 // usage: polish --in FILE [--in FILE ...] [--top K] [--time S] [--per-tour S] [--threads N]
-//          [--wmax 8] [--ext 2] [--node-limit 200000] [--nrpa-level 3] [--nrpa-tails 12,20,30,45]
+//          [--wmax 8] [--ext 2] [--ext0 4] [--node-limit 200000] [--nrpa-level 3] [--nrpa-tails 20,30,45,60]
 //          [--no-nrpa] [--no-window] [--out best.txt] [--pool pool.txt] [--pool-min 7500]
 //          [--polished FILE] [--rng 1] [--quiet]
 // Input: any file with tours, one per line ("minutes<TAB>tour", or nrpa's "minutes\ntour", or bare
@@ -212,8 +212,12 @@ static Tour reroute_all(const Tour& t, float PEN, float PEN2) {
 
 // minutes after playing the key moves only (altitudes and minutes do not depend on the zero-wait routes);
 // -1 if some key's wait would be negative or its jump impossible. Also checks the key landings' visit caps.
+static long long key_minutes_alt(const S& s0, const vector<Seg>& segs);
 static long long key_minutes(const S& s0, const vector<Seg>& segs, const int* res0) {
   for (int i = 0; i < 64; i++) if (i != H8 && s0.vis[i] + res0[i] > 3) return -1;
+  return key_minutes_alt(s0, segs);
+}
+static long long key_minutes_alt(const S& s0, const vector<Seg>& segs) {
   AT alt[64]; memcpy(alt, s0.alt, sizeof alt); long long T = s0.T;
   for (const Seg& sg : segs) {
     int p = sg.from, q = sg.q, t = TYP[p][q]; int a = alt[p], delta;
@@ -236,12 +240,27 @@ struct Window {
   const Tour* t; const Info* I; int i, w, L; long long nodeLimit; float PEN;
   vector<Seg> tail; int res0[64];
   long long bestT; size_t bestN; Tour best; long long nodes = 0, evals = 0;
-  vector<Mv> path; std::unordered_map<uint64_t, pair<int, int>> tt;
+  vector<Mv> path;
+  // transposition table: fixed size, per-thread, stamped with a window id so it never needs clearing
+  struct TTE { uint64_t key; int32_t T; uint16_t depth, stamp; };
+  static const int TTB = 20;
+  static thread_local vector<TTE> TT; static thread_local uint16_t STAMP;
+  struct KCE { uint64_t key; long long T; uint16_t stamp; };
+  static const int KCB = 16; static thread_local vector<KCE> KC;
   vector<pair<int, int>> mvbuf[16];
   void eval(const S& s) {
     if (tail.empty()) return;  // nothing left to replay: only finishing moves count (handled in dfs)
     evals++;
-    long long Tq = key_minutes(s, tail, res0);
+    long long Tq = -1; bool capok = true;
+    for (int k = 0; k < 64; k++) if (k != H8 && s.vis[k] + res0[k] > 3) { capok = false; break; }
+    if (capok) {  // the minutes depend on the altitudes only: cache them
+      uint64_t h = 1469598103934665603ULL; const uint64_t* pa = (const uint64_t*)s.alt;
+      for (int k = 0; k < 16; k++) h = (h ^ pa[k]) * 1099511628211ULL + (h >> 29);
+      h ^= (uint64_t)s.T << 40;
+      KCE& e = KC[h & ((1u << KCB) - 1)];
+      if (e.stamp == STAMP && e.key == h) { Tq = e.T; ST_CONV++; }
+      else { Tq = key_minutes_alt(s, tail); e = {h, Tq, STAMP}; }
+    }
     if (Tq < bestT || (Tq == bestT && path.size() >= (size_t)w)) { ST_FAIL++; return; }
     S c = s; static thread_local vector<Mv> rest; rest.clear();
     bool ok = replay(c, tail, 0, 0, PEN, 0, nullptr, &rest, t, I);
@@ -273,9 +292,9 @@ struct Window {
       if (s.vis[q] + 1 + res0[q] > 3) continue;
       S c = s; apply_move(c, d, q);
       uint64_t h = hashS(c);
-      auto it = tt.find(h);
-      if (it != tt.end() && it->second.first >= c.T && it->second.second <= depth + 1) continue;
-      tt[h] = {c.T, depth + 1};
+      TTE& e = TT[h & ((1u << TTB) - 1)];
+      if (e.stamp == STAMP && e.key == h && e.T >= c.T && e.depth <= depth + 1) continue;
+      e = {h, c.T, (uint16_t)(depth + 1), STAMP};
       path.push_back({d, q}); dfs(c, depth + 1, d > 0); path.pop_back();
     }
   }
@@ -283,10 +302,15 @@ struct Window {
     tail = segs_of(*t, *I, i + w); memset(res0, 0, sizeof res0);
     for (auto& g : tail) if (g.q != H8) res0[g.q]++;
     bestT = I->st.back().T; bestN = t->size();
+    if (TT.empty()) { TT.assign(1u << TTB, TTE{0, 0, 0, 0}); KC.assign(1u << KCB, KCE{0, 0, 0}); }
+    if (++STAMP == 0) { for (auto& e : TT) e.stamp = 0; for (auto& e : KC) e.stamp = 0; STAMP = 1; }
     dfs(I->st[i], 0, false);
     WinRes r; r.nodes = nodes; r.evals = evals; if (!best.empty()) { r.T = bestT; r.tour = best; } return r;
   }
 };
+
+thread_local vector<Window::KCE> Window::KC;
+thread_local vector<Window::TTE> Window::TT; thread_local uint16_t Window::STAMP = 0;
 
 // ---------------------------------------------------------------- NRPA (from src/nrpa.cpp, single thread)
 namespace nr {
@@ -344,9 +368,9 @@ static Result nrpa(int level, const S& root, Policy pol, std::mt19937& rng, cons
 }  // namespace nr
 
 // ---------------------------------------------------------------- driver
-static int THREADS = 1, WMAX = 8, EXT = 2, NRPA_LEVEL = 3; static long long NODELIM = 200000;
+static int THREADS = 1, WMAX = 8, EXT = 2, EXT0 = 4, NRPA_LEVEL = 3; static long long NODELIM = 200000;
 static bool DO_NRPA = true, DO_WIN = true, QUIET = false; static float PEN = 4;
-static vector<int> TAILS = {12, 20, 30, 45};
+static vector<int> TAILS = {20, 30, 45, 60};
 static string OUT = "best.txt", POOL, POLISHED; static long long POOLMIN = 7500; static unsigned RNG = 1;
 static std::mutex IOM; static long long GLOBAL_BEST = -1;
 static double now_s(CLK::time_point t0) { return std::chrono::duration<double>(CLK::now() - t0).count(); }
@@ -373,7 +397,7 @@ static Tour window_pass(const Tour& t, long long& T, const char* tag) {
   auto worker = [&]() {
     while (!found && !timeup()) {
       size_t k = next++; if (k >= tasks.size()) break;
-      Window W; W.t = &t; W.I = &I; W.i = tasks[k].i; W.w = tasks[k].w; W.L = tasks[k].w + EXT; W.nodeLimit = NODELIM; W.PEN = PEN;
+      Window W; W.t = &t; W.I = &I; W.i = tasks[k].i; W.w = tasks[k].w; W.L = tasks[k].w + (tasks[k].w == 0 ? EXT0 : EXT); W.nodeLimit = NODELIM; W.PEN = PEN;
       if (W.L > 15) W.L = 15;
       WinRes r = W.run(); nodes += r.nodes; evals += r.evals;
       if (r.T >= 0) {
@@ -467,7 +491,7 @@ int main(int argc, char** argv) {
     string a = argv[i]; auto nx = [&]() { if (i + 1 >= argc) { fprintf(stderr, "missing value for %s\n", a.c_str()); exit(1); } return string(argv[++i]); };
     if (a == "--in") ins.push_back(nx()); else if (a == "--top") TOP = stoi(nx());
     else if (a == "--time") TIME = stod(nx()); else if (a == "--per-tour") PER = stod(nx());
-    else if (a == "--threads") THREADS = stoi(nx()); else if (a == "--wmax") WMAX = stoi(nx()); else if (a == "--ext") EXT = stoi(nx());
+    else if (a == "--threads") THREADS = stoi(nx()); else if (a == "--wmax") WMAX = stoi(nx()); else if (a == "--ext") EXT = stoi(nx()); else if (a == "--ext0") EXT0 = stoi(nx());
     else if (a == "--node-limit") NODELIM = stoll(nx()); else if (a == "--nrpa-level") NRPA_LEVEL = stoi(nx());
     else if (a == "--nrpa-tails") { TAILS.clear(); string s = nx(); size_t p = 0; while (p < s.size()) { TAILS.push_back(stoi(s.substr(p))); p = s.find(',', p); if (p == string::npos) break; p++; } }
     else if (a == "--no-nrpa") DO_NRPA = false; else if (a == "--no-window") DO_WIN = false;
@@ -493,8 +517,8 @@ int main(int argc, char** argv) {
   }
   std::stable_sort(tours.begin(), tours.end(), [](auto& a, auto& b) { return a.first > b.first; });
   if (TOP > 0 && (int)tours.size() > TOP) tours.resize(TOP);
-  printf("%zu tours to polish (%d skipped); threads %d, wmax %d, ext %d, node limit %lld, nrpa level %d, time %.0fs\n",
-         tours.size(), skipped, THREADS, WMAX, EXT, NODELIM, DO_NRPA ? NRPA_LEVEL : 0, TIME);
+  printf("%zu tours to polish (%d skipped); threads %d, wmax %d, ext %d/%d, node limit %lld, nrpa level %d, time %.0fs\n",
+         tours.size(), skipped, THREADS, WMAX, EXT0, EXT, NODELIM, DO_NRPA ? NRPA_LEVEL : 0, TIME);
   fflush(stdout);
   auto t0 = CLK::now(); DEADLINE = t0 + std::chrono::milliseconds((long long)(TIME * 1000));
   auto globalDeadline = DEADLINE;

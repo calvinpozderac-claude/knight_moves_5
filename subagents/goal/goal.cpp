@@ -28,6 +28,7 @@
 #include <thread>
 #include <unordered_map>
 #include <map>
+#include <functional>
 
 struct Mv { int delta, q; };
 static std::atomic<bool> STOP{false};
@@ -219,29 +220,32 @@ static double dance_nrpa(const S& s, int level, int runs, unsigned seed, vector<
 
 
 // "dbeam": a beam search over the real engine restricted to dance moves (sit 4 then jump onto the other
-// group, zero-wait same-altitude hops, any jump into h8), ordered by T + bound3 of the state (no size limit).
-// Returns the best finished total (T + the dance) and optionally its moves; it accounts for adjacency, hop
-// visits, opposite pairs and joins exactly, so it separates dance starts the bounds rate equal.
-static int DBEAM = 300;
+// group, zero-wait same-altitude knight hops, any jump into h8), one layer per move, ranked by
+// T + lambda * (bound3 - T). lambda 0 (most minutes at equal move count) worked best on the record
+// (6,954 from its move 46, vs 4,258 with lambda 1: the bound is too flat to steer a dance). It returns the
+// best finished total: a pessimistic but exact (fully legal) estimate that includes adjacency, hop visits,
+// opposite pairs and joins. About 3 s at width 300.
+static int DBEAM = 1000; static double DBEAM_LAMBDA = 0.0;
 static double dance_beam(const S& root, int width, vector<Mv>* bestSeq = nullptr) {
   struct N { S s; double pri; int parent; Mv m; };
   vector<N> cur{{root, 0, -1, {0, 0}}}; vector<vector<pair<int, Mv>>> hist; double best = -1e18; int bestLayer = -1, bestIdx = -1; Mv bestM{0, 0};
   vector<pair<int, int>> mv;
-  for (int depth = 0; depth < 200 && !cur.empty(); depth++) {
+  for (int depth = 0; depth < 200 && !cur.empty() && !STOP; depth++) {
     vector<N> nx;
     for (int i = 0; i < (int)cur.size(); i++) {
       gen_moves(cur[i].s, true, mv);
       for (auto& [d, q] : mv) {
         S c = cur[i].s; apply_move(c, d, q);
         if (q == H8) { if (c.T > best) { best = c.T; bestLayer = depth; bestIdx = i; bestM = {d, q}; } continue; }
-        double b = dance_bound(c, 2, 0); if (b < -1e17) continue;
-        nx.push_back({c, b, i, {d, q}});
+        if (!is_dance_start(c, nullptr, nullptr, 0)) continue;
+        double b = DBEAM_LAMBDA > 0 ? dance_bound(c, 2, 0) : 0;
+        nx.push_back({c, c.T + DBEAM_LAMBDA * (b - c.T), i, {d, q}});
       }
     }
     hist.push_back({}); for (auto& n : cur) hist.back().push_back({n.parent, n.m});
-    sort(nx.begin(), nx.end(), [](const N& a, const N& b) { return a.pri != b.pri ? a.pri > b.pri : a.s.T > b.s.T; });
+    sort(nx.begin(), nx.end(), [](const N& a, const N& b) { return a.pri > b.pri; });
     std::unordered_set<uint64_t> seen; vector<N> keep;
-    for (auto& n : nx) { if ((int)keep.size() >= width) break; if (n.pri <= best) break; if (seen.insert(hashS(n.s)).second) keep.push_back(n); }
+    for (auto& n : nx) { if ((int)keep.size() >= width) break; if (seen.insert(hashS(n.s)).second) keep.push_back(n); }
     cur.swap(keep);
   }
   if (bestSeq && bestLayer >= 0) {
@@ -348,67 +352,74 @@ static vector<Edit> single_edits(const S& b) {
   return out;
 }
 
+// the design scorer: dbeam (exact legal dance, pessimistic) unless --dbeam 0, then the scorer (bound3 by default)
+static double design_score(const S& s, int width) { return width > 0 ? dance_beam(s, width) : dscore(s); }
+static string slug(string n) { for (char& c : n) if (!isalnum((unsigned char)c)) c = '_'; return n; }
+
 static int run_design() {
   vector<Mv> t = read_first_moves(O.tour); S fin = replay(t, t.size());
   printf("tour %s: %zu moves, %d minutes\n\n", O.tour.c_str(), t.size(), fin.T);
-  printf("move  T     knight up+low  ideal   bound2  bound3  dnrpa(L%d)\n", O.scoreLevel);
-  int firstDance = -1, bestK = -1; double bestK3 = -1e18;
+  printf("move  T     knight up+low  ideal   bound2  bound3  dbeam(%d)\n", DBEAM);
+  int firstDance = -1, bestK = -1; double bestV = -1e18;
   for (int k = O.kmin; k <= O.kmax && k <= (int)t.size(); k++) {
     S s = replay(t, k); int nU, nL; bool ds = is_dance_start(s, &nU, &nL);
     if (ds && firstDance < 0) firstDance = k;
-    double i1 = dance_bound(s, 0), b2 = dance_bound(s, 1), b3 = dance_bound(s, 2), dn = ds ? dance_nrpa(s, O.scoreLevel, 1, O.rng + k) : -1e18;
-    if (b3 > bestK3 + 0.5) { bestK3 = b3; bestK = k; }
+    double i1 = dance_bound(s, 0), b2 = dance_bound(s, 1), b3 = dance_bound(s, 2), db = ds && DBEAM > 0 ? dance_beam(s, DBEAM) : -1e18;
+    if (ds && db > bestV + 0.5) { bestV = db; bestK = k; }
     printf("%4d %5d   %s   %2d+%2d  %6.0f  %6.0f  %6.0f  %6.0f\n", k, s.T, nm(s.pos).c_str(), nU, nL, i1 > -1e17 ? i1 : 0, b2 > -1e17 ? b2 : 0, b3 > -1e17 ? b3 : 0,
-           dn > -1e17 ? dn : 0);
+           db > -1e17 ? db : 0);
+    fflush(stdout);
   }
   int k = O.k >= 0 ? O.k : firstDance;
-  printf("first dance start: move %d; best %s: move %d\n", firstDance, SCORE_MODE == 2 ? "bound3" : "bound2", bestK);
+  printf("first dance start: move %d; best dbeam: move %d (using move %d; --k to change)\n", firstDance, bestK, k);
   if (k < 0) { fprintf(stderr, "no dance start between moves %d and %d (lower --dmin?)\n", O.kmin, O.kmax); return 1; }
   S base = replay(t, k);
   printf("\nTARGET = state after move %d\n", k);
   print_config(stdout, base);
-  double b2 = dscore(base);
-  double dn = dance_nrpa(base, O.scoreLevel, O.scoreRuns, O.rng);
-  printf("  scores: ideal %.0f  bound2 %.0f  bound3 %.0f  dnrpa(L%d x%d) %.0f   (the real tour reached %d); ranking uses %s\n\n", dance_bound(base, 0),
-         dance_bound(base, 1), dance_bound(base, 2), O.scoreLevel, O.scoreRuns, dn, fin.T, SCORE_MODE == 2 ? "bound3" : SCORE_MODE == 1 ? "bound2" : "ideal");
+  double b3 = dscore(base), d0 = design_score(base, DBEAM);
+  printf("  scores: ideal %.0f  bound2 %.0f  bound3 %.0f  dbeam(%d) %.0f   (the real tour reached %d)\n\n", dance_bound(base, 0), dance_bound(base, 1), b3, DBEAM, d0,
+         fin.T);
 
-  // single edits ranked by bound2
+  // single edits: screen by the cheap scorer, then score the best `--variants * 3` with dbeam
   vector<Edit> E = single_edits(base);
   for (auto& e : E) e.b2 = dscore(e.s);
   sort(E.begin(), E.end(), [](const Edit& x, const Edit& y) { return x.b2 > y.b2; });
-  printf("single edits by score gain (top 25 of %zu):\n", E.size());
-  for (size_t i = 0; i < E.size() && i < 25; i++) printf("  %+6.0f  %s\n", E[i].b2 > -1e17 ? E[i].b2 - b2 : -99999, E[i].desc.c_str());
+  int nScreen = min<int>((int)E.size(), max(O.variants * 3, 12));
+  vector<pair<double, int>> ranked;
+  for (int i = 0; i < nScreen && !STOP; i++) ranked.push_back({design_score(E[i].s, DBEAM), i});
+  sort(ranked.rbegin(), ranked.rend());
+  printf("single edits (%zu generated, best %d by %s re-scored with dbeam):\n   dbeam  (gain)  %s (gain)  edit\n", E.size(), nScreen,
+         SCORE_MODE == 2 ? "bound3" : "bound2", SCORE_MODE == 2 ? "bound3" : "bound2");
+  for (size_t i = 0; i < ranked.size() && i < 25; i++) {
+    const Edit& e = E[ranked[i].second];
+    printf("  %6.0f (%+5.0f)  %6.0f (%+5.0f)  %s\n", ranked[i].first, ranked[i].first - d0, e.b2, e.b2 - b3, e.desc.c_str());
+  }
 
-  // greedy combination: repeatedly apply the best edit by bound2 (ties broken by dnrpa of the top 4)
   string tfile = O.targets.empty() ? O.outDir + "/targets.txt" : O.targets;
   FILE* tf = fopen(tfile.c_str(), "w"); if (!tf) { fprintf(stderr, "cannot write %s (does the folder exist?)\n", tfile.c_str()); return 1; }
-  fprintf(tf, "# targets from %s move %d: name, estimate (scorer), T, knight, altitudes a1..h8, visits a1..h8\n", O.tour.c_str(), k);
-  fprintf(tf, "%s\n", target_line("base_k" + to_string(k), b2, base).c_str());
-  S cur = base; double curB = b2; string path;
-  printf("\ngreedy variants (each adds one edit; dnrpa = L%d dance search, max of %d):\n", O.scoreLevel, O.scoreRuns);
+  fprintf(tf, "# targets from %s move %d: name, estimate (dbeam %d, or the scorer with --dbeam 0), T, knight, altitudes a1..h8, visits a1..h8\n", O.tour.c_str(),
+          k, DBEAM);
+  fprintf(tf, "%s\n", target_line("base_k" + to_string(k), d0, base).c_str());
+
+  // greedy chain: apply the edit with the best dbeam among the best 8 by the cheap scorer, while it improves
+  S cur = base; double curV = d0;
+  printf("\ngreedy chain of edits (each line adds one edit):\n");
   for (int step = 0; step < O.edits && !STOP; step++) {
     vector<Edit> F = single_edits(cur);
     for (auto& e : F) e.b2 = dscore(e.s);
     sort(F.begin(), F.end(), [](const Edit& x, const Edit& y) { return x.b2 > y.b2; });
-    int pick = -1; double pd = -1e18;
-    for (int j = 0; j < (int)F.size() && j < 4; j++) {
-      if (F[j].b2 <= curB) break;
-      double d = dance_nrpa(F[j].s, O.scoreLevel, 1, O.rng + 31 * step + j);
-      double v = F[j].b2 + 0.25 * (d > -1e17 ? d - F[j].b2 : -2000);
-      if (v > pd) { pd = v; pick = j; }
-    }
+    int pick = -1; double pv = curV;
+    for (int j = 0; j < (int)F.size() && j < 8; j++) { double v = design_score(F[j].s, DBEAM); if (v > pv) { pv = v; pick = j; } }
     if (pick < 0) { printf("  no improving edit left\n"); break; }
-    cur = F[pick].s; curB = F[pick].b2; path += (path.empty() ? "" : "; ") + F[pick].desc;
-    double d = dance_nrpa(cur, O.scoreLevel, O.scoreRuns, O.rng + 1000 + step);
-    printf("  v%d: score %.0f (%+.0f)  dnrpa %.0f   %s\n", step + 1, curB, curB - b2, d, F[pick].desc.c_str());
-    fprintf(tf, "%s\n", target_line("greedy" + to_string(step + 1), curB, cur).c_str());
+    cur = F[pick].s; curV = pv;
+    printf("  v%d: dbeam %.0f (%+.0f vs base)  bound3 %.0f   %s\n", step + 1, curV, curV - d0, F[pick].b2, F[pick].desc.c_str());
+    fprintf(tf, "%s\n", target_line("greedy" + to_string(step + 1), curV, cur).c_str());
   }
-  // the best single edits as their own targets
   int nv = 0;
-  for (size_t i = 0; i < E.size() && nv < O.variants; i++) {
-    if (E[i].b2 <= b2) break;
-    string n = E[i].desc; for (char& c : n) if (c == ' ' || c == '(' || c == ')' || c == '>' || c == '-') c = '_';
-    fprintf(tf, "%s\n", target_line("single_" + n, E[i].b2, E[i].s).c_str()); nv++;
+  for (size_t i = 0; i < ranked.size() && nv < O.variants; i++) {
+    if (ranked[i].first <= d0) break;
+    const Edit& e = E[ranked[i].second];
+    fprintf(tf, "%s\n", target_line("single_" + slug(e.desc), ranked[i].first, e.s).c_str()); nv++;
   }
   fclose(tf);
   printf("\nfinal greedy variant:\n"); print_config(stdout, cur);
@@ -633,7 +644,7 @@ int main(int argc, char** argv) {
     else if (a == "--targets") O.targets = nx(); else if (a == "--out-dir") O.outDir = nx();
     else if (a == "--variants") O.variants = stoi(nx()); else if (a == "--edits") O.edits = stoi(nx());
     else if (a == "--score-level") O.scoreLevel = stoi(nx()); else if (a == "--score-runs") O.scoreRuns = stoi(nx());
-    else if (a == "--dmin") DMIN = stoi(nx()); else if (a == "--dbeam") DBEAM = stoi(nx());
+    else if (a == "--dmin") DMIN = stoi(nx()); else if (a == "--dbeam") DBEAM = stoi(nx()); else if (a == "--dbeam-lambda") DBEAM_LAMBDA = stod(nx());
     else if (a == "--scorer") { string m = nx(); SCORE_MODE = m == "ideal" ? 0 : m == "bound2" ? 1 : 2; }
     else if (a == "--start-tour") O.startTour = nx(); else if (a == "--start-k") O.startK = stoi(nx());
     else if (a == "--threads") O.threads = stoi(nx()); else if (a == "--time") O.time = stod(nx()); else if (a == "--rng") O.rng = (unsigned)stoul(nx());

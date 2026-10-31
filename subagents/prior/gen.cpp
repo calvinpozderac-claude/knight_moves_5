@@ -35,12 +35,28 @@ static vector<Tour> read_tours(const string& fn, bool val) {
 
 int main(int argc, char** argv) {
   init_board(); prior_init();
-  string out; double valFrac = 0; unsigned rng = 1; vector<string> files, valFiles;
+  string out; bool check = false; double valFrac = 0; unsigned rng = 1; vector<string> files, valFiles;
   for (int i = 1; i < argc; i++) {
     string a = argv[i];
-    if (a == "--out") out = argv[++i]; else if (a == "--val-frac") valFrac = atof(argv[++i]);
+    if (a == "--out") out = argv[++i]; else if (a == "--check") check = true; else if (a == "--val-frac") valFrac = atof(argv[++i]);
     else if (a == "--val-file") valFiles.push_back(argv[++i]); else if (a == "--rng") rng = atoi(argv[++i]);
     else files.push_back(a);
+  }
+  if (check) {  // all_move_features == move_features on every position of every tour
+    long long nm_ = 0, bad = 0; vector<pair<int, int>> mv; vector<float> A(PF * 64); float f[PF];
+    for (auto& fn : files) for (auto& t : read_tours(fn, false)) {
+      S s = start_state();
+      for (auto& m : t.m) {
+        pinned_moves(s, 3, true, mv);
+        for (int ch = 0; ch < 2; ch++) {
+          all_move_features(s, mv, A.data(), ch);
+          for (size_t i = 0; i < mv.size(); i++) { if (mv[i].second == H8) continue; move_features(s, mv[i].first, mv[i].second, f, ch); nm_++;
+            for (int k = 0; k < PF; k++) if (fabsf(f[k] - A[PF * i + k]) > 1e-6f) { if (bad++ < 10) fprintf(stderr, "mismatch feature %d: %g vs %g\n", k, f[k], A[PF * i + k]); } }
+        }
+        apply_move(s, m.delta, m.q);
+      }
+    }
+    printf("check: %lld move feature vectors, %lld mismatches\n", nm_, bad); return bad != 0;
   }
   if (out.empty()) { fprintf(stderr, "usage: gen --out FILE [--val-frac P] [--val-file F] TOURFILES...\n"); return 1; }
   vector<Tour> tours; std::mt19937 g(rng);

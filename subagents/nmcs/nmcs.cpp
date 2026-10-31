@@ -60,7 +60,7 @@ static inline int xapply(X& x, int d, int q) {
 }
 
 // ---------------------------------------------------------------- parameters
-static double FW = 0.5, FR = 6.0, FV = 2.0, FG = 1.0, FD = 8.0, FO = 0.0, TAU = 1.0, UNFPEN = 2000;
+static double FW = 0.25, FR = 10.0, FV = 3.0, FG = 0.5, FD = 10.0, FO = 0.0, TAU = 0.8, UNFPEN = 2000;
 static bool REACHBFS = false;
 static double D0 = 1;
 static double h8dist(const S& s) {
@@ -163,6 +163,7 @@ static Result GBEST; static vector<Mv> GBEST_FULL;
 static string OUTF = "nmcs_best.txt", POOLF, CHECKER = "tools/check_tour.py", RECDIR = ".";
 static long long POOLMIN = 7500, VERIFYMIN = 8000, RECORD = 8123;
 static unordered_set<string> POOLSEEN;
+static long long RSN = 0, RSSUM = 0, RSFIN = 0;  // completed restarts: count, sum of finished minutes, finished count
 static std::chrono::steady_clock::time_point T0;
 static double elapsed() { return std::chrono::duration<double>(std::chrono::steady_clock::now() - T0).count(); }
 
@@ -466,6 +467,23 @@ int main(int argc, char** argv) {
   fflush(stdout);
   T0 = std::chrono::steady_clock::now();
 
+  if (getenv("NMCS_DIAG") && !seeds.empty()) {  // rank of the first seed's moves under the playout policy
+    X x = make_x(start_state()); vector<pair<int, int>> mv; vector<double> lg; double ll = 0; int top1 = 0, cnt = 0;
+    for (size_t i = 0; i < seeds[0].size(); i++) {
+      Mv m = seeds[0][i]; pinned_moves(x.s, 3, true, mv); move_logits(x, mv, lg);
+      if ((int)i >= AMIN && m.q != H8) {
+        double mxl = -1e300; for (size_t j = 0; j < mv.size(); j++) if (mv[j].second != H8) mxl = max(mxl, lg[j]);
+        double z = 0, pm = 0; int rank = 1; double lm = 0;
+        for (size_t j = 0; j < mv.size(); j++) if (mv[j].second == m.q && mv[j].first == m.delta) lm = lg[j];
+        for (size_t j = 0; j < mv.size(); j++) if (mv[j].second != H8) { z += exp(lg[j] - mxl); if (lg[j] > lm) rank++; }
+        pm = exp(lm - mxl) / z; ll += log(pm); cnt++; top1 += rank == 1;
+        if (getenv("NMCS_DIAG")[0] == '2') printf("move %zu %s d%d: p %.3f rank %d of %zu\n", i, nm(m.q).c_str(), m.delta, pm, rank, mv.size());
+      }
+      xapply(x, m.delta, m.q);
+    }
+    printf("diag: %d moves from %d, top-1 %.1f%%, mean log-prob %.3f (prob of whole sequence e^%.1f)\n", cnt, AMIN, 100.0 * top1 / max(1, cnt), ll / max(1, cnt), ll);
+    return 0;
+  }
   if (BENCH > 0) {  // playout speed and quality from the anchor of the first seed (or a1)
     S s = start_state(); if (!seeds.empty()) for (int i = 0; i < AMIN; i++) apply_move(s, seeds[0][i].delta, seeds[0][i].q);
     X root = make_x(s); std::mt19937 rng(RNG); double tot = 0, len = 0; long long fin = 0, mxm = 0;
@@ -497,6 +515,7 @@ int main(int argc, char** argv) {
       vector<Mv> full = prefix; full.insert(full.end(), r.seq.begin(), r.seq.end());
       if (r.finished) report(full, method.c_str());
       std::lock_guard<std::mutex> lk(MTX);
+      if (!STOP) { RSN++; RSSUM += r.finished ? r.minutes : 0; RSFIN += r.finished; }
       if (elapsed() - t0 < 1.0 && !(r.finished && r.minutes >= GBEST.minutes) && !STOP) continue;  // quiet for tiny restarts
       printf("[%7.1fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps, %.1fs, %lld playouts (best %lld)%s\n", elapsed(), tid, rs, k,
              r.finished ? "finished" : "unfinished", r.minutes, full.size(), elapsed() - t0, (long long)PLAYOUTS - p0,
@@ -509,6 +528,6 @@ int main(int argc, char** argv) {
   std::thread watcher([&]() { while (!done && !STOP) { if (TIME > 0 && elapsed() >= TIME) STOP = true; std::this_thread::sleep_for(std::chrono::milliseconds(100)); } });
   for (auto& t : th) t.join();
   done = true; watcher.join();
-  printf("done: best %lld minutes after %.1fs, %lld playouts (%.0f/s)\n", GBEST.finished ? GBEST.minutes : 0LL, elapsed(), (long long)PLAYOUTS,
-         PLAYOUTS / max(1e-9, elapsed()));
+  printf("done: best %lld minutes after %.1fs, %lld playouts (%.0f/s); %lld completed restarts, %lld finished, mean %.1f minutes\n",
+         GBEST.finished ? GBEST.minutes : 0LL, elapsed(), (long long)PLAYOUTS, PLAYOUTS / max(1e-9, elapsed()), RSN, RSFIN, RSFIN ? (double)RSSUM / RSFIN : 0.0);
 }
