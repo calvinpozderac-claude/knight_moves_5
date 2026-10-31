@@ -324,8 +324,8 @@ struct Opts {
   string tour = "data/tours/record_8123.txt", targets, trace, outDir = "subagents/goal/tmp/run", startTour;
   int k = -1, startK = 0, variants = 12, edits = 6, scoreLevel = 1, scoreRuns = 2, threads = 1, beam = 20000, maxDepth = 60,
       topOut = 50, maxFound = 20000, rerank = 200, writeMax = 2000, bucketCap = -1, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
-  double time = 60, finishTime = 0, wClu = 150, wAlt = 5, wVis = 100, wKnight = 20, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
-  unsigned rng = 1; int lookahead = 0; double laMargin = 0; bool expandDance = false, visKey = true;
+  double time = 60, finishTime = 0, wClu = 150, wAlt = 5, wVis = 100, wKnight = 0, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
+  unsigned rng = 1; int lookahead = 2; double laMargin = 0; bool expandDance = false, visKey = true;
 };
 static Opts O;
 
@@ -560,6 +560,7 @@ static int run_search() {
       vector<pair<int, int>> mv; std::mt19937 rng(O.rng * 101u + tid * 7u + depth * 1000003u);
       std::uniform_real_distribution<double> U(-1, 1);
       while (true) {
+        if (STOP || (O.time > 0 && elapsed() > O.time)) break;  // time is up: stop mid-layer
         size_t c0 = nextChunk.fetch_add(CH); if (c0 >= cur.size()) break;
         for (size_t pi = c0; pi < min(cur.size(), c0 + CH); pi++) {
           const S& ps = cur[pi];

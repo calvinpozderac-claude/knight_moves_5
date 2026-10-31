@@ -1,67 +1,76 @@
-# exact: branch-and-bound on the suffix of the 8,123 tour
+# exact: exhaustive suffix DP (sound) + heuristic branch-and-bound (unproven)
 
-Best: **8,123** (no improvement; `best.txt` = copy of `data/tours/record_8123.txt`, re-verified:
-`ok=True maxvisits=3 unnecessary=[]`).
+Best: **8,123** (no improvement). `best.txt` is a copy of `data/tours/record_8123.txt`, re-verified with
+`ok=True maxvisits=3 unnecessary=[]`.
 
 ## Method
-`bb.cpp` (+ `common.h`, includes `../../src/eng.h`): depth-first branch-and-bound over **all** pinned
-moves of the integer engine (`pinned_moves(s, 3, allowH8)`), starting from the state after move k of a
-tour.
-- Fail-soft DFS: returns an upper bound on the future minutes of a state; finding a finish > alpha
-  raises alpha and prints `FOUND`.
-- Transposition table (2^24-2^25 entries) keyed on (altitudes relative to the knight, visits, position):
-  the future of a state does not depend on T or the path, and the rules are translation-invariant in
-  altitude, so stored upper bounds are valid everywhere. This is what makes the exhaustive mode work.
-- Move ordering: the known tour's move first (incumbent stays prefix-consistent), then by wait.
-- Bound (`ub_future`, a "dance relaxation", NOT admissible in general): dance = the two levels around the
-  knight (top, top-2) with the most points; sitters = points in the knight's connected component of
-  available dance points (ortho U<->L, knight moves within a level, vis<3); each opposite pair with both
-  members in the dance gives max(remaining visits) sits and kills one point at its first sit; sits
-  alternate U/L (so #sits <= 2*min(S_U,S_L)+1); each sit is worth 4 x current group size.
-  `--check` (exhaustive mode) counts states where exact future > bound: ~1-2% of visited states,
-  all off-dance states (merges, wandering). So results with the bound are strong evidence, not proofs.
-- `--nobound`: pure exhaustive memoised search = a sound proof (modulo the engine = checker, which holds:
-  every wait in an integer-altitude tour is a pinned move).
-- `--lambda L`: prune if T + L*bound <= alpha (deliberately optimistic, a focused heuristic search).
+`bb.cpp` (+ `common.h`, includes `../../src/eng.h`) runs a depth-first search over **all** pinned moves of
+the integer engine (`pinned_moves(s, 3, allowH8)`), starting from the state after move k of a tour.
+- **Exhaustive mode (`--nobound`) is sound.** A memoised full enumeration. The transposition table (2^25
+  entries) is keyed by two independent 64-bit hashes of (altitudes relative to the knight, visits,
+  position). That key is valid because the future of a state does not depend on T or on the path, and the
+  rules only use altitude differences. Each entry stores an `exact` flag: a subtree that was fully
+  enumerated stores its exact optimum, and a hit returns that value whatever alpha is (DP over distinct
+  states). Engine = checker: in an integer-altitude tour, every necessary wait is a pinned move.
+  The only remaining risk is a double 128-bit hash collision.
+- Move ordering: the known tour's move comes first, then the others by wait.
+- **Heuristic bound `ub_future` (UNSOUND, label every result that uses it "unproven").** It is a "dance
+  relaxation": two levels, sitters in the knight's component, one sitter per opposite pair, U/L
+  alternation, 4·n per sit. `--check` (with `--nobound --alpha -100000000`) compares it with exact values
+  on every enumerated state. It fails on about 1–2% of them, e.g. exact 241 > bound 140 at T=7676 on f6
+  (off-dance and endgame states). I did not fix it this round. See the review `subagents/reviews/exact.md`
+  for the likely causes.
+- `--lambda L` prunes when T + L·bound <= alpha. This is a heuristic search on purpose.
 
-## Results (prefix of record_8123, alpha = 8123, i.e. "is there anything > 8123?")
-| k (moves kept) | mode | time | nodes | result |
-|---|---|---|---|---|
-| 134..120 | exhaustive (sound) | <1 s | <=0.6M | optimum = 8123 (suffix optimal) |
-| **118** | **exhaustive (sound)** | 60 s | 78M | **proven: no tour > 8123 keeps the first 118 moves; 8123 suffix optimal** |
-| 116 | exhaustive | >2 min | - | did not finish (growth ~x100 per 2 moves) |
-| 112 | dance bound | 0.2 s | 45k | no improvement (evidence) |
-| 108 | dance bound | 1.1 s | 276k | no improvement (evidence) |
-| 104 | dance bound | >240 s | 59M | timeout, no improvement found |
-| 104 | bound x0.9 | 36 s | 10.5M | no improvement (heuristic) |
-| 100/96/90 | bound x0.85/0.8/0.75 | see sweep_lam.log | | (filled in below) |
+## Sound results: exhaustive suffix optimum ("headroom table")
+The optimum over **every legal continuation** of the tour's first k moves:
 
-Sanity check of the heuristic bound against exhaustive search on other tours (alpha 0, find the optimum):
-record_8002 k=118,120 and record_7911 k=126,128: bounded search returns the same optimum as the exhaustive
-one (8002, 7911) with 100-5000x fewer nodes. (Side result, sound: the last 16 moves of 8002 and the last
-8 of 7911 are optimal.)
+| tour | k | prefix T | exhaustive optimum | time | nodes |
+|---|---|---|---|---|---|
+| 8123 | 134, 130, 128, 126, 124, 122, 120 | | 8123 | <=1 s | <=0.6M |
+| 8123 | 118 | 6992 | 8123 | 60–194 s | 78M |
+| 8123 | **116** | 6916 | **8123** | 226 s | 130M |
+| 8130 (`subagents/lns/NEW_RECORD_8130.txt`) | 148, 144, 142, 140, 138, 136, 134, 132 | | 8130 | <=16 s | <=6.3M |
+| 8130 | **130** | 6763 | **8130** | 213 s | 118M |
+| 8130 | 128 | 6599 | timeout (300 s, 203M nodes), nothing better found | | |
+| 8002 | 120, 118 | | 8002 | 4 s / 35 s | |
+| 7911 | 128, 126 | | 7911 | <=1 s | |
+
+**Proven-optimal suffixes:** 8,123 from move **116** on (its last 19 moves), and 8,130 from move **130** on
+(its last 26 moves). No tour that keeps those prefixes beats them. The 8,130 state after move 130 (knight
+on d1, altitude -119) matches the 8,123 state after move 113: both have exactly 1,367 minutes left.
+Running the exhaustive search from earlier points costs about 10–20 times more per 2 moves, so with
+5 minutes per run the frontier is about k=114 (8123) and k=128 (8130).
+
+## Unproven results (they rely on the heuristic bound)
+- 8123, k=112 and k=108: no improvement found (0.2 s, 1.1 s). k=104: timeout after 240 s. k=104 with
+  lambda 0.9: no improvement found (36 s).
+- On the 4 cases checked (8002 k=118/120, 7911 k=126/128), the bounded search returned the same optimum
+  as the exhaustive one.
 
 ## Reproduce
 ```
-cd subagents/exact && g++ -O2 -march=native -o bb bb.cpp
-./bb ../../data/tours/record_8123.txt 118 --nobound --tt 25          # sound proof, ~60 s
-./bb ../../data/tours/record_8123.txt 108 --tt 24                    # dance bound, ~1 s
-./bb ../../data/tours/record_8123.txt 104 --lambda 0.9 --tt 24       # heuristic, ~36 s
+cd subagents/exact && g++ -O2 -march=native -o bb bb.cpp && g++ -O2 -o stats stats.cpp
+./bb ../../data/tours/record_8123.txt 116 --nobound --alpha 0 --tt 25        # sound, ~4 min
+./table.sh ../lns/NEW_RECORD_8130.txt 300 134 132 130                       # sound rows for 8130
 ./bb ../../data/tours/record_8123.txt 122 --nobound --check --alpha -100000000   # bound violation stats
-./stats ../../data/tours/record_8123.txt     # per-move T, group sizes, remaining visits (stats.cpp)
+./bb ../../data/tours/record_8123.txt 108 --tt 24                            # heuristic bound (unproven)
+./stats ../../data/tours/record_8123.txt     # per move: T, group sizes, remaining visits
 ```
+Logs: `table8130.log`, `table8130b.log`, `table8123.log`, `sweep1.log`, `sweep2.log`.
 
-## Conclusions / next ideas
-- The end of the 8123 dance is locally optimal: nothing better exists after move 118 (proof), and the
-  bounded search finds nothing after moves 104-112. Gains, if any, are earlier (merge / early dance),
-  consistent with the README's diagnosis.
-- Exhaustive search dies at ~k=116 (a 20-move suffix) because of zero-wait wandering and off-dance
-  moves. To go further soundly one needs a provably admissible bound; the hard part is off-dance states
-  (risen opposite points that can be re-joined, merges). A sound version: compute the bound only when
-  every non-dance point is >= top+3 and no risen point is within reach, else fall back to exhaustive.
-- Better use of exact search: as a *finisher* inside NRPA/beam (solve the last ~18 moves exactly at
-  every rollout end / beam leaf), and with a macro-move model (sit + landing + up to 2 zero-wait hops)
-  where the dance bound is admissible by construction.
-- Stronger bound ingredients not yet used: each sit also needs a landing on an orthogonal neighbour in
-  the other group (matching-type constraint between U and L sitters), and kills should be charged to
-  the partner's actual group.
+## Next ideas
+1. **Stop polishing tails.** The last 19–26 moves of both record tours are exactly optimal. Any gain has to
+   come from the merge or the early or middle dance.
+2. **A bound that is sound by construction.** One sound fact to start from: over the future waits,
+   sum(delta) <= K0 + 2W + 2J. Here K0 is the knight's height above the global minimum, W the number of
+   waits and J the number of jumps. It holds because the global minimum drops by at most 2 per wait and
+   each jump climbs at most 2. So T_future <= N_max·(K0 + 2W + 2J). What is missing is a sound N_max (the
+   largest future group) and a sound J (only points that can be reached). Both need a proof that the
+   points far above the dance can never be reached: they only rise unless the knight stands at their
+   level. Use the bound only where that proof holds, and fall back to enumeration elsewhere. Then check it
+   with `--check` to 0 violations.
+3. **Use exact search as a finisher.** Solve the last ~20 moves exactly at every NRPA/LNS leaf. A suffix
+   from k≈130 of 8130 takes seconds to minutes, and a shorter suffix takes milliseconds.
+4. **Macro moves** (sit + landing + up to 2 zero-wait hops) for the middle dance. The dance bound can be
+   made admissible within that model, so the middle dance could be solved exactly in the model.

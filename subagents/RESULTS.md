@@ -14,3 +14,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 1b | genetic | memetic GA, splice crossover + repair | no gain over seeds (7,200->7,234 without records in 50 s) | crossover beats first parent ~30%; single mutations rarely help |
 | 1b | polish | reroute + sit insertion + window re-search + NRPA tail | 8,127 (verified, strict; from 8,123 in 60 s) | below lns 8,130; big gains on older tours (7,200->7,458, 6,303->7,124) |
 | 1b | nmcs | NMCS / Lazy NMCS / SP-MCTS | 7,966 (anchor 100, NMCS L3) | playout policy dominates; weaker than NRPA so far |
+| 1 | exact | full suffix enumeration (bound unsound, not used for proofs) | 8,123 | PROVEN: 8,123 optimal after move 116; 8,130 optimal after move 130; 8,002 after 118; 7,911 after 126 |
