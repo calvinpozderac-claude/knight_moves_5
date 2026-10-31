@@ -33,6 +33,17 @@ Between 7,200 and 7,911 (all NRPA, see below): re-searching the end of the 7,200
 re-searching its opening gave 7,512; fresh level-3 searches after move 34–41 gave 7,729; one fresh
 level-4 search after move 35 gave 7,911.
 
+**Where the record stands.** The 7,911 tour's dance uses every sit its opening leaves available: 79 sits
+from move 49, which is also the bound you get by giving each pair of opposite points the remaining visits
+of one member and alternating the two groups. So more minutes need a different opening or merge, not a
+better dance. Eight fresh level-4 searches (about an hour each on one core) gave 7,911, 7,882, 7,818,
+7,775, 7,765, 7,715, 7,627 and 7,621, and a warm level-4 polish of 7,911 found nothing better. Openings rated higher by the
+idealised-dance estimate did not do better in practice. Every good tour found so far shares the same
+climb (raise e8, e7 and d8, then walk up to d8 and sink it together with h8). That climb lands on both
+points of four opposite pairs, which costs roughly 5–8 sits. A search started from a1 with no seed
+gets within one unit of h8's height but never finds that raise trick. The most promising next step is
+many more level-4 searches (see below); a 32-thread machine can run about 30 an hour.
+
 Check them all exactly (fractions, every rule) with `python3 tools/verify_tours.py`.
 
 ## Layout
@@ -173,8 +184,10 @@ build/nrpa --level 3 --threads 30 --time 3600 --seed-tours data/tours/record_791
   far plus an idealised dance from there (sits alternate between the groups, points whose partner is
   gone sit first; adjacency is ignored). That estimate stays constant along a good dance, and it
   ranks the known openings in the right order, but it is optimistic: an opening it rated 8,725 only
-  reached 7,621 with a level-4 search. `--prefix-file FILE` then searches the rest of the tour from
-  a fixed, unfinished prefix (fresh weights).
+  reached 7,621 with a level-4 search. Before a rollout reaches a dance start it is scored by its
+  progress: first how close the knight gets to h8's height, then how big the groups around h8 grow.
+  `--prefix-file FILE` then searches the rest of the tour from a fixed, unfinished prefix (fresh
+  weights).
 - **Without seeds** it doesn't find h8 from a1. That's what `build/opening_search` and the
   curriculum tour set are for.
 

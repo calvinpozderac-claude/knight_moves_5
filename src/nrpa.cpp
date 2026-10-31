@@ -104,6 +104,16 @@ static double dance_pot(const S& s) {
   return s.T + fut;
 }
 
+// progress of an opening that has not reached a dance start yet: first climb to h8's height (the knight
+// must stand in h8's group to sink it), then grow the two groups around h8
+static double shaping(const S& s) {
+  int a = s.alt[s.pos], ah = s.alt[H8];
+  if (ah >= 17) return -1e7 + 1000.0 * (a - ah);  // h8 not sunk yet: get the knight up to its height
+  int nA = 0, nB = 0, nC = 0;
+  for (int i = 0; i < 64; i++) { if (s.alt[i] == ah) nA++; else if (s.alt[i] == ah - 2) nB++; else if (s.alt[i] == ah + 2) nC++; }
+  return -5e6 + 1000.0 * (nA + max(nB, nC)) + s.T;
+}
+
 static std::atomic<bool> STOP{false};
 static std::atomic<long long> PLAYOUTS{0};
 
@@ -111,7 +121,7 @@ static std::atomic<long long> PLAYOUTS{0};
 static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
   S s = root; Result r; vector<pair<int, int>> mv; vector<double> w;
   long long finT = -1; size_t finLen = 0; Mv finMove{0, H8};
-  double bestPot = -1e18; size_t potLen = 0; long long potT = 0; int qual = 0;
+  double bestPot = -1e18; size_t potLen = 0; long long potT = 0; int qual = 0; double shaped = -1e9;
   if (OBJ == 1) { double p = dance_pot(s); if (p > bestPot) { bestPot = p; potLen = 0; potT = s.T; } }
   while (true) {
     if (OBJ == 1 && (int)r.seq.size() >= MAXSTEPS) break;
@@ -131,13 +141,16 @@ static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
     r.seq.push_back({mv[pick].first, mv[pick].second});
     apply_move(s, mv[pick].first, mv[pick].second);
     if (OBJ == 1) {  // the dance has begun once states qualify; a few of them are enough
+      shaped = max(shaped, shaping(s));
       double p = dance_pot(s);
       if (p > -1e17) { if (p > bestPot) { bestPot = p; potLen = r.seq.size(); potT = s.T; } if (++qual >= 6) break; }
     }
   }
   PLAYOUTS++;
   if (OBJ == 1) {
-    r.seq.resize(potLen); r.minutes = potT; r.score = bestPot > -1e17 ? bestPot : -1e7 + s.T; r.finished = false;
+    if (bestPot > -1e17) { r.seq.resize(potLen); r.minutes = potT; r.score = bestPot; }
+    else { r.minutes = s.T; r.score = shaped; }  // no dance start: reward the climb, then the merging
+    r.finished = false;
     return r;
   }
   if (finT >= 0) {
