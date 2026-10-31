@@ -61,6 +61,7 @@ static void reach_from(const S& c, int src, Reach& R) {
   while (!heap.empty()) {
     std::pop_heap(heap.begin(), heap.end(), std::greater<int>()); int k = heap.back(); heap.pop_back();
     int u = k & 63; if (done[u]) continue; done[u] = true; R.order[R.n++] = u;
+    if (R.hops[u] > MAXHOPS) continue;  // paths longer than max-hops + 1 are never needed
     for (int j = 0; j < NBN[u]; j++) {
       int v = NBQ[u][j];
       if (v == H8 || done[v] || c.vis[v] >= 3) continue;
@@ -264,9 +265,9 @@ static void adapt(Policy& pol, const S& root, const vector<Macro>& seq, double a
   for (auto& [c, d] : upd) pol.w[c] += d;
 }
 
-static Result nrpa(int level, const S& root, Policy pol, std::mt19937& rng) {
+static Result nrpa(int level, const S& root, Policy pol, std::mt19937& rng, const Result* init = nullptr) {
   if (level == 0) return playout(root, pol, rng);
-  Result best;
+  Result best; if (init) best = *init;
   for (int i = 0; i < ITERS && !STOP; i++) {
     Result r = level == 1 ? playout(root, pol, rng) : nrpa(level - 1, root, pol, rng);
     if (r.score >= best.score) best = r;
@@ -426,6 +427,21 @@ static S replay(const vector<Mv>& t, size_t k) { S s = start_state(); for (size_
 // indices of the sits (positive waits, not the final jump into h8)
 static vector<int> sit_indices(const vector<Mv>& t) { vector<int> v; for (int i = 0; i + 1 < (int)t.size(); i++) if (t[i].delta > 0) v.push_back(i); return v; }
 
+// a raw tour's moves from `start` as macros (leading zero-wait hops become a no-sit macro); the final
+// jump into h8 is not a macro (its sink is t.back().delta). Rebuilding needs our min-cost hop paths to
+// coincide with the tour's (check with expand + validate).
+static vector<Macro> decompose(const vector<Mv>& t, size_t start) {
+  vector<Macro> all; size_t i = start;
+  while (i + 1 < t.size() && t[i].delta == 0) i++;
+  if (i > start) all.push_back({0, -1, (int8_t)t[i - 1].q});
+  while (i + 1 < t.size()) {
+    size_t j = i + 1; while (j + 1 < t.size() && t[j].delta == 0) j++;
+    all.push_back({(int16_t)t[i].delta, (int8_t)t[i].q, (int8_t)t[j - 1].q});
+    i = j;
+  }
+  return all;
+}
+
 // ---------------------------------------------------------------- output
 static std::mutex MTX;
 static long long GBEST = 0; static vector<Mv> GBESTT;
@@ -488,6 +504,7 @@ int main(int argc, char** argv) {
   for (int k = 0; k < NBN[H8]; k++) H8K[NBQ[H8][k]] = NBT[H8][k];
   D0 = 1; D0 = h8dist(start_state());
   string algo = "nrpa", seedFile; int LEVEL = 3, THREADS = 1, AMIN = 0, AMAX = 0, TAIL = 15, TMIN = 10, TMAX = 20, WIDTH = 2000;
+  int SEEDADAPT = 0; bool WARM = false;
   double TIME = 0, SEEDBEST = 0, NOISE = 0; unsigned RNG = 1; long long DFSN = 5000000; bool SELFCHECK = false;
   for (int i = 1; i < argc; i++) {
     string a = argv[i]; auto nx = [&]() { if (i + 1 >= argc) { fprintf(stderr, "missing value for %s\n", a.c_str()); exit(1); } return string(argv[++i]); };
@@ -506,6 +523,7 @@ int main(int argc, char** argv) {
     else if (a == "--out") OUTF = nx(); else if (a == "--pool") POOLF = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
     else if (a == "--record") RECORD = stoll(nx()); else if (a == "--checker") CHECKER = nx();
     else if (a == "--selfcheck") SELFCHECK = true;
+    else if (a == "--seed-adapt") SEEDADAPT = stoi(nx()); else if (a == "--warm") WARM = true;
     else { fprintf(stderr, "unknown option %s (see the comment at the top of macro.cpp)\n", a.c_str()); return 1; }
   }
   if (AMAX < AMIN) AMAX = AMIN;
@@ -589,7 +607,19 @@ int main(int argc, char** argv) {
       double t0 = elapsed();
       Result r;
       if (algo == "beam") r = beam(root, WIDTH, NOISE, rng, MAXHOPS);
-      else { Policy pol; r = nrpa(LEVEL, root, pol, rng); }
+      else {
+        Policy pol; Result init; bool haveInit = false;
+        if ((SEEDADAPT > 0 || WARM) && !seed.empty()) {  // shift the weights toward the seed's own continuation
+          init.mac = decompose(seed, k); init.finD = (int16_t)seed.back().delta;
+          vector<Mv> full = prefix, tail = expand(root, init.mac, true, init.finD); full.insert(full.end(), tail.begin(), tail.end());
+          long long T = validate(full);
+          if (T >= 0) {
+            init.finished = true; init.minutes = T; init.score = (double)T; haveInit = WARM;
+            for (int a = 0; a < SEEDADAPT; a++) adapt(pol, root, init.mac, ALPHA);
+          }
+        }
+        r = nrpa(LEVEL, root, pol, rng, haveInit ? &init : nullptr);
+      }
       long long T = -1;
       if (r.finished) {
         vector<Mv> full = prefix, tail = expand(root, r.mac, true, r.finD); full.insert(full.end(), tail.begin(), tail.end());
