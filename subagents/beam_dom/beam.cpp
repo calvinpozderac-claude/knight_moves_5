@@ -195,7 +195,6 @@ static int walk_dance(const S& s, int U) {
     vl[bq]--; p = bq;
     if (H8NB >> p & 1) best = max(best, fut);
   }
-  if (getenv("WALK_RAW")) return fut;
   return max(best, 0);
 }
 
