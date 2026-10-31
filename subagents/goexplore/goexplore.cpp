@@ -36,7 +36,7 @@ static int MB = 4, GB = 3, VB = 6, PB = 2, DMIN = 30, FITMODE = 0;
 static int ITERS = 100, NLEVEL = 1, BATCH = 32, XSTEPS = 0, POOLMIN = 7500;
 static double ALPHA = 1.0, BIAS = 0, PNRPA = 0.5, TEMP = 200, UNK = 400, RB = 1.0;
 static std::atomic<bool> STOP{false};
-static std::atomic<long long> PLAYOUTS{0}, FINISHES{0}, IMPROVES{0};
+static std::atomic<long long> PLAYOUTS{0}, FINISHES{0}, IMPROVES{0}, PICKS[3];
 
 // ---------------- NRPA policy (same coding as src/nrpa.cpp)
 static int KIDX[64][64];
@@ -211,6 +211,7 @@ static bool verify(const string& text, string& msg) {
 
 static std::mutex poolMtx, bestMtx;
 static unordered_set<uint64_t> SEEN;  // tours already known (seeds + pool), guarded by poolMtx
+static unordered_set<uint64_t> SEEDSET;  // the seed tours (read-only once the workers start)
 static string POOLFILE, OUTFILE = "best.txt", RECDIR = ".";
 static std::atomic<int> SEARCHBEST{0}, SEEDBEST{0};
 static Path searchBestPath;
@@ -229,7 +230,7 @@ static void record_finish(const Path& tour, int T) {
       FILE* f = fopen(POOLFILE.c_str(), "a"); if (f) { fprintf(f, "%d\t%s\n", T, txt.c_str()); fclose(f); }
     }
   }
-  if (T <= SEARCHBEST.load()) return;
+  if (T <= SEARCHBEST.load() || SEEDSET.count(path_hash(tour))) return;  // the search best only counts new tours
   std::lock_guard<std::mutex> lk(bestMtx);
   if (T <= SEARCHBEST.load()) return;
   string txt = tour_text(tour), msg; bool ok = true;
@@ -352,7 +353,7 @@ static void worker(int tid, unsigned seed) {
     double u = std::uniform_real_distribution<double>(0, sn->cum.back())(cx.rng);
     size_t j = std::upper_bound(sn->cum.begin(), sn->cum.end(), u) - sn->cum.begin(); if (j >= sn->idx.size()) j = sn->idx.size() - 1;
     long slot = sn->idx[j]; Cell& c = AR->c[slot];
-    c.chosen++; c.sinceImp++;
+    c.chosen++; c.sinceImp++; PICKS[min<int>(c.key.load() & 3, 2)]++;
     cx.pre = AR->get_path(slot); cx.m0 = (int)cx.pre.size();
     S root = start_state(); cx.preSlots.clear();
     cx.preSlots.push_back(AR->find(describe(root, 0).key, false));
@@ -382,12 +383,13 @@ static void seed_tour(const Path& t) {
   apply_move(s, seq.back().delta, seq.back().q);
   for (long x : slots) if (x >= 0) amax(AR->c[x].val, s.T);
   amax(SEEDBEST, s.T);
-  SEEN.insert(path_hash(t));
+  SEEN.insert(path_hash(t)); SEEDSET.insert(path_hash(t));
 }
 static void save_ckpt(const string& fn) {
   string tmp = fn + ".tmp"; FILE* f = fopen(tmp.c_str(), "wb"); if (!f) { fprintf(stderr, "cannot write %s\n", tmp.c_str()); return; }
-  fwrite("GEX1", 1, 4, f);
+  fwrite("GEX2", 1, 4, f);
   long long n = 0; fwrite(&n, sizeof n, 1, f);
+  int32_t cfg[6] = {MB, GB, VB, PB, DMIN, FITMODE}; fwrite(cfg, 4, 6, f);
   for (size_t i = 0; i < AR->N; i++) {
     Cell& x = AR->c[i]; if (!x.ready.load()) continue;
     Path p = AR->get_path((long)i);
@@ -405,7 +407,13 @@ static void save_ckpt(const string& fn) {
 static bool load_ckpt(const string& fn) {
   FILE* f = fopen(fn.c_str(), "rb"); if (!f) { fprintf(stderr, "cannot open checkpoint %s\n", fn.c_str()); return false; }
   char mg[4]; long long n = 0;
-  if (fread(mg, 1, 4, f) != 4 || memcmp(mg, "GEX1", 4) || fread(&n, sizeof n, 1, f) != 1) { fprintf(stderr, "bad checkpoint %s\n", fn.c_str()); fclose(f); return false; }
+  if (fread(mg, 1, 4, f) != 4 || memcmp(mg, "GEX2", 4) || fread(&n, sizeof n, 1, f) != 1) { fprintf(stderr, "bad checkpoint %s\n", fn.c_str()); fclose(f); return false; }
+  int32_t cfg[6], want[6] = {MB, GB, VB, PB, DMIN, FITMODE};
+  if (fread(cfg, 4, 6, f) != 6 || memcmp(cfg, want, sizeof cfg)) {
+    fprintf(stderr, "checkpoint %s was written with --mb %d --gb %d --vb %d --pb %d --dmin %d --fit %s; pass the same options to resume\n", fn.c_str(),
+            cfg[0], cfg[1], cfg[2], cfg[3], cfg[4], cfg[5] ? "pot" : "T");
+    fclose(f); return false;
+  }
   long long loaded = 0;
   for (long long r = 0; r < n; r++) {
     uint64_t k; int32_t fit, val; uint32_t ch, si, len; uint8_t dead;
@@ -498,6 +506,9 @@ int main(int argc, char** argv) {
       printf("[%6.0fs] cells %zu (opening %zu, merge %zu, dance %zu; %zu with a finish), playouts %lld (%.0f/s), finishes %lld, improvements %lld, search best %d, seed best %d\n",
              e, AR->count.load(), sn->perStage[0], sn->perStage[1], sn->perStage[2], sn->withVal, pl, (pl - lastPl) / max(1e-9, e - lastRep), FINISHES.load(),
              IMPROVES.load(), SEARCHBEST.load(), SEEDBEST.load());
+      long long pk = PICKS[0] + PICKS[1] + PICKS[2];
+      if (pk) printf("         picks: opening %.1f%%, merge %.1f%%, dance %.1f%% of %lld%s\n", 100.0 * PICKS[0] / pk, 100.0 * PICKS[1] / pk, 100.0 * PICKS[2] / pk, pk,
+                     AR->count.load() >= AR->maxCells ? "  [archive FULL: no new cells; raise --table-log2]" : "");
       fflush(stdout); lastRep = e; lastPl = pl;
     }
     if (!ckpt.empty() && e - lastCk >= CKPTEVERY) { save_ckpt(ckpt); lastCk = e; }

@@ -25,6 +25,7 @@ ap.add_argument('--wpow', type=float, default=2.0)
 ap.add_argument('--wmin', type=float, default=0.02)
 ap.add_argument('--seed', type=int, default=1)
 ap.add_argument('--out', default=None)
+ap.add_argument('--eval-every', type=int, default=5)
 ap.add_argument('--drop', default='', help='comma-separated feature indices to zero (ablation)')
 args = ap.parse_args()
 
@@ -51,7 +52,7 @@ best_r = (lab >= Lmax_r) & (lab > 0)
 tr_mask_g = gsplit == 0
 mean = X[tr_mask_g[gid]].mean(0); sd = X[tr_mask_g[gid]].std(0) + 1e-3
 sd[X[tr_mask_g[gid]].std(0) < 1e-6] = 1.0
-Xn = ((X - mean) / sd).astype(np.float64)
+Xn = ((X - mean) / sd).astype(np.float32)
 
 rng = np.random.default_rng(args.seed)
 H = args.hidden
@@ -82,14 +83,9 @@ def evaluate(gs):
     nll = -np.add.reduceat(tgt[idx] * np.log(p + 1e-12), starts)
     # top-1: predicted argmax is a best move
     def top1(score):
+        score = score + 1e-7 * rng.random(len(score))
         mx = np.maximum.reduceat(score, starts)
-        pick = score >= mx[gidl] - 1e-9
-        # first argmax per group
-        first = np.zeros(len(idx), bool)
-        order = np.where(pick)[0]; seen = np.zeros(len(gs), bool)
-        for r in order:
-            if not seen[gidl[r]]: seen[gidl[r]] = True; first[r] = True
-        return np.add.reduceat((first & best_r[idx]).astype(float), starts)
+        return np.add.reduceat(((score >= mx[gidl]) & best_r[idx]).astype(float), starts)
     acc = top1(z)
     pbest = np.add.reduceat(p * best_r[idx], starts)
     uni = np.add.reduceat(best_r[idx].astype(float), starts) / gcount[gs]
@@ -111,11 +107,13 @@ def show(tag, d):
 tr_g = np.where(gsplit == 0)[0]; va_g = np.where(gsplit == 1)[0]
 m = {k: np.zeros_like(v) for k, v in P.items()}; v2 = {k: np.zeros_like(v) for k, v in P.items()}
 step = 0; t0 = time.time()
+# fixed minibatches of groups (random assignment, reused every epoch, cheap)
+_perm = rng.permutation(tr_g); tr_batches = []
+for b in range(0, len(_perm), args.batch):
+    gs = np.sort(_perm[b:b + args.batch]); tr_batches.append((gs,) + batch_rows(gs))
 for ep in range(args.epochs):
-    perm = rng.permutation(tr_g)
-    for b in range(0, len(perm), args.batch):
-        gs = np.sort(perm[b:b + args.batch])
-        idx, starts, gidl = batch_rows(gs)
+    for b in rng.permutation(len(tr_batches)):
+        gs, idx, starts, gidl = tr_batches[b]
         Xb = Xn[idx]
         z, hdn = forward(Xb); p, _ = seg_softmax(z, starts, gidl)
         wr = gw[gs][gidl] / gw[gs].sum()
@@ -131,7 +129,7 @@ for ep in range(args.epochs):
             gk = G[k] + args.l2 * P[k]
             m[k] = 0.9 * m[k] + 0.1 * gk; v2[k] = 0.999 * v2[k] + 0.001 * gk * gk
             P[k] -= args.lr * (m[k] / (1 - 0.9 ** step)) / (np.sqrt(v2[k] / (1 - 0.999 ** step)) + 1e-8)
-    if ep % 5 == 4 or ep == args.epochs - 1:
+    if ep % args.eval_every == args.eval_every - 1 or ep == args.epochs - 1:
         e = evaluate(tr_g)['all']
         line = f'epoch {ep + 1} ({time.time() - t0:.0f}s): train nll {e["nll"]:.4f} top1 {e["acc"]:.3f}'
         if len(va_g): ev = evaluate(va_g)['all']; line += f' | val nll {ev["nll"]:.4f} top1 {ev["acc"]:.3f}'

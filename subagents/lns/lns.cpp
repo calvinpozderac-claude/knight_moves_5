@@ -253,7 +253,7 @@ int main(int argc, char** argv) {
   for (int i = 0; i < 64; i++) for (int j = 0; j < 64; j++) TYP[i][j] = -1;
   for (int i = 0; i < 64; i++) for (int k = 0; k < NBN[i]; k++) TYP[i][NBQ[i][k]] = NBT[i][k];
   vector<string> files; double TIME = 60, T0 = 30, T1 = 1; string out = "best_lns.txt"; uint64_t seed = 1;
-  long long BUDGET = 200000; int DMAX = 5, XOVER = 1;
+  long long BUDGET = 200000; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
   for (int a = 1; a < argc; a++) {
     string s = argv[a];
     if (s == "--tours") { while (a + 1 < argc && argv[a + 1][0] != '-') files.push_back(argv[++a]); }
@@ -265,6 +265,7 @@ int main(int argc, char** argv) {
     else if (s == "--budget") BUDGET = atoll(argv[++a]);
     else if (s == "--dmax") DMAX = atoi(argv[++a]);
     else if (s == "--xover") XOVER = atoi(argv[++a]);
+    else if (s == "--focus") { FLO = atoi(argv[++a]); FHI = atoi(argv[++a]); FOCP = atof(argv[++a]); }
   }
   rng.seed(seed);
   vector<Elite> recs;
@@ -395,7 +396,7 @@ int main(int argc, char** argv) {
       }
       continue;
     }
-    int i = RI(0, N - 2);
+    int i = (U() < FOCP) ? RI(max(0, FLO), min(N - 2, FHI)) : RI(0, N - 2);
     SR.path.assign(cur.X.begin(), cur.X.begin() + i);
     SR.i0 = i; SR.sameXY = true; SR.PD = RI(1, 3); SR.R = RI(2, 6);
     int pd = RI(0, 2);

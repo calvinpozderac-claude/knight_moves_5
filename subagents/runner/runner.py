@@ -61,6 +61,7 @@ class Paths:
         self.history = os.path.join(self.tmp, 'best_history.log')
         self.leaderboard = os.path.join(self.out, 'LEADERBOARD.md')
         self.best = os.path.join(self.out, 'global_best.txt')
+        self.best_strict = os.path.join(self.out, 'global_best_strict.txt')
         os.makedirs(self.logs, exist_ok=True)
         os.makedirs(self.out, exist_ok=True)
 
@@ -520,7 +521,7 @@ def parse_tour_line(line):
 def discover(P, jobs):
     """List of (path, agent, method)."""
     root = P.root
-    own = {P.leaderboard, P.best, P.cache, P.state}
+    own = {P.leaderboard, P.best, P.best_strict, P.cache, P.state}
     pools = {}
     for j in jobs.values():
         pp = job_pool(P, j)
@@ -548,7 +549,7 @@ def discover(P, jobs):
             return
         rel = os.path.relpath(path, root).split(os.sep)
         if rel[0] == 'subagents' and len(rel) >= 3:
-            agent, method = rel[1], '/'.join(rel[2:])
+            agent, method = rel[1], re.sub(r'\d+', 'N', '/'.join(rel[2:]))   # r_17.txt -> r_N.txt
         elif rel[0] == 'runs':
             agent, method = 'runs/' + (rel[1] if len(rel) > 2 else ''), '/'.join(rel[1:])
         elif rel[0] == 'data':
@@ -669,7 +670,42 @@ def verify(text):
     ok, T, mv, bad = ck.check(text, show=False)               # the official check (incl. necessity test)
     good = bool(ok) and mv <= 3 and bad == []
     reason = 'ok' if good else (f'maxvisits={mv}' if mv > 3 else f'unnecessary waits at moves {bad}')
-    return {'ok': good, 'T': str(T), 'msg': reason, 'maxvisits': mv}
+    r = {'ok': good, 'T': str(T), 'msg': reason, 'maxvisits': mv}
+    if good:
+        r.update(classify(moves, sim))
+    return r
+
+
+def classify(moves, sim):
+    """Flags beyond the checker: 'free' waits (t>0 then a dz=0 jump inside the knight's own group, legal for
+    any t), non-integer waits, and waits that leave fractional altitudes. strict = none of these
+    (the engine's model: integer altitudes, every wait pinned by its jump)."""
+    alt = sim.init_alt(sim.MAIN_ROWS)
+    pos = sim.parse('a1')
+    free = nonint = fracalt = 0
+    for t, qs in moves:
+        t = Fraction(t)
+        q = sim.parse(qs)
+        O = (7 - pos[0], 7 - pos[1])
+        ingroup = alt[q] == alt[pos] and q != O
+        n = sim.apply_wait(pos, t, alt, 8)
+        if t > 0 and ingroup:
+            free += 1
+        if t.denominator != 1:
+            nonint += 1
+        if (t / n).denominator != 1:
+            fracalt += 1
+        pos = q
+    return {'free': free, 'nonint': nonint, 'fracalt': fracalt, 'strict': free == nonint == fracalt == 0}
+
+
+def flags(v):
+    if not v or not v.get('ok') or 'strict' not in v:
+        return ''
+    if v['strict']:
+        return 'strict'
+    return ', '.join(f'{v[k]} {lab}' for k, lab in (('free', 'free'), ('nonint', 'non-int'),
+                                                     ('fracalt', 'frac-alt')) if v[k])
 
 
 def verify_cli(text):
@@ -694,7 +730,6 @@ def _collect(P, a):
     tours = cache.setdefault('tours', {})
     ver = cache.setdefault('verified', {})
     alerted = set(cache.setdefault('alerted', []))
-    prev_best = cache.get('best')
     if a.full:
         files.clear()
     seen = set()
@@ -720,7 +755,12 @@ def _collect(P, a):
     def get(h):
         nonlocal checks, over_budget
         if h in ver:
-            return ver[h]
+            v = ver[h]
+            if v.get('ok') and 'strict' not in v:
+                checker()
+                import sim  # noqa: E402
+                v.update(classify([(Fraction(w), q) for w, q in MOVE_RE.findall(tours[h]['tour'])], sim))
+            return v
         if checks >= a.max_checks or now() - t0 > budget_t:
             over_budget = True
             return None
@@ -728,22 +768,26 @@ def _collect(P, a):
         ver[h] = verify(tours[h]['tour'])
         ver[h]['when'] = ts()
         return ver[h]
-    # global best: verify every candidate (descending) down to and including ties with the best verified
-    best_h, invalid = None, []
+    # global best: verify candidates in descending order down to the first verified tour (and on down to the
+    # first verified *strict* tour); with --verify-ties also every distinct tour tied with the best
+    best_h = strict_h = None
+    invalid = []
     for h in cand:
         sc = Fraction(tours[h]['score'])
-        if best_h is not None and sc < Fraction(tours[best_h]['score']):
+        tie = best_h is not None and a.verify_ties and sc == Fraction(tours[best_h]['score'])
+        if best_h is not None and strict_h is not None and not tie:
             break
         v = get(h)
         if v is None:
             continue
         if v['ok']:
-            if best_h is None:
-                best_h = h
-        else:
+            best_h = best_h or h
+            if v.get('strict') and strict_h is None:
+                strict_h = h
+        elif best_h is None:
             invalid.append(h)
     ties = [h for h in cand if best_h and tours[h]['score'] == tours[best_h]['score'] and ver.get(h, {}).get('ok')]
-    # best per (agent, method) and per agent
+    # best (and best strict) per (agent, method)
     groups = {}
     for h in cand:
         for key, agent, method in srcs[h]:
@@ -751,14 +795,16 @@ def _collect(P, a):
     gbest = {}
     for g, hs in groups.items():
         hs = sorted(set(hs), key=lambda h: -Fraction(tours[h]['score']))
-        gbest[g] = None
+        b = s = None
         for h in hs[:12]:
             v = get(h)
             if v and v['ok']:
-                gbest[g] = h
-                break
+                b = b or h
+                if v.get('strict'):
+                    s = h
+                    break
+        gbest[g] = (b, s)
     # alerts: verified tours beating the record (double-checked with the checker CLI)
-    alerts = []
     for h in cand:
         sc = Fraction(tours[h]['score'])
         if sc <= a.record:
@@ -770,123 +816,139 @@ def _collect(P, a):
                 ver[h].update(ok=False, msg='CLI checker disagrees: ' + out)
                 continue
             alerted.add(h)
-            alerts.append(h)
             fn = os.path.join(P.out, f'RECORD_ALERT_{tours[h]["score"].replace("/", "_")}_{h[:8]}.txt')
             with open(fn, 'w') as f:
                 f.write(f'{tours[h]["score"]}\n{tours[h]["tour"]}\n')
                 f.write(f'# verified {ts()} by subagents/runner (tools/check_tour.py): {out}\n')
+                f.write(f'# flags: {flags(ver[h])}\n')
                 for key, agent, method in srcs[h]:
                     f.write(f'# source: {key} (agent {agent}, method {method})\n')
-            banner(P, h, tours[h], srcs[h], out, fn)
+            banner(P, h, tours[h], srcs[h], out, fn, ver[h])
     cache['alerted'] = sorted(alerted)
-    # outputs
-    if best_h:
-        bt = tours[best_h]
-        cur = (prev_best or {}).get('hash')
-        if cur != best_h and (prev_best is None or Fraction(bt['score']) >= Fraction(prev_best['score'])):
-            write_atomic(P.best, f'{bt["score"]}\n{bt["tour"]}\n')
-            with open(P.history, 'a') as f:
-                f.write(f'{ts()}\t{bt["score"]}\t{best_h}\t{srcs[best_h][0][0]}\n')
-            if prev_best is None or Fraction(bt['score']) > Fraction(prev_best['score']):
-                print(f'[{ts()}] global best now {fmt_score(bt["score"])} ({srcs[best_h][0][1]}: '
-                      f'{srcs[best_h][0][0]})', flush=True)
-            cache['best'] = {'hash': best_h, 'score': bt['score'], 'source': srcs[best_h][0][0],
-                             'agent': srcs[best_h][0][1], 'when': ts()}
-    # prune tours that no file references any more (keep verified results)
-    keep = set(srcs) | alerted | ({cache['best']['hash']} if cache.get('best') else set())
+    # global best files (never go down: a best whose source file disappears is kept)
+    for hh, key, path, label in ((best_h, 'best', P.best, 'global best'),
+                                 (strict_h, 'best_strict', P.best_strict, 'global best strict')):
+        if not hh:
+            continue
+        bt, prev = tours[hh], cache.get(key)
+        if prev and (prev['hash'] == hh or Fraction(bt['score']) < Fraction(prev['score'])):
+            continue
+        write_atomic(path, f'{bt["score"]}\n{bt["tour"]}\n')
+        with open(P.history, 'a') as f:
+            f.write(f'{ts()}\t{key}\t{bt["score"]}\t{hh}\t{srcs[hh][0][0]}\t{flags(ver[hh])}\n')
+        if prev is None or Fraction(bt['score']) > Fraction(prev['score']):
+            print(f'[{ts()}] {label} now {fmt_score(bt["score"])} ({srcs[hh][0][1]}: {srcs[hh][0][0]}; '
+                  f'{flags(ver[hh])})', flush=True)
+        cache[key] = {'hash': hh, 'score': bt['score'], 'source': srcs[hh][0][0], 'agent': srcs[hh][0][1],
+                      'flags': flags(ver[hh]), 'when': ts(), 'tour': bt['tour']}
+    # prune tours that no file references any more (verified results are kept)
+    keep = set(srcs) | alerted
     for h in list(tours):
         if h not in keep:
             del tours[h]
     cache['last_collect'] = {'when': ts(), 'files': len(files), 'new_tours': n_new, 'checks': checks,
                              'seconds': round(now() - t0, 2), 'incomplete': over_budget}
     save_json(P.cache, cache)
-    write_leaderboard(P, a, cache, srcs, cand, best_h, ties, invalid, gbest, groups)
+    write_leaderboard(P, a, cache, srcs, cand, ties, gbest)
     if not a.quiet:
         lc = cache['last_collect']
-        b = cache.get('best')
         print(f'collect: {lc["files"]} files, {n_new} new tour lines, {checks} checks, {lc["seconds"]}s'
-              + (' (budget hit; rest next time)' if over_budget else ''))
-        print(f'global best verified: {fmt_score(b["score"]) if b else "-"}'
-              + (f'  [{b["agent"]}: {b["source"]}]' if b else '') + f'   record {a.record}')
+              + (' (verification budget hit; rest next time)' if over_budget else ''))
+        for key, label in (('best', 'global best verified'), ('best_strict', 'global best strict  ')):
+            b = cache.get(key)
+            print(f'{label}: {fmt_score(b["score"]) if b else "-"}'
+                  + (f'  [{b["agent"]}: {b["source"]}; {b["flags"]}]' if b else ''))
         if invalid:
-            print(f'{len(invalid)} candidate(s) >= best FAILED verification (see LEADERBOARD.md)')
-        print(f'wrote {os.path.relpath(P.leaderboard, P.root)} and {os.path.relpath(P.best, P.root)}')
+            print(f'{len(invalid)} candidate(s) above the best FAILED verification (see LEADERBOARD.md)')
+        print(f'wrote {os.path.relpath(P.leaderboard, P.root)}, {os.path.relpath(P.best, P.root)}')
     return cache
 
 
-def banner(P, h, t, srcs, out, fn):
+def banner(P, h, t, srcs, out, fn, v):
     line = '!' * 78
     msg = [line, line,
            f'!!!  NEW RECORD CANDIDATE VERIFIED: {fmt_score(t["score"])} minutes (record {RECORD_ARG[0]})',
            f'!!!  checker: {out}',
+           f'!!!  flags:   {flags(v) or "-"}' + ('' if v.get('strict') else
+                                                '   <-- NOT strict: may be a checker-only tour, inspect!'),
            *[f'!!!  source: {k} (agent {ag}, method {m})' for k, ag, m in srcs],
            f'!!!  saved:  {os.path.relpath(fn, P.root)}', line, line]
     txt = '\a\n' + '\n'.join(msg) + '\n'
     sys.stdout.write(txt)
     sys.stdout.flush()
-    sys.stderr.write(txt)
+    try:   # also to stderr when it goes somewhere else (e.g. stdout piped to a log)
+        a1, a2 = os.fstat(1), os.fstat(2)
+        if (a1.st_dev, a1.st_ino) != (a2.st_dev, a2.st_ino):
+            sys.stderr.write(txt)
+    except OSError:
+        pass
     with open(P.alerts, 'a') as f:
-        f.write(f'{ts()}\t{t["score"]}\t{h}\t{fn}\n')
+        f.write(f'{ts()}\t{t["score"]}\t{flags(v)}\t{os.path.relpath(fn, P.root)}\t{srcs[0][0]}\n')
 
 
 RECORD_ARG = [RECORD]
 
 
-def write_leaderboard(P, a, cache, srcs, cand, best_h, ties, invalid, gbest, groups):
+def write_leaderboard(P, a, cache, srcs, cand, ties, gbest):
     tours, ver, files = cache['tours'], cache['verified'], cache['files']
+    sc_ = lambda h: Fraction(tours[h]['score']) if h else Fraction(-1)  # noqa: E731
+    cell = lambda h: (f'{fmt_score(tours[h]["score"])} ({flags(ver.get(h))})' if h else '-')  # noqa: E731
     L = ['# Leaderboard (auto-generated by subagents/runner/runner.py collect)', '',
          f'Updated {ts()}. Record to beat: **{a.record}**. Every score below was re-verified with '
-         '`tools/check_tour.py` (exact Fractions: legal, <= 3 visits, no unnecessary waits).', '']
-    if best_h:
-        b = tours[best_h]
-        beat = Fraction(b['score']) > a.record
-        L += [f'**Global best verified: {fmt_score(b["score"])}**' + ('  -- **NEW RECORD!**' if beat else ''),
-              f'(`{os.path.relpath(P.best, P.root)}`; sources: '
-              + ', '.join(f'`{k}`' for k, _, _ in srcs[best_h][:6]) + ')', '']
-        if len(ties) > 1:
-            L += [f'{len(ties)} distinct verified tours share this score.', '']
-    else:
-        L += ['No verified tour found yet.', '']
-    # per agent
-    agents = {}
-    for (ag, m), h in gbest.items():
-        agents.setdefault(ag, []).append((m, h))
+         '`tools/check_tour.py` (exact Fractions: legal, <= 3 visits, no unnecessary waits).', '',
+         'Flags: **strict** = integer waits, integer altitudes, every wait pinned by its jump (the engine model). '
+         'Otherwise: `free` = waits followed by a dz=0 jump inside the own group (legal for any wait), '
+         '`non-int` = fractional waits, `frac-alt` = waits leaving fractional altitudes. Such tours pass the '
+         'checker but may be checker-only artefacts; inspect them before claiming a record.', '']
+    for key, label in (('best', 'Global best verified'), ('best_strict', 'Global best strict')):
+        b = cache.get(key)
+        if b:
+            beat = Fraction(b['score']) > a.record
+            L.append(f'- **{label}: {fmt_score(b["score"])}** ({b["flags"]})' + (' -- **beats the record**' if beat
+                     else '') + f'; from `{b["source"]}` (agent {b["agent"]}), file `'
+                     + os.path.relpath(P.best if key == 'best' else P.best_strict, P.root) + '`')
+        else:
+            L.append(f'- {label}: none yet')
+    if len(ties) > 1:
+        L.append(f'- {len(ties)} distinct verified tours share the top score.')
+    L.append('')
     stats = {}
     for k, e in files.items():
-        s = stats.setdefault(e['agent'], [0, 0, 0])
-        s[0] += 1
-        s[1] += e.get('n_tours', 0)
-        s[2] += e.get('n_ge7500', 0)
-    rows = []
-    for ag, lst in agents.items():
-        good = [(Fraction(tours[h]['score']), m, h) for m, h in lst if h]
-        top_claim = max((Fraction(tours[h]['score']) for (g, _), hs in groups.items() if g == ag for h in hs),
-                        default=None)
-        if good:
-            sc, m, h = max(good)
-            rows.append((sc, ag, m, top_claim))
-        else:
-            rows.append((Fraction(-1), ag, '-', top_claim))
-    rows.sort(key=lambda r: (-r[0], r[1]))
-    L += ['## Best per agent', '', '| agent | best verified | from | complete tours seen | >= 7500 | top claimed |',
-          '|---|---:|---|---:|---:|---:|']
-    for sc, ag, m, tc in rows:
-        st = stats.get(ag, [0, 0, 0])
-        flag = '' if tc is None or sc < 0 or tc <= sc else ' (higher claim invalid)'
-        L.append(f'| {ag} | {fmt_score(sc) if sc >= 0 else "-"} | `{m}` | {st[1]} | {st[2]} | '
-                 f'{fmt_score(tc) if tc is not None else "-"}{flag} |')
-    L += ['', '## Best per agent / method (source)', '', '| agent | method / file | best verified | tours | max claimed |',
-          '|---|---|---:|---:|---:|']
+        s = stats.setdefault(e['agent'], [0, 0, None])
+        s[0] += e.get('n_tours', 0)
+        s[1] += e.get('n_ge7500', 0)
+        if e.get('max') is not None and (s[2] is None or Fraction(e['max']) > s[2]):
+            s[2] = Fraction(e['max'])
+    agents = {}
+    for (ag, m), (b, s) in gbest.items():
+        A = agents.setdefault(ag, [None, '-', None, '-'])
+        if b and sc_(b) > sc_(A[0]):
+            A[0], A[1] = b, m
+        if s and sc_(s) > sc_(A[2]):
+            A[2], A[3] = s, m
+    for ag in stats:
+        agents.setdefault(ag, [None, '-', None, '-'])
+    L += ['## Best per agent', '',
+          '| agent | best verified (flags) | from | best strict | from | complete tours | >= 7500 | max claimed |',
+          '|---|---:|---|---:|---|---:|---:|---:|']
+    for ag, (b, bm, s, sm) in sorted(agents.items(), key=lambda kv: (-sc_(kv[1][0]), kv[0])):
+        st = stats.get(ag, [0, 0, None])
+        L.append(f'| {ag} | {cell(b)} | `{bm}` | {fmt_score(tours[s]["score"]) if s else "-"} | `{sm}` | '
+                 f'{st[0]} | {st[1]} | {fmt_score(st[2]) if st[2] is not None else "-"} |')
     gm = {}
     for k, e in files.items():
-        g = gm.setdefault((e['agent'], e['method']), [0, None])
+        g = gm.setdefault((e['agent'], e['method']), [0, None, 0])
         g[0] += e.get('n_tours', 0)
+        g[2] += 1
         if e.get('max') is not None and (g[1] is None or Fraction(e['max']) > g[1]):
             g[1] = Fraction(e['max'])
-    for (ag, m) in sorted(gbest, key=lambda g: (-(Fraction(tours[gbest[g]]['score']) if gbest[g] else -1), g)):
-        h = gbest[(ag, m)]
-        n, mx = gm.get((ag, m), [0, None])
-        L.append(f'| {ag} | `{m}` | {fmt_score(tours[h]["score"]) if h else "-"} | {n} | '
+    L += ['', '## Best per agent / method (source file pattern; digits shown as N)', '',
+          '| agent | method / file | files | tours | best verified (flags) | best strict | max claimed |',
+          '|---|---|---:|---:|---:|---:|---:|']
+    for g in sorted(gbest, key=lambda g: (-sc_(gbest[g][0]), g)):
+        b, s = gbest[g]
+        n, mx, nf = gm.get(g, [0, None, 0])
+        L.append(f'| {g[0]} | `{g[1]}` | {nf} | {n} | {cell(b)} | {fmt_score(tours[s]["score"]) if s else "-"} | '
                  f'{fmt_score(mx) if mx is not None else "-"} |')
     bad = [h for h in cand if ver.get(h) and not ver[h]['ok'] and Fraction(tours[h]['score']) >= 7500]
     if bad:
@@ -900,7 +962,9 @@ def write_leaderboard(P, a, cache, srcs, cand, best_h, ties, invalid, gbest, gro
           + ('; verification budget hit, more next run' if lc.get('incomplete') else '') + '._', '']
     alerts = load_alerts(P)
     if alerts:
-        L += ['## Record alerts', ''] + [f'- {x}' for x in alerts] + ['']
+        L += ['## Record alerts (verified > record)', '', '| when | minutes | flags | alert file | source |',
+              '|---|---:|---|---|---|']
+        L += ['| ' + ' | '.join(x.split('\t')) + ' |' for x in alerts] + ['']
     write_atomic(P.leaderboard, '\n'.join(L))
 
 
@@ -970,10 +1034,12 @@ def cmd_status(P, a):
     if pend:
         print(f'pending: {", ".join(pend[:12])}' + (' ...' if len(pend) > 12 else ''))
     cache = load_json(P.cache, {})
-    b = cache.get('best')
     lc = cache.get('last_collect', {})
-    print(f'\nbest verified so far: {fmt_score(b["score"]) + "  [" + b["agent"] + ": " + b["source"] + "]" if b else "-"}'
-          f'   (record {a.record}; last collect {lc.get("when", "never")})')
+    print(f'\nrecord {a.record}; last collect {lc.get("when", "never")}')
+    for key, label in (('best', 'best verified so far'), ('best_strict', 'best strict so far  ')):
+        b = cache.get(key)
+        print(f'{label}: ' + (f'{fmt_score(b["score"])}  [{b["agent"]}: {b["source"]}; {b.get("flags", "")}]'
+                              if b else '-'))
     al = load_alerts(P)
     if al:
         print(f'!!! {len(al)} RECORD ALERT(S): ' + '; '.join(al[-3:]))
@@ -1073,7 +1139,9 @@ def main():
     c.add_argument('--full', action='store_true', help='rescan all files from scratch')
     c.add_argument('--quiet', action='store_true')
     c.add_argument('--max-checks', type=int, default=400, help='max new verifications per run')
-    c.add_argument('--max-seconds', type=float, default=600, help='verification time budget per run')
+    c.add_argument('--max-seconds', type=float, default=240, help='verification time budget per run')
+    c.add_argument('--verify-ties', action='store_true',
+                   help='also verify every distinct tour tied with the global best (slow on big pools)')
     ad = sp.add_parser('add', help='append a job: add NAME [opts] -- command ...')
     ad.add_argument('name')
     ad.add_argument('--threads', type=int, default=1)

@@ -3,11 +3,13 @@
 // src/eng.h (the wait before each jump is implied by the jump).
 //
 // Playout policy: softmax over cheap move features, divided by a temperature --tau:
-//   logit = (fw * minutes_waited/100 + fr * h8_close + fv * visits_left_at_target + fg * group_after/64) / tau
+//   logit = (fw * minutes_waited/100 + fr * h8_close + fv * visits_left_at_target + fg * group_after/64 + fd * dance + fo * opp_out) / tau
 //   h8_close     = h8's altitude after the move is within 2 of the knight's new altitude
 //                  (--reach-bfs: instead, h8 is reachable from the child by zero-wait jumps; slower)
 //   visits_left  = 3 - visits of the target before the jump (1..3)
 //   group_after  = size of the target's altitude group after the move (what the next sit would sink)
+//   dance (--fd) = the move sinks and the sunk group ends 2 below the target (the dance step)
+//   opp_out (--fo) = the move sinks and the point opposite the knight is already more than 2 away
 // A playout keeps going past chances to finish but remembers the best one (its tour ends there), as in
 // src/nrpa.cpp. Finished tours score their minutes; unfinished ones score below all finished ones
 // (-1e7 + minutes * exp(-distance to h8)).
@@ -58,7 +60,7 @@ static inline int xapply(X& x, int d, int q) {
 }
 
 // ---------------------------------------------------------------- parameters
-static double FW = 1.0, FR = 2.0, FV = 0.5, FG = 2.0, TAU = 1.0, UNFPEN = 2000;
+static double FW = 0.5, FR = 6.0, FV = 2.0, FG = 1.0, FD = 8.0, FO = 0.0, TAU = 1.0, UNFPEN = 2000;
 static bool REACHBFS = false;
 static double D0 = 1;
 static double h8dist(const S& s) {
@@ -101,7 +103,9 @@ static void move_logits(const X& x, const vector<pair<int, int>>& mv, vector<dou
     double h8c;
     if (REACHBFS) { S c = s; apply_move(c, d, q); bool hr; int mx; static_reach(c, 3, hr, mx); h8c = hr; }
     else h8c = abs(na(H8, d) - v) <= 2;
-    double z = FW * (d * n) / 100.0 + FR * h8c + FV * (3 - s.vis[q]) + FG * g / 64.0;
+    double dance = d > 0 && v == a - d + 2;  // sunk group ends 2 below the target (the dance step)
+    double oppOut = d > 0 && rise && abs(ao - a) > 2;  // the point opposite the sit is already out of the groups
+    double z = FW * (d * n) / 100.0 + FR * h8c + FV * (3 - s.vis[q]) + FG * g / 64.0 + FD * dance + FO * oppOut;
     lg.push_back(z / TAU);
   }
 }
@@ -421,7 +425,7 @@ int main(int argc, char** argv) {
     else if (a == "--anchor") { AMIN = AMAX = stoi(nx()); }
     else if (a == "--warm") WARM = true; else if (a == "--restarts") MAXRESTARTS = stoi(nx());
     else if (a == "--fw") FW = stod(nx()); else if (a == "--fr") FR = stod(nx()); else if (a == "--fv") FV = stod(nx());
-    else if (a == "--fg") FG = stod(nx()); else if (a == "--tau") TAU = stod(nx()); else if (a == "--reach-bfs") REACHBFS = true;
+    else if (a == "--fg") FG = stod(nx()); else if (a == "--fd") FD = stod(nx()); else if (a == "--fo") FO = stod(nx()); else if (a == "--tau") TAU = stod(nx()); else if (a == "--reach-bfs") REACHBFS = true;
     else if (a == "--unf-pen") UNFPEN = stod(nx());
     else if (a == "--base-n") BASEN = stoi(nx()); else if (a == "--lazy-n") LAZYN = stoi(nx()); else if (a == "--lazy-k") LAZYK = stoi(nx());
     else if (a == "--lazy-frac") LAZYFRAC = stod(nx()); else if (a == "--lazy-min-level") LAZYMIN = stoi(nx());
@@ -455,9 +459,9 @@ int main(int argc, char** argv) {
     printf("seed %zu: %lld minutes, %zu jumps, finished %d, histogram %s\n", i, r.minutes, seeds[i].size(), (int)r.finished, hok ? "ok" : "MISMATCH");
   }
   if (!seeds.empty()) printf("%zu seed tours\n", seeds.size());
-  printf("method %s level %d threads %d anchor %d-%d warm %d | tau %.2f fw %.2f fr %.2f fv %.2f fg %.2f%s | base-n %d lazy n%d k%d frac %.2f min-level %d %s | "
+  printf("method %s level %d threads %d anchor %d-%d warm %d | tau %.2f fw %.2f fr %.2f fv %.2f fg %.2f fd %.2f fo %.2f%s | base-n %d lazy n%d k%d frac %.2f min-level %d %s | "
          "mcts c %.2f mix %.2f span %.0f puct %d commit %lld max-nodes %lld\n",
-         method.c_str(), LEVEL, THREADS, AMIN, AMAX, (int)WARM, TAU, FW, FR, FV, FG, REACHBFS ? " reach-bfs" : "", BASEN, LAZYN, LAZYK, LAZYFRAC, LAZYMIN,
+         method.c_str(), LEVEL, THREADS, AMIN, AMAX, (int)WARM, TAU, FW, FR, FV, FG, FD, FO, REACHBFS ? " reach-bfs" : "", BASEN, LAZYN, LAZYK, LAZYFRAC, LAZYMIN,
          LAZYMEAN ? "mean" : "max", UCTC, MIX, SPAN, PUCT, COMMIT, MAXNODES);
   fflush(stdout);
   T0 = std::chrono::steady_clock::now();
@@ -493,6 +497,7 @@ int main(int argc, char** argv) {
       vector<Mv> full = prefix; full.insert(full.end(), r.seq.begin(), r.seq.end());
       if (r.finished) report(full, method.c_str());
       std::lock_guard<std::mutex> lk(MTX);
+      if (elapsed() - t0 < 1.0 && !(r.finished && r.minutes >= GBEST.minutes) && !STOP) continue;  // quiet for tiny restarts
       printf("[%7.1fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps, %.1fs, %lld playouts (best %lld)%s\n", elapsed(), tid, rs, k,
              r.finished ? "finished" : "unfinished", r.minutes, full.size(), elapsed() - t0, (long long)PLAYOUTS - p0,
              GBEST.finished ? GBEST.minutes : 0LL, STOP ? " [stopped]" : "");

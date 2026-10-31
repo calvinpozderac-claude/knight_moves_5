@@ -18,49 +18,61 @@ static inline uint64_t keyS(const S& s){
   return h | 1;
 }
 // heuristic ("dance relaxation") upper bound on future minutes from s
+static uint64_t ORTM[64], KNM[64], TWOM[64];
+static void init_masks(){ for(int i=0;i<64;i++){ ORTM[i]=KNM[i]=TWOM[i]=0; for(int k=0;k<NBN[i];k++){ int q=NBQ[i][k]; uint64_t b=1ULL<<q; if(NBT[i][k]==0) KNM[i]|=b; else if(NBT[i][k]==1) ORTM[i]|=b; else TWOM[i]|=b; } } }
 static int ub_future(const S& s){
   AT a = s.alt[s.pos];
   int c[5]; for (int d=-2; d<=2; d++){ c[d+2]=0; }
   for (int i=0;i<64;i++){ int d=s.alt[i]-a; if(d>=-2&&d<=2) c[d+2]++; }
   // dance levels: (a, a-2) or (a+2, a)
   int top = (c[4]+c[2] > c[2]+c[0]) ? a+2 : a;
-  bool inA[64]; int U=0,L=0;
+  bool inA[64], inC[64]; int U=0,L=0;
   for (int i=0;i<64;i++){ inA[i] = (s.alt[i]==top || s.alt[i]==top-2); if(s.alt[i]==top) U++; else if(s.alt[i]==top-2) L++; }
   if (!inA[H8]) {
     // h8 not in dance: fall back to loose bound
     return 1000000;
   }
-  // sits available
-  int F=0; int blocks[32]; int nb=0;
+  // component of the knight over available dance points (ortho U<->L, knight within the same level)
+  uint64_t Um=0, Lm=0, av=0;
+  for (int i=0;i<64;i++){ if(s.alt[i]==top) Um|=1ULL<<i; else if(s.alt[i]==top-2) Lm|=1ULL<<i; if(inA[i] && i!=H8 && s.vis[i]<3) av|=1ULL<<i; }
+  av |= 1ULL<<s.pos;
+  uint64_t comp = 1ULL<<s.pos, fr = comp; bool h8ok=false;
+  while (fr){ int u=__builtin_ctzll(fr); fr&=fr-1;
+    bool uU = (Um>>u)&1;
+    uint64_t nb = (ORTM[u] & (uU?Lm:Um)) | (KNM[u] & (uU?Um:Lm));
+    if (((ORTM[u]|KNM[u]|TWOM[u])>>H8)&1) h8ok=true;
+    nb &= av & ~comp; comp|=nb; fr|=nb; }
+  for (int i=0;i<64;i++) inC[i] = h8ok ? (((comp>>i)&1)!=0) : inA[i];
+  // sits available (alternating relaxation)
+  int F=0; int blocks[32]; int nb=0; int SG[2]={0,0};
+  auto grpOf=[&](int i){ return s.alt[i]==top ? 0 : 1; };
   for (int p=0;p<32;p++){
     int q=63-p;
-    int rp = (p==H8||!inA[p]) ? 0 : (3-s.vis[p]) + (s.pos==p);
-    int rq = (q==H8||!inA[q]) ? 0 : (3-s.vis[q]) + (s.pos==q);
+    int rp = (p==H8||!inC[p]) ? 0 : (3-s.vis[p]) + (s.pos==p);
+    int rq = (q==H8||!inC[q]) ? 0 : (3-s.vis[q]) + (s.pos==q);
     if (rp<0) rp=0; if (rq<0) rq=0;
-    if (inA[p] && inA[q] && p!=0 ) { int r=max(rp,rq); if(r>0) blocks[nb++]=r; }
-    else if (inA[p] && inA[q] && p==0) { F += rp; } // a1-h8 pair: h8 never sits; sitting a1 would kick h8 (ignored)
-    else F += rp + rq;
+    if (inA[p] && inA[q] && p!=0) {
+      int r=max(rp,rq); if(r>0){ blocks[nb++]=r;
+        if (grpOf(p)==grpOf(q)) SG[grpOf(p)]+=r; else { SG[0]+= (grpOf(p)==0?rp:rq); SG[1]+=(grpOf(p)==1?rp:rq); } }
+    } else {
+      F += rp + rq;
+      if (rp && inA[p]) SG[grpOf(p)] += rp; if (rq && inA[q]) SG[grpOf(q)] += rq;
+    }
   }
   sort(blocks, blocks+nb, greater<int>());
-  int Ssum = F; for(int i=0;i<nb;i++) Ssum+=blocks[i];
-  // alternating gains, starting group: whichever (take max of two starts)
+  int Stot = F; for(int i=0;i<nb;i++) Stot+=blocks[i];
   int best=0;
   for (int start=0; start<2; start++){
+    int Smax = min(Stot, min(2*SG[start], 2*SG[start^1]+1));
     int g[2] = {U, L}; int tot=0, k=0; int cur=start;
-    // free sits
-    for (int i=0;i<F;i++){ tot += 4*g[cur]; cur^=1; k++; }
-    for (int b=0;b<nb;b++){
-      // kill at first sit of block: remove from the group sat on less in the rest; approximated: larger group keeps
-      // (optimistic) remove from group 'cur^1'?? choose the removal maximizing remaining sum: remove from group sat on fewer times
-      int rem = 0; for(int bb=b; bb<nb; bb++) rem += blocks[bb];
-      // in remaining 'rem' sits starting with cur: cur gets ceil(rem/2), other floor(rem/2)
+    for (int i=0;i<F && k<Smax;i++){ tot += 4*g[cur]; cur^=1; k++; }
+    for (int b=0;b<nb && k<Smax;b++){
       int other = cur^1;
-      if (g[other] > 0 && (rem/2) <= (rem+1)/2) g[other]--; else g[cur]--;
-      for (int i=0;i<blocks[b];i++){ tot += 4*g[cur]; cur^=1; }
+      if (g[other] > 0) g[other]--; else g[cur]--;
+      for (int i=0;i<blocks[b] && k<Smax;i++){ tot += 4*g[cur]; cur^=1; k++; }
     }
     best = max(best, tot);
   }
-  (void)Ssum;
   return best;
 }
 static void save_solution(int T){
@@ -104,7 +116,7 @@ static int dfs(S& s, int depth, bool onTour){
   return best;
 }
 int main(int argc, char** argv){
-  init_board();
+  init_board(); init_masks();
   const char* tf = argv[1]; KPRE = atoi(argv[2]);
   ALPHA = 8123; int ttlog = 24;
   for (int i=3;i<argc;i++){ string a=argv[i];

@@ -1,0 +1,3 @@
+k=108 T=6466 pos=e2 root heuristic UB=2008 (total 8474) alpha=8123
+DONE k=108 8.1s nodes=1921090 best=8123 (start alpha 8123) proven_ub_total=8123 => no tour > alpha with this prefix
+k=104 T=6294 pos=c4 root heuristic UB=2256 (total 8550) alpha=8123
