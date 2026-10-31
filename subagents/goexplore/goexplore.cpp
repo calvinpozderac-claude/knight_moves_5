@@ -1,7 +1,8 @@
 // Go-Explore / MAP-Elites quality-diversity search for the swamp-knight puzzle (Knight Moves 5).
 //
 // Archive: an open-addressing table of cells keyed by a coarse state descriptor
-//   (stage, knight altitude relative to h8, move-count bucket, size of h8's group, visits left,
+//   (stage, knight altitude relative to h8, move-count bucket, size of h8's group, visits left on points
+//    within 2 of h8's altitude,
 //    opposite pairs still able to sit, dance flag [part of stage]).
 // Each cell keeps its elite: the path (from a1) to the best state seen with that descriptor
 // (fitness = minutes T, or with --fit pot an idealised-dance estimate for dance states), plus
@@ -31,7 +32,7 @@ static inline Mv dec(uint16_t x) { return {x >> 6, x & 63}; }
 typedef vector<uint16_t> Path;
 
 // ---------------- options
-static int MB = 4, GB = 3, VB = 6, PB = 2, DMIN = 40, FITMODE = 0;
+static int MB = 4, GB = 3, VB = 6, PB = 2, DMIN = 30, FITMODE = 0;
 static int ITERS = 100, NLEVEL = 1, BATCH = 32, XSTEPS = 0, POOLMIN = 7500;
 static double ALPHA = 1.0, BIAS = 0, PNRPA = 0.5, TEMP = 200, UNK = 400, RB = 1.0;
 static std::atomic<bool> STOP{false};
@@ -99,7 +100,7 @@ static inline Desc describe(const S& s, int m) {
   for (int i = 0; i < 64; i++) {
     int x = s.alt[i];
     gh += x == ah; nUp += x == a; nLo += x == a - 2;
-    if (i != H8 && s.vis[i] < 3) vl += 3 - s.vis[i];
+    if (i != H8 && s.vis[i] < 3 && abs(x - ah) <= 2) vl += 3 - s.vis[i];  // visits left inside the dance band
   }
   int pairs = 0;  // opposite pairs (excluding a1/h8) with a member that can still be visited inside the dance band
   for (int i = 1; i < 32; i++) {

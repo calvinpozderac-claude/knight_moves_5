@@ -139,9 +139,11 @@ def alive_session(sid):
     return st is not None and st[0] != 'Z' and st[3] == sid
 
 
-def signal_session(sid, sig):
+def signal_session(sid, sig, spare_leader=False):
     n = 0
     for p in session_pids(sid):
+        if spare_leader and p == sid:
+            continue
         try:
             os.kill(p, sig)
             n += 1
@@ -263,7 +265,10 @@ def fill(job, P):
     class D(dict):
         def __missing__(self, k):
             return '{' + k + '}'
-    return job['cmd'].format_map(D(vals))
+    try:
+        return job['cmd'].format_map(D(vals))
+    except (IndexError, ValueError, KeyError, AttributeError):
+        return job['cmd']
 
 
 # ----------------------------------------------------------------------------- scheduler
@@ -456,8 +461,8 @@ class Scheduler:
                 if self.a.once:
                     break
                 if self.a.exit_when_idle and not running:
-                    blocked = [n for n in pending if any(S.get(d, {}).get('status') in ('failed', 'cancelled',
-                               'timeout') for d in jobs[n]['after'])]
+                    blocked = [n for n in pending if any(S.get(d, {}).get('status', 'missing') in
+                               ('failed', 'cancelled', 'timeout', 'missing') for d in jobs[n]['after'])]
                     if len(pending) == len(blocked):
                         if blocked:
                             self.log(f'blocked by failed deps: {", ".join(blocked)}')
@@ -471,7 +476,7 @@ class Scheduler:
                     for n, st in state['jobs'].items():
                         if st.get('status') == 'running':
                             st['cancel'] = True
-                            signal_session(st['pid'], signal.SIGINT)
+                            signal_session(st['pid'], signal.SIGINT, spare_leader=True)
                     save_json(P.state, state)
                 t0 = now()
                 while now() - t0 < 30 and any(alive_session(st['pid']) for st in state['jobs'].values()
@@ -533,6 +538,14 @@ def discover(P, jobs):
         if rp in pools:
             found[rp] = (path, *pools[rp])
             return
+        if os.path.dirname(path) == P.logs:
+            m = re.match(r'(.+)\.\d+\.log$', os.path.basename(path))
+            if not m:
+                return
+            j = jobs.get(m.group(1))
+            found[rp] = (path, job_agent(P, j) if j else 'runner',
+                         (j.get('method') or j['name']) + ' (log)' if j else m.group(1) + ' (log)')
+            return
         rel = os.path.relpath(path, root).split(os.sep)
         if rel[0] == 'subagents' and len(rel) >= 3:
             agent, method = rel[1], '/'.join(rel[2:])
@@ -549,8 +562,7 @@ def discover(P, jobs):
             return
         for dp, dns, fns in os.walk(d):
             dns[:] = [x for x in dns if not x.startswith(('.', '__pycache__'))
-                      and dp.count(os.sep) - d.count(os.sep) < depth
-                      and os.path.join(dp, x) != P.logs]
+                      and dp.count(os.sep) - d.count(os.sep) < depth]
             for fn in fns:
                 add(os.path.join(dp, fn))
     for pp in pools:
@@ -648,8 +660,8 @@ def checker():
 
 def verify(text):
     """Re-verify with tools/check_tour.py (imported). Returns dict."""
-    import sim  # noqa: E402 (tools/sim.py, on sys.path via checker())
     ck = checker()
+    import sim  # noqa: E402 (tools/sim.py, put on sys.path by checker())
     moves = [(int(a) if '/' not in a else Fraction(a), b) for a, b in MOVE_RE.findall(text)]
     ok, T, msg = sim.simulate(sim.MAIN_ROWS, moves)          # cheap pre-filter, same function the checker uses
     if not ok:
@@ -740,7 +752,7 @@ def _collect(P, a):
     for g, hs in groups.items():
         hs = sorted(set(hs), key=lambda h: -Fraction(tours[h]['score']))
         gbest[g] = None
-        for h in hs:
+        for h in hs[:12]:
             v = get(h)
             if v and v['ok']:
                 gbest[g] = h
@@ -876,9 +888,9 @@ def write_leaderboard(P, a, cache, srcs, cand, best_h, ties, invalid, gbest, gro
         n, mx = gm.get((ag, m), [0, None])
         L.append(f'| {ag} | `{m}` | {fmt_score(tours[h]["score"]) if h else "-"} | {n} | '
                  f'{fmt_score(mx) if mx is not None else "-"} |')
-    bad = [h for h in cand if ver.get(h) and not ver[h]['ok']]
+    bad = [h for h in cand if ver.get(h) and not ver[h]['ok'] and Fraction(tours[h]['score']) >= 7500]
     if bad:
-        L += ['', '## Candidates that FAILED re-verification (highest first)', '',
+        L += ['', '## Candidates >= 7500 that FAILED re-verification (highest first)', '',
               '| claimed (sum of waits) | reason | source |', '|---:|---|---|']
         for h in bad[:20]:
             L.append(f'| {fmt_score(tours[h]["score"])} | {ver[h]["msg"]} | `{srcs[h][0][0]}` |')
@@ -1012,8 +1024,9 @@ def cmd_cancel(P, a):
             st = S.setdefault(n, {'status': 'pending', 'attempts': 0})
             st['cancel'] = True
             if st.get('status') == 'running':
-                k = signal_session(st['pid'], signal.SIGINT)
-                print(f'{n}: SIGINT sent to {k} process(es); scheduler marks it cancelled')
+                sig = signal.SIGKILL if a.kill else signal.SIGINT
+                k = signal_session(st['pid'], sig, spare_leader=True)
+                print(f'{n}: {sig.name} sent to {k} process(es); scheduler marks it cancelled')
             elif st.get('status') == 'pending':
                 st['status'] = 'cancelled'
                 print(f'{n}: cancelled (was pending)')
@@ -1077,6 +1090,7 @@ def main():
     ca = sp.add_parser('cancel')
     ca.add_argument('names', nargs='*')
     ca.add_argument('--all', action='store_true')
+    ca.add_argument('--kill', action='store_true', help='SIGKILL instead of SIGINT')
     rt = sp.add_parser('retry')
     rt.add_argument('names', nargs='+')
     a = ap.parse_args()
@@ -1086,7 +1100,6 @@ def main():
     if a.cmd == 'run':
         Scheduler(P, a).run()
     elif a.cmd == 'status':
-        a.record = a.record
         cmd_status(P, a)
     elif a.cmd == 'collect':
         collect(P, a)
