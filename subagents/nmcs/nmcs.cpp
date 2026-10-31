@@ -32,6 +32,10 @@
 // Output: --out FILE (best: line 1 minutes, line 2 tour), --pool FILE (minutes<TAB>tour per line, every
 // distinct top-level improvement and every restart result >= --pool-min), and new bests >= --verify-min
 // are checked with python3 --checker; if one beats --record it goes to NEW_RECORD_<m>.txt in --record-dir.
+// Other: --restarts N (stop after N restarts), --rng SEED, --seed-top K, --bench N (playout speed/quality
+// from the anchor, then exit), env NMCS_DIAG=1|2 (how the policy ranks the first seed's moves after the
+// anchor, then exit), env NMCS_DEBUG=1 (MCTS tree size per restart). Build:
+//   g++ -O3 -march=native -std=c++17 -pthread -o subagents/nmcs/nmcs subagents/nmcs/nmcs.cpp
 #include "../../src/eng.h"
 #include <atomic>
 #include <chrono>
