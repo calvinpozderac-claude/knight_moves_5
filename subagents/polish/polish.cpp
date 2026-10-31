@@ -237,7 +237,7 @@ static long long key_minutes_alt(const S& s0, const vector<Seg>& segs) {
 // ---------------------------------------------------------------- window search
 struct WinRes { long long T = -1; Tour tour; long long nodes = 0, evals = 0; };
 struct Window {
-  const Tour* t; const Info* I; int i, w, L; long long nodeLimit; float PEN;
+  const Tour* t; const Info* I; int i, w, L; long long nodeLimit; float PEN; size_t refN;
   vector<Seg> tail; int res0[64];
   long long bestT; size_t bestN; Tour best; long long nodes = 0, evals = 0;
   vector<Mv> path;
@@ -301,7 +301,7 @@ struct Window {
   WinRes run() {
     tail = segs_of(*t, *I, i + w); memset(res0, 0, sizeof res0);
     for (auto& g : tail) if (g.q != H8) res0[g.q]++;
-    bestT = I->st.back().T; bestN = t->size();
+    bestT = I->st.back().T; bestN = refN;
     if (TT.empty()) { TT.assign(1u << TTB, TTE{0, 0, 0, 0}); KC.assign(1u << KCB, KCE{0, 0, 0}); }
     if (++STAMP == 0) { for (auto& e : TT) e.stamp = 0; for (auto& e : KC) e.stamp = 0; STAMP = 1; }
     dfs(I->st[i], 0, false);
@@ -387,17 +387,17 @@ static void report(const Tour& t, long long T, const char* how) {
 }
 
 // one pass of window searches (all w, all i) over t; returns an improved tour or empty
-static Tour window_pass(const Tour& t, long long& T, const char* tag) {
+static Tour window_pass(const Tour& t, long long& T, size_t refN, const char* tag) {
   Info I = info_of(t); int n = (int)t.size();
   struct Task { int w, i; };
   vector<Task> tasks;
   for (int w = 0; w <= WMAX; w++) for (int i = (w == 0 ? n - 1 : n - w); i >= 0; i--) tasks.push_back({w, i});
-  std::atomic<size_t> next{0}; std::atomic<bool> found{false}; std::mutex m; Tour bestT; long long bestV = T; size_t bestN = t.size();
+  std::atomic<size_t> next{0}; std::atomic<bool> found{false}; std::mutex m; Tour bestT; long long bestV = T; size_t bestN = refN;
   std::atomic<long long> nodes{0}, evals{0}; auto t0 = CLK::now();
   auto worker = [&]() {
     while (!found && !timeup()) {
       size_t k = next++; if (k >= tasks.size()) break;
-      Window W; W.t = &t; W.I = &I; W.i = tasks[k].i; W.w = tasks[k].w; W.L = tasks[k].w + (tasks[k].w == 0 ? EXT0 : EXT); W.nodeLimit = NODELIM; W.PEN = PEN;
+      Window W; W.t = &t; W.I = &I; W.i = tasks[k].i; W.w = tasks[k].w; W.L = tasks[k].w + (tasks[k].w == 0 ? EXT0 : EXT); W.nodeLimit = NODELIM; W.PEN = PEN; W.refN = refN;
       if (W.L > 15) W.L = 15;
       WinRes r = W.run(); nodes += r.nodes; evals += r.evals;
       if (r.T >= 0) {
@@ -457,7 +457,7 @@ static Tour polish(Tour t, double budget, int idx) {
     if (DO_WIN) {
       for (auto& v : variants) {
         if (timeup()) break;
-        long long T2 = T; Tour r = window_pass(v.first, T2, v.second.c_str());
+        long long T2 = T; Tour r = window_pass(v.first, T2, t.size(), v.second.c_str());
         if (!r.empty()) { t = r; T = T2; any = true; report(t, T, "window"); break; }
       }
       if (any) continue;

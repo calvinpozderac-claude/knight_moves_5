@@ -133,6 +133,7 @@ static double shaping(const S& s) {
 
 static std::atomic<bool> STOP{false};
 static std::atomic<long long> PLAYOUTS{0};
+static std::atomic<int> DONE{0}; static int MAXRESTARTS = 0;
 
 // one rollout from the root state
 static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
@@ -276,7 +277,7 @@ int main(int argc, char** argv) {
     else if (a == "--seed-tours") seedFile = nx(); else if (a == "--seed-best") SEEDBEST = stod(nx()); else if (a == "--seed-adapt") SEEDADAPT = stoi(nx());
     else if (a == "--anchor-min") AMIN = stoi(nx()); else if (a == "--anchor-max") AMAX = stoi(nx());
     else if (a == "--bias") BIAS = stod(nx()); else if (a == "--bzero") BZERO = stod(nx()); else if (a == "--bopp") BOPP = stod(nx());
-    else if (a == "--bvis") BVIS = stod(nx()); else if (a == "--bsink4") BSINK4 = stod(nx()); else if (a == "--stab") STAB = stoi(nx()); else if (a == "--watch") WATCH = true;
+    else if (a == "--bvis") BVIS = stod(nx()); else if (a == "--bsink4") BSINK4 = stod(nx()); else if (a == "--stab") STAB = stoi(nx()); else if (a == "--restarts") MAXRESTARTS = stoi(nx()); else if (a == "--watch") WATCH = true;
     else if (a == "--no-warm") WARM = false;
     else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
     else if (a == "--seed-top") SEEDTOP = stoi(nx()); else if (a == "--seed-alpha") SEEDALPHA = stod(nx());
@@ -322,6 +323,9 @@ int main(int argc, char** argv) {
   auto worker = [&](int tid) {
     std::mt19937 rng(RNG * 1000003u + tid);
     for (int restart = 0; !STOP; restart++) {
+      if (MAXRESTARTS > 0 && restart >= MAXRESTARTS) { DONE++; return; }
+      rng.seed(RNG * 1000003u + tid * 7919u + restart);  // same per-restart seeds for every configuration
+      auto rs0 = std::chrono::steady_clock::now(); long long ro0 = PLAYOUTS;
       Policy pol; vector<Mv> seed;
       {
         std::lock_guard<std::mutex> lk(mtx);
@@ -350,6 +354,8 @@ int main(int argc, char** argv) {
       std::lock_guard<std::mutex> lk(mtx);
       printf("[%7.0fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)\n", elapsed(), tid, restart, k,
              r.finished ? "finished" : "unfinished", r.minutes, r.seq.size(), gbest.finished ? gbest.minutes : 0LL, (long long)PLAYOUTS);
+      printf("RESTART %s anchor %d minutes %lld secs %.1f rollouts %lld\n", STOP ? "truncated" : "complete", k, r.finished ? r.minutes : 0LL,
+             std::chrono::duration<double>(std::chrono::steady_clock::now() - rs0).count(), (long long)PLAYOUTS - ro0);
       if (OBJ == 1) {
         printf("  opening: potential %.0f at move %zu (T %lld)\n", r.score, r.seq.size(), r.minutes);
         if (!poolFile.empty() && r.score >= POOLMIN) { FILE* f = fopen(poolFile.c_str(), "a"); if (f) { fprintf(f, "%.0f\n%s\n", r.score, tour_text(r.seq).c_str()); fclose(f); } }
@@ -376,7 +382,7 @@ int main(int argc, char** argv) {
     }
   };
   vector<std::thread> th; for (int t = 0; t < THREADS; t++) th.emplace_back(worker, t);
-  while (TIME <= 0 || elapsed() < TIME) std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  while ((TIME <= 0 || elapsed() < TIME) && DONE < THREADS) std::this_thread::sleep_for(std::chrono::milliseconds(200));
   STOP = true;
   for (auto& t : th) t.join();
   printf("done: best %lld minutes after %.0fs, %lld rollouts\n", gbest.finished ? gbest.minutes : 0LL, elapsed(), (long long)PLAYOUTS);

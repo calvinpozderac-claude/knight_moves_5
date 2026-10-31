@@ -33,7 +33,7 @@ static const uint32_t NONE = 0xffffffffu;
 static int WIDTH = 10000, THREADS = 1, KMIN = 0, KMAX = -1, RESTARTS = 1, RECENTK = 6, TTLOG2 = 20, MAXDEPTH = 400;
 static int POOLPER = 20, LOGEVERY = 1;
 static double TIME = 0, NOISE0 = 0, NOISER = 20, WIDEN = 1, MAXWIDTH = 2e7, CAPR_FRAC = 0.05, CAPG_FRAC = 0.10;
-static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool ADJ = true;
+static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static bool ADJ = true;
 static double DANCE_W = 0.8, UNREACH_PEN = 300, CLIMB_W = 30, OUTSIDE_W = 0, RESEED = 0;
 static long long POOLMIN = 7500;
 static bool REPLAY = false, KEEPSEED = false, KEEPTT = false, RANDTIE = false;
@@ -96,6 +96,7 @@ static int ideal_dance(const S& s, int U, bool knightSits, int sink = 0) {
     grp[i] = al == U ? 0 : al == U - 2 ? 1 : -1; if (grp[i] >= 0) n[grp[i]]++;
   }
   if (!n[0] || !n[1]) return 0;
+  if (NEEDH8 && grp[H8] < 0) return 0;  // the tour ends on h8, so h8 must be in the dance
   int cap[64];
   for (int i = 0; i < 64; i++) cap[i] = (grp[i] >= 0 && i != H8 && i != A1) ? max(0, 3 - (int)s.vis[i] + (i == s.pos)) : 0;
   if (ADJ) {  // a sit is followed by a jump onto an orthogonal neighbour in the other group: no such neighbour, no sits
@@ -421,7 +422,7 @@ int main(int argc, char** argv) {
     else if (a == "--reseed-best") RESEED = stod(nx());
     else if (a == "--recent-k") RECENTK = stoi(nx()); else if (a == "--cap-recent") CAPR_FRAC = stod(nx()); else if (a == "--cap-group") CAPG_FRAC = stod(nx());
     else if (a == "--dance-w") DANCE_W = stod(nx()); else if (a == "--unreach-pen") UNREACH_PEN = stod(nx());
-    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false;
+    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-need-h8") NEEDH8 = false;
     else if (a == "--tt-log2") TTLOG2 = stoi(nx()); else if (a == "--max-depth") MAXDEPTH = stoi(nx());
     else if (a == "--replay") REPLAY = true; else if (a == "--keep-seed") KEEPSEED = true; else if (a == "--keep-tt") KEEPTT = true;
     else if (a == "--out") outFile = nx(); else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());

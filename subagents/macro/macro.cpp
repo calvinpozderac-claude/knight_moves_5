@@ -96,7 +96,8 @@ static inline int fin_moves(const S& c, int v, int out[4]) {
 }
 
 // after sinking d at s.pos and jumping to q: can h8 still be reached? (cheap necessary-ish test: some
-// neighbour of h8 with visits left is high enough, or h8's group still has a square to sit on)
+// neighbour of h8 with visits left is high enough or can still be raised by sitting on its opposite, or
+// h8's group still has a square to sit on; ignores rises of h8's group squares)
 static bool h8_alive_after(const S& s, int d, int q) {
   int p = s.pos, a = s.alt[p], O = 63 - p; bool rise = s.alt[O] != a;
   auto alt2 = [&](int i) { int x = s.alt[i]; if (d > 0) { if (x == a && i != O) x -= d; else if (i == O && rise) x += d; } return x; };
@@ -106,6 +107,7 @@ static bool h8_alive_after(const S& s, int d, int q) {
     if (s.vis[v] + (v == q) >= 3 && v != q) continue;
     int up = t == 0 ? 0 : t == 1 ? 2 : 1;
     if (alt2(v) + up >= ah) return true;
+    if (s.vis[63 - v] + (63 - v == q) < 3 || 63 - v == q) return true;  // v can still be raised (sit on its opposite)
   }
   for (int i = 1; i < 63; i++) if (alt2(i) == ah && (s.vis[i] + (i == q) < 3 || i == q)) return true;
   return false;
@@ -484,7 +486,7 @@ static long long report(const vector<Mv>& t, const char* tag) {
 }
 
 // re-search the last K macros of a raw tour with the DFS; reports an improvement
-static long long POLISH_NODES = 200000; static int POLISH_DEPTH = 40; static double SLACK = 0;
+static long long POLISH_NODES = 400000; static int POLISH_DEPTH = 40; static double SLACK = 0;
 static long long polish_tail(const vector<Mv>& t, int K, long long budget, const char* tag, long long* nodesOut = nullptr) {
   vector<int> si = sit_indices(t);
   if ((int)si.size() < K) K = (int)si.size();

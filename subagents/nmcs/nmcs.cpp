@@ -20,8 +20,9 @@
 //   lnmcs : Lazy NMCS. At every level >= --lazy-min-level (default 2) each move is first rated by
 //           --lazy-n cheap playouts (--lazy-stat max|mean); only the best --lazy-k moves (at least
 //           --lazy-frac of them) plus the move of the memorised best sequence get the level L-1 search.
-//   mcts  : SP-MCTS. UCT (or PUCT with the softmax prior, --puct) on Q = (1-mix)*max + mix*mean of the
-//           normalised playout values in the subtree (--mix 0 = pure max-backup). After --commit-iters
+//   mcts  : SP-MCTS. PUCT with the softmax prior (default; --uct for UCB1 with unvisited-first, then use
+//           --c 0.3) on Q = (1-mix)*max + mix*mean of the playout values in the subtree, normalised to
+//           [0,1] over the last --span minutes below the best (--mix 0 = pure max-backup). After --commit-iters
 //           iterations the root advances one move along the best sequence found (0 = never). Finishing
 //           moves are terminal; visited terminals and fully explored subtrees are skipped.
 //   playout: plain playouts from the start (baseline; also --method playout --bench N for speed).
@@ -279,8 +280,8 @@ struct Node {
   int32_t child = -1; int16_t nch = 0; int16_t delta = 0; uint8_t q = 0, flags = 0;  // 1 expanded, 2 terminal, 4 exhausted
   int32_t n = 0; float prior = 0; double mx = -1e18, sum = 0;
 };
-static double UCTC = 0.3, MIX = 0.0, SPAN = 1000, FPU = 0.05; static int PUCT = 0, EXPANDN = 1;
-static long long COMMIT = 5000; static long long MAXNODES = 4000000;
+static double UCTC = 1.0, MIX = 0.0, SPAN = 1000, FPU = 0.05; static int PUCT = 1, EXPANDN = 1;
+static long long COMMIT = 2000; static long long MAXNODES = 4000000;
 
 static Result mcts(const X& root0, std::mt19937& rng, const Result* init) {
   vector<Node> T; T.reserve(min<long long>(MAXNODES, 1 << 20)); T.emplace_back(); int root = 0;
@@ -392,6 +393,7 @@ static Result mcts(const X& root0, std::mt19937& rng, const Result* init) {
       // re-derive exhaustion for the new root lazily (flags of descendants are still valid)
     }
   }
+  if (getenv("NMCS_DEBUG")) fprintf(stderr, "mcts: %zu nodes, root n %d, committed %zu\n", T.size(), T[root].n, committed.size());
   return best;
 }
 
@@ -432,7 +434,7 @@ int main(int argc, char** argv) {
     else if (a == "--lazy-frac") LAZYFRAC = stod(nx()); else if (a == "--lazy-min-level") LAZYMIN = stoi(nx());
     else if (a == "--lazy-stat") { string s = nx(); LAZYMEAN = s == "mean"; }
     else if (a == "--c") UCTC = stod(nx()); else if (a == "--mix") MIX = stod(nx()); else if (a == "--span") SPAN = stod(nx());
-    else if (a == "--puct") PUCT = 1; else if (a == "--fpu") FPU = stod(nx()); else if (a == "--expand-n") EXPANDN = stoi(nx());
+    else if (a == "--puct") PUCT = 1; else if (a == "--uct") { PUCT = 0; } else if (a == "--fpu") FPU = stod(nx()); else if (a == "--expand-n") EXPANDN = stoi(nx());
     else if (a == "--commit-iters") COMMIT = stoll(nx()); else if (a == "--max-nodes") MAXNODES = stoll(nx());
     else if (a == "--out") OUTF = nx(); else if (a == "--pool") POOLF = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
     else if (a == "--checker") CHECKER = nx(); else if (a == "--verify-min") VERIFYMIN = stoll(nx());

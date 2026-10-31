@@ -137,8 +137,9 @@ def main():
     perm = rng.permutation(n)
     nv = max(1, int(n * a.val))
     vi, ti = perm[:nv], perm[nv:]
-    mu = X[ti].mean(0)
-    sd = X[ti].std(0)
+    sub = ti[rng.permutation(len(ti))[:200000]]  # statistics on a subsample (no full copy of the matrix)
+    mu = X[sub].mean(0, dtype=np.float64).astype(np.float32)
+    sd = X[sub].std(0, dtype=np.float64).astype(np.float32)
     sd[sd < 1e-4] = 1.0
     X -= mu  # normalise in place (the matrix is the biggest thing in memory: 2.3 KB per sample)
     X /= sd
@@ -154,7 +155,8 @@ def main():
             b = ti[s:s + a.batch]
             acc += step(net, Z[b], T[b], L[b], w[b], lr, a.wd, a.fut_w); na += 1
             steps += 1
-            if steps % a.eval_every == 0:
+            over = time.time() - t0 > a.minutes * 60
+            if steps % a.eval_every == 0 or over:
                 vl = evaluate(net, Z[vi], T[vi], L[vi], w[vi], a.fut_w)
                 tr = acc / max(1, na); acc[:] = 0; na = 0
                 mark = ''
@@ -168,7 +170,7 @@ def main():
                         lr *= 0.3
                 print(f'[{time.time() - t0:6.0f}s] epoch {ep} step {steps}: train {tr[0]:.4f} (fin {tr[1]:.4f} fut {tr[2]:.4f}) '
                       f'val {vl[0]:.4f} (fin {vl[1]:.4f} fut {vl[2]:.4f}) lr {lr:.1e}{mark}', flush=True)
-                if bad >= a.patience or time.time() - t0 > a.minutes * 60:
+                if bad >= a.patience or over:
                     done = True
                     break
         if done:

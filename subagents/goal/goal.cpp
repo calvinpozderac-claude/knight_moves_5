@@ -323,8 +323,8 @@ static vector<Target> read_targets(const string& fn) {
 struct Opts {
   string tour = "data/tours/record_8123.txt", targets, outDir = "subagents/goal/tmp/run", startTour;
   int k = -1, startK = 0, variants = 12, edits = 6, scoreLevel = 1, scoreRuns = 2, threads = 1, beam = 20000, maxDepth = 60,
-      topOut = 50, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
-  double time = 60, finishTime = 0, wAlt = 40, wVis = 100, wKnight = 20, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
+      topOut = 50, maxFound = 20000, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
+  double time = 60, finishTime = 0, wClu = 150, wAlt = 5, wVis = 100, wKnight = 20, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
   unsigned rng = 1; bool expandDance = false, visKey = true;
 };
 static Opts O;
@@ -434,10 +434,11 @@ static vector<Target> TG;
 // jump when h8 sinks with a group). altD = min over r of sum_i min(|alt_i - want_i(r)|, altCap); r is tried at
 // the median and at the most common values of the adjusted altitudes (alt_i for U, alt_i + 2 for L).
 // Plus visits used beyond the target's on group points, and the knight: its altitude vs r and its board
-// distance to the target's knight square. With --frame h8 the old h8-relative frame is used instead.
+// distance to the target's knight square, and wClu per distinct adjusted altitude beyond one (each needs
+// at least one merging sit; this makes a whole group that is one sit away cheap). With --frame h8 the old h8-relative frame is used instead.
 static int FRAME = 0;  // 0 partition (default), 1 h8-relative
-static inline double target_dist(const S& s, const Target& t, double* altD = nullptr, int* visX = nullptr) {
-  int vx = 0; double ad = 0; int ta = t.s.alt[t.s.pos];
+static inline double target_dist(const S& s, const Target& t, double* altD = nullptr, int* visX = nullptr, int* cluOut = nullptr) {
+  int vx = 0, clu = 0; double ad = 0; int ta = t.s.alt[t.s.pos];
   for (int i = 0; i < 64; i++) if (t.key[i]) { int over = (int)s.vis[i] - (int)t.s.vis[i]; if (over > 0) vx += over; }
   double kd;
   if (FRAME == 1) {
@@ -464,10 +465,14 @@ static inline double target_dist(const S& s, const Target& t, double* altD = nul
       if (d < bestD) { bestD = d; bestR = cand[c]; }
     }
     ad = bestD; kd = abs(s.alt[s.pos] - bestR);
+    int distinct = 0; for (int i = 0; i < n; i++) if (i == 0 || w[i] != w[i - 1]) distinct++;
+    clu = distinct - 1;
   }
   int bx = abs(s.pos % 8 - t.s.pos % 8), by = abs(s.pos / 8 - t.s.pos / 8);
-  if (altD) *altD = ad; if (visX) *visX = vx;
-  return O.wAlt * ad + O.wVis * vx + O.wKnight * (min<double>(kd, 8) + 0.5 * max(bx, by));
+  if (altD) *altD = ad;
+  if (visX) *visX = vx;
+  if (cluOut) *cluOut = clu;
+  return O.wAlt * ad + O.wClu * clu + O.wVis * vx + O.wKnight * (min<double>(kd, 8) + 0.5 * max(bx, by));
 }
 // priority: T + target estimate - distance, max over targets
 static inline double priority(const S& s, int* which = nullptr) {
@@ -586,9 +591,15 @@ static int run_search() {
     double bestF = found.empty() ? 0 : 0; for (auto& x : found) bestF = max(bestF, x.score);
     double bd = 1e18, bpri = cur.empty() ? 0 : all.front().pri; int bw = -1;
     if (!cur.empty()) { priority(cur[0], &bw); bd = target_dist(cur[0], TG[bw]); }
-    printf("[%6.1fs] depth %2d (move %2zu): %zu children, beam %zu, top priority %.0f (T %d, dist %.0f to %s), dance starts %zu, best score %.0f\n",
-           elapsed(), depth, prefix.size() + depth, tot, cur.size(), bpri, cur.empty() ? 0 : cur[0].T, bd, bw >= 0 ? TG[bw].name.c_str() : "-", found.size(), bestF);
+    double minD = 1e18; for (auto& x : found) minD = min(minD, x.dist);
+    printf("[%6.1fs] depth %2d (move %2zu): %zu children, beam %zu, top priority %.0f (T %d, dist %.0f to %s), dance starts %zu, best score %.0f, closest %.0f\n",
+           elapsed(), depth, prefix.size() + depth, tot, cur.size(), bpri, cur.empty() ? 0 : cur[0].T, bd, bw >= 0 ? TG[bw].name.c_str() : "-", found.size(), bestF,
+           found.empty() ? -1 : minD);
     fflush(stdout);
+    if ((int)found.size() > 2 * O.maxFound) {  // keep the best maxFound candidates
+      sort(found.begin(), found.end(), [](const Found& a, const Found& b) { return a.score > b.score; });
+      found.resize(O.maxFound); foundIdx.clear(); for (size_t i = 0; i < found.size(); i++) foundIdx[found[i].h] = i;
+    }
     if (elapsed() - lastWrite > 10) { write_out(); lastWrite = elapsed(); }
   }
   write_out();
@@ -675,10 +686,10 @@ int main(int argc, char** argv) {
     else if (a == "--start-tour") O.startTour = nx(); else if (a == "--start-k") O.startK = stoi(nx());
     else if (a == "--threads") O.threads = stoi(nx()); else if (a == "--time") O.time = stod(nx()); else if (a == "--rng") O.rng = (unsigned)stoul(nx());
     else if (a == "--beam") O.beam = stoi(nx()); else if (a == "--max-depth") O.maxDepth = stoi(nx());
-    else if (a == "--w-alt") O.wAlt = stod(nx()); else if (a == "--w-vis") O.wVis = stod(nx()); else if (a == "--w-knight") O.wKnight = stod(nx());
+    else if (a == "--w-alt") O.wAlt = stod(nx()); else if (a == "--w-clu") O.wClu = stod(nx()); else if (a == "--w-vis") O.wVis = stod(nx()); else if (a == "--w-knight") O.wKnight = stod(nx());
     else if (a == "--w-t") O.wT = stod(nx()); else if (a == "--alt-cap") O.altCap = stod(nx()); else if (a == "--noise") O.noise = stod(nx());
     else if (a == "--expand-dance") O.expandDance = true; else if (a == "--dedup-novis") O.visKey = false;
-    else if (a == "--top-out") O.topOut = stoi(nx()); else if (a == "--max-per-target") O.maxPerTarget = stoi(nx());
+    else if (a == "--top-out") O.topOut = stoi(nx()); else if (a == "--max-per-target") O.maxPerTarget = stoi(nx()); else if (a == "--max-found") O.maxFound = stoi(nx());
     else if (a == "--finish-top") O.finishTop = stoi(nx()); else if (a == "--finish-level") O.finishLevel = stoi(nx()); else if (a == "--pool-min") O.poolMin = stod(nx());
     else if (a == "--finish-time") O.finishTime = stod(nx());
     else { fprintf(stderr, "unknown option %s\n", a.c_str()); return 1; }

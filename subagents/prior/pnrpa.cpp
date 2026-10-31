@@ -41,6 +41,7 @@
 #include "../../src/eng.h"
 #include "prior.h"
 #include <csignal>
+#include <ctime>
 #include <atomic>
 #include <chrono>
 #include <mutex>
@@ -314,10 +315,11 @@ int main(int argc, char** argv) {
   if (getenv("NRPA_BENCH")) {  // time rollouts from the anchor of the first seed tour with a zero policy
     auto sd = read_tours(seedFile.c_str()); S root = start_state(); for (int i = 0; i < AMIN; i++) apply_move(root, sd[0][i].delta, sd[0][i].q);
     Policy pol; std::mt19937 rng(1); int N = atoi(getenv("NRPA_BENCH")); double tot = 0; long long len = 0;
-    auto b0 = std::chrono::steady_clock::now();
+    auto b0 = std::chrono::steady_clock::now(); std::clock_t c0 = std::clock();
     for (int i = 0; i < N; i++) { Result r = playout(root, pol, rng); tot += r.minutes; len += r.seq.size(); }
     double dt = std::chrono::duration<double>(std::chrono::steady_clock::now() - b0).count();
-    printf("%d rollouts in %.2fs (%.0f/s), mean minutes %.1f, mean length %.1f\n", N, dt, N / dt, tot / N, (double)len / N);
+    double ct = (double)(std::clock() - c0) / CLOCKS_PER_SEC;
+    printf("%d rollouts in %.2fs wall, %.2fs CPU (%.0f/s CPU), mean minutes %.1f, mean length %.1f\n", N, dt, ct, N / ct, tot / N, (double)len / N);
     return 0;
   }
   auto top_seeds = [&](vector<vector<Mv>> v) {

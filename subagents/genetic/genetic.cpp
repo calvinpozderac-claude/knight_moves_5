@@ -529,10 +529,11 @@ struct Island {
   // par >= 0: deterministic crowding first (the child replaces its parent if it beats it)
   bool insert(Ind&& x, Ctx& c, int par = -1) {
     if (x.g.empty() || hs.count(x.h)) return false;
+    int same = 0; for (auto& y : pop) same += y.fin == x.fin && y.T == x.T;
     if (par >= 0 && par < (int)pop.size() && x.score > pop[par].score) {
+      if (same >= MAXSAME) return false;
       hs.erase(pop[par].h); hs.insert(x.h); report(x, id); pop[par] = std::move(x); return true;
     }
-    int same = 0; for (auto& y : pop) same += y.fin == x.fin && y.T == x.T;
     if ((int)pop.size() < POP) { if (same >= MAXSAME) return false; hs.insert(x.h); report(x, id); pop.push_back(std::move(x)); return true; }
     int b = best_idx(), v = -1, vl = -1;
     for (int t = 0; t < CROWD; t++) {
