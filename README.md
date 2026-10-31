@@ -23,10 +23,15 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_7200.txt` | **7,200** | NRPA (`build/nrpa`), warm-started from the 7,066 tour: 6 minutes on 2 threads |
+| `data/tours/record_7911.txt` | **7,911** | NRPA level 4 re-searching everything after move 35 of the 7,512 tour, from fresh weights: 68 minutes on 1 thread |
+| `data/tours/record_7200.txt` | 7,200 | NRPA (`build/nrpa`), warm-started from the 7,066 tour: 6 minutes on 2 threads |
 | `data/tours/record_7066.txt` | 7,066 | AlphaZero self-play seeded from the 6,303 tour, alternated with beam search guided by its network, over three rounds |
 | `data/tours/tour_6303.txt` | 6,303 | Beam search (`experiments/py/beam*.py`) |
 | `data/tours/from_scratch_2952.txt` | 2,952 | AlphaZero from scratch, starting after the 23-move opening |
+
+Between 7,200 and 7,911 (all NRPA, see below): re-searching the end of the 7,200 tour gave 7,254;
+re-searching its opening gave 7,512; fresh level-3 searches after move 34–41 gave 7,729; one fresh
+level-4 search after move 35 gave 7,911.
 
 Check them all exactly (fractions, every rule) with `python3 tools/verify_tours.py`.
 
@@ -36,6 +41,7 @@ Check them all exactly (fractions, every rule) with `python3 tools/verify_tours.
 src/eng.h, src/az.cpp      game engine and tree search (self-play, eval, beam, improve)
 src/opening_search.cpp     finds varied openings that can still finish
 src/nrpa.cpp               Nested Rollout Policy Adaptation search (best for pushing the record)
+tools/dance_cpsat.py       experimental exact (CP-SAT) planner for the dance phase; not competitive yet
 train/az_train.py          training loop (NumPy; or PyTorch with --backend torch)
 train/torch_backend.py     GPU trainer: same network, same Adam, same weight file
 tools/                     exact checker, tour verifier, tour harvester and selector, PyTorch parity check
@@ -111,34 +117,58 @@ Policy Adaptation (NRPA, Rosin 2011) is a standard method for that kind of probl
 records on single-player puzzles such as Morpion Solitaire. It needs no network, and it uses
 every CPU core.
 
-- **Rollouts:** each plays a whole tour, choosing moves by learned weights.
+- **Rollouts:** each plays the rest of a tour, choosing moves by learned weights.
 - **Nesting:** at every level it runs `--iters` searches one level down, then shifts the weights
-  toward the best sequence so far.
+  toward the best sequence so far. Each level is 100 times the work of the one below.
 - **Puzzle-specific details:**
   - A rollout that passes a chance to finish keeps it: its tour ends at the last point where h8
     was reachable.
   - Unfinished rollouts rank below all finished ones, by minutes × exp(−distance to h8).
-- **Seeding:** each restart can start from a known tour (`--seed-tours`) or from the best so far
-  (`--seed-best P`, the share of restarts that do). It shifts the weights toward that tour and
-  begins with it as its best, so the search can only improve on it.
-- **Without seeds** it doesn't find h8 from a1. That's what `build/opening_search` and the
-  curriculum tour set are for.
+
+**What the good tours look like.** After an opening of about 35 moves, the board is two big
+groups two units apart (the "dance"). Each move the knight sits in the upper group, which sinks
+by 4 (4 × its size in minutes), then jumps onto an orthogonal neighbour in the other group, which
+is now the upper one. Two things limit the dance:
+- every point takes at most 3 visits, so visits spent in the opening or on repositioning are
+  sits lost (each sit is worth about 80–130 minutes);
+- the point opposite the knight leaves the dance whenever the knight sits, so each pair of opposite
+  points supplies at most one sitting point.
+
+**Anchors.** `--anchor-min A --anchor-max B` keeps the first k moves of a seed tour (k drawn from
+A..B for every restart) and searches only the rest. That focuses the whole search on the dance, or
+with small anchors on the opening.
+
+**Warm or fresh.** By default a restart starts from its seed: the weights are shifted toward it
+(`--seed-adapt`, 10 times) and the search begins with the seed as its best, so it can only improve on
+it. That is a local search, and it stalls quickly. `--seed-adapt 0 --no-warm` keeps only the anchor
+and searches from fresh weights; it finds different dances, and found every record above 7,512.
 
 Run from the repo root (`make` builds `build/nrpa`):
 ```
 mkdir -p runs
-# polish the record on all cores for 2 hours (level 3: one restart is about a million rollouts)
-build/nrpa --level 3 --threads 32 --time 7200 --seed-tours data/tours/record_7200.txt --seed-best 1 --out runs/nrpa_best.txt
-# explore from all 654 openings as well, then polish the best
-build/nrpa --level 3 --threads 32 --time 7200 --seed-tours data/tours/curriculum.txt --seed-best 0.5 --out runs/nrpa_wide.txt
+# the method that found 7,911: fresh level-4 searches after move 35 of the record (one restart per thread;
+# each takes about an hour on one core here, probably half that on a 9950X). Every finished result of at
+# least 7,500 minutes is appended to runs/pool.txt.
+build/nrpa --level 4 --threads 30 --time 14400 --seed-tours data/tours/record_7911.txt --anchor-min 35 --anchor-max 35 \
+    --seed-adapt 0 --no-warm --pool runs/pool.txt --pool-min 7500 --out runs/l4.txt
+# quicker: fresh level-3 searches (about 30 s each) from points early in the dance
+build/nrpa --level 3 --threads 30 --time 3600 --seed-tours data/tours/record_7911.txt --anchor-min 36 --anchor-max 46 \
+    --seed-adapt 0 --no-warm --pool runs/pool.txt --pool-min 7500 --out runs/l3.txt
+# re-search the opening around the record (warm, so it only reports improvements)
+build/nrpa --level 3 --threads 30 --time 3600 --seed-tours data/tours/record_7911.txt --seed-best 1 --anchor-min 0 \
+    --anchor-max 40 --seed-adapt 3 --out runs/opening.txt
 ```
 - **Output:** every improvement is written to `--out` (line 1 minutes, line 2 the tour). Check it
-  with `python3 tools/check_tour.py "$(sed -n 2p runs/nrpa_best.txt)"`.
-- **Speed:** about 15,000 rollouts per second per thread.
-- **Levels:** level 2 restarts take about a second each. Level 3 takes 1–2 minutes and searches
-  much more thoroughly. Level 4 runs for hours.
-- **Other options:** `--iters` (100) and `--alpha` (1) are NRPA's usual settings. `--seed-adapt`
-  (10) sets how strongly a seed tour biases the weights.
+  with `python3 tools/check_tour.py "$(sed -n 2p runs/l4.txt)"`.
+- **Speed:** about 25,000 rollouts per second per thread here (a 2.8 GHz Xeon core).
+- **Sharing:** with `--watch`, a run re-reads `--seed-tours` whenever it changes and adopts a better
+  tour from it, so several runs can share one file.
+- **Other options:** `--iters` (100) and `--alpha` (1) are NRPA's usual settings. `--seed-best P`
+  seeds that share of restarts from the best tour so far instead of `--seed-tours`. `--seed-top K`
+  uses only the K best tours of the seed file (for example a pool). `--seed-alpha` sets the
+  learning rate of the seed shifts. `--bias B` adds B × (minutes waited) / 100 to every move's weight.
+- **Without seeds** it doesn't find h8 from a1. That's what `build/opening_search` and the
+  curriculum tour set are for.
 
 ## Training
 

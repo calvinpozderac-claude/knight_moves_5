@@ -1,37 +1,62 @@
 // Nested Rollout Policy Adaptation (Rosin 2011) for the swamp-knight puzzle.
 //
-// A rollout plays a whole tour from a1, choosing among the legal (pinned) moves with probability
-// proportional to exp(weight[code]); codes identify a move by (from, to, sink, visits of the target).
-// Level L runs `iters` searches at level L-1, keeping the best sequence and shifting the weights toward
-// it after each one. Puzzle-specific details:
+// A rollout plays a tour to the end, choosing among the legal (pinned) moves with probability
+// proportional to exp(weight[code] + bias); codes identify a move by (from, to, sink, visits of the
+// target). Level L runs `iters` searches at level L-1, keeping the best sequence and shifting the
+// weights toward it after each one. Puzzle-specific details:
 //  - a rollout keeps going past chances to finish, but remembers them: the tour it returns ends at the
 //    last point where h8 was reachable (so a passed finish is never wasted)
 //  - finished tours score their minutes; unfinished ones score below every finished tour, ranked by
 //    minutes x exp(-d) (d = 3D distance to h8, 1 at the start), which pulls early searches toward h8
 //  - every restart can seed from a known tour (--seed-tours) or the best so far (--seed-best): the weights
-//    are shifted toward it and the top-level search starts with it as its best, so it can only improve on it
+//    are shifted toward it (--seed-adapt times) and the top-level search starts with it as its best, so
+//    it can only improve on it
+//  - --anchor-min/--anchor-max: each restart keeps the first k moves of its seed fixed (k drawn from that
+//    range) and searches only the rest of the tour. This focuses the search on one stretch of the tour
+//    (large-neighbourhood search); 0 (the default) searches whole tours from a1
+//  - --pool FILE [--pool-min M]: append every finished result of at least M minutes to FILE
+//  - --seed-alpha A: learning rate for the --seed-adapt steps (default: --alpha)
+//  - --seed-top K: use only the K best tours of --seed-tours
+//  - --no-warm: don't start the search from the seed's own continuation (only the anchor is kept)
+//  - --watch: re-read --seed-tours whenever the file changes and adopt a better tour from it as the best
+//    so far (lets several processes share improvements through one file)
+//  - --bias B adds B x (minutes the move waits) / 100 to every move's weight (Gibbs-NRPA prior)
 // Independent searches run on --threads threads; improvements go to --out (line 1 minutes, line 2 tour).
 //
 // usage: nrpa [--level 3] [--iters 100] [--alpha 1] [--threads N] [--time SECONDS] [--rng SEED]
-//             [--seed-tours FILE] [--seed-best P] [--seed-adapt K] [--out FILE]
+//             [--seed-tours FILE] [--seed-best P] [--seed-adapt K] [--anchor-min A] [--anchor-max B]
+//             [--bias B] [--watch] [--no-warm] [--pool FILE] [--pool-min M] [--seed-top K] [--seed-alpha A] [--out FILE]
 #include "eng.h"
 #include <atomic>
 #include <chrono>
 #include <mutex>
 #include <thread>
-#include <unordered_map>
+#include <sys/stat.h>
 
 struct Mv { int delta, q; };
-typedef unordered_map<uint32_t, float> Policy;
 
+// dense policy: (from, neighbour index, sink capped at 31, visits of target capped at 3)
+static int KIDX[64][64];
+static const int NCODE = 64 * 16 * 32 * 4;
+struct Policy {
+  vector<float> w, e;  // weights and their exponentials (kept in sync by adapt)
+  Policy() : w(NCODE, 0.f), e(NCODE, 1.f) {}
+};
 static inline uint32_t code_of(const S& s, int delta, int q) {
-  return (((uint32_t)s.pos * 64 + q) * 128 + (uint32_t)min(delta, 127)) * 4 + (uint32_t)min<int>(s.vis[q], 3);
+  return (((uint32_t)s.pos * 16 + KIDX[s.pos][q]) * 32 + (uint32_t)min(delta, 31)) * 4 + (uint32_t)min<int>(s.vis[q], 3);
 }
-static inline float wget(const Policy& p, uint32_t c) { auto it = p.find(c); return it == p.end() ? 0.f : it->second; }
-static double D0 = 1;
+static double D0 = 1, BIAS = 0;
 static double h8dist(const S& s) {
   int p = s.pos; double dx = 7 - p % 8, dy = 7 - p / 8, dz = (double)s.alt[H8] - s.alt[p];
   return sqrt(dx * dx + dy * dy + dz * dz) / D0;
+}
+// waited minutes for a move (the group size times the sink)
+static inline int move_minutes(const S& s, int delta) { return delta ? delta * group_n(s, s.pos) : 0; }
+// exp(weight + bias) of a move
+static inline double move_e(const Policy& pol, const S& s, int d, int q) {
+  double x = pol.e[code_of(s, d, q)];
+  if (BIAS != 0 && d) x *= exp(BIAS * move_minutes(s, d) / 100.0);
+  return x;
 }
 
 struct Result { double score = -1e18; long long minutes = 0; bool finished = false; vector<Mv> seq; };
@@ -39,9 +64,9 @@ struct Result { double score = -1e18; long long minutes = 0; bool finished = fal
 static std::atomic<bool> STOP{false};
 static std::atomic<long long> PLAYOUTS{0};
 
-// one rollout from a1
-static Result playout(const Policy& pol, std::mt19937& rng) {
-  S s = start_state(); Result r; vector<pair<int, int>> mv; vector<double> w;
+// one rollout from the root state
+static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
+  S s = root; Result r; vector<pair<int, int>> mv; vector<double> w;
   long long finT = -1; size_t finLen = 0; Mv finMove{0, H8};
   while (true) {
     pinned_moves(s, 3, true, mv);
@@ -52,7 +77,7 @@ static Result playout(const Policy& pol, std::mt19937& rng) {
         if (c.T >= finT) { finT = c.T; finLen = r.seq.size(); finMove = {d, q}; }
         w.push_back(0); continue;
       }
-      double e = exp((double)wget(pol, code_of(s, d, q))); w.push_back(e); z += e; nonfin++;
+      double e = move_e(pol, s, d, q); w.push_back(e); z += e; nonfin++;
     }
     if (nonfin == 0) break;
     double u = std::uniform_real_distribution<double>(0, z)(rng), acc = 0; int pick = -1;
@@ -70,28 +95,35 @@ static Result playout(const Policy& pol, std::mt19937& rng) {
   return r;
 }
 
-// shift the weights toward seq (steps before the final move into h8)
-static void adapt(Policy& pol, const vector<Mv>& seq, double alpha) {
-  Policy old = pol; S s = start_state(); vector<pair<int, int>> mv;
+// shift the weights toward seq (steps before the final move into h8); all probabilities use the
+// weights from before the update, as in the original algorithm
+static void adapt(Policy& pol, const S& root, const vector<Mv>& seq, double alpha) {
+  static thread_local vector<pair<uint32_t, float>> upd; upd.clear();
+  static thread_local vector<pair<int, int>> mv;
+  static thread_local vector<double> e;
+  S s = root;
   for (const Mv& m : seq) {
     if (m.q == H8) break;
     pinned_moves(s, 3, true, mv);
-    double z = 0; for (auto& [d, q] : mv) if (q != H8) z += exp((double)wget(old, code_of(s, d, q)));
-    for (auto& [d, q] : mv) if (q != H8) { uint32_t c = code_of(s, d, q); pol[c] -= (float)(alpha * exp((double)wget(old, c)) / z); }
-    pol[code_of(s, m.delta, m.q)] += (float)alpha;
+    e.clear(); double z = 0;
+    for (auto& [d, q] : mv) { double x = q == H8 ? 0 : move_e(pol, s, d, q); e.push_back(x); z += x; }
+    for (size_t i = 0; i < mv.size(); i++) if (mv[i].second != H8) upd.push_back({code_of(s, mv[i].first, mv[i].second), (float)(-alpha * e[i] / z)});
+    upd.push_back({code_of(s, m.delta, m.q), (float)alpha});
     apply_move(s, m.delta, m.q);
   }
+  for (auto& [c, d] : upd) pol.w[c] += d;
+  for (auto& [c, d] : upd) pol.e[c] = expf(pol.w[c]);
 }
 
 static int ITERS = 100; static double ALPHA = 1.0;
 // warm start: `init` (if given) is the best sequence to begin from, so the search can only improve on it
-static Result nrpa(int level, Policy pol, std::mt19937& rng, const Result* init = nullptr) {
-  if (level == 0) return playout(pol, rng);
+static Result nrpa(int level, const S& root, Policy pol, std::mt19937& rng, const Result* init = nullptr) {
+  if (level == 0) return playout(root, pol, rng);
   Result best; if (init) best = *init;
   for (int i = 0; i < ITERS && !STOP; i++) {
-    Result r = nrpa(level - 1, pol, rng);
+    Result r = level == 1 ? playout(root, pol, rng) : nrpa(level - 1, root, pol, rng);
     if (r.score >= best.score) best = r;
-    adapt(pol, best.seq, ALPHA);
+    adapt(pol, root, best.seq, ALPHA);
   }
   return best;
 }
@@ -110,8 +142,8 @@ static vector<vector<Mv>> read_tours(const char* fn) {
   fclose(f); return out;
 }
 
-static Result as_result(const vector<Mv>& seq) {
-  Result r; r.seq = seq; S s = start_state(); for (const Mv& m : seq) apply_move(s, m.delta, m.q);
+static Result as_result(const S& root, const vector<Mv>& seq) {
+  Result r; r.seq = seq; S s = root; for (const Mv& m : seq) apply_move(s, m.delta, m.q);
   r.minutes = s.T; r.finished = !seq.empty() && seq.back().q == H8; r.score = r.finished ? (double)s.T : -1e7;
   return r;
 }
@@ -127,21 +159,48 @@ static string tour_text(const vector<Mv>& seq) {
 
 int main(int argc, char** argv) {
   init_board(); D0 = 1; D0 = h8dist(start_state());
-  int LEVEL = 3, THREADS = max(1u, std::thread::hardware_concurrency() / 2), SEEDADAPT = 10; double TIME = 0, SEEDBEST = 0;
+  for (int p = 0; p < 64; p++) { for (int q = 0; q < 64; q++) KIDX[p][q] = 0; for (int k = 0; k < NBN[p]; k++) KIDX[p][NBQ[p][k]] = k; }
+  int LEVEL = 3, THREADS = max(1u, std::thread::hardware_concurrency() / 2), SEEDADAPT = 10, AMIN = 0, AMAX = 0;
+  double TIME = 0, SEEDBEST = 0; bool WATCH = false, WARM = true; string poolFile; long long POOLMIN = 0; int SEEDTOP = 0; double SEEDALPHA = -1;
   unsigned RNG = 1; string seedFile, outFile = "nrpa_best.txt";
   for (int i = 1; i < argc; i++) {
     string a = argv[i]; auto nx = [&]() { if (i + 1 >= argc) { fprintf(stderr, "missing value for %s\n", a.c_str()); exit(1); } return string(argv[++i]); };
     if (a == "--level") LEVEL = stoi(nx()); else if (a == "--iters") ITERS = stoi(nx()); else if (a == "--alpha") ALPHA = stod(nx());
     else if (a == "--threads") THREADS = stoi(nx()); else if (a == "--time") TIME = stod(nx()); else if (a == "--rng") RNG = (unsigned)stoul(nx());
     else if (a == "--seed-tours") seedFile = nx(); else if (a == "--seed-best") SEEDBEST = stod(nx()); else if (a == "--seed-adapt") SEEDADAPT = stoi(nx());
+    else if (a == "--anchor-min") AMIN = stoi(nx()); else if (a == "--anchor-max") AMAX = stoi(nx());
+    else if (a == "--bias") BIAS = stod(nx()); else if (a == "--watch") WATCH = true;
+    else if (a == "--no-warm") WARM = false;
+    else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
+    else if (a == "--seed-top") SEEDTOP = stoi(nx()); else if (a == "--seed-alpha") SEEDALPHA = stod(nx());
     else if (a == "--out") outFile = nx();
     else { fprintf(stderr, "unknown option %s (see the comment at the top of src/nrpa.cpp)\n", a.c_str()); return 1; }
   }
-  vector<vector<Mv>> seeds; if (!seedFile.empty()) seeds = read_tours(seedFile.c_str());
-  printf("NRPA level %d, %d iterations per level, alpha %.2f, %d threads, %zu seed tours, seed-best %.2f\n",
-         LEVEL, ITERS, ALPHA, THREADS, seeds.size(), SEEDBEST); fflush(stdout);
+  if (AMAX < AMIN) AMAX = AMIN;
+  if (getenv("NRPA_BENCH")) {  // time rollouts from the anchor of the first seed tour with a zero policy
+    auto sd = read_tours(seedFile.c_str()); S root = start_state(); for (int i = 0; i < AMIN; i++) apply_move(root, sd[0][i].delta, sd[0][i].q);
+    Policy pol; std::mt19937 rng(1); int N = atoi(getenv("NRPA_BENCH")); double tot = 0; long long len = 0;
+    auto b0 = std::chrono::steady_clock::now();
+    for (int i = 0; i < N; i++) { Result r = playout(root, pol, rng); tot += r.minutes; len += r.seq.size(); }
+    double dt = std::chrono::duration<double>(std::chrono::steady_clock::now() - b0).count();
+    printf("%d rollouts in %.2fs (%.0f/s), mean minutes %.1f, mean length %.1f\n", N, dt, N / dt, tot / N, (double)len / N);
+    return 0;
+  }
+  auto top_seeds = [&](vector<vector<Mv>> v) {
+    if (SEEDTOP > 0 && (int)v.size() > SEEDTOP) {
+      sort(v.begin(), v.end(), [](const vector<Mv>& x, const vector<Mv>& y) { return as_result(start_state(), x).minutes > as_result(start_state(), y).minutes; });
+      v.resize(SEEDTOP);
+    }
+    return v;
+  };
+  vector<vector<Mv>> seeds; if (!seedFile.empty()) seeds = top_seeds(read_tours(seedFile.c_str()));
+  printf("NRPA level %d, %d iterations per level, alpha %.2f, %d threads, %zu seed tours, seed-best %.2f, anchor %d-%d, bias %.2f\n",
+         LEVEL, ITERS, ALPHA, THREADS, seeds.size(), SEEDBEST, AMIN, AMAX, BIAS); fflush(stdout);
+  if (AMAX > 0 && seeds.empty()) { fprintf(stderr, "--anchor-min/--anchor-max need --seed-tours\n"); return 1; }
 
   std::mutex mtx; Result gbest; auto t0 = std::chrono::steady_clock::now();
+  auto mtime = [&]() { struct stat st; return stat(seedFile.c_str(), &st) == 0 ? (long long)st.st_mtime : 0LL; };
+  long long seedMtime = seedFile.empty() ? 0 : mtime();
   auto elapsed = [&]() { return std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(); };
   auto worker = [&](int tid) {
     std::mt19937 rng(RNG * 1000003u + tid);
@@ -149,16 +208,34 @@ int main(int argc, char** argv) {
       Policy pol; vector<Mv> seed;
       {
         std::lock_guard<std::mutex> lk(mtx);
+        if (WATCH && !seedFile.empty() && mtime() != seedMtime) {  // another process improved the shared file
+          seedMtime = mtime(); auto ns = read_tours(seedFile.c_str());
+          if (!ns.empty()) seeds = top_seeds(ns);
+          for (auto& t : ns) { Result x = as_result(start_state(), t);
+            if (x.finished && x.score > gbest.score) { gbest = x; printf("adopted %lld minutes from %s\n", x.minutes, seedFile.c_str()); } }
+        }
         bool useBest = gbest.finished && std::uniform_real_distribution<double>(0, 1)(rng) < SEEDBEST;
         if (useBest) seed = gbest.seq;
         else if (!seeds.empty()) seed = seeds[std::uniform_int_distribution<size_t>(0, seeds.size() - 1)(rng)];
       }
-      for (int k = 0; k < SEEDADAPT && !seed.empty(); k++) adapt(pol, seed, ALPHA);
-      Result init; if (!seed.empty()) init = as_result(seed);
-      Result r = nrpa(LEVEL, pol, rng, seed.empty() ? nullptr : &init);
+      // anchor: keep the seed's first k moves
+      int k = 0;
+      if (AMAX > 0 && !seed.empty()) {
+        int hi = min<int>(AMAX, (int)seed.size() - 1), lo = min(AMIN, hi);
+        k = std::uniform_int_distribution<int>(lo, hi)(rng);
+      }
+      S root = start_state(); vector<Mv> prefix(seed.begin(), seed.begin() + k), rest(seed.begin() + k, seed.end());
+      for (const Mv& m : prefix) apply_move(root, m.delta, m.q);
+      for (int a = 0; a < SEEDADAPT && !rest.empty(); a++) adapt(pol, root, rest, SEEDALPHA >= 0 ? SEEDALPHA : ALPHA);
+      Result init; if (!rest.empty()) init = as_result(root, rest);
+      Result r = nrpa(LEVEL, root, pol, rng, (rest.empty() || !WARM) ? nullptr : &init);
+      r.seq.insert(r.seq.begin(), prefix.begin(), prefix.end());
       std::lock_guard<std::mutex> lk(mtx);
-      printf("[%7.0fs] thread %d restart %d: %s %lld minutes, %zu jumps (best %lld, %lld rollouts)\n", elapsed(), tid, restart,
+      printf("[%7.0fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)\n", elapsed(), tid, restart, k,
              r.finished ? "finished" : "unfinished", r.minutes, r.seq.size(), gbest.finished ? gbest.minutes : 0LL, (long long)PLAYOUTS);
+      if (!poolFile.empty() && r.finished && r.minutes >= POOLMIN) {  // keep every good result for later polishing
+        FILE* f = fopen(poolFile.c_str(), "a"); if (f) { fprintf(f, "%lld\n%s\n", r.minutes, tour_text(r.seq).c_str()); fclose(f); }
+      }
       if (r.score > gbest.score) {
         gbest = r;
         if (r.finished) {
@@ -172,10 +249,7 @@ int main(int argc, char** argv) {
     }
   };
   vector<std::thread> th; for (int t = 0; t < THREADS; t++) th.emplace_back(worker, t);
-  while (TIME <= 0 || elapsed() < TIME) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    bool alive = false; (void)alive;
-  }
+  while (TIME <= 0 || elapsed() < TIME) std::this_thread::sleep_for(std::chrono::milliseconds(200));
   STOP = true;
   for (auto& t : th) t.join();
   printf("done: best %lld minutes after %.0fs, %lld rollouts\n", gbest.finished ? gbest.minutes : 0LL, elapsed(), (long long)PLAYOUTS);
