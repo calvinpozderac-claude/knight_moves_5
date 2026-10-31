@@ -321,7 +321,7 @@ static vector<Target> read_targets(const string& fn) {
 
 // ---------------------------------------------------------------- options
 struct Opts {
-  string tour = "data/tours/record_8123.txt", targets, outDir = "subagents/goal/tmp/run", startTour;
+  string tour = "data/tours/record_8123.txt", targets, trace, outDir = "subagents/goal/tmp/run", startTour;
   int k = -1, startK = 0, variants = 12, edits = 6, scoreLevel = 1, scoreRuns = 2, threads = 1, beam = 20000, maxDepth = 60,
       topOut = 50, maxFound = 20000, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
   double time = 60, finishTime = 0, wClu = 150, wAlt = 5, wVis = 100, wKnight = 20, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
@@ -496,7 +496,7 @@ static int run_search() {
   printf("%zu targets from %s:", TG.size(), O.targets.c_str());
   for (auto& t : TG) printf(" %s(%.0f)", t.name.c_str(), t.est);
   printf("\n");
-  vector<Mv> prefix;
+  vector<Mv> prefix, traceSeq; if (!O.trace.empty()) traceSeq = read_first_moves(O.trace);
   if (!O.startTour.empty()) { vector<Mv> st = read_first_moves(O.startTour); prefix.assign(st.begin(), st.begin() + min<size_t>(O.startK, st.size())); }
   S root = replay(prefix, prefix.size());
   printf("start: %zu moves fixed (T %d, knight %s), beam %d, max depth %d, %d threads, %.0fs\n", prefix.size(), root.T, nm(root.pos).c_str(), O.beam,
@@ -585,6 +585,14 @@ static int run_search() {
       if ((int)nxt.size() >= O.beam) break;
       if (!seen.insert(c.h).second) continue;
       S s = cur[c.parent]; apply_move(s, c.delta, c.q); nxt.push_back(s); L.push_back({(int32_t)c.parent, c.delta, c.q});
+    }
+    if (!traceSeq.empty() && prefix.size() + depth <= traceSeq.size()) {  // where does the trace tour's state rank?
+      S ts = replay(traceSeq, prefix.size() + depth); double tp = priority(ts); uint64_t th = hashS(ts, O.visKey);
+      size_t better = 0; for (auto& c : all) if (c.pri > tp) better++;
+      bool kept = false; for (auto& c : all) if (c.h == th) { kept = seen.count(th) && better < (size_t)O.beam; break; }
+      int w; priority(ts, &w); double ad; int vx, cl; double dd = target_dist(ts, TG[w], &ad, &vx, &cl);
+      printf("    trace move %zu: priority %.0f (dist %.0f: alt %.0f, clusters %d, extra visits %d), %zu kept children rank above it -> %s\n", prefix.size() + depth, tp,
+             dd, ad, cl, vx, better, kept ? "kept" : "pruned");
     }
     layers.push_back(L); cur.swap(nxt);
     // report
@@ -688,7 +696,7 @@ int main(int argc, char** argv) {
     else if (a == "--beam") O.beam = stoi(nx()); else if (a == "--max-depth") O.maxDepth = stoi(nx());
     else if (a == "--w-alt") O.wAlt = stod(nx()); else if (a == "--w-clu") O.wClu = stod(nx()); else if (a == "--w-vis") O.wVis = stod(nx()); else if (a == "--w-knight") O.wKnight = stod(nx());
     else if (a == "--w-t") O.wT = stod(nx()); else if (a == "--alt-cap") O.altCap = stod(nx()); else if (a == "--noise") O.noise = stod(nx());
-    else if (a == "--expand-dance") O.expandDance = true; else if (a == "--dedup-novis") O.visKey = false;
+    else if (a == "--expand-dance") O.expandDance = true; else if (a == "--dedup-novis") O.visKey = false; else if (a == "--trace") O.trace = nx();
     else if (a == "--top-out") O.topOut = stoi(nx()); else if (a == "--max-per-target") O.maxPerTarget = stoi(nx()); else if (a == "--max-found") O.maxFound = stoi(nx());
     else if (a == "--finish-top") O.finishTop = stoi(nx()); else if (a == "--finish-level") O.finishLevel = stoi(nx()); else if (a == "--pool-min") O.poolMin = stod(nx());
     else if (a == "--finish-time") O.finishTime = stod(nx());

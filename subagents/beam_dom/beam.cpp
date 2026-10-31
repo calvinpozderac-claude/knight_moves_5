@@ -165,15 +165,19 @@ static int walk_dance(const S& s, int U) {
       int sc = (grp[63 - q] < 0 ? 1000 : 0) + 100 * vl[q] + 10 * onward + (q == 63 - p ? -2000 : 0);
       if (sc > bs) { bs = sc; bq = q; }
     }
-    if (bq < 0) {  // hop: knight move inside the group to a point that can sit
-      int br = -1, brs = -1;
-      for (int k = 0; k < NBN[p]; k++) {
-        int r = NBQ[p][k]; if (NBT[p][k] != 0 || grp[r] != g || vl[r] <= 0 || !viable(r, g)) continue;
-        int sc = (grp[63 - r] < 0 ? 1000 : 0) + 100 * vl[r];
-        if (sc > brs) { brs = sc; br = r; }
+    if (bq < 0) {  // hop: shortest chain of knight moves inside the group (no wait) to a point that can sit
+      int par[64], qu[64], qh = 0, qt = 0, found = -1; uint64_t seen = 1ULL << p; qu[qt++] = p; par[p] = -1;
+      while (qh < qt && found < 0) {
+        int u = qu[qh++];
+        for (int k = 0; k < NBN[u]; k++) {
+          int r = NBQ[u][k]; if (NBT[u][k] != 0 || grp[r] != g || vl[r] <= 0 || (seen >> r & 1)) continue;
+          seen |= 1ULL << r; par[r] = u; qu[qt++] = r;
+          if (viable(r, g)) { found = r; break; }
+        }
       }
-      if (br < 0) break;
-      vl[br]--; p = br; if (H8NB >> p & 1) best = max(best, fut); continue;
+      if (found < 0) break;
+      for (int r = found; r != p; r = par[r]) { vl[r]--; if (H8NB >> r & 1) best = max(best, fut); }
+      p = found; continue;
     }
     // sit at p: its partner leaves, then the group sinks 4 (the other group becomes the upper one)
     int j = 63 - p; if (grp[j] >= 0) { n[grp[j]]--; grp[j] = -1; vl[j] = 0; }

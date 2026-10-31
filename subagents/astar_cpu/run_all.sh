@@ -2,7 +2,7 @@
 # Full astar_cpu pipeline: gen (NRPA-finished cuts of known tours) -> feat -> train (numpy) -> search (with online refit).
 # Run from anywhere; everything goes to subagents/astar_cpu/tmp/run (or $RUN). Environment knobs (defaults):
 #   THREADS=2 GEN_MIN=25 TRAIN_MIN=15 SEARCH_MIN=60 HIDDEN=64 FEAT_MAX=600000 PREFIX=30:40 SEED_TOUR=data/tours/record_8123.txt
-#   LABEL_THREADS=1 REFIT=300 (seconds between weight updates; 0 = no online refit) NICE=5
+#   GEN_THREADS=$THREADS GEN_SEED=1 LABEL_THREADS=1 REFIT=300 (seconds between weight updates; 0 = no online refit) NICE=5
 # Extra arguments are passed to `astar_cpu search` (e.g. --noise 40 --depth-bonus 5).
 # A gen.bin / model.txt already in the run folder is reused (delete it to regenerate); GEN_MIN=0 skips gen.
 set -e
@@ -17,7 +17,7 @@ TOURS="--tours $T/record_8123.txt:100 --tours $T/record_8002.txt:100 --tours $T/
 for p in ${EXTRA_TOURS:-}; do TOURS="$TOURS --tours $p"; done   # e.g. EXTRA_TOURS="path/pool.txt:20"
 if [ "$GEN" != "0" ] && [ ! -s "$R/gen.bin" ]; then
   echo "== gen: $GEN min on $TH threads"
-  nice -n $NI $D/astar_cpu gen --threads $TH --time $(sec $GEN) --out "$R/gen.bin" $TOURS | tee -a "$R/gen.log"
+  nice -n $NI $D/astar_cpu gen --threads ${GEN_THREADS:-$TH} --seed ${GEN_SEED:-1} --time $(sec $GEN) --out "$R/gen.bin" $TOURS | tee -a "$R/gen.log"
 fi
 if [ ! -s "$R/model.txt" ]; then
   echo "== feat + train ($TRN min)"

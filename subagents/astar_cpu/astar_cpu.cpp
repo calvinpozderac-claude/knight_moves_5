@@ -681,7 +681,7 @@ struct LJob { S s; int depth; vector<Mv> path; };  // path: full move list from 
 
 static int mode_search(Args& A) {
   Search X; int threads = 1, labelThreads = 0, labelLevel = 1, labelLevelShallow = 2, shallowDepth = 36;
-  double tmax = 60, pLabel = 0.02, restartStale = 0, logEvery = 10, refitEvery = 0, onlineFrac = 0.5, refitLr = 3e-4, pTree = 0.3;
+  double tmax = 60, pLabel = 0.02, restartStale = 0, logEvery = 10, refitEvery = 0, onlineFrac = 0.3, refitLr = 1e-4, pTree = 0.3;
   long long poolMin = 7500, record = 8123; long long rescoreK = 200000;
   string modelFn, seedFn, outFn = "tmp/search_best.txt", poolFn = "tmp/pool.txt", checker = "tools/check_tour.py", recDir = ".", saveModel;
   vector<string> replayFns; size_t replayCap = 2000000; int pfxLo = 0, pfxHi = 0; unsigned seed = 1; int refitBatch = 256;
