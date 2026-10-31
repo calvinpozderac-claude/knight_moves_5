@@ -12,3 +12,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 1b | astar_cpu | CPU value-guided best-first (MLP, nnastar port) | 5,063 (smoke model, 45 s data) | full pipeline ~1h45 on 4 cores untested |
 | 1b | prior | learned move prior (GNRPA bias, MLP ranker) | 7,930 (4 s L3 smoke, anchor 60) | L2 equal-time: prior beats stock at anchors 35 & 60, holdout model (no records) equally good; L3/L4 A/B open |
 | 1b | genetic | memetic GA, splice crossover + repair | no gain over seeds (7,200->7,234 without records in 50 s) | crossover beats first parent ~30%; single mutations rarely help |
+| 1b | polish | reroute + sit insertion + window re-search + NRPA tail | 8,127 (verified, strict; from 8,123 in 60 s) | below lns 8,130; big gains on older tours (7,200->7,458, 6,303->7,124) |

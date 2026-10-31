@@ -1,2 +1,3 @@
 DONE k=132 15.7s nodes=6255809 tthits=997744 EXACT suffix optimum from k: 8130 (prefix T=6823) [sound: exhaustive]
 DONE k=130 213.4s nodes=117573740 tthits=17680866 EXACT suffix optimum from k: 8130 (prefix T=6763) [sound: exhaustive]
+TIMEOUT k=128 after 300.0s nodes=203358208 best=8130
