@@ -2,7 +2,7 @@
 CXX      ?= g++
 CXXFLAGS ?= -O3 -march=native -ffast-math -std=c++17
 
-all: build/az build/opening_search
+all: build/az build/opening_search build/nrpa
 
 build/az: src/az.cpp src/eng.h
 	@mkdir -p build
@@ -16,3 +16,7 @@ clean:
 build/opening_search: src/opening_search.cpp src/eng.h
 	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -o $@ src/opening_search.cpp
+
+build/nrpa: src/nrpa.cpp src/eng.h
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -pthread -o $@ src/nrpa.cpp

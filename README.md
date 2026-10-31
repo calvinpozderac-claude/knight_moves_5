@@ -23,7 +23,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_7066.txt` | **7,066** | AlphaZero self-play seeded from the 6,303 tour, alternated with beam search guided by its network, over three rounds |
+| `data/tours/record_7200.txt` | **7,200** | NRPA (`build/nrpa`), warm-started from the 7,066 tour: 6 minutes on 2 threads |
+| `data/tours/record_7066.txt` | 7,066 | AlphaZero self-play seeded from the 6,303 tour, alternated with beam search guided by its network, over three rounds |
 | `data/tours/tour_6303.txt` | 6,303 | Beam search (`experiments/py/beam*.py`) |
 | `data/tours/from_scratch_2952.txt` | 2,952 | AlphaZero from scratch, starting after the 23-move opening |
 
@@ -34,6 +35,7 @@ Check them all exactly (fractions, every rule) with `python3 tools/verify_tours.
 ```
 src/eng.h, src/az.cpp      game engine and tree search (self-play, eval, beam, improve)
 src/opening_search.cpp     finds varied openings that can still finish
+src/nrpa.cpp               Nested Rollout Policy Adaptation search (best for pushing the record)
 train/az_train.py          training loop (NumPy; or PyTorch with --backend torch)
 train/torch_backend.py     GPU trainer: same network, same Adam, same weight file
 tools/                     exact checker, tour verifier, tour harvester and selector, PyTorch parity check
@@ -100,6 +102,43 @@ NumPy one:
 pip install torch          # on Linux this is a CUDA 13 build, which supports RTX 50-series cards
 python3 tools/parity_check.py
 ```
+
+## Searching for longer tours with NRPA (recommended for the record)
+
+AlphaZero is built for two-player games. It learns a reusable policy over millions of positions.
+This puzzle asks for one excellent sequence, in a one-player game with no chance. Nested Rollout
+Policy Adaptation (NRPA, Rosin 2011) is a standard method for that kind of problem; it holds
+records on single-player puzzles such as Morpion Solitaire. It needs no network, and it uses
+every CPU core.
+
+- **Rollouts:** each plays a whole tour, choosing moves by learned weights.
+- **Nesting:** at every level it runs `--iters` searches one level down, then shifts the weights
+  toward the best sequence so far.
+- **Puzzle-specific details:**
+  - A rollout that passes a chance to finish keeps it: its tour ends at the last point where h8
+    was reachable.
+  - Unfinished rollouts rank below all finished ones, by minutes × exp(−distance to h8).
+- **Seeding:** each restart can start from a known tour (`--seed-tours`) or from the best so far
+  (`--seed-best P`, the share of restarts that do). It shifts the weights toward that tour and
+  begins with it as its best, so the search can only improve on it.
+- **Without seeds** it doesn't find h8 from a1. That's what `build/opening_search` and the
+  curriculum tour set are for.
+
+Run from the repo root (`make` builds `build/nrpa`):
+```
+mkdir -p runs
+# polish the record on all cores for 2 hours (level 3: one restart is about a million rollouts)
+build/nrpa --level 3 --threads 32 --time 7200 --seed-tours data/tours/record_7200.txt --seed-best 1 --out runs/nrpa_best.txt
+# explore from all 654 openings as well, then polish the best
+build/nrpa --level 3 --threads 32 --time 7200 --seed-tours data/tours/curriculum.txt --seed-best 0.5 --out runs/nrpa_wide.txt
+```
+- **Output:** every improvement is written to `--out` (line 1 minutes, line 2 the tour). Check it
+  with `python3 tools/check_tour.py "$(sed -n 2p runs/nrpa_best.txt)"`.
+- **Speed:** about 15,000 rollouts per second per thread.
+- **Levels:** level 2 restarts take about a second each. Level 3 takes 1–2 minutes and searches
+  much more thoroughly. Level 4 runs for hours.
+- **Other options:** `--iters` (100) and `--alpha` (1) are NRPA's usual settings. `--seed-adapt`
+  (10) sets how strongly a seed tour biases the weights.
 
 ## Training
 
