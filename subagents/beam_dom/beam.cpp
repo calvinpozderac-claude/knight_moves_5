@@ -331,7 +331,7 @@ static BeamResult run_beam(const vector<Mv>& seed, int k, int width, double nois
     // ---- select
     cand.clear(); for (auto& C : tc) cand.insert(cand.end(), C.begin(), C.end());
     const size_t M = cand.size(); ord.resize(M);
-    for (size_t j = 0; j < M; j++) ord[j] = {cand[j].score, RANDTIE || noise > 0 ? (uint32_t)rng() : (uint32_t)(~j), (uint32_t)j};
+    for (size_t j = 0; j < M; j++) ord[j] = {cand[j].score, RANDTIE || noise > 0 ? (uint32_t)rng() : mix32(cand[j].key ^ ((uint64_t)cand[j].parent << 20) ^ cand[j].q), (uint32_t)j};
     auto better = [](const Ord& a, const Ord& b) { return a.score != b.score ? a.score > b.score : a.tb > b.tb; };
     size_t sorted = min(M, (size_t)width * 4);
     if (sorted < M) std::nth_element(ord.begin(), ord.begin() + sorted, ord.end(), better);

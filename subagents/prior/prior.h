@@ -161,10 +161,11 @@ struct PriorModel {
     return ok;
   }
   float score(const float* f) const {
-    float x[PF]; for (int i = 0; i < F; i++) x[i] = (f[i] - mean[i]) / sd[i];
-    if (H == 0) { float o = 0; for (int i = 0; i < F; i++) o += w2[i] * x[i]; return o; }
-    float o = 0;
-    for (int h = 0; h < H; h++) { const float* w = &W1[(size_t)h * F]; float z = b1[h]; for (int i = 0; i < F; i++) z += w[i] * x[i]; o += w2[h] * tanhf(z); }
+    float x[PF]; const float* mu = mean.data(); const float* sg = sd.data();
+    for (int i = 0; i < PF; i++) x[i] = (f[i] - mu[i]) / sg[i];
+    if (H == 0) { float o = 0; for (int i = 0; i < PF; i++) o += w2[i] * x[i]; return o; }
+    float o = 0; const float* W = W1.data();
+    for (int h = 0; h < H; h++) { const float* w = W + (size_t)h * PF; float z = b1[h]; for (int i = 0; i < PF; i++) z += w[i] * x[i]; o += w2[h] * tanhf(z); }
     return o;
   }
 };

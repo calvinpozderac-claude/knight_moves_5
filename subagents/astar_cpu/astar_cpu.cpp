@@ -195,6 +195,34 @@ static vector<Sample> read_samples(const string& fn, size_t cap = SIZE_MAX) {
 // Features (keep in sync with nothing else: train.py reads the matrix written by `feat`)
 // ============================================================================================
 static const int FEAT_VERSION = 1;
+// bitboard version of eng.h's static_reach (same result): neighbour masks by jump type, points grouped by altitude
+static uint64_t NBM[64][3];
+static void init_masks() {
+  for (int i = 0; i < 64; i++) { NBM[i][0] = NBM[i][1] = NBM[i][2] = 0; for (int k = 0; k < NBN[i]; k++) NBM[i][NBT[i][k]] |= 1ULL << NBQ[i][k]; }
+}
+static uint64_t fast_reach(const S& s, int cap, bool& h8reach, int& maxAlt) {
+  int lo = s.alt[0], hi = s.alt[0];
+  for (int i = 1; i < 64; i++) { lo = min(lo, (int)s.alt[i]); hi = max(hi, (int)s.alt[i]); }
+  int W = hi - lo + 1;
+  if (W > 1020) return static_reach(s, cap, h8reach, maxAlt);
+  uint64_t eq[1024 + 4]; memset(eq, 0, sizeof(uint64_t) * (W + 4));
+  uint64_t* E = eq + 2;  // E[-2 .. W+1] valid
+  uint64_t ok = 0;
+  for (int i = 0; i < 64; i++) { E[s.alt[i] - lo] |= 1ULL << i; if (i == H8 || s.vis[i] < cap) ok |= 1ULL << i; }
+  auto at = [&](int v) -> uint64_t { int k = v - lo; return (k < -2 || k > W + 1) ? 0 : E[k]; };
+  uint64_t seen = 1ULL << s.pos, frontier = seen; h8reach = false; maxAlt = s.alt[s.pos];
+  while (frontier) {
+    int u = __builtin_ctzll(frontier); frontier &= frontier - 1;
+    int a = s.alt[u];
+    uint64_t nb = (NBM[u][0] & at(a)) | (NBM[u][1] & (at(a + 2) | at(a - 2))) | (NBM[u][2] & (at(a + 1) | at(a - 1)));
+    nb &= ok;
+    if (nb >> H8 & 1) h8reach = true;
+    nb &= ~(1ULL << H8) & ~seen;
+    seen |= nb; frontier |= nb;
+  }
+  for (uint64_t m = seen; m; m &= m - 1) maxAlt = max(maxAlt, (int)s.alt[__builtin_ctzll(m)]);
+  return seen;
+}
 static const int NSCAL = 32, NBLK = 8, NHIST = 34;
 static const int NF = NSCAL + NBLK * 64 + NHIST;  // 578
 static inline float clip8(int r) { return (float)max(-8, min(8, r)) / 8.f; }
@@ -204,7 +232,7 @@ static void features(const S& s, int depth, float* x) {
   const int p = s.pos, a = s.alt[p], ah = s.alt[H8];
   int vl[64], vlTot = 0;
   for (int i = 0; i < 64; i++) { vl[i] = i == H8 ? 0 : max(0, 3 - (int)s.vis[i]); vlTot += vl[i]; }
-  bool h8r; int maxAlt; uint64_t R = static_reach(s, 3, h8r, maxAlt);
+  bool h8r; int maxAlt; uint64_t R = fast_reach(s, 3, h8r, maxAlt);
   int cnt[17] = {0}, cntv[17] = {0}, h8g = 0, rvl = 0;
   for (int i = 0; i < 63; i++) {
     int r = s.alt[i] - a; if (r >= -8 && r <= 8) { cnt[r + 8]++; cntv[r + 8] += vl[i]; }
@@ -952,7 +980,7 @@ static int mode_bench(Args& A) {
 int main(int argc, char** argv) {
   init_board(); D0 = 1; D0 = h8dist(start_state());
   for (int p = 0; p < 64; p++) { for (int q = 0; q < 64; q++) KIDX[p][q] = 0; for (int k = 0; k < NBN[p]; k++) KIDX[p][NBQ[p][k]] = k; }
-  UNIFORM = new Policy();
+  UNIFORM = new Policy(); init_masks();
   signal(SIGINT, on_sig); signal(SIGTERM, on_sig);
   setvbuf(stdout, nullptr, _IOLBF, 0);
   if (argc < 2) { fprintf(stderr, "usage: astar_cpu gen|feat|search|check|bench [options] (see RUN.md)\n"); return 1; }
@@ -963,5 +991,11 @@ int main(int argc, char** argv) {
   if (m == "search") return mode_search(A);
   if (m == "check") return mode_check(A);
   if (m == "bench") return mode_bench(A);
+  if (m == "selftest") {  // fast_reach == static_reach on random rollout states
+    std::mt19937 rng(5); long long n = 0, bad = 0;
+    for (int r = 0; r < 300; r++) { Result res = playout(start_state(), *UNIFORM, rng); S st = start_state();
+      for (auto& mv : res.seq) { bool h1, h2; int m1, m2; uint64_t a = static_reach(st, 3, h1, m1), b = fast_reach(st, 3, h2, m2); n++; if (a != b || h1 != h2 || m1 != m2) bad++; if (mv.q == H8) break; apply_move(st, mv.delta, mv.q); } }
+    printf("selftest: %lld states, %lld mismatches\n", n, bad); return bad != 0;
+  }
   die("unknown mode " + m);
 }
