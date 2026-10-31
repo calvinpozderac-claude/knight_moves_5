@@ -175,6 +175,7 @@ static vector<Sample> OUTQ; static std::mutex OUT_M; static size_t OUT_CAP = 200
 static std::atomic<long long> ST_PATHS{0}, ST_PATHS_FIN{0}, ST_LJOBS{0}, ST_LJOBS_FIN{0}, ST_SAMPLES{0}, ST_DROPPED{0};
 static std::atomic<long long> ST_LEVEL_PATHS[4], ST_LEVEL_FIN[4];
 static Policy* UNIFORM = nullptr;
+static int32_t lt_update(const S& s, int32_t fut);  // best-future table (defined below)
 
 static void emit(vector<Sample>& buf) {
   if (buf.empty()) return;
@@ -229,6 +230,7 @@ static void worker_main(int tid, unsigned seed) {
       if (WSTOP) break;
       ST_LJOBS++; if (r.finished) ST_LJOBS_FIN++;
       label_path(job.s, r.seq, r.finished ? (double)r.minutes : 0.0, states, labels, rng);
+      for (size_t i = 0; i < states.size(); i++) if (labels[i] > 0) lt_update(states[i], max<int32_t>(0, (int32_t)labels[i] - states[i].T));
       for (size_t i = 0; i < states.size(); i++) {
         if (i > 0 && U(rng) >= LABEL_PATH_RATE) continue;
         Sample o; to_sample(states[i], job.depth + (int)i, i == 0 ? 2 : 3, labels[i], o); buf.push_back(o);
@@ -253,6 +255,8 @@ static void worker_main(int tid, unsigned seed) {
     ST_PATHS++; ST_LEVEL_PATHS[L]++; if (r.finished) { ST_PATHS_FIN++; ST_LEVEL_FIN[L]++; }
     label_path(root, r.seq, r.finished ? (double)r.minutes : 0.0, states, labels, rng);
     float preLabel = max((float)TOUR_SCORE[ti], labels.empty() ? 0.f : labels[0]);
+    for (int i = 0; i < k; i++) lt_update(pre[i], max<int32_t>(0, (int32_t)preLabel - pre[i].T));
+    for (size_t i = 0; i < states.size(); i++) if (labels[i] > 0) lt_update(states[i], max<int32_t>(0, (int32_t)labels[i] - states[i].T));
     for (int i = 0; i < k; i++) {
       if (U(rng) >= PREFIX_RATE) continue;
       Sample o; to_sample(pre[i], i, 0, preLabel, o); buf.push_back(o);
@@ -657,31 +661,51 @@ double km_astar_rescore_import(const float* f, long long n) {
   return shift;
 }
 
-// global best-label table: a state seen several times (from different paths or sources) keeps the best
-// label seen for it. km_label_merge raises each sample's label to the table's value and updates the table.
-static DE* LT = nullptr; static uint64_t LTMASK = 0, LTCOUNT = 0, LTCAP = 0;
+}  // extern "C"
+
+// global best-future table: for every position (altitudes, visits, knight; minutes so far excluded) the most
+// future minutes known to be reachable from it. A position's label is then T + that maximum, whichever path
+// reached it and whenever the better continuation was found. Workers record every position of every finished
+// path; km_label_merge records samples and raises their labels; km_label_lookup only raises labels.
+static DE* LT = nullptr; static uint64_t LTMASK = 0, LTCOUNT = 0, LTCAP = 0; static std::mutex LT_M;
+static long long LT_CLEARS = 0;
+static inline uint64_t lt_key(const S& s) { uint64_t k = hashS(s, true) ^ 0x5bd1e9955bd1e995ULL; return k ? k : 1; }
+// fut < 0: lookup only. Returns the best known future for s (or -1).
+static int32_t lt_update(const S& s, int32_t fut) {
+  if (!LT) return -1;
+  uint64_t k = lt_key(s);
+  std::lock_guard<std::mutex> lk(LT_M);
+  if (fut >= 0 && LTCOUNT * 10 >= LTCAP * 7) { memset(LT, 0, sizeof(DE) * LTCAP); LTCOUNT = 0; LT_CLEARS++; }
+  uint64_t i = k & LTMASK;
+  while (true) {
+    if (LT[i].k == 0) { if (fut >= 0) { LT[i].k = k; LT[i].T = fut; LTCOUNT++; } return fut; }
+    if (LT[i].k == k) { if (fut > LT[i].T) LT[i].T = fut; return LT[i].T; }
+    i = (i + 1) & LTMASK;
+  }
+}
+static inline void sample_state(const Sample& a, S& s) {
+  memcpy(s.alt, a.alt, sizeof s.alt); memcpy(s.vis, a.vis, sizeof s.vis); s.pos = a.pos; s.T = a.T;
+}
+static long long label_pass(Sample* a, long long n, bool record) {
+  long long raised = 0;
+  for (long long j = 0; j < n; j++) {
+    S s; sample_state(a[j], s);
+    int32_t fut = (record && a[j].label > 0) ? max<int32_t>(0, (int32_t)lrintf(a[j].label) - a[j].T) : -1;
+    int32_t best = lt_update(s, fut);
+    if (best >= 0 && (float)(a[j].T + best) > a[j].label) { a[j].label = (float)(a[j].T + best); raised++; }
+  }
+  return raised;
+}
+extern "C" {
 void km_label_init(int log2slots) {
+  std::lock_guard<std::mutex> lk(LT_M);
   if (LT) free(LT);
   LTCAP = 1ULL << log2slots; LTMASK = LTCAP - 1; LTCOUNT = 0;
   LT = (DE*)calloc(LTCAP, sizeof(DE));
 }
-long long km_label_merge(Sample* a, long long n) {
-  if (!LT) return 0;
-  long long raised = 0;
-  for (long long j = 0; j < n; j++) {
-    if (LTCOUNT * 10 >= LTCAP * 7) { memset(LT, 0, sizeof(DE) * LTCAP); LTCOUNT = 0; }
-    S s; memcpy(s.alt, a[j].alt, sizeof s.alt); memcpy(s.vis, a[j].vis, sizeof s.vis); s.pos = a[j].pos; s.T = a[j].T;
-    uint64_t k = hashS(s, true) ^ (0x9E3779B97F4A7C15ULL * (uint64_t)(s.T + 7)); if (!k) k = 1;
-    int32_t lab = (int32_t)lrintf(a[j].label);
-    uint64_t i = k & LTMASK;
-    while (true) {
-      if (LT[i].k == 0) { LT[i].k = k; LT[i].T = lab; LTCOUNT++; break; }
-      if (LT[i].k == k) { if (LT[i].T > lab) { a[j].label = (float)LT[i].T; raised++; } else LT[i].T = lab; break; }
-      i = (i + 1) & LTMASK;
-    }
-  }
-  return raised;
-}
+long long km_label_merge(Sample* a, long long n) { return label_pass(a, n, true); }
+long long km_label_lookup(Sample* a, long long n) { return label_pass(a, n, false); }
+void km_label_stats(double* o) { o[0] = (double)LTCOUNT; o[1] = (double)LTCAP; o[2] = (double)LT_CLEARS; }
 
 // play a tour text (for checking): returns minutes, or -1 if illegal under the engine's rules
 long long km_tour_minutes(const char* text) {

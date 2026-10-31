@@ -145,10 +145,13 @@ search runs. It found 8,002.
 2. **train** (GPU, about 25 minutes). A ResNet (128 channels × 12 blocks, global-pooling layers, about 5M
    parameters) reads 52 feature planes: altitudes relative to the knight (one-hot), group sizes, the
    opposite point's altitude, visits, the knight, and global counts. It has two heads: whether a finish is
-   reachable, and the future minutes. The labels are already maxima (the best score known from each
-   position). A plain regression would predict the *average* of those maxima over similar positions, so the
-   future-minutes head instead fits their 0.95 quantile (`--fut-quantile`), which approximates their maximum.
-   (Exactly 1 is degenerate.) The search value is `p_finish^0.5 × (T + future)` (`--gamma`).
+   reachable, and the future minutes. Every label is a maximum: a position's label is T plus the
+   most future minutes known to be reachable from it. A best-future table, keyed by the position alone,
+   collects that maximum from every path any worker or the search has finished. Every training batch looks
+   up the current maximum, so a copy stored before a better path was found never trains on an old label.
+   Even a single path through a position sets its label. Every position of the known tours and of the
+   search's tours of at least 7,500 minutes stays in an elite buffer, which supplies 5% of each batch.
+   The search value is `p_finish^0.5 × (T + future)` (`--gamma`).
 3. **search** (CPU + GPU, `--hours`, default 8). Each position's priority f is the network's value plus
    random exploration noise (`--noise`, 60 minutes), minus a **novelty penalty**. That penalty is
    `--novelty-w` (10) minutes for each doubling of the expansions already made under the node's ancestors

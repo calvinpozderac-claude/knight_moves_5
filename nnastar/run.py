@@ -195,10 +195,10 @@ def load_base(a, log, device, merge_labels=False, search_samples=0):
         how = 'random positions (no val.npy: run gen to make a path-disjoint set)'
     base = Replay(max(a.base_cap, len(arr)), device)
     base.add(arr)
-    tours_rb = Replay(max(1, len(tours)), device)
+    tours_rb = Replay(max(a.elite_cap, len(tours)), device)  # elite: known tours, later also the search's best tours
     tours_rb.add(tours)
     fin = (arr['label'] > 0).mean()
-    log(f'base replay {base.n / 1e6:.2f}M on GPU ({fin:.0%} can finish) + {tours_rb.n} known-tour positions '
+    log(f'base replay {base.n / 1e6:.2f}M on GPU ({fin:.0%} can finish) + elite buffer {tours_rb.n} positions of known tours '
         f'({a.tour_frac:.0%} of each batch); validation {len(val)} ({how})')
     del arr
     return base, tours_rb, val
@@ -207,6 +207,29 @@ def load_base(a, log, device, merge_labels=False, search_samples=0):
 def sample_base(base, tours_rb, n, tour_frac):
     nt = int(round(n * tour_frac)) if tours_rb.n else 0
     return torch.cat([base.sample(n - nt), tours_rb.sample(nt)]) if nt else base.sample(n)
+
+
+_LABEL_TABLE = False
+
+
+def ensure_label_table(a):
+    """Best-future table (one per process): every position's label becomes T + the most future minutes known
+    from it, whichever path found them and whenever."""
+    global _LABEL_TABLE
+    if not _LABEL_TABLE:
+        K.label_init(a.label_log2)
+        _LABEL_TABLE = True
+
+
+def relabel(rec):
+    """Raise the labels of a GPU batch to the current maxima of the best-future table (copies stored before
+    a better path was found would otherwise keep their old labels)."""
+    if not _LABEL_TABLE:
+        return rec
+    cpu = rec.cpu().numpy()
+    if K.label_lookup(cpu.view(K.SAMPLE_DTYPE).reshape(-1)):
+        rec[:, 200:204] = torch.from_numpy(cpu[:, 200:204]).to(rec.device, non_blocking=True)
+    return rec
 
 
 def save_model(path, model, opt=None, extra=None):
@@ -255,7 +278,7 @@ class Trainer:
     def step(self, rec):
         m = self.model
         m.train()
-        d = unpack(rec)
+        d = unpack(relabel(rec))
         with torch.autocast('cuda', dtype=torch.bfloat16):
             x = featurize(d['alt'], d['vis'], d['pos'], d['T']).to(memory_format=torch.channels_last)
             fl, fu = self.fwd(x)
@@ -368,7 +391,8 @@ def cmd_train(a):
     log(f'== {"fine-tune" if tune else "train"}: up to {minutes} min, batch {a.batch}, lr {lr0}, future-minutes quantile '
         f'{a.fut_quantile}, early stopping after {a.patience} evaluations without a better validation loss; '
         f'{a.train_gen_threads} threads keep generating fresh data meanwhile')
-    base, tours_rb, val = load_base(a, log, dev, search_samples=a.tune_search_samples if tune else 0)
+    ensure_label_table(a)
+    base, tours_rb, val = load_base(a, log, dev, merge_labels=True, search_samples=a.tune_search_samples if tune else 0)
     val_rec = torch.from_numpy(val.view(np.uint8).reshape(-1, REC)).to(dev)
     mp = os.path.join(a.run, 'model.pt')
     if (a.resume_model or tune) and os.path.exists(mp):
@@ -400,7 +424,7 @@ def cmd_train(a):
             tr.set_lr(lr)
             tr.step(sample_base(base, tours_rb, a.batch, a.tour_frac))
             if w is not None and time.time() - last_drain >= 5:
-                d = w.drain()
+                _, d = K.label_merge(w.drain())
                 base.add(d)
                 sw.add(d)
                 streamed += len(d)
@@ -460,7 +484,7 @@ def cmd_search(a):
         f'record to beat {rec_best}; exploration: quantile {a.fut_quantile}, gamma {a.gamma}, noise {a.noise}, '
         f'novelty {a.novelty_w} per doubling (subtrees {a.novelty_k1} and {a.novelty_k2} moves up)')
     setup_engine(a, log)
-    K.label_init(a.label_log2)
+    ensure_label_table(a)
     mp = os.path.join(a.run, 'model.pt')
     if not os.path.exists(mp):
         raise SystemExit(f'{mp} not found: run the train step first')
@@ -511,7 +535,11 @@ def cmd_search(a):
     tour_file = os.path.join(a.run, 'found_tmp.txt')
 
     def drain_data():
-        d = [workers.drain(), astar.tree_samples()]
+        tree = astar.tree_samples()  # positions of the search's new best / pool tours, labelled with their max
+        if len(tree):
+            _, tree = K.label_merge(tree)
+            tours_rb.add(tree)
+        d = [workers.drain(), tree]
         if a.harvest > 0:
             d.append(astar.harvest(a.harvest, a.harvest * 20))
         d = np.concatenate(d)
@@ -637,7 +665,10 @@ def cmd_search(a):
                     f"maxdepth {st['maxdepth']:.0f} | best {st['best']:.0f} top f {st['top_f']:.0f} | finishes {st['finishes']:.0f} "
                     f"dead {st['dead']:.0f} dup {st['dup']:.0f} stale {st['stale']:.0f} gc {st['gc']:.0f} prune {st['prune']:.0f} "
                     f"requeued {st['lazy']:.0f}")
-                log(f"   workers: {worker_line(ws, prev_ws, dt)} | label queue {ws['label_queue']:.0f}")
+                lt = K.label_stats()
+                log(f"   workers: {worker_line(ws, prev_ws, dt)} | label queue {ws['label_queue']:.0f} | best-future table "
+                    f"{lt['entries'] / 1e6:.1f}M positions ({lt['entries'] / lt['slots']:.0%} full, {lt['clears']:.0f} clears) | "
+                    f"elite {tours_rb.n}")
                 log(f"   train: {tr.steps} steps, loss {l:.4f} (fin {lf:.4f} fut {lu:.4f}), GPU {t_train / max(1e-9, t_train + t_inf):.0%} "
                     f"| fresh {fresh.n / 1e6:.2f}M | val base {fmt_metrics(val_metrics(train_model, val_rec[:20000]))} "
                     f"| val search {fmt_metrics(val_metrics(train_model, fval.rec[:min(fval.n, 20000)] if fval.n > 1000 else None))}")
@@ -699,14 +730,15 @@ def main():
     g.add_argument('--lr-online', type=float, default=3e-4)
     g.add_argument('--wd', type=float, default=1e-4)
     g.add_argument('--fut-w', type=float, default=1.0, help='weight of the future-minutes loss')
-    g.add_argument('--fut-quantile', type=float, default=0.95,
-                   help='future minutes are fit to this quantile of the labels of similar positions: 0.5 = typical, '
-                        'near 1 = their maximum (exactly 1 is degenerate: only under-predictions would be penalised)')
+    g.add_argument('--fut-quantile', type=float, default=0.5,
+                   help='asymmetry of the future-minutes loss; 0.5 fits the labels (which are already maxima) exactly')
     g.add_argument('--lr-tune', type=float, default=5e-4, help='learning rate for tune')
     g.add_argument('--tune-minutes', type=float, default=20, help='fine-tuning budget for tune (early stopping applies)')
     g.add_argument('--tune-search-samples', type=int, default=6_000_000, help='search samples added to the data for tune')
     g.add_argument('--base-cap', type=int, default=16_000_000, help='generated samples kept on the GPU')
-    g.add_argument('--tour-frac', type=float, default=0.01, help='share of each base batch drawn from known-tour positions')
+    g.add_argument('--tour-frac', type=float, default=0.05,
+                   help='share of each batch from the elite buffer: every position of the known tours and of search tours >= --pool-min')
+    g.add_argument('--elite-cap', type=int, default=2_000_000, help='elite buffer size (positions)')
     g.add_argument('--tour-min-score', type=int, default=5000, help='known tours at least this long give labelled positions')
     g.add_argument('--resume-model', action='store_true', help='train: continue from the run folder model.pt')
     g = p.add_argument_group('search')
@@ -717,7 +749,7 @@ def main():
     g.add_argument('--max-nodes', type=int, default=400_000_000, help='search tree size (12 bytes per node)')
     g.add_argument('--max-open', type=int, default=40_000_000, help='open-list cap (worst entries are dropped)')
     g.add_argument('--dedup-log2', type=int, default=27, help='duplicate table: 2^k slots, 12 bytes each')
-    g.add_argument('--label-log2', type=int, default=26, help='best-label table: 2^k slots, 12 bytes each')
+    g.add_argument('--label-log2', type=int, default=28, help='best-future table: 2^k slots, 12 bytes each')
     g.add_argument('--gamma', type=float, default=0.5, help='search value = p_finish^gamma * (T + future); <1 risks more')
     g.add_argument('--noise', type=float, default=60, help='exploration: random perturbation (std, minutes) of each position\'s value')
     g.add_argument('--novelty-w', type=float, default=10,

@@ -46,6 +46,8 @@ def lib():
             'km_tour_minutes': (i64, [C.c_char_p]),
             'km_label_init': (None, [i]),
             'km_label_merge': (i64, [vp, i64]),
+            'km_label_lookup': (i64, [vp, i64]),
+            'km_label_stats': (None, [vp]),
         }
         for name, (res, args) in sig.items():
             f = getattr(L, name)
@@ -176,9 +178,21 @@ def label_init(log2slots=26):
 
 
 def label_merge(arr):
-    """Raise each sample's label to the best label seen for the same state (in place); returns how many rose."""
+    """Record finishing samples in the best-future table and raise every sample's label to T + the best future
+    known for its position (in place); returns (how many rose, arr)."""
     arr = np.ascontiguousarray(arr)
     return lib().km_label_merge(ptr(arr), len(arr)), arr
+
+
+def label_lookup(arr):
+    """Raise labels to T + the best known future of their position, without recording anything (in place)."""
+    return lib().km_label_lookup(ptr(arr), len(arr))
+
+
+def label_stats():
+    o = np.zeros(3)
+    lib().km_label_stats(ptr(o))
+    return {'entries': o[0], 'slots': o[1], 'clears': o[2]}
 
 
 def tour_minutes(text):
