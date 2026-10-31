@@ -208,4 +208,5 @@ def main():
         open(a.out, 'w').write(f'{T}\n{txt}\n')
     print(txt)
 
-main()
+if __name__ == '__main__':
+    main()

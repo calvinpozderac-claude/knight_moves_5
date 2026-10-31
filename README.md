@@ -42,6 +42,7 @@ src/eng.h, src/az.cpp      game engine and tree search (self-play, eval, beam, i
 src/opening_search.cpp     finds varied openings that can still finish
 src/nrpa.cpp               Nested Rollout Policy Adaptation search (best for pushing the record)
 tools/dance_cpsat.py       experimental exact (CP-SAT) planner for the dance phase; not competitive yet
+tools/reroute_zero_wait.py keeps a tour's sitting moves but re-routes its zero-wait stretches to free visits
 train/az_train.py          training loop (NumPy; or PyTorch with --backend torch)
 train/torch_backend.py     GPU trainer: same network, same Adam, same weight file
 tools/                     exact checker, tour verifier, tour harvester and selector, PyTorch parity check
@@ -167,6 +168,13 @@ build/nrpa --level 3 --threads 30 --time 3600 --seed-tours data/tours/record_791
   seeds that share of restarts from the best tour so far instead of `--seed-tours`. `--seed-top K`
   uses only the K best tours of the seed file (for example a pool). `--seed-alpha` sets the
   learning rate of the seed shifts. `--bias B` adds B × (minutes waited) / 100 to every move's weight.
+- **Openings:** `--objective opening` searches openings instead of tours. A rollout is scored by the
+  best "dance start" it passes (two groups two apart, h8 in them, the knight on top): the minutes so
+  far plus an idealised dance from there (sits alternate between the groups, points whose partner is
+  gone sit first; adjacency is ignored). That estimate stays constant along a good dance, and it
+  ranks the known openings in the right order, but it is optimistic: an opening it rated 8,725 only
+  reached 7,621 with a level-4 search. `--prefix-file FILE` then searches the rest of the tour from
+  a fixed, unfinished prefix (fresh weights).
 - **Without seeds** it doesn't find h8 from a1. That's what `build/opening_search` and the
   curriculum tour set are for.
 

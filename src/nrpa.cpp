@@ -20,12 +20,17 @@
 //  - --no-warm: don't start the search from the seed's own continuation (only the anchor is kept)
 //  - --watch: re-read --seed-tours whenever the file changes and adopt a better tour from it as the best
 //    so far (lets several processes share improvements through one file)
+//  - --objective opening [--dmin 56] [--max-steps 60]: optimise openings instead of tours: a rollout
+//    scores the best dance start it passes (see dance_pot) and the output is that unfinished prefix
+//  - --prefix-file FILE: every restart keeps FILE's (possibly unfinished) moves and searches the rest
+//    from fresh weights (for finishing the openings found with --objective opening)
 //  - --bias B adds B x (minutes the move waits) / 100 to every move's weight (Gibbs-NRPA prior)
 // Independent searches run on --threads threads; improvements go to --out (line 1 minutes, line 2 tour).
 //
 // usage: nrpa [--level 3] [--iters 100] [--alpha 1] [--threads N] [--time SECONDS] [--rng SEED]
 //             [--seed-tours FILE] [--seed-best P] [--seed-adapt K] [--anchor-min A] [--anchor-max B]
-//             [--bias B] [--watch] [--no-warm] [--pool FILE] [--pool-min M] [--seed-top K] [--seed-alpha A] [--out FILE]
+//             [--bias B] [--watch] [--no-warm] [--pool FILE] [--pool-min M] [--seed-top K] [--seed-alpha A]
+//             [--objective tour|opening] [--dmin D] [--max-steps N] [--prefix-file FILE] [--out FILE]
 #include "eng.h"
 #include <atomic>
 #include <chrono>
@@ -61,6 +66,44 @@ static inline double move_e(const Policy& pol, const S& s, int d, int q) {
 
 struct Result { double score = -1e18; long long minutes = 0; bool finished = false; vector<Mv> seq; };
 
+// --objective opening: score a rollout by the best "dance start" it passes through instead of by finishing.
+// A dance start has the knight in the upper of two groups two apart (together >= DMIN points, h8 among
+// them). Its potential is T plus the minutes of an idealised dance from there (path constraints ignored).
+static int OBJ = 0, DMIN = 56, MAXSTEPS = 60;
+static double dance_pot(const S& s) {
+  int a = s.alt[s.pos], nG[2] = {0, 0};
+  for (int i = 0; i < 64; i++) { if (s.alt[i] == a) nG[0]++; else if (s.alt[i] == a - 2) nG[1]++; }
+  if (nG[1] == 0) return -1e18;
+  int ah = s.alt[H8]; if (ah != a && ah != a - 2) return -1e18;
+  if (nG[0] + nG[1] < DMIN) return -1e18;
+  // play an idealised dance: sits alternate between the groups (upper first, at the knight's point),
+  // squares whose partner is gone sit first, and a new pair is opened (its partner leaves) only when needed
+  int grp[64], cap[64]; bool alive[64], open_[64];
+  for (int i = 0; i < 64; i++) {
+    alive[i] = s.alt[i] == a || s.alt[i] == a - 2; grp[i] = s.alt[i] == a ? 0 : 1;
+    cap[i] = alive[i] ? 3 - s.vis[i] + (i == s.pos) : 0;
+  }
+  cap[H8] = cap[A1] = 0;  // h8 is the goal; sitting on a1 would push h8 out
+  for (int i = 0; i < 64; i++) open_[i] = alive[i] && !alive[63 - i];
+  double fut = 0; int g = 0;
+  for (int step = 0; step < 200; step++) {
+    int best = -1, bc = 0;
+    if (step == 0) best = s.pos;
+    else {
+      for (int i = 0; i < 64; i++) if (alive[i] && grp[i] == g && open_[i] && cap[i] > bc) { best = i; bc = cap[i]; }
+      if (best < 0) for (int i = 0; i < 64; i++) if (alive[i] && grp[i] == g && cap[i] > bc) { best = i; bc = cap[i]; }
+    }
+    if (best < 0 || cap[best] <= 0) break;
+    int n = nG[g], p = 63 - best;
+    if (!open_[best]) {
+      if (alive[p]) { if (grp[p] == g) n--; nG[grp[p]]--; alive[p] = false; cap[p] = 0; }
+      open_[best] = true;
+    }
+    fut += 4.0 * n; cap[best]--; g ^= 1;
+  }
+  return s.T + fut;
+}
+
 static std::atomic<bool> STOP{false};
 static std::atomic<long long> PLAYOUTS{0};
 
@@ -68,8 +111,11 @@ static std::atomic<long long> PLAYOUTS{0};
 static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
   S s = root; Result r; vector<pair<int, int>> mv; vector<double> w;
   long long finT = -1; size_t finLen = 0; Mv finMove{0, H8};
+  double bestPot = -1e18; size_t potLen = 0; long long potT = 0; int qual = 0;
+  if (OBJ == 1) { double p = dance_pot(s); if (p > bestPot) { bestPot = p; potLen = 0; potT = s.T; } }
   while (true) {
-    pinned_moves(s, 3, true, mv);
+    if (OBJ == 1 && (int)r.seq.size() >= MAXSTEPS) break;
+    pinned_moves(s, 3, OBJ == 0, mv);
     w.clear(); double z = 0; int nonfin = 0;
     for (auto& [d, q] : mv) {
       if (q == H8) {  // a chance to finish: remember the best one
@@ -84,8 +130,16 @@ static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
     for (size_t i = 0; i < mv.size(); i++) { if (mv[i].second == H8) continue; acc += w[i]; pick = (int)i; if (acc >= u) break; }
     r.seq.push_back({mv[pick].first, mv[pick].second});
     apply_move(s, mv[pick].first, mv[pick].second);
+    if (OBJ == 1) {  // the dance has begun once states qualify; a few of them are enough
+      double p = dance_pot(s);
+      if (p > -1e17) { if (p > bestPot) { bestPot = p; potLen = r.seq.size(); potT = s.T; } if (++qual >= 6) break; }
+    }
   }
   PLAYOUTS++;
+  if (OBJ == 1) {
+    r.seq.resize(potLen); r.minutes = potT; r.score = bestPot > -1e17 ? bestPot : -1e7 + s.T; r.finished = false;
+    return r;
+  }
   if (finT >= 0) {
     r.seq.resize(finLen); r.seq.push_back(finMove);
     r.finished = true; r.minutes = finT; r.score = (double)finT;
@@ -142,7 +196,28 @@ static vector<vector<Mv>> read_tours(const char* fn) {
   fclose(f); return out;
 }
 
+static vector<Mv> read_partial(const char* fn) {  // the first line with moves, finished or not
+  FILE* f = fopen(fn, "r"); if (!f) { fprintf(stderr, "cannot open %s\n", fn); exit(1); }
+  static char line[200000]; vector<Mv> t;
+  while (fgets(line, sizeof line, f)) {
+    S s = start_state(); char* p = line; int w; char sq[8];
+    while ((p = strchr(p, '(')) && sscanf(p, "(%d, %2s)", &w, sq) == 2) {
+      int q = (sq[0] - 'a') + 8 * (sq[1] - '1'); int n = group_n(s, s.pos); int d = w / max(1, n);
+      t.push_back({d, q}); apply_move(s, d, q); p++;
+    }
+    if (!t.empty()) break;
+  }
+  fclose(f); return t;
+}
+
 static Result as_result(const S& root, const vector<Mv>& seq) {
+  if (OBJ == 1) {  // the best dance start along seq
+    Result r; S s = root; double best = dance_pot(s); size_t len = 0; long long T = s.T;
+    for (size_t i = 0; i < seq.size() && seq[i].q != H8 && (int)i < MAXSTEPS; i++) {
+      apply_move(s, seq[i].delta, seq[i].q); double p = dance_pot(s); if (p > best) { best = p; len = i + 1; T = s.T; }
+    }
+    r.seq.assign(seq.begin(), seq.begin() + len); r.minutes = T; r.score = best > -1e17 ? best : -1e7; return r;
+  }
   Result r; r.seq = seq; S s = root; for (const Mv& m : seq) apply_move(s, m.delta, m.q);
   r.minutes = s.T; r.finished = !seq.empty() && seq.back().q == H8; r.score = r.finished ? (double)s.T : -1e7;
   return r;
@@ -162,7 +237,7 @@ int main(int argc, char** argv) {
   for (int p = 0; p < 64; p++) { for (int q = 0; q < 64; q++) KIDX[p][q] = 0; for (int k = 0; k < NBN[p]; k++) KIDX[p][NBQ[p][k]] = k; }
   int LEVEL = 3, THREADS = max(1u, std::thread::hardware_concurrency() / 2), SEEDADAPT = 10, AMIN = 0, AMAX = 0;
   double TIME = 0, SEEDBEST = 0; bool WATCH = false, WARM = true; string poolFile; long long POOLMIN = 0; int SEEDTOP = 0; double SEEDALPHA = -1;
-  unsigned RNG = 1; string seedFile, outFile = "nrpa_best.txt";
+  unsigned RNG = 1; string seedFile, outFile = "nrpa_best.txt", prefixFile;
   for (int i = 1; i < argc; i++) {
     string a = argv[i]; auto nx = [&]() { if (i + 1 >= argc) { fprintf(stderr, "missing value for %s\n", a.c_str()); exit(1); } return string(argv[++i]); };
     if (a == "--level") LEVEL = stoi(nx()); else if (a == "--iters") ITERS = stoi(nx()); else if (a == "--alpha") ALPHA = stod(nx());
@@ -173,6 +248,9 @@ int main(int argc, char** argv) {
     else if (a == "--no-warm") WARM = false;
     else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
     else if (a == "--seed-top") SEEDTOP = stoi(nx()); else if (a == "--seed-alpha") SEEDALPHA = stod(nx());
+    else if (a == "--objective") { string o = nx(); OBJ = o == "opening" ? 1 : 0; if (o != "opening" && o != "tour") { fprintf(stderr, "--objective tour|opening\n"); return 1; } }
+    else if (a == "--dmin") DMIN = stoi(nx()); else if (a == "--max-steps") MAXSTEPS = stoi(nx());
+    else if (a == "--prefix-file") prefixFile = nx();
     else if (a == "--out") outFile = nx();
     else { fprintf(stderr, "unknown option %s (see the comment at the top of src/nrpa.cpp)\n", a.c_str()); return 1; }
   }
@@ -194,6 +272,10 @@ int main(int argc, char** argv) {
     return v;
   };
   vector<vector<Mv>> seeds; if (!seedFile.empty()) seeds = top_seeds(read_tours(seedFile.c_str()));
+  if (!prefixFile.empty()) {  // every restart starts after this (possibly unfinished) sequence, from fresh weights
+    seeds = {read_partial(prefixFile.c_str())}; AMIN = AMAX = (int)seeds[0].size(); WARM = false; SEEDADAPT = 0; SEEDBEST = 0;
+    printf("prefix of %zu moves from %s\n", seeds[0].size(), prefixFile.c_str());
+  }
   printf("NRPA level %d, %d iterations per level, alpha %.2f, %d threads, %zu seed tours, seed-best %.2f, anchor %d-%d, bias %.2f\n",
          LEVEL, ITERS, ALPHA, THREADS, seeds.size(), SEEDBEST, AMIN, AMAX, BIAS); fflush(stdout);
   if (AMAX > 0 && seeds.empty()) { fprintf(stderr, "--anchor-min/--anchor-max need --seed-tours\n"); return 1; }
@@ -221,7 +303,7 @@ int main(int argc, char** argv) {
       // anchor: keep the seed's first k moves
       int k = 0;
       if (AMAX > 0 && !seed.empty()) {
-        int hi = min<int>(AMAX, (int)seed.size() - 1), lo = min(AMIN, hi);
+        int hi = min<int>(AMAX, (int)seed.size() - (prefixFile.empty() ? 1 : 0)), lo = min(AMIN, hi);
         k = std::uniform_int_distribution<int>(lo, hi)(rng);
       }
       S root = start_state(); vector<Mv> prefix(seed.begin(), seed.begin() + k), rest(seed.begin() + k, seed.end());
@@ -233,6 +315,16 @@ int main(int argc, char** argv) {
       std::lock_guard<std::mutex> lk(mtx);
       printf("[%7.0fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)\n", elapsed(), tid, restart, k,
              r.finished ? "finished" : "unfinished", r.minutes, r.seq.size(), gbest.finished ? gbest.minutes : 0LL, (long long)PLAYOUTS);
+      if (OBJ == 1) {
+        printf("  opening: potential %.0f at move %zu (T %lld)\n", r.score, r.seq.size(), r.minutes);
+        if (!poolFile.empty() && r.score >= POOLMIN) { FILE* f = fopen(poolFile.c_str(), "a"); if (f) { fprintf(f, "%.0f\n%s\n", r.score, tour_text(r.seq).c_str()); fclose(f); } }
+        if (r.score > gbest.score) {
+          gbest = r; FILE* f = fopen(outFile.c_str(), "w");
+          if (f) { fprintf(f, "%.0f\n%s\n", r.score, tour_text(r.seq).c_str()); fclose(f); }
+          printf("NEW BEST opening potential %.0f (%zu moves) -> %s\n", r.score, r.seq.size(), outFile.c_str());
+        }
+        fflush(stdout); continue;
+      }
       if (!poolFile.empty() && r.finished && r.minutes >= POOLMIN) {  // keep every good result for later polishing
         FILE* f = fopen(poolFile.c_str(), "a"); if (f) { fprintf(f, "%lld\n%s\n", r.minutes, tour_text(r.seq).c_str()); fclose(f); }
       }
