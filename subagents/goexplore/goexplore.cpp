@@ -380,7 +380,7 @@ static void seed_tour(const Path& t) {
   }
   apply_move(s, seq.back().delta, seq.back().q);
   for (long x : slots) if (x >= 0) amax(AR->c[x].val, s.T);
-  amax(*(std::atomic<int32_t>*)&SEEDBEST, s.T);
+  amax(SEEDBEST, s.T);
   SEEN.insert(path_hash(t));
 }
 static void save_ckpt(const string& fn) {

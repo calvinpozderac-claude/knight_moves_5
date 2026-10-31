@@ -36,6 +36,7 @@
 #include <mutex>
 #include <thread>
 #include <unordered_set>
+#include <unistd.h>
 
 struct Mv { int delta, q; };
 
@@ -73,7 +74,7 @@ struct Result {
 };
 static inline void set_unfinished(Result& r, const S& s) {
   double e = s.T * exp(-h8dist(s));
-  r.finished = false; r.minutes = s.T; r.score = -1e7 + e; r.soft = -UNFPEN + e;
+  r.finished = false; r.minutes = s.T; r.score = -1e7 + e; r.soft = min(-1.0, -UNFPEN + e);  // below every finished tour
 }
 static inline void set_finished(Result& r, long long T) { r.finished = true; r.minutes = T; r.score = r.soft = (double)T; }
 
@@ -204,7 +205,6 @@ static void report(const vector<Mv>& full, const char* what) {
 // ---------------------------------------------------------------- NMCS / Lazy NMCS
 static int BASEN = 1, LAZY = 0, LAZYN = 4, LAZYK = 3, LAZYMIN = 2, LAZYMEAN = 0, TOPLEVEL = 2;
 static double LAZYFRAC = 0;
-static vector<Mv> PREFIX_TL;  // thread-local prefix for reporting (set per restart)
 static thread_local vector<Mv> TL_PREFIX;
 
 static Result bottom(const X& c, std::mt19937& rng) {
@@ -300,7 +300,7 @@ static Result mcts(const X& root0, std::mt19937& rng, const Result* init) {
     }
     return true;
   };
-  long long it = 0, sinceCommit = 0;
+  long long sinceCommit = 0;
   while (!STOP) {
     // ---- one iteration
     X x = cur; int ni = root; path.clear(); path.push_back(ni); tseq.clear();
@@ -341,17 +341,17 @@ static Result mcts(const X& root0, std::mt19937& rng, const Result* init) {
       } else if (T[ni].flags & 2) { set_unfinished(r, x.s); T[ni].flags |= 4; }
       else r = playout(x, rng);
     }
-    it++; sinceCommit++;
+    sinceCommit++;
     if (!deadend) {
       // sequence relative to root0
       vector<Mv> seq = committed; seq.insert(seq.end(), tseq.begin(), tseq.end());
-      if (!(T[ni].flags & 2) && !(T[ni].q == H8 && ni != root)) seq.insert(seq.end(), r.seq.begin(), r.seq.end());
+      seq.insert(seq.end(), r.seq.begin(), r.seq.end());  // empty for terminal nodes
       r.seq = std::move(seq);
       if (r.score > best.score) {
         best = r; hiV = max(hiV, best.soft);
         if (best.finished) { vector<Mv> full = TL_PREFIX; full.insert(full.end(), best.seq.begin(), best.seq.end()); report(full, "mcts"); }
       }
-      if (r.soft > hiV && !best.finished) hiV = r.soft;
+      hiV = max(hiV, r.soft);
       for (int p : path) { Node& N = T[p]; N.n++; N.sum += r.soft; if (r.soft > N.mx) N.mx = r.soft; }
     }
     // exhaustion propagates upward
@@ -375,7 +375,7 @@ static Result mcts(const X& root0, std::mt19937& rng, const Result* init) {
       committed.push_back(m); xapply(cur, m.delta, m.q);
       if (m.q == H8 || nr < 0) break;
       // keep only the new root's subtree
-      vector<Node> NT; NT.reserve(T.capacity()); NT.push_back(T[nr]); NT[0].flags &= ~4;
+      vector<Node> NT; NT.push_back(T[nr]); NT[0].flags &= ~4;
       vector<pair<int, int>> todo{{nr, 0}};  // (old, new)
       for (size_t h = 0; h < todo.size(); h++) {
         auto [o, nn] = todo[h]; const Node& O = T[o];
