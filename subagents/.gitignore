@@ -1,0 +1,6 @@
+# ignore compiled binaries (files without an extension)
+*
+!*/
+!*.*
+!Makefile
+tmp/
