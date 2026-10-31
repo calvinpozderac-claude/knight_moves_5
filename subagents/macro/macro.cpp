@@ -15,6 +15,8 @@
 //         min-cost endpoints (code: from, to, delta, r, visits of r). Priors: --sit-bias B adds
 //         B x minutes/100 to a sit, --hop-pen H subtracts H x path cost from an endpoint.
 //         After each restart, the last --tail K macros of its result are re-searched by the DFS below.
+//         --seed-adapt N shifts the fresh weights N times toward the seed's own continuation (as macros);
+//         --warm also starts the search with it as the best so far (local search around the seed).
 //   beam  beam search over macros, states ranked by T + an idealised-dance estimate (pot), deduplicated.
 //   dfs   depth-first branch and bound over the last K macros (K from --tail-min..--tail-max) of a seed
 //         tour: prune when T + pot + --slack <= best; transposition table; --dfs-nodes budget per run.
