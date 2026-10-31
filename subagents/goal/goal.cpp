@@ -323,7 +323,7 @@ static vector<Target> read_targets(const string& fn) {
 struct Opts {
   string tour = "data/tours/record_8123.txt", targets, trace, outDir = "subagents/goal/tmp/run", startTour;
   int k = -1, startK = 0, variants = 12, edits = 6, scoreLevel = 1, scoreRuns = 2, threads = 1, beam = 20000, maxDepth = 60,
-      topOut = 50, maxFound = 20000, bucketCap = -1, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
+      topOut = 50, maxFound = 20000, rerank = 200, writeMax = 2000, bucketCap = -1, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
   double time = 60, finishTime = 0, wClu = 150, wAlt = 5, wVis = 100, wKnight = 20, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
   unsigned rng = 1; bool expandDance = false, visKey = true;
 };
@@ -487,7 +487,8 @@ static inline double priority(const S& s, int* which = nullptr) {
 
 struct Link { int32_t parent; int16_t delta; uint8_t q; };
 struct Cand { float pri; uint32_t parent; int16_t delta; uint8_t q; uint64_t h; };
-struct Found { double score; long long T; int depth; int target; double dist; vector<Mv> seq; uint64_t h; };
+struct Found { double score; long long T; int depth; int target; double dist; vector<Mv> seq; uint64_t h; double db = -1; vector<Mv> dance; };
+static inline double found_key(const Found& x) { return x.db > 0 ? x.db : x.score - 1e6; }  // dbeam-scored first
 
 static int run_search() {
   if (O.targets.empty()) { fprintf(stderr, "search needs --targets FILE (make one with `goal design`)\n"); return 1; }
@@ -517,23 +518,25 @@ static int run_search() {
   };
   auto write_out = [&]() {
     std::lock_guard<std::mutex> lk(fm);
-    sort(found.begin(), found.end(), [](const Found& a, const Found& b) { return a.score > b.score; });
+    sort(found.begin(), found.end(), [](const Found& a, const Found& b) { return found_key(a) > found_key(b); });
     foundIdx.clear(); for (size_t i = 0; i < found.size(); i++) foundIdx[found[i].h] = i;
     FILE* f = fopen((O.outDir + "/prefixes.txt").c_str(), "w");
     if (!f) return;
-    fprintf(f, "# score\tT\tmoves\ttarget\tdist\tprefix (prefix moves include the fixed start)\n");
-    for (auto& x : found) {
+    fprintf(f, "# dbeam\tscore\tT\tmoves\ttarget\tdist\tprefix (includes the fixed start; dbeam = -1 when not re-ranked yet)\n");
+    for (size_t i = 0; i < found.size() && (int)i < O.writeMax; i++) {
+      const Found& x = found[i];
       vector<Mv> full = prefix; full.insert(full.end(), x.seq.begin(), x.seq.end());
-      fprintf(f, "%.0f\t%lld\t%zu\t%s\t%.0f\t%s\n", x.score, x.T, full.size(), TG[x.target].name.c_str(), x.dist, tour_text(full).c_str());
+      fprintf(f, "%.0f\t%.0f\t%lld\t%zu\t%s\t%.0f\t%s\n", x.db, x.score, x.T, full.size(), TG[x.target].name.c_str(), x.dist, tour_text(full).c_str());
     }
     fclose(f);
     for (int i = 0; i < (int)found.size() && i < O.topOut; i++) {
       char fn[64]; snprintf(fn, sizeof fn, "/prefix_%03d.txt", i + 1);
       FILE* g = fopen((O.outDir + fn).c_str(), "w"); if (!g) continue;
       vector<Mv> full = prefix; full.insert(full.end(), found[i].seq.begin(), found[i].seq.end());
-      fprintf(g, "%.0f\n%s\n", found[i].score, tour_text(full).c_str()); fclose(g);
+      fprintf(g, "%.0f\n%s\n", found_key(found[i]), tour_text(full).c_str()); fclose(g);
     }
   };
+
 
   double lastWrite = 0;
   for (int depth = 1; depth <= O.maxDepth && !STOP && !cur.empty(); depth++) {
@@ -626,6 +629,37 @@ static int run_search() {
     if (elapsed() - lastWrite > 10) { write_out(); lastWrite = elapsed(); }
   }
   write_out();
+  // re-rank the best --rerank candidates with dbeam (an exact legal dance, so each one is also a finished tour)
+  long long bestT = 0; std::mutex bm;
+  auto offer = [&](const vector<Mv>& full, long long minutes, const char* how) {  // pool + best.txt
+    string txt = tour_text(full);
+    std::lock_guard<std::mutex> lk(bm);
+    if (minutes >= O.poolMin) { FILE* f = fopen((O.outDir + "/pool.txt").c_str(), "a"); if (f) { fprintf(f, "%lld\t%s\n", minutes, txt.c_str()); fclose(f); } }
+    if (minutes > bestT) {
+      bestT = minutes; FILE* f = fopen((O.outDir + "/best.txt").c_str(), "w");
+      if (f) { fprintf(f, "%lld\n%s\n", minutes, txt.c_str()); fclose(f); }
+      printf("  new best finished tour %lld minutes (%s) -> %s/best.txt\n", minutes, how, O.outDir.c_str()); fflush(stdout);
+    }
+  };
+  if (O.rerank > 0 && !found.empty() && DBEAM > 0) {
+    int nR = min<int>(O.rerank, (int)found.size());
+    auto r0 = std::chrono::steady_clock::now();
+    std::atomic<int> nextR{0}, doneR{0};
+    auto rw = [&]() {
+      while (!STOP) {
+        int i = nextR.fetch_add(1); if (i >= nR) break;
+        vector<Mv> full = prefix; full.insert(full.end(), found[i].seq.begin(), found[i].seq.end());
+        S s = replay(full, full.size()); vector<Mv> dance; double v = dance_beam(s, DBEAM, &dance);
+        found[i].db = v > 0 ? v : 0; found[i].dance = dance; doneR++;
+        if (v > 0) { full.insert(full.end(), dance.begin(), dance.end()); offer(full, (long long)v, "prefix + dbeam dance"); }
+      }
+    };
+    vector<std::thread> th; for (int t = 0; t < max(1, O.threads); t++) th.emplace_back(rw);
+    for (auto& x : th) x.join();
+    double rd = std::chrono::duration<double>(std::chrono::steady_clock::now() - r0).count();
+    printf("re-ranked %d candidates with dbeam(%d) in %.1fs\n", (int)doneR, DBEAM, rd);
+    write_out();
+  }
   printf("search done after %.1fs, %lld nodes generated, %zu dance-start prefixes -> %s/prefixes.txt (top %d as prefix_NNN.txt)\n", elapsed(), nodes,
          found.size(), O.outDir.c_str(), O.topOut);
   for (int i = 0; i < (int)found.size() && i < 10; i++) {
@@ -712,6 +746,7 @@ int main(int argc, char** argv) {
     else if (a == "--w-alt") O.wAlt = stod(nx()); else if (a == "--w-clu") O.wClu = stod(nx()); else if (a == "--w-vis") O.wVis = stod(nx()); else if (a == "--w-knight") O.wKnight = stod(nx());
     else if (a == "--w-t") O.wT = stod(nx()); else if (a == "--alt-cap") O.altCap = stod(nx()); else if (a == "--noise") O.noise = stod(nx());
     else if (a == "--expand-dance") O.expandDance = true; else if (a == "--dedup-novis") O.visKey = false; else if (a == "--trace") O.trace = nx(); else if (a == "--bucket-cap") O.bucketCap = stoi(nx());
+    else if (a == "--rerank") O.rerank = stoi(nx()); else if (a == "--write-max") O.writeMax = stoi(nx());
     else if (a == "--top-out") O.topOut = stoi(nx()); else if (a == "--max-per-target") O.maxPerTarget = stoi(nx()); else if (a == "--max-found") O.maxFound = stoi(nx());
     else if (a == "--finish-top") O.finishTop = stoi(nx()); else if (a == "--finish-level") O.finishLevel = stoi(nx()); else if (a == "--pool-min") O.poolMin = stod(nx());
     else if (a == "--finish-time") O.finishTime = stod(nx());
