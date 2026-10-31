@@ -292,7 +292,10 @@ static vector<Pending> PEND[2];
 static double P_LABEL = 0.05;
 static long long BEST_SCORE = -1; static vector<Mv> BEST_SEQ; static long long POOL_MIN = 7500;
 static std::set<long long> SEEN_SCORES; static vector<pair<long long, string>> FOUND;
-static vector<Sample> TREE_OUT;  // A* finished paths (labelled with node.best), drained by Python
+static vector<Sample> TREE_OUT;   // positions whose best rose because of a finished path (new training data)
+static vector<Sample> ELITE_OUT;  // every position of new best / pool tours (for the elite buffer)
+static long long A_RAISED = 0, A_DEADOUT = 0;
+static double DEAD_RATE = 1.0;  // share of dead ends (no legal move) emitted as label-0 samples
 static long long A_EXP = 0, A_CHILD = 0, A_FIN = 0, A_DEAD = 0, A_DUP = 0, A_STALE = 0, A_GC = 0, A_PRUNE = 0, A_MAXDEPTH = 0, A_DDCLEAR = 0;
 static std::mt19937_64 ARNG(12345);
 static vector<pair<uint32_t, float>> RESC;  // rescoring: (heap index, old fraw)
@@ -390,7 +393,7 @@ static void record_finish(uint32_t parentId, const S& ps, int delta, long long s
     uint32_t c = ids[j];
     if (c != 0) { apply_move(st, NODES[c].delta, NODES[c].q); d++; }
     Sample o; to_sample(st, d, 4, max(NODES[c].best, (float)score), o);
-    if (TREE_OUT.size() < 4000000) TREE_OUT.push_back(o);
+    if (ELITE_OUT.size() < 2000000) ELITE_OUT.push_back(o);
   }
   (void)ps;
 }
@@ -416,6 +419,7 @@ int km_set(const char* name, double v) {
   else if (n == "frac_label") FRAC_LABEL = v; else if (n == "anchor_pow") ANCHOR_POW = v;
   else if (n == "nice") NICE = (int)v; else if (n == "lq_cap") LQ_CAP = (size_t)v; else if (n == "out_cap") OUT_CAP = (size_t)v;
   else if (n == "novelty_w") NOVELTY_W = v; else if (n == "novelty_k1") NOV_K1 = max(1, (int)v); else if (n == "novelty_k2") NOV_K2 = max(1, (int)v);
+  else if (n == "dead_rate") DEAD_RATE = v;
   else if (n == "p_label") P_LABEL = v; else if (n == "pool_min") POOL_MIN = (long long)v; else if (n == "prune_keep") PRUNE_KEEP = v;
   else return 0;
   return 1;
@@ -498,7 +502,7 @@ int km_astar_init(const char* fn, int prefix_len, unsigned long long max_nodes, 
   PEND[0].clear(); PEND[1].clear(); RESC.clear();
   clear_counts(); A_LAZY = 0;
   dd_put(skey(ROOT), ROOT.T);
-  BEST_SCORE = -1; BEST_SEQ.clear(); SEEN_SCORES.clear(); FOUND.clear(); TREE_OUT.clear();
+  BEST_SCORE = -1; BEST_SEQ.clear(); SEEN_SCORES.clear(); FOUND.clear(); TREE_OUT.clear(); ELITE_OUT.clear(); A_RAISED = A_DEADOUT = 0;
   A_EXP = A_CHILD = A_FIN = A_DEAD = A_DUP = A_STALE = A_GC = A_PRUNE = A_MAXDEPTH = A_DDCLEAR = 0;
   return 0;
 }
@@ -524,7 +528,7 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
   struct Ch { uint32_t parent; uint16_t delta; uint8_t q; uint32_t a1, a2; uint64_t key; Sample smp; };
   struct Fin { uint32_t parent; int delta; long long score; };
   int nt = max(1, min(threads, (int)pop.size() / 8 + 1));
-  vector<vector<Ch>> lch(nt); vector<vector<Fin>> lfin(nt); vector<vector<LJob>> llab(nt);
+  vector<vector<Ch>> lch(nt); vector<vector<Fin>> lfin(nt); vector<vector<LJob>> llab(nt); vector<vector<Sample>> lraise(nt), ldeads(nt);
   vector<long long> ldead(nt, 0), lstale(nt, 0), lmaxd(nt, 0);
   vector<uint64_t> seeds(nt); for (auto& x : seeds) x = ARNG();
   auto work = [&](int t) {
@@ -537,17 +541,42 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
       uint32_t ca1 = (size_t)(NOV_K1 - 1) < chain.size() ? chain[NOV_K1 - 1] : 0;
       uint32_t ca2 = (size_t)(NOV_K2 - 1) < chain.size() ? chain[NOV_K2 - 1] : 0;
       if (id != 0 && dd_get(skey(s)) > s.T) { lstale[t]++; continue; }  // reached again with more minutes
+      NODES[id].flags |= 1;  // expanded (each id is popped at most once per batch)
       lmaxd[t] = max<long long>(lmaxd[t], depth);
       if (U(rng) < P_LABEL) llab[t].push_back({s, depth});
       pinned_moves(s, 3, true, mv);
+      long long scMax = -1;
       for (auto& [d, q] : mv) {
-        if (q == H8) { long long sc = s.T + (long long)d * (d ? group_n(s, s.pos) : 0); lfin[t].push_back({id, d, sc}); continue; }
+        if (q == H8) {
+          long long sc = s.T + (long long)d * (d ? group_n(s, s.pos) : 0); lfin[t].push_back({id, d, sc});
+          scMax = max(scMax, sc); continue;
+        }
         S c = s; apply_move(c, d, q);
         pinned_moves(c, 3, true, mv2);
-        if (mv2.empty()) { ldead[t]++; continue; }
+        if (mv2.empty()) {  // dead end: no legal move, so certainly no finish (label 0)
+          ldead[t]++;
+          if (DEAD_RATE >= 1.0 || U(rng) < DEAD_RATE) { Sample o; to_sample(c, depth + 1, 7, 0.f, o); ldeads[t].push_back(o); }
+          continue;
+        }
         Ch ch; ch.parent = id; ch.delta = (uint16_t)d; ch.q = (uint8_t)q; ch.a1 = ca1; ch.a2 = ca2; ch.key = skey(c);
         to_sample(c, depth + 1, 4, 0.f, ch.smp);
         lch[t].push_back(ch);
+      }
+      if (scMax >= 0 && NODES[id].best < (float)scMax) {
+        // this node finishes with scMax: it and every ancestor whose best is lower get scMax (the climb stops at
+        // the first ancestor already at least as good: everything above it is too). Emit each such position.
+        size_t r = 0;  // raised ancestors: chain[0..r) plus possibly the root
+        while (r < chain.size() && NODES[chain[r]].best < (float)scMax) r++;
+        bool rootRaised = r == chain.size() && NODES[0].best < (float)scMax;
+        Sample o; to_sample(s, depth, 4, (float)scMax, o); lraise[t].push_back(o);
+        if (r > 1 || rootRaised) {  // replay the path to get the raised ancestors' positions
+          size_t L = chain.size(); S st = ROOT; int dd = ROOT_DEPTH;
+          if (rootRaised) { to_sample(st, dd, 4, (float)scMax, o); lraise[t].push_back(o); }
+          for (size_t i = L; i-- > 1;) {  // chain[L-1] is the depth-1 node, chain[1] the parent
+            uint32_t c = chain[i]; apply_move(st, NODES[c].delta, NODES[c].q); dd++;
+            if (i < r) { to_sample(st, dd, 4, (float)scMax, o); lraise[t].push_back(o); }
+          }
+        }
       }
     }
   };
@@ -558,6 +587,11 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
   for (int t = 0; t < nt; t++) {
     A_DEAD += ldead[t]; A_STALE += lstale[t]; A_MAXDEPTH = max(A_MAXDEPTH, lmaxd[t]);
     for (auto& f : lfin[t]) { S dummy; record_finish(f.parent, dummy, f.delta, f.score); }
+    A_RAISED += (long long)lraise[t].size(); A_DEADOUT += (long long)ldeads[t].size();
+    if (TREE_OUT.size() < 8000000) {
+      TREE_OUT.insert(TREE_OUT.end(), lraise[t].begin(), lraise[t].end());
+      TREE_OUT.insert(TREE_OUT.end(), ldeads[t].begin(), ldeads[t].end());
+    }
     for (auto& c : lch[t]) {
       int32_t old = dd_get(c.key);
       if (old != INT32_MIN && old >= c.smp.T) { A_DUP++; continue; }
@@ -598,7 +632,7 @@ void km_astar_push(int slot, const float* f, long long n) {
 void km_astar_stats(double* o) {
   o[0] = A_EXP; o[1] = A_CHILD; o[2] = A_FIN; o[3] = A_DEAD; o[4] = A_DUP; o[5] = A_STALE; o[6] = A_GC; o[7] = A_PRUNE;
   o[8] = NNODE; o[9] = HEAP.size(); o[10] = BEST_SCORE; o[11] = A_MAXDEPTH; o[12] = DCOUNT; o[13] = A_DDCLEAR;
-  o[14] = HEAP.empty() ? 0 : HEAP.front().f; o[15] = A_LAZY;
+  o[14] = HEAP.empty() ? 0 : HEAP.front().f; o[15] = A_LAZY; o[16] = A_RAISED; o[17] = A_DEADOUT;
 }
 int km_astar_best(char* buf, int cap) {
   string t = BEST_SEQ.empty() ? "" : tour_text(BEST_SEQ);
@@ -610,10 +644,38 @@ long long km_astar_found(char* buf, long long cap) {
   if ((long long)s.size() + 1 > cap) return (long long)s.size() + 1;
   memcpy(buf, s.c_str(), s.size() + 1); FOUND.clear(); return (long long)s.size();
 }
+long long km_astar_elite_samples(Sample* out, long long cap) {
+  long long n = min<long long>(cap, (long long)ELITE_OUT.size());
+  memcpy(out, ELITE_OUT.data(), sizeof(Sample) * n);
+  ELITE_OUT.erase(ELITE_OUT.begin(), ELITE_OUT.begin() + n);
+  return n;
+}
 long long km_astar_tree_samples(Sample* out, long long cap) {
   long long n = min<long long>(cap, (long long)TREE_OUT.size());
   memcpy(out, TREE_OUT.data(), sizeof(Sample) * n);
   TREE_OUT.erase(TREE_OUT.begin(), TREE_OUT.begin() + n);
+  return n;
+}
+// all positions: up to k random expanded nodes with id < max_id (old enough for their subtree to have been
+// searched), labelled with the best finished score through them, or 0 if no finished path passes through them
+long long km_astar_sample_positions(Sample* out, long long k, long long max_id, int threads) {
+  max_id = min<long long>(max_id, (long long)NNODE);
+  if (max_id <= 1 || k <= 0) return 0;
+  int nt = max(1, threads);
+  vector<vector<Sample>> loc(nt);
+  vector<uint64_t> seeds(nt); for (auto& x : seeds) x = ARNG();
+  long long per = (k + nt - 1) / nt;
+  auto work = [&](int t) {
+    std::mt19937_64 rng(seeds[t]);
+    for (long long tries = 0; tries < per * 40 && (long long)loc[t].size() < per; tries++) {
+      uint32_t id = (uint32_t)(1 + rng() % (uint64_t)(max_id - 1));
+      if (!(NODES[id].flags & 1)) continue;
+      S s; int d = rebuild(id, s); Sample o; to_sample(s, d, 6, max(0.f, NODES[id].best), o); loc[t].push_back(o);
+    }
+  };
+  vector<std::thread> th; for (int t = 0; t < nt; t++) th.emplace_back(work, t); for (auto& x : th) x.join();
+  long long n = 0;
+  for (auto& v : loc) for (auto& o : v) { if (n >= k) break; out[n++] = o; }
   return n;
 }
 // harvest: up to k random tree nodes with a finished descendant, labelled with that best score

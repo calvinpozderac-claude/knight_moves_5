@@ -152,7 +152,15 @@ search runs. It found 8,002.
    Even a single path through a position sets its label. Every position of the known tours and of the
    search's tours of at least 7,500 minutes stays in an elite buffer, which supplies 5% of each batch.
    The search value is `p_finish^0.5 × (T + future)` (`--gamma`).
-3. **search** (CPU + GPU, `--hours`, default 8). Each position's priority f is the network's value plus
+3. **search** (CPU + GPU, `--hours`, default 8). During the search the only new training data comes from
+   the search itself; there are no rollouts:
+   - Every finished path raises each position on it to max(its best, the new score).
+   - Every expanded position is sampled 60 s after expansion. Its label is the best finished score through
+     it, or 0 if none so far. A later finish raises it through the best-future table.
+   - Every dead end (no legal move) gets label 0.
+   - Finishing positions carry 50% of the finish-loss weight in every batch (`--pos-share`). Generated
+     rollout data stays out of training (`--base-frac 0`). When a tree restarts, 2M of its positions are
+     sampled with their final labels first. Each position's priority f is the network's value plus
    random exploration noise (`--noise`, 60 minutes), minus a **novelty penalty**. That penalty is
    `--novelty-w` (10) minutes for each doubling of the expansions already made under the node's ancestors
    8 and 32 moves up, so crowded subtrees lose priority and the search spreads out. Further rules: The open list is a max-heap capped at 40M entries; when

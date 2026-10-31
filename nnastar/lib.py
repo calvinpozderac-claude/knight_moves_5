@@ -11,7 +11,7 @@ LIB_PATH = os.path.join(ROOT, 'build', 'libnnastar.so')
 SAMPLE_DTYPE = np.dtype([('alt', '<i2', (64,)), ('vis', 'u1', (64,)), ('pos', 'u1'), ('src', 'u1'),
                          ('depth', '<u2'), ('T', '<i4'), ('label', '<f4')])
 assert SAMPLE_DTYPE.itemsize == 204
-SRC_NAMES = ['seed-prefix', 'seed-path', 'astar-state', 'label-path', 'astar-tree', 'known-tour']
+SRC_NAMES = ['seed-prefix', 'seed-path', 'astar-state', 'label-path', 'astar-finished-path', 'known-tour', 'astar-position', 'astar-dead-end']
 
 _lib = None
 
@@ -40,7 +40,9 @@ def lib():
             'km_astar_best': (i, [C.c_char_p, i]),
             'km_astar_found': (i64, [C.c_char_p, i64]),
             'km_astar_tree_samples': (i64, [vp, i64]),
+            'km_astar_elite_samples': (i64, [vp, i64]),
             'km_astar_harvest': (i64, [vp, i64, i]),
+            'km_astar_sample_positions': (i64, [vp, i64, i64, i]),
             'km_astar_rescore_export': (i64, [i64, i, vp]),
             'km_astar_rescore_import': (d, [vp, i64]),
             'km_tour_minutes': (i64, [C.c_char_p]),
@@ -114,7 +116,7 @@ class Workers:
 
 class AStar:
     STAT_NAMES = ['expansions', 'children', 'finishes', 'dead', 'dup', 'stale', 'gc', 'prune', 'nodes', 'open', 'best',
-                  'maxdepth', 'dedup', 'dedup_clears', 'top_f', 'lazy']
+                  'maxdepth', 'dedup', 'dedup_clears', 'top_f', 'lazy', 'raised', 'dead_out']
 
     def __init__(self, prefix_file='', prefix_len=0, max_nodes=400_000_000, max_open=40_000_000, dedup_log2=27):
         r = lib().km_astar_init(prefix_file.encode(), prefix_len, max_nodes, max_open, dedup_log2)
@@ -129,7 +131,7 @@ class AStar:
         lib().km_astar_push(slot, ptr(f), len(f))
 
     def stats(self):
-        o = np.zeros(16)
+        o = np.zeros(24)
         lib().km_astar_stats(ptr(o))
         return dict(zip(self.STAT_NAMES, o.tolist()))
 
@@ -153,9 +155,19 @@ class AStar:
                 out.append((int(sc), t))
         return out
 
-    def tree_samples(self, cap=1 << 20):
+    def tree_samples(self, cap=1 << 22):
         out = np.zeros(cap, SAMPLE_DTYPE)
         n = lib().km_astar_tree_samples(ptr(out), cap)
+        return out[:n].copy()
+
+    def elite_samples(self, cap=1 << 21):
+        out = np.zeros(cap, SAMPLE_DTYPE)
+        n = lib().km_astar_elite_samples(ptr(out), cap)
+        return out[:n].copy()
+
+    def sample_positions(self, k, max_id, threads):
+        out = np.zeros(max(1, k), SAMPLE_DTYPE)
+        n = lib().km_astar_sample_positions(ptr(out), k, int(max_id), threads)
         return out[:n].copy()
 
     def harvest(self, k, tries):

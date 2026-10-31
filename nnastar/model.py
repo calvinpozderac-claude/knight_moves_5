@@ -149,9 +149,22 @@ def fut_loss(pred, target, tau=0.5, reduction='mean'):
     return l.mean() if reduction == 'mean' else l.sum()
 
 
-def loss_fn(fin_logit, fut, T, label, fut_w=1.0, tau=0.5):
+def class_weights(fin, pos_share):
+    """Per-sample weights giving finishing positions pos_share of the batch's weight (mean weight 1)."""
+    if pos_share is None or pos_share <= 0:
+        return torch.ones_like(fin)
+    n = fin.numel()
+    npos = fin.sum()
+    if npos <= 0 or npos >= n:
+        return torch.ones_like(fin)
+    fp = npos / n
+    return torch.where(fin > 0, pos_share / fp, (1.0 - pos_share) / (1.0 - fp))
+
+
+def loss_fn(fin_logit, fut, T, label, fut_w=1.0, tau=0.5, pos_share=0.5):
     fin = (label > 0).float()
-    l_fin = F.binary_cross_entropy_with_logits(fin_logit.float(), fin)
+    w = class_weights(fin, pos_share)
+    l_fin = (F.binary_cross_entropy_with_logits(fin_logit.float(), fin, reduction='none') * w).mean()
     target = ((label - T.float()).clamp(min=0) / FUT_SCALE)
     m = fin > 0
     if m.any():

@@ -88,7 +88,7 @@ def setup_engine(a, log):
         raise SystemExit('no seed tours loaded: pass --tours FILE[:weight] ...')
     for name in ['p_level0', 'p_level1', 'p_level2', 'p_level3', 'probes', 'probe_states', 'prefix_rate', 'label_path_rate',
                  'label_level', 'label_level_shallow', 'shallow_depth', 'nice', 'anchor_pow', 'p_label', 'pool_min', 'frac_label',
-                 'novelty_w', 'novelty_k1', 'novelty_k2']:
+                 'novelty_w', 'novelty_k1', 'novelty_k2', 'dead_rate']:
         K.set_param(name, getattr(a, name))
 
 
@@ -261,9 +261,10 @@ def maybe_compile(model, on, log):
 
 
 class Trainer:
-    def __init__(self, model, lr, wd, batch, fut_w, fwd=None, tau=0.5):
+    def __init__(self, model, lr, wd, batch, fut_w, fwd=None, tau=0.5, pos_share=0.5):
         self.model = model
         self.tau = tau
+        self.pos_share = pos_share
         self.fwd = model if fwd is None else fwd
         self.opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
         self.batch, self.fut_w = batch, fut_w
@@ -282,7 +283,7 @@ class Trainer:
         with torch.autocast('cuda', dtype=torch.bfloat16):
             x = featurize(d['alt'], d['vis'], d['pos'], d['T']).to(memory_format=torch.channels_last)
             fl, fu = self.fwd(x)
-            loss, lf, lu = loss_fn(fl, fu, d['T'], d['label'], self.fut_w, self.tau)
+            loss, lf, lu = loss_fn(fl, fu, d['T'], d['label'], self.fut_w, self.tau, self.pos_share)
         self.opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0)
@@ -337,7 +338,9 @@ def val_metrics(model, val_rec):
     lab, T = d['label'].float(), d['T'].float()
     fin = lab > 0
     acc = ((p > 0.5) == fin).float().mean().item()
-    out = {'acc': acc, 'fin': fin.float().mean().item()}
+    tpr = (p[fin] > 0.5).float().mean().item() if fin.any() else float('nan')
+    tnr = (p[~fin] <= 0.5).float().mean().item() if (~fin).any() else float('nan')
+    out = {'acc': acc, 'fin': fin.float().mean().item(), 'tpr': tpr, 'tnr': tnr}
     if fin.sum() > 10:
         tgt = (lab - T).clamp(min=0)[fin]
         pr = fut.clamp(min=0)[fin]
@@ -349,11 +352,11 @@ def val_metrics(model, val_rec):
 
 
 @torch.inference_mode()
-def val_loss(model, rec, fut_w, chunk=16384, tau=0.5):
+def val_loss(model, rec, fut_w, chunk=16384, tau=0.5, pos_share=0.5):
     """Same loss as training (BCE + fut_w * smooth L1 on finishable positions), over the whole set."""
     import torch.nn.functional as F
     model.eval()
-    s_fin = s_fut = 0.0
+    s_fin = s_fut = s_pos = s_neg = 0.0
     n = nf = 0
     for i in range(0, len(rec), chunk):
         d = unpack(rec[i:i + chunk])
@@ -361,20 +364,27 @@ def val_loss(model, rec, fut_w, chunk=16384, tau=0.5):
             x = featurize(d['alt'], d['vis'], d['pos'], d['T']).to(memory_format=torch.channels_last)
             fl, fu = model(x)
         fin = (d['label'] > 0).float()
-        s_fin += F.binary_cross_entropy_with_logits(fl.float(), fin, reduction='sum').item()
+        bce = F.binary_cross_entropy_with_logits(fl.float(), fin, reduction='none')
+        s_fin += bce.sum().item()
+        s_pos += (bce * fin).sum().item()
+        s_neg += (bce * (1 - fin)).sum().item()
         m = fin > 0
         tgt = ((d['label'] - d['T'].float()).clamp(min=0) / 1000.0)[m]
         s_fut += fut_loss(fu.float()[m], tgt, tau, reduction='sum').item()
         n += len(fin)
         nf += int(m.sum().item())
-    lf, lu = s_fin / max(1, n), s_fut / max(1, nf)
+    if pos_share and 0 < nf < n:  # the training weighting: finishing positions carry pos_share of the weight
+        lf = pos_share * s_pos / nf + (1 - pos_share) * s_neg / (n - nf)
+    else:
+        lf = s_fin / max(1, n)
+    lu = s_fut / max(1, nf)
     return lf + fut_w * lu, lf, lu
 
 
 def fmt_metrics(m):
     if not m:
         return '-'
-    s = f"acc {m['acc']:.3f}"
+    s = f"finish: {m['fin']:.0%} of set, recall {m['tpr']:.3f} / dead {m['tnr']:.3f}"
     if 'mae' in m:
         s += f" mae {m['mae']:.0f} bias {m['bias']:+.0f} corr {m['corr']:.3f}"
     return s
@@ -390,7 +400,7 @@ def cmd_train(a):
     minutes = a.tune_minutes if tune else a.train_minutes
     log(f'== {"fine-tune" if tune else "train"}: up to {minutes} min, batch {a.batch}, lr {lr0}, future-minutes quantile '
         f'{a.fut_quantile}, early stopping after {a.patience} evaluations without a better validation loss; '
-        f'{a.train_gen_threads} threads keep generating fresh data meanwhile')
+        f'{a.train_gen_threads if a.train_gen_threads is not None else (0 if tune else 24)} threads generate fresh data meanwhile')
     ensure_label_table(a)
     base, tours_rb, val = load_base(a, log, dev, merge_labels=True, search_samples=a.tune_search_samples if tune else 0)
     val_rec = torch.from_numpy(val.view(np.uint8).reshape(-1, REC)).to(dev)
@@ -401,13 +411,14 @@ def cmd_train(a):
     else:
         model = make_model(a.channels, a.blocks, dev)
     log(f'network: {model.cfg["channels"]} channels x {model.cfg["blocks"]} blocks, {n_params(model) / 1e6:.2f}M parameters')
-    tr = Trainer(model, lr0, a.wd, a.batch, a.fut_w, tau=a.fut_quantile)  # eager: compiled training gave NaN gradients here
+    tr = Trainer(model, lr0, a.wd, a.batch, a.fut_w, tau=a.fut_quantile, pos_share=a.pos_share)  # eager: compiled training gave NaN gradients
     w = sw = None
-    if a.train_gen_threads > 0:  # the CPU is otherwise idle: keep making fresh paths (less overfitting)
+    gen_threads = a.train_gen_threads if a.train_gen_threads is not None else (0 if tune else 24)
+    if gen_threads > 0:  # the CPU is otherwise idle: keep making fresh paths (less overfitting)
         setup_engine(a, log)
         K.set_param('frac_label', 0.0)
         sw = ShardWriter(os.path.join(a.run, 'data'), 'gen')
-        w = K.Workers(a.train_gen_threads, a.seed + 7)
+        w = K.Workers(gen_threads, a.seed + 7)
     t0 = time.time()
     total = minutes * 60
     last = last_drain = t0
@@ -431,7 +442,7 @@ def cmd_train(a):
                 last_drain = time.time()
             if time.time() - last >= a.eval_seconds:
                 l, lf, lu = tr.pop_losses()
-                vl, vf, vu = val_loss(model, val_rec, a.fut_w, tau=a.fut_quantile)
+                vl, vf, vu = val_loss(model, val_rec, a.fut_w, tau=a.fut_quantile, pos_share=a.pos_share)
                 better = vl < best[0] - 1e-4
                 if better:
                     best = (vl, tr.steps, copy.deepcopy(model.state_dict()))
@@ -455,7 +466,7 @@ def cmd_train(a):
             sw.flush()
     if best[2] is not None:
         model.load_state_dict(best[2])
-    vl, vf, vu = val_loss(model, val_rec, a.fut_w, tau=a.fut_quantile)
+    vl, vf, vu = val_loss(model, val_rec, a.fut_w, tau=a.fut_quantile, pos_share=a.pos_share)
     save_model(mp, model, tr.opt)
     save_model(os.path.join(a.run, 'model_init.pt'), model)
     log(f'train done: {tr.steps} steps in {(time.time() - t0) / 60:.1f} min ({"early stop" if stopped_early else "time limit"}); '
@@ -480,8 +491,9 @@ def cmd_search(a):
     torch.backends.cudnn.benchmark = True
     torch.set_num_threads(2)
     rec_best = record_minutes()
-    log(f'== search: {a.hours} h; batch {a.pop_batch} pops, {a.workers} worker threads, {a.expand_threads} expand threads; '
-        f'record to beat {rec_best}; exploration: quantile {a.fut_quantile}, gamma {a.gamma}, noise {a.noise}, '
+    log(f'== search: {a.hours} h; batch {a.pop_batch} pops, {a.expand_threads} expand threads; training data only from the search '
+        f'(finished paths, expanded positions, dead ends){f" + {a.workers} worker threads" if a.workers > 0 else ""}'
+        f'{f" + {a.base_frac:.0%} generated data" if a.base_frac > 0 else ""}; record to beat {rec_best}; exploration: quantile {a.fut_quantile}, gamma {a.gamma}, noise {a.noise}, '
         f'novelty {a.novelty_w} per doubling (subtrees {a.novelty_k1} and {a.novelty_k2} moves up)')
     setup_engine(a, log)
     ensure_label_table(a)
@@ -491,7 +503,7 @@ def cmd_search(a):
     train_model, ck = load_model(mp, dev)
     eval_model = copy.deepcopy(train_model).eval()
     eval_fwd = maybe_compile(eval_model, a.compile, log)
-    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w, tau=a.fut_quantile)  # eager (compiled training gave NaN gradients)
+    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w, tau=a.fut_quantile, pos_share=a.pos_share)  # eager (compiled training gave NaN gradients)
     if 'opt' in ck:
         try:
             tr.opt.load_state_dict(ck['opt'])
@@ -506,6 +518,7 @@ def cmd_search(a):
     fval = Replay(200_000, dev)
     data = os.path.join(a.run, 'data')
     old = load_shards(os.path.join(data, 'search_*.npy'), a.fresh_cap // 2)
+    old = old[np.isin(old['src'], [4, 6, 7])]  # A* data only (finished paths, expanded positions, dead ends)
     if len(old):
         fresh.add(old)
         log(f'fresh replay: {len(old) / 1e6:.2f}M samples from earlier searches')
@@ -515,7 +528,7 @@ def cmd_search(a):
     if prefix_file and not os.path.isabs(prefix_file):
         prefix_file = os.path.join(ROOT, prefix_file)
     astar = K.AStar(prefix_file, a.anchor_len if prefix_file else 0, a.max_nodes, a.max_open, a.dedup_log2)
-    workers = K.Workers(a.workers, a.seed + 1)
+    workers = K.Workers(a.workers, a.seed + 1) if a.workers > 0 else None
     cap = 24 * a.pop_batch + 64
     bufs = [torch.empty((cap, REC), dtype=torch.uint8).pin_memory() for _ in range(2)]
     ex = ThreadPoolExecutor(1)
@@ -527,6 +540,7 @@ def cmd_search(a):
     t_inf = t_train = 0.0
     last_rep = last_sync = last_drain = t0
     prev_ws, prev_as = {}, {}
+    prev_samp = [0, 0]
     slot = 0
     n_cur = astar.expand(slot, a.pop_batch, a.expand_threads, bufs[slot].numpy())
     restarts = 0
@@ -534,12 +548,42 @@ def cmd_search(a):
     pending = None
     tour_file = os.path.join(a.run, 'found_tmp.txt')
 
+    node_hist, drain_t, sampled = [], [time.time()], [0, 0]
+
+    def final_sample():
+        """Before a tree is discarded: a large sample of its positions with their final labels."""
+        pos = astar.sample_positions(a.restart_sample, 1 << 40, a.expand_threads)
+        if len(pos):
+            _, pos = K.label_merge(pos)
+            sw.add(pos)
+            fresh.add(pos)
+        return len(pos), int((pos['label'] > 0).sum()) if len(pos) else 0
+
     def drain_data():
-        tree = astar.tree_samples()  # positions of the search's new best / pool tours, labelled with their max
-        if len(tree):
-            _, tree = K.label_merge(tree)
-            tours_rb.add(tree)
-        d = [workers.drain(), tree]
+        # elite: every position of the search's new best / pool tours
+        elite = astar.elite_samples()
+        if len(elite):
+            _, elite = K.label_merge(elite)
+            tours_rb.add(elite)
+        # new data: every position whose best rose because a finished path went through it, labelled with
+        # max(its previous best, the new score); label_merge also applies the best-future table's maximum
+        d = [astar.tree_samples()]  # + dead ends (label 0)
+        # all positions, good and bad: random expanded positions at least --sample-age seconds old, labelled with
+        # the best finished score through them (0 if none so far; a later finish raises them via the table)
+        now_ = time.time()
+        node_hist.append((now_, astar.stats()['nodes']))
+        old_ids = [n for t_, n in node_hist if t_ <= now_ - a.sample_age]
+        while len(node_hist) > 2 and node_hist[1][0] <= now_ - a.sample_age:
+            node_hist.pop(0)
+        k = int(a.sample_rate * (now_ - drain_t[0]))
+        drain_t[0] = now_
+        if old_ids and k > 0:
+            pos = astar.sample_positions(k, old_ids[-1], a.expand_threads)
+            sampled[0] += len(pos)
+            sampled[1] += int((pos['label'] > 0).sum())
+            d.append(pos)
+        if workers is not None:
+            d.append(workers.drain())
         if a.harvest > 0:
             d.append(astar.harvest(a.harvest, a.harvest * 20))
         d = np.concatenate(d)
@@ -610,7 +654,11 @@ def cmd_search(a):
             # restart the tree when it has stopped improving (the network keeps what it learned)
             if (a.restart_stale_minutes > 0 and time.time() - max(last_improve, last_restart) > a.restart_stale_minutes * 60):
                 restarts += 1
-                log(f'no new best for {a.restart_stale_minutes:.0f} min: restarting the search tree (restart {restarts})')
+                drain_data()
+                nfs, npos = final_sample()
+                log(f'no new best for {a.restart_stale_minutes:.0f} min: restarting the search tree (restart {restarts}); '
+                    f'final sample of the old tree: {nfs} positions, {npos / max(1, nfs):.0%} with a finished path')
+                node_hist.clear()
                 astar = K.AStar(prefix_file, a.anchor_len if prefix_file else 0, a.max_nodes, a.max_open, a.dedup_log2)
                 last_restart = time.time()
                 slot = 0
@@ -627,8 +675,14 @@ def cmd_search(a):
                 tt = time.time()
                 target = a.train_frac / (1 - a.train_frac) * t_inf
                 while t_train + (time.time() - tt) < target and not STOP:
-                    nf = int(a.batch * a.fresh_frac)
-                    rec = torch.cat([fresh.sample(nf), sample_base(base, tours_rb, a.batch - nf, a.tour_frac)])
+                    nb = int(round(a.batch * a.base_frac))
+                    ne = int(round(a.batch * a.tour_frac)) if tours_rb.n else 0
+                    parts = [fresh.sample(a.batch - nb - ne)]  # search data
+                    if ne:
+                        parts.append(tours_rb.sample(ne))  # elite: best tours
+                    if nb:
+                        parts.append(base.sample(nb))  # generated (rollout) data: off by default
+                    rec = torch.cat(parts)
                     tr.step(rec)
                     if time.time() - tt > 2.0:
                         break
@@ -640,7 +694,7 @@ def cmd_search(a):
                 if not all(torch.isfinite(p).all() for p in train_model.parameters()):
                     log('WARNING: training produced non-finite weights; reverting to the search network')
                     train_model.load_state_dict(eval_model.state_dict())
-                    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w, tau=a.fut_quantile)
+                    tr = Trainer(train_model, a.lr_online, a.wd, a.batch, a.fut_w, tau=a.fut_quantile, pos_share=a.pos_share)
                     last_sync = time.time()
                     continue
                 eval_model.load_state_dict(train_model.state_dict())
@@ -658,7 +712,8 @@ def cmd_search(a):
 
             if now - last_rep >= a.report_seconds:
                 dt = now - last_rep
-                st, ws = astar.stats(), workers.stats()
+                st = astar.stats()
+                ws = workers.stats() if workers is not None else {}
                 l, lf, lu = tr.pop_losses()
                 de = st['expansions'] - prev_as.get('expansions', 0)
                 log(f"A* {de / dt / 1e3:.1f}k exp/s | since best {(now - last_improve) / 60:.0f} min | open {st['open'] / 1e6:.2f}M nodes {st['nodes'] / 1e6:.1f}M "
@@ -666,7 +721,13 @@ def cmd_search(a):
                     f"dead {st['dead']:.0f} dup {st['dup']:.0f} stale {st['stale']:.0f} gc {st['gc']:.0f} prune {st['prune']:.0f} "
                     f"requeued {st['lazy']:.0f}")
                 lt = K.label_stats()
-                log(f"   workers: {worker_line(ws, prev_ws, dt)} | label queue {ws['label_queue']:.0f} | best-future table "
+                dr = st['raised'] - prev_as.get('raised', 0)
+                dd_ = st['dead_out'] - prev_as.get('dead_out', 0)
+                wl = f"workers: {worker_line(ws, prev_ws, dt)} | " if workers is not None else ''
+                sp = (sampled[0] - prev_samp[0], sampled[1] - prev_samp[1])
+                prev_samp[:] = sampled
+                log(f"   new data: {dr / dt / 1e3:.1f}k/s positions raised by finished paths, {sp[0] / dt / 1e3:.1f}k/s sampled "
+                    f"expanded positions ({sp[1] / max(1, sp[0]):.0%} with a finished path), {dd_ / dt / 1e3:.1f}k/s dead ends | {wl}best-future table "
                     f"{lt['entries'] / 1e6:.1f}M positions ({lt['entries'] / lt['slots']:.0%} full, {lt['clears']:.0f} clears) | "
                     f"elite {tours_rb.n}")
                 log(f"   train: {tr.steps} steps, loss {l:.4f} (fin {lf:.4f} fut {lu:.4f}), GPU {t_train / max(1e-9, t_train + t_inf):.0%} "
@@ -677,7 +738,8 @@ def cmd_search(a):
         STOP = True
         if pending is not None:
             pending.result()
-        workers.stop()
+        if workers is not None:
+            workers.stop()
         try:
             drain_data()
         except Exception:
@@ -724,7 +786,8 @@ def main():
     g.add_argument('--patience', type=int, default=8, help='evaluations without a better validation loss before stopping')
     g.add_argument('--eval-seconds', type=float, default=60)
     g.add_argument('--val-samples', type=int, default=150_000, help='size of the held-out validation set (whole paths)')
-    g.add_argument('--train-gen-threads', type=int, default=24, help='threads generating fresh data while training (0: off)')
+    g.add_argument('--train-gen-threads', type=int, default=None,
+                   help='threads generating fresh data while training (default 24 for train/all, 0 for tune)')
     g.add_argument('--batch', type=int, default=2048)
     g.add_argument('--lr', type=float, default=2e-3)
     g.add_argument('--lr-online', type=float, default=3e-4)
@@ -732,6 +795,8 @@ def main():
     g.add_argument('--fut-w', type=float, default=1.0, help='weight of the future-minutes loss')
     g.add_argument('--fut-quantile', type=float, default=0.5,
                    help='asymmetry of the future-minutes loss; 0.5 fits the labels (which are already maxima) exactly')
+    g.add_argument('--pos-share', type=float, default=0.5,
+                   help='share of each batch\'s finish-loss weight carried by finishing positions (0: unweighted)')
     g.add_argument('--lr-tune', type=float, default=5e-4, help='learning rate for tune')
     g.add_argument('--tune-minutes', type=float, default=20, help='fine-tuning budget for tune (early stopping applies)')
     g.add_argument('--tune-search-samples', type=int, default=6_000_000, help='search samples added to the data for tune')
@@ -743,7 +808,8 @@ def main():
     g.add_argument('--resume-model', action='store_true', help='train: continue from the run folder model.pt')
     g = p.add_argument_group('search')
     g.add_argument('--hours', type=float, default=8)
-    g.add_argument('--workers', type=int, default=22, help='labelling / generation threads during the search')
+    g.add_argument('--workers', type=int, default=0,
+                   help='extra labelling / generation threads during the search (default 0: new data only from finished search paths)')
     g.add_argument('--expand-threads', type=int, default=8)
     g.add_argument('--pop-batch', type=int, default=4096, help='nodes expanded per network batch')
     g.add_argument('--max-nodes', type=int, default=400_000_000, help='search tree size (12 bytes per node)')
@@ -759,15 +825,19 @@ def main():
     g.add_argument('--depth-bonus', type=float, default=0.0, help='minutes added to f per move from a1 (>0 dives deeper)')
     g.add_argument('--anchor-tour', default='', help='start the search after the first --anchor-len moves of this tour')
     g.add_argument('--anchor-len', type=int, default=0)
-    g.add_argument('--p-label', type=float, default=0.05, help='share of expanded positions sent to the labelling workers')
+    g.add_argument('--p-label', type=float, default=0.0, help='share of expanded positions sent to the labelling workers')
     g.add_argument('--frac-label', type=float, default=0.75, help='share of worker jobs spent labelling search positions')
     g.add_argument('--label-level', type=int, default=1, help='NRPA level for labelling search positions')
     g.add_argument('--label-level-shallow', type=int, default=2, help='... for positions before --shallow-depth')
     g.add_argument('--shallow-depth', type=int, default=36)
     g.add_argument('--label-path-rate', type=float, default=0.25, help='share of a labelling path\'s positions also emitted')
-    g.add_argument('--harvest', type=int, default=512, help='search-tree positions with a finished descendant sampled per drain')
+    g.add_argument('--harvest', type=int, default=0, help='search-tree positions with a finished descendant sampled per drain')
     g.add_argument('--train-frac', type=float, default=0.3, help='share of GPU time spent training during the search')
-    g.add_argument('--fresh-frac', type=float, default=0.7, help='share of each training batch from search data')
+    g.add_argument('--base-frac', type=float, default=0.0, help='share of each training batch from the generated (rollout) data')
+    g.add_argument('--sample-rate', type=float, default=10000, help='expanded positions sampled per second as training data')
+    g.add_argument('--sample-age', type=float, default=60, help='only positions expanded at least this many seconds ago are sampled')
+    g.add_argument('--restart-sample', type=int, default=2_000_000, help='positions sampled from a tree before it is discarded')
+    g.add_argument('--dead-rate', type=float, default=1.0, help='share of dead ends (no legal move) used as label-0 samples')
     g.add_argument('--fresh-cap', type=int, default=8_000_000)
     g.add_argument('--keep-search-shards', type=int, default=20, help='search-data shards kept on disk (1M samples, 204 MB each)')
     g.add_argument('--min-fresh', type=int, default=50_000)
