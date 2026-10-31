@@ -1,3 +1,4 @@
 DONE k=148 0.0s nodes=234 tthits=30 EXACT suffix optimum from k: 8130 (prefix T=7667) [sound: exhaustive]
 DONE k=144 0.0s nodes=21222 tthits=4210 EXACT suffix optimum from k: 8130 (prefix T=7379) [sound: exhaustive]
 DONE k=142 0.2s nodes=55388 tthits=11029 EXACT suffix optimum from k: 8130 (prefix T=7227) [sound: exhaustive]
+DONE k=140 0.7s nodes=299256 tthits=47277 EXACT suffix optimum from k: 8130 (prefix T=7075) [sound: exhaustive]
