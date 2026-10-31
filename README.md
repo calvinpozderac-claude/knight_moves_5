@@ -23,7 +23,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_7911.txt` | **7,911** | NRPA level 4 re-searching everything after move 35 of the 7,512 tour, from fresh weights: 68 minutes on 1 thread |
+| `data/tours/record_8002.txt` | **8,002** | NN-guided A* (`nnastar/`, see below) from a1: found about 4 minutes into the first (smoke-test) search, after 1.5 minutes of data generation and 2 minutes of training |
+| `data/tours/record_7911.txt` | 7,911 | NRPA level 4 re-searching everything after move 35 of the 7,512 tour, from fresh weights: 68 minutes on 1 thread |
 | `data/tours/record_7200.txt` | 7,200 | NRPA (`build/nrpa`), warm-started from the 7,066 tour: 6 minutes on 2 threads |
 | `data/tours/record_7066.txt` | 7,066 | AlphaZero self-play seeded from the 6,303 tour, alternated with beam search guided by its network, over three rounds |
 | `data/tours/tour_6303.txt` | 6,303 | Beam search (`experiments/py/beam*.py`) |
@@ -33,7 +34,11 @@ Between 7,200 and 7,911 (all NRPA, see below): re-searching the end of the 7,200
 re-searching its opening gave 7,512; fresh level-3 searches after move 34–41 gave 7,729; one fresh
 level-4 search after move 35 gave 7,911.
 
-**Where the record stands.** The 7,911 tour's dance uses every sit its opening leaves available: 79 sits
+**8,002.** The NN-guided A* search kept the 7,911 tour's first 34 moves (the climb) but reached the dance
+with 4 zero-wait repositioning hops (b6, d5, f4, h5) instead of 8 (c5, b7, d6, f6, d6, f6, h7, h5). That
+saved visits, which became extra sits: a better merge, as predicted below.
+
+**Where the record stood at 7,911.** The 7,911 tour's dance uses every sit its opening leaves available: 79 sits
 from move 49, which is also the bound you get by giving each pair of opposite points the remaining visits
 of one member and alternating the two groups. So more minutes need a different opening or merge, not a
 better dance. Eight fresh level-4 searches (about an hour each on one core) gave 7,911, 7,882, 7,818,
@@ -51,7 +56,8 @@ Check them all exactly (fractions, every rule) with `python3 tools/verify_tours.
 ```
 src/eng.h, src/az.cpp      game engine and tree search (self-play, eval, beam, improve)
 src/opening_search.cpp     finds varied openings that can still finish
-src/nrpa.cpp               Nested Rollout Policy Adaptation search (best for pushing the record)
+src/nrpa.cpp               Nested Rollout Policy Adaptation search
+src/nnastar.cpp, nnastar/  NN-guided A* search: data generation, value network, search (found 8,002)
 tools/dance_cpsat.py       experimental exact (CP-SAT) planner for the dance phase; not competitive yet
 tools/reroute_zero_wait.py keeps a tour's sitting moves but re-routes its zero-wait stretches to free visits
 train/az_train.py          training loop (NumPy; or PyTorch with --backend torch)
@@ -121,7 +127,69 @@ pip install torch          # on Linux this is a CUDA 13 build, which supports RT
 python3 tools/parity_check.py
 ```
 
-## Searching for longer tours with NRPA (recommended for the record)
+## NN-guided A* search (`nnastar/`)
+
+A best-first (A*) search from a1, ordered by a value network's prediction of the best final score
+reachable from each position. The network keeps learning from the positions the search visits while the
+search runs. It found 8,002.
+
+**Pipeline** (one command; every phase can also run on its own):
+1. **gen** (CPU, about 25 minutes). Worker threads take a known tour, cut it at a random move and finish it
+   with an NRPA search of random strength: one random rollout (20%), 100 rollouts (40%), 10,000 (39%) or
+   1,000,000 (1%). Each position on the path is labelled with the best final score known to be reachable
+   from it: the most of the path's own score (if it finishes), the seed tour's score (for the kept prefix),
+   and a few random probe rollouts from positions along the path. A label of 0 means no finish was found.
+   About 60% of the generated paths finish; the cut-off seed tours count too, so about 75% of labelled
+   positions can finish.
+2. **train** (GPU, about 25 minutes). A ResNet (128 channels × 12 blocks, global-pooling layers, about 5M
+   parameters) reads 52 feature planes: altitudes relative to the knight (one-hot), group sizes, the
+   opposite point's altitude, visits, the knight, and global counts. It has two heads: whether a finish is
+   reachable, and the future minutes. The search value is `p_finish × (T + future)`.
+3. **search** (CPU + GPU, `--hours`, default 8). The open list is a max-heap capped at 40M entries; when
+   full, the worst are dropped. A node is 12 bytes (parent + move); its state is rebuilt by replaying the
+   path. Duplicate states are skipped unless they arrive with more minutes. Each round expands 4,096
+   nodes on 8 threads while the GPU scores the previous round's children. Meanwhile:
+   - 22 low-priority worker threads label positions the search expanded, using NRPA level 1 (level 2 before
+     move 36). They also keep finishing seed tours; new bests become seed tours too.
+   - The network trains on those labels for about 30% of the GPU time. Every 10 minutes the search adopts
+     the new weights and re-scores the best 2M open nodes.
+   - After 60 minutes without a new best, the tree restarts from scratch. The network keeps what it
+     learned.
+
+All finished tours of at least 7,500 minutes go to `pool.txt`. A new best is checked with the exact
+checker (`tools/check_tour.py`) before it goes to `best.txt`, and a new record also goes to
+`NEW_RECORD_<minutes>.txt`.
+
+```
+make build/libnnastar.so
+.venv/bin/python -m nnastar.run all                  # gen + train + search into runs/nnastar (about 9 hours)
+.venv/bin/python -m nnastar.run search --hours 12    # more search with the trained network (resumes its data)
+.venv/bin/python -m nnastar.run search --anchor-tour data/tours/record_8002.txt --anchor-len 35   # search after move 35
+tail -f runs/nnastar/log.txt
+```
+
+Ctrl-C stops any phase cleanly: it saves the network, the data shards and the best tour. The run folder
+holds `log.txt`, `model.pt`, `data/` (generated and search samples, 204 bytes each; reused by later
+runs), `best.txt` and `pool.txt`.
+
+**Resources** (defaults sized for a Ryzen 9 9950X + RTX 5070 Ti with 32 GB):
+- **CPU:** generation uses 28 threads; the search uses 22 worker threads and 8 expansion threads. Worker
+  threads run at nice 10, so the desktop stays responsive.
+- **GPU:** about 156k positions/s inference (`torch.compile`, bf16 trunk, fp32 head). Training runs eagerly,
+  because compiled training produced NaN gradients. The replay buffers stay on the GPU (about 5 GB).
+- **RAM:** at most about 8 GB for the search tree (`--max-nodes`, `--max-open`, `--dedup-log2`).
+
+**Useful knobs:**
+- `--depth-bonus M`: adds M minutes per move to f, so the search dives deeper.
+- `--gamma`: sets how much an uncertain finish is penalised.
+- `--train-frac`, `--sync-minutes`, `--rescore`: control online learning.
+- `--p-label`, `--label-level`: control how many positions get labels, and how strong those labels are.
+- `--restart-stale-minutes`: sets how long the tree runs without a new best before it restarts.
+- `--tours FILE[:weight] ...`: sets the seed tours.
+
+The full list is in `python -m nnastar.run -h`.
+
+## Searching for longer tours with NRPA
 
 AlphaZero is built for two-player games. It learns a reusable policy over millions of positions.
 This puzzle asks for one excellent sequence, in a one-player game with no chance. Nested Rollout
