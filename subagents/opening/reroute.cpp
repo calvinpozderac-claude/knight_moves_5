@@ -39,10 +39,10 @@ int main(int argc, char** argv) {
   S target = s; TPOS = s.pos;
   if (getenv("MODE1") || getenv("MODE3")) { MODE = 1; S u = s; for (int p = 0; p < 64; p++) { CAP[p] = 3; WSIT[p] = 0; }
     for (size_t i = M; i < tour.size(); i++) { if (tour[i].d > 0) WSIT[u.pos] = 1; CAP[tour[i].q]--; apply_move(u, tour[i].d, tour[i].q); } }
-  if (getenv("MODE3")) { for (int p = 0; p < 64; p++) CAP[p] = 3; }   // sitter-weighted cost, record dance not kept
   if (getenv("PERM")) { vector<pair<int,int>> o; const char* p = getenv("PERM"); for (; *p; p++) if (*p >= '0' && *p <= '9') o.push_back(sits[*p - '0']);
     for (size_t i = 0; i < o.size(); i++) sits[i] = o[i]; }
-  if (getenv("MODE2")) { MODE = 1; S u = start_state(); for (int p = 0; p < 64; p++) { CAP[p] = 3; WSIT[p] = 0; }
+  if (getenv("MODE3")) { for (int p = 0; p < 64; p++) CAP[p] = 3; }   // sitter-weighted cost, record dance not kept
+  if (getenv("MODE1") || getenv("MODE3")) {} else if (getenv("MODE2")) { MODE = 1; S u = start_state(); for (int p = 0; p < 64; p++) { CAP[p] = 3; WSIT[p] = 0; }
     for (size_t i = 0; i < tour.size(); i++) { if (tour[i].d > 0) WSIT[u.pos] = 1; apply_move(u, tour[i].d, tour[i].q); } WSIT[TPOS] = 0; }
   else for (int p = 0; p < 64; p++) CAP[p] = 3; fprintf(stderr, "M=%d target pos %s T=%d loss(record prefix)=%d, %zu sits\n", M, nm(target.pos).c_str(), target.T, loss(target), sits.size());
   vector<Part> beam = {{start_state(), {}, 0}};

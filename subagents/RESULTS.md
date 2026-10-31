@@ -10,3 +10,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 1 | fractional | in-group sink (wait 23 at a1, then level knight move to b3 in the same group) | 8,176 (passes checker; not strict) | valid only if in-group sinks count as "necessary"; the puzzle's own 4x4 example uses such sinks — needs a rules decision |
 | 1b | macro | macro-move NRPA/DFS/beam | 8,123 (rebuilt record) | last 17 macros of 8,123 exhaustively optimal in macro space; compression only 97->83 |
 | 1b | astar_cpu | CPU value-guided best-first (MLP, nnastar port) | 5,063 (smoke model, 45 s data) | full pipeline ~1h45 on 4 cores untested |
+| 1b | prior | learned move prior (GNRPA bias, MLP ranker) | 7,930 (4 s L3 smoke, anchor 60) | L2 equal-time: prior beats stock at anchors 35 & 60, holdout model (no records) equally good; L3/L4 A/B open |
