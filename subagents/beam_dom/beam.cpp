@@ -33,7 +33,7 @@ static const uint32_t NONE = 0xffffffffu;
 static int WIDTH = 10000, THREADS = 1, KMIN = 0, KMAX = -1, RESTARTS = 1, RECENTK = 6, TTLOG2 = 20, MAXDEPTH = 400;
 static int POOLPER = 20, LOGEVERY = 1;
 static double TIME = 0, NOISE0 = 0, NOISER = 20, WIDEN = 1, MAXWIDTH = 2e7, CAPR_FRAC = 0.05, CAPG_FRAC = 0.10;
-static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static bool ADJ = true;
+static int MERGE_LOOK = 6, MERGE_SKIP = 48; static bool NEEDH8 = true; static double WALK_W = 0; static bool ADJ = true;
 static double DANCE_W = 0.8, UNREACH_PEN = 300, CLIMB_W = 30, OUTSIDE_W = 0, RESEED = 0;
 static long long POOLMIN = 7500;
 static bool REPLAY = false, KEEPSEED = false, KEEPTT = false, RANDTIE = false;
@@ -135,6 +135,56 @@ static int ideal_dance(const S& s, int U, bool knightSits, int sink = 0) {
   }
   return fut;
 }
+// Greedy dance walk on the levels U (knight's group, upper) and U-2: the knight sits (4 x group size;
+// the opposite point leaves the groups), then jumps onto an orthogonal neighbour in the other group that
+// still has a visit (preferring points whose partner is already gone, then more visits left, then more
+// onward neighbours); with no such neighbour it hops (no wait) by a knight move inside its group. Unlike
+// ideal_dance it respects adjacency, so it is close to what a real dance can get. Returns the minutes up
+// to the last time the knight stood next to h8 (where the tour can end).
+static int walk_dance(const S& s, int U) {
+  int8_t grp[64]; int8_t vl[64]; int n[2] = {0, 0};
+  for (int i = 0; i < 64; i++) {
+    grp[i] = s.alt[i] == U ? 0 : s.alt[i] == U - 2 ? 1 : -1; if (grp[i] >= 0) n[grp[i]]++;
+    vl[i] = (grp[i] >= 0 && i != H8 && i != A1) ? (int8_t)max(0, 3 - (int)s.vis[i]) : 0;
+  }
+  if (grp[s.pos] != 0 || !n[1] || grp[H8] < 0) return 0;
+  static uint64_t H8NB = 0;
+  if (!H8NB) for (int k = 0; k < NBN[H8]; k++) H8NB |= 1ULL << NBQ[H8][k];
+  int p = s.pos, fut = 0, best = (H8NB >> p & 1) ? 0 : -1;
+  auto viable = [&](int q, int g) {  // q (in group g) can be sat on and left by an orthogonal jump
+    for (int k = 0; k < NBN[q]; k++) { int r = NBQ[q][k]; if (NBT[q][k] == 1 && grp[r] == (g ^ 1) && vl[r] > 0) return true; }
+    return false;
+  };
+  for (int step = 0; step < 400; step++) {
+    int g = grp[p]; if (g < 0) break;
+    // choose the orthogonal neighbour to jump to after sitting
+    int bq = -1, bs = -1;
+    for (int k = 0; k < NBN[p]; k++) {
+      int q = NBQ[p][k]; if (NBT[p][k] != 1 || grp[q] != (g ^ 1) || vl[q] <= 0) continue;
+      int onward = 0; for (int k2 = 0; k2 < NBN[q]; k2++) { int r = NBQ[q][k2]; if (NBT[q][k2] == 1 && r != p && grp[r] == g && vl[r] > 0) onward++; }
+      int sc = (grp[63 - q] < 0 ? 1000 : 0) + 100 * vl[q] + 10 * onward + (q == 63 - p ? -2000 : 0);
+      if (sc > bs) { bs = sc; bq = q; }
+    }
+    if (bq < 0) {  // hop: knight move inside the group to a point that can sit
+      int br = -1, brs = -1;
+      for (int k = 0; k < NBN[p]; k++) {
+        int r = NBQ[p][k]; if (NBT[p][k] != 0 || grp[r] != g || vl[r] <= 0 || !viable(r, g)) continue;
+        int sc = (grp[63 - r] < 0 ? 1000 : 0) + 100 * vl[r];
+        if (sc > brs) { brs = sc; br = r; }
+      }
+      if (br < 0) break;
+      vl[br]--; p = br; if (H8NB >> p & 1) best = max(best, fut); continue;
+    }
+    // sit at p: its partner leaves, then the group sinks 4 (the other group becomes the upper one)
+    int j = 63 - p; if (grp[j] >= 0) { n[grp[j]]--; grp[j] = -1; vl[j] = 0; }
+    fut += 4 * n[g];
+    if (H8NB >> p & 1) best = max(best, fut);
+    vl[bq]--; p = bq;
+    if (H8NB >> p & 1) best = max(best, fut);
+  }
+  return max(best, 0);
+}
+
 // Relaxed reachability: BFS from the knight over points with visits left, where u -> q is allowed if some
 // wait at u (sinking u's group only) makes the jump legal. Optimistic, but it sees h8 being walled in by
 // spent points, and maxAlt (the highest point reached) measures progress of the climb.
@@ -173,6 +223,10 @@ static double estimate(const S& s) {
       }
   }
   double e = DANCE_W * d;
+  if (WALK_W > 0) {  // blend in the adjacency-respecting greedy walk where the dance has formed
+    int w = walk_dance(s, a);
+    if (w > 0) e = (1 - WALK_W) * e + WALK_W * w;
+  }
   int maxAlt; bool h8r = relaxed_reach(s, maxAlt);
   if (!h8r) e -= UNREACH_PEN;
   if (CLIMB_W) e -= CLIMB_W * max(0, h - maxAlt - 2);
@@ -422,7 +476,7 @@ int main(int argc, char** argv) {
     else if (a == "--reseed-best") RESEED = stod(nx());
     else if (a == "--recent-k") RECENTK = stoi(nx()); else if (a == "--cap-recent") CAPR_FRAC = stod(nx()); else if (a == "--cap-group") CAPG_FRAC = stod(nx());
     else if (a == "--dance-w") DANCE_W = stod(nx()); else if (a == "--unreach-pen") UNREACH_PEN = stod(nx());
-    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-need-h8") NEEDH8 = false;
+    else if (a == "--climb-w") CLIMB_W = stod(nx()); else if (a == "--outside-w") OUTSIDE_W = stod(nx()); else if (a == "--merge-look") MERGE_LOOK = stoi(nx()); else if (a == "--merge-skip") MERGE_SKIP = stoi(nx()); else if (a == "--no-adj") ADJ = false; else if (a == "--no-need-h8") NEEDH8 = false; else if (a == "--walk-w") WALK_W = stod(nx());
     else if (a == "--tt-log2") TTLOG2 = stoi(nx()); else if (a == "--max-depth") MAXDEPTH = stoi(nx());
     else if (a == "--replay") REPLAY = true; else if (a == "--keep-seed") KEEPSEED = true; else if (a == "--keep-tt") KEEPTT = true;
     else if (a == "--out") outFile = nx(); else if (a == "--pool") poolFile = nx(); else if (a == "--pool-min") POOLMIN = stoll(nx());
@@ -446,7 +500,7 @@ int main(int argc, char** argv) {
       if (i > 0) apply_move(s, seed[i - 1].delta, seed[i - 1].q);
       if (i == seed.size() || seed[i].q == H8) { printf("%3zu T %5d (end)\n", i, s.T); break; }
       double e = estimate(s); int ma; bool h8r = relaxed_reach(s, ma);
-      printf("%3zu T %5d est %6.0f T+est %6.0f h8reach %d pos %s alt %d h8alt %d\n", i, s.T, e, s.T + e, h8r, nm(s.pos).c_str(), s.alt[s.pos], s.alt[H8]);
+      printf("%3zu T %5d walk %5d est %6.0f T+est %6.0f h8reach %d pos %s alt %d h8alt %d\n", i, s.T, walk_dance(s, s.alt[s.pos]), e, s.T + e, h8r, nm(s.pos).c_str(), s.alt[s.pos], s.alt[H8]);
     }
     return 0;
   }
