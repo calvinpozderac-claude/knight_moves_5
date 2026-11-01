@@ -1,6 +1,6 @@
 # lns: large-neighbourhood search / simulated annealing over whole tours
 
-**Result: 8,130 minutes, a new record (+7 over 8,123).** Verified with
+**Round 1 results: 8,130 (run1), then 8,211 (run3). Round 2: 8,241 (one free wait, which the checker accepts). See the Round 2 section below.** Verified with
 `python3 tools/check_tour.py "$(sed -n 2p subagents/lns/NEW_RECORD_8130.txt)"`, which prints
 `moves=156 ok=True T=8130 maxvisits=3 unnecessary=[]`. The same tour is in `best.txt`.
 The review also found 0 in-group ("free") sinks and no fractions, so it uses only standard pinned moves.
@@ -41,8 +41,8 @@ The review also found 0 in-group ("free") sinks and no fractions, so it uses onl
 | run1 | `lns_v1` | 8123, 8002, 7911 (start 8123), seed 7 | wall clock, 1500 s | **8,130** | 8126 at 250 s (op 2, i=41, D=5); 8127 at 367 s (op 2, i=32); 8130 at 575 s (op 1, i=41, D=3) |
 | run2 s11 | `lns_v2` | 8130 + 8123, 8002, 7911 + 12 elite 8130 variants, focus 1-60 p=0.7 | 55,000 iters (deterministic) | 8,130 | none |
 | run2 s12 | same | same | same | 8,130 | none |
-| run2 s13 | same | same | same | S13 | S13F |
-| run3 s21 | `lns_v2` | 12 variants of 8123 from `subagents/opening/tmp/full/r_0..11` + records, no 8130 | 55,000 iters | S21 | S21F |
+| run2 s13 | same | same | same | 8,130 | none |
+| run3 s21 | `lns_v2` | 12 variants of 8123 from `subagents/opening/tmp/full/r_0..11` + records, no 8130 | 55,000 iters | **8,211** | 8126 at it 7,913 (see Round 2 section) |
 | test | lns | 8123, 30-60 s | wall clock | 8,123 | none |
 
 Other results:

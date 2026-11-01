@@ -199,7 +199,8 @@ struct Search {
       if (q != H8) { if (s.vis[q] + res[q] > 3) break; res[q]--; }
       else if (e + 1 != (int)y.size()) break;
       if (q == H8) { long long T = s.T + (delta ? (long long)delta * group_n(s, p) : 0); record(T, {(uint8_t)H8, (int8_t)dz, 1}); break; }
-      apply_move(s, delta, q); path.push_back({(uint8_t)q, (int8_t)dz, 1, (uint8_t)p, (uint8_t)((s.alt[q] == s.alt[p] && dz == 0) ? delta : 0)});
+      bool sg = s.alt[q] == a && q != 63 - p;
+      apply_move(s, delta, q); path.push_back({(uint8_t)q, (int8_t)dz, 1, (uint8_t)p, (uint8_t)(sg ? delta : 0)});
       m = e + 1;
     }
     path.resize(base);
@@ -326,6 +327,11 @@ static void beam_tail(Search& SR, const S& s0, int W, double noise, int maxDepth
   SR.path.resize(base);
 }
 
+static void dbg_fail(const vector<M>& X) {
+  S z = start_state();
+  for (size_t k = 0; k < X.size(); k++) { S z2 = z; if (!stepM(z2, X[k])) { printf("  fail at %zu: %s->%s dz %d fd %d altdiff %d vis %d samegrp %d\n", k, nm(z.pos).c_str(), nm(X[k].q).c_str(), X[k].dz, X[k].fd, z.alt[X[k].q]-z.alt[z.pos], z.vis[X[k].q], z.alt[X[k].q]==z.alt[z.pos]); return; } z = z2; }
+  printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T);
+}
 struct Elite { long long T; vector<M> X; };
 
 int main(int argc, char** argv) {
@@ -528,7 +534,7 @@ int main(int argc, char** argv) {
     if (SR.bestT < 0) continue;
     long long dT = SR.bestT - cur.T;
     if (dT >= 0 || U() < exp(dT / temp)) {
-      if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
+      if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); dbg_fail(SR.best); continue; }
       acc++; stat_cnt[op]++;
       if (dT > 0) stat_gain[op] += dT;
       cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);

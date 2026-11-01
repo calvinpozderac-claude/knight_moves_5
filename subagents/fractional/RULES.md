@@ -1,5 +1,22 @@
 # Are "free waits" legal? The case for and against
 
+## RULING (user, round 2): free waits are legal
+The puzzle's only condition on waits: if a jump (t, P) has t > 0, there must be **some** t' such that
+replacing (t, P) with (t', P) makes that move or a later move illegal. Free waits that a later move needs
+are legal. The two scoreboards are merged; **8,264** (`NEW_RECORD_8264.txt`) is the overall record.
+
+What this means for the checker, under that ruling:
+- **Sound.** `necessity_check` only accepts a wait if one of its probes (t +/- 1/997, 0, t+1, 2t, all
+  other waits fixed) breaks the tour. A breaking probe is such a t', so an accepted tour is always legal.
+- **Possibly incomplete in theory.** It could flag a legal wait whose only breaking t' lies outside the
+  probe set. With other waits fixed, the working set of t' is a finite set of points plus intervals. If
+  neither +/- 1/997 breaks the tour, then t lies inside a working interval. A breaking t' must then be
+  past that interval's end, and 0, t+1 and 2t usually reach it, but not always. This can only reject
+  good tours; it never accepts bad ones.
+- **`fnrpa`'s `free_ok` filter is stricter still.** It only probes +e, so it only ever loses candidates.
+
+The analysis below, written before the ruling, is kept for the record.
+
 ## Definitions
 - **Pinned wait.** The jump that follows is legal only at this exact wait. Nudge the wait and that jump
   becomes illegal. Every move in `src/eng.h` is pinned, and so is every dance sit: the jump is legal at
