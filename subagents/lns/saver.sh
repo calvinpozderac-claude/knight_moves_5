@@ -2,7 +2,7 @@
 # watch candidate files; verify with the exact checker; keep best.txt / NEW_RECORD_<T>.txt up to date
 cd /home/user/knight_moves_5
 while true; do
-  for f in subagents/lns/tmp/run*_best.txt; do
+  for f in subagents/lns/tmp/run*_best.txt subagents/lns/tmp/r4*_best.txt subagents/lns/tmp/r5*_best.txt; do
     [ -f "$f" ] || continue
     T=$(head -1 "$f"); B=$(head -1 subagents/lns/best.txt)
     if [ "$T" -gt "$B" ]; then

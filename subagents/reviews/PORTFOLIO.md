@@ -219,3 +219,47 @@ All three strict-board results this round (8,130, 8,211 and the free-wait stacks
 | 25% | 1.0 | **New: lineage diversity.** Re-route the bottom climb (moves 1-14, 7-9 sitter visits) and alternative ladder orders, e.g. reviving opening/reroute or goal for one round. Feed the outputs to lns op 7 |
 | 15% | 0.6 | **fractional**: stack free sinks on 8,211 (5 seeds, equal-time strict control) + RULES.md |
 | 5% | 0.2 | polish/exact certification of each new best |
+
+---
+# Round 2 update 2 (rev_portfolio), 2026-11-01: rules settled, boards merged
+
+**Rule (from the user):** a wait (t, P) with t > 0 is legal iff some t' exists such that replacing it with (t', P), all other waits fixed, makes that move or a later move illegal. Any tour that `tools/check_tour.py` accepts counts.
+
+**Verified:**
+- `data/tours/record_8239.txt`: `ok=True T=8239 maxvisits=3 unnecessary=[]`, with one free wait (move 153, 72 min at f6 before the dz=0 hop to g8). **This is the overall record.**
+- `data/tours/record_8235.txt`: `ok=True T=8235 unnecessary=[]`, STRICT. **This is the strict record.**
+- Both have the same structure as 8,211: the same lineage, 84 dance sits and 32 sitters; the M profile matches 8,211 up to 2 counts at one sample (48 vs 46); 2 unused visits (b2, c2).
+
+## Is `necessity_check` sound under this rule? Yes
+- **How it works.** It marks a wait necessary only if one of its probes t' ∈ {t ± 1/997, 0, t+1, 2t} (t' ≥ 0, t' ≠ t) makes `simulate` fail. That probe is then an explicit witness.
+- **Why every failure is an illegal move.** With only one wait changed, the squares are unchanged, so visit counts, early arrival at h8 and the final square are all unchanged. The only remaining failure is "illegal jump" at that move or a later one, which is exactly the rule's condition. Negative and equal probes are skipped.
+- **Remaining gap is conservative.** A wait whose only witnesses lie outside the probe set is reported unnecessary, i.e. rejected. That is fine.
+- **Example witnesses** for 8,239's free wait at move 153:
+  - t ± 1/997 and t+1 break move 154 (g8→f8, fractional dz);
+  - 2t breaks move 154 (g8→f8, dz=6);
+  - 0 breaks move 155 (f8→g8, dz=6).
+- **Caveat.** `check_tour.py` parses only `digits` and `digits/digits`, so tours must be written in that format. A decimal such as 8176.5 would be silently dropped by the regex. Writers must emit exact fractions.
+- **Retire `strict_check.py` as a gate.** Keep it only as a classifier, to report how many free waits a tour uses.
+
+## Headroom with free waits allowed
+- **What a free wait does.** It shifts one group's altitude by any rational amount, at the cost of one visit (it must be followed by a dz=0 hop, which in the dance happens anyway). If it sits at a1, h8 rises too.
+- **Observed gains:** +53 (8,123→8,176), +53 (8,130→8,183), +28 (8,211→8,239). Each so far is a **single** free sink re-phasing the endgame or the a1/h8 pair.
+- **Ceiling.** The relaxation's ceiling of about 8,866 still bounds two-group dances, because free sinks don't add sits or points; the knight only gains by sitting during hops that already exist. The dance has about 14 zero-wait hops; each could become a free sink worth group-size × units.
+  - The 8,239 free sink takes 72 min (4 units at n=18) on a hop in the endgame.
+  - Free sinks in the merge/climb, where group sizes are small but parity and alignment matter, are untested.
+- **Estimate.** Several free sinks stacked could be worth about +50 to +250 on top of the strict lineage (most hops sit next to small groups late, or would break alignment). The strict levers are unchanged: climb top and merge +0–300, dance +20–150.
+- **Revised round-3 target: 8,300–8,500.** The upper end needs both stacked free sinks and a better merge.
+- **The rule may admit more than free sinks.** Waits that are legal at 0 but are needed by a later move include ones that change group alignment so that later dances merge differently. Under the strict model these were invisible. The engine (`src/eng.h`) cannot generate them; only `fnrpa` can.
+
+## How the CPU split should change (round 3, 4 cores)
+| Share | Cores | Track | Change |
+|---|---|---|---|
+| 35% | 1.4 | **free-wait search** (fractional's fnrpa, with the free-sink move set): stack sinks on 8,235/8,239 and the lns elites; anchors over the whole tour, including the merge; ≥ 3 seeds | was 15% + rules work |
+| 25% | 1.0 | **lns**, fed with varied starting sets, from 8,235 and 8,239 | was 30%. Its biggest missing piece is free-sink operators: add "insert a free sink of s units before an existing zero-wait hop" as an op, with waits re-derived (fractional's `repin.py` logic) |
+| 20% | 0.8 | **lineage diversity**: re-route the bottom climb, alternative ladder orders. Free sinks loosen alignment constraints, so climbs that failed under pinned moves deserve another try with fnrpa | was 25% |
+| 15% | 0.6 | **prior / stock NRPA** at anchors 30–45, ≥ 2 seeds | was 25%; it is still gated on the L3 A/B, and its engine is strict-only, so its value per core dropped once free sinks became legal |
+| 5% | 0.2 | polish / exact certification | unchanged |
+
+**Guards:**
+- Don't send everyone into free sinks. The +28 to +53 gains are single-sink re-phasings with one seed each.
+- Require ≥ 3 seeds, equal time, and a free vs strict control (campaign2 design) before claiming that stacking pays.
