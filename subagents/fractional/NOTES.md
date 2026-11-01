@@ -68,6 +68,9 @@ bash subagents/fractional/campaign5.sh   # seed 8,288 (8,292 at g_all_r32)
 bash subagents/fractional/campaign6.sh; bash subagents/fractional/campaign7.sh   # seed 8,292 (interrupted by the container restart)
 bash subagents/fractional/campaign8.sh   # round 3: seed 8,329, 5 seeds x 240 s
 bash subagents/fractional/campaign9.sh   # round 3: 8,329 with sc 2 (2 seeds) and level 3 for 600 s
+bash subagents/fractional/campaign10.sh  # round 3: lns's 7,200-family tour (7,897), anchors 6.., 3 seeds
+bash subagents/fractional/campaign11.sh  # round 3: iterated warm L2 on the 7,200 family
+python3 subagents/fractional/sweep_many.py subagents/fractional/tmp/sweep_in.txt   # insertion sweep over the pool tours
 python3 subagents/fractional/insert.py data/tours/record_8329.txt [OUT] [--flex]   # insertion sweep
 python3 subagents/fractional/postproc.py subagents/fractional/tmp/pool*.txt
 python3 subagents/fractional/strict_check4.py --example
@@ -133,8 +136,33 @@ strict runs were stopped after the ruling.
   Every insertion either breaks a later jump or needs a negative later wait. With the squares fixed, the
   records are rigid: a new free sink only pays when the following squares change too, and that needs
   search.
-- **Warm level-2 from 8,329** (`campaign8.sh`, 5 seeds x 240 s) and **variants** (`campaign9.sh`):
-  see the table below.
+- **Warm level-2 from 8,329** (`campaign8.sh`, 5 seeds x 240 s): every finish was 8,329 in all 5 seeds
+  (473/420/694/440/420 restarts).
+- **Variants** (`campaign9.sh`): sc 2 half-unit sinks gave 8,329 in 2 seeds (408/624 restarts), and
+  level 3 for 600 s gave 8,329 (10 restarts). The record is a fixed point of warm free-sink NRPA.
+- **Insertion sweep over the prior/lns pools** (`sweep_many.py`: 32 distinct tours of at least 8,250, plain
+  and `--flex`):
+
+  | base | after the sweep |
+  |---|---|
+  | strict 8,295 | 8,299 |
+  | 8,291 | 8,295 |
+  | 8,290 (x3) | 8,294 |
+  | 8,278 | 8,286 |
+  | 8,259 | 8,263 |
+  | 8,255 | 8,259 |
+  | 8,095 (prior a30-45 r3) | 8,142 with `--flex` (8,111 plain) |
+  | 8,330, 8,329, 8,309, 8,297, 8,294, 8,293, 8,288 | unchanged |
+
+  The usual +4 is the floppy f6 -> g8 endgame sink. Nothing beats 8,330.
+- **The 7,200 family** (lns `tmp/r9_s81_best.txt`, 7,897, which leaves 8,123's climb at move 6;
+  `campaign10.sh`, anchors 6..end, warm L2, 3 seeds x 240 s):
+  - **7,967 in 3/3 seeds** (397-422 restarts each); finishes are about 60% 7,912, 30% 7,908, and 2-3
+    restarts per seed at 7,967.
+  - The free waits are placed by the search: 7,967 has 4 (a2, c4, f2, f7), against 3 in the seed.
+  - Saved as `tmp/n_r71.txt`.
+  - `campaign11.sh` then iterates warm L2 (5 x 240 s, each run seeded with the best so far); the result is
+    in the next line.
 
 
 ## What failed

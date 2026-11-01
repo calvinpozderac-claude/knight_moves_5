@@ -1,6 +1,6 @@
 # Free waits: the ruling, and the case for and against (now historical)
 
-**Current record: 8,329** (`data/tours/record_8329.txt`, prior + free-wait pass, free waits at moves 141 and 154, checker ok). This folder's records, in order: 8,264 -> 8,288 -> 8,292.
+**Current record: 8,330** (`data/tours/record_8330.txt`, lns; free waits at moves 132 and 145, checker ok). Before it: 8,329 (prior + free-wait pass). This folder's records, in order: 8,264 -> 8,288 -> 8,292.
 
 ## RULING (user, round 2): free waits are legal
 The puzzle's only condition on waits: if a jump (t, P) has t > 0, there must be **some** t' such that
@@ -12,7 +12,7 @@ What this means for the checker, under that ruling:
   other waits fixed) breaks the tour. A breaking probe is such a t', so an accepted tour is always legal.
 - **Possibly incomplete in theory.** It could flag a legal wait whose only breaking t' lies outside the
   probe set. With other waits fixed, the working set of t' is a finite set of points plus intervals. If
-  neither +/- 1/997 breaks the tour, then t lies inside a working interval. A breaking t' must then be
+  neither +/- 1/997 breaks the tour, then t almost surely lies inside a working interval. A breaking t' must then be
   past that interval's end, and 0, t+1 and 2t usually reach it, but not always. This can only reject
   good tours; it never accepts bad ones.
 - **`fnrpa`'s `free_ok` filter is stricter still.** It only probes +e, so it only ever loses candidates.

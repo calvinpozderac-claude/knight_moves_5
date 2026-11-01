@@ -68,7 +68,7 @@ static double h8dist(const S& s) {
 // waited minutes for a move (the group size times the sink)
 static inline int move_minutes(const S& s, int delta) { return delta ? delta * group_n(s, s.pos) : 0; }
 // learned prior: exp(beta x prior) of each move of a state's pinned-move list, cached per state
-static PriorModel PM; static bool USE_PRIOR = false; static double BETA = 0; static thread_local double TBETA = 0; static vector<double> BETASET; static int CACHE_LOG2 = 17;
+static PriorModel PM; static bool USE_PRIOR = false; static double BETA = 0; static thread_local double TBETA = 0; static double INITNOISE = 0; static vector<double> BETASET; static int CACHE_LOG2 = 17;
 static std::atomic<long long> PRIOR_EVALS{0}, PRIOR_LOOKUPS{0};
 static const int MAXMV = 40;
 struct PCEntry { uint64_t key = 0; int n = -1; float sc[MAXMV]; };  // raw prior scores (beta applied on lookup)
@@ -309,6 +309,7 @@ int main(int argc, char** argv) {
     else if (a == "--prefix-file") prefixFile = nx();
     else if (a == "--out") outFile = nx();
     else if (a == "--prior") priorFile = nx(); else if (a == "--beta") BETA = stod(nx());
+    else if (a == "--init-noise") INITNOISE = stod(nx());
     else if (a == "--beta-set") { string v = nx(); size_t st = 0; while (st < v.size()) { size_t e = v.find(',', st); if (e == string::npos) e = v.size(); BETASET.push_back(stod(v.substr(st, e - st))); st = e + 1; } }
     else if (a == "--prior-cache-log2") CACHE_LOG2 = stoi(nx());
     else { fprintf(stderr, "unknown option %s (see the comment at the top of src/nrpa.cpp)\n", a.c_str()); return 1; }
@@ -353,6 +354,10 @@ int main(int argc, char** argv) {
     std::mt19937 rng(RNG * 1000003u + tid);
     for (int restart = 0; !STOP; restart++) {
       Policy pol; vector<Mv> seed;
+      if (INITNOISE > 0) {  // diversity: random initial weights per restart (breaks prior-driven collapse)
+        std::normal_distribution<float> nd(0.f, (float)INITNOISE);
+        for (size_t c = 0; c < pol.w.size(); c++) { pol.w[c] = nd(rng); pol.e[c] = expf(pol.w[c]); }
+      }
       TBETA = BETASET.empty() ? BETA : BETASET[std::uniform_int_distribution<size_t>(0, BETASET.size() - 1)(rng)];
       {
         std::lock_guard<std::mutex> lk(mtx);

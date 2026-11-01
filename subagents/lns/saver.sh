@@ -12,7 +12,7 @@ while true; do
       echo "$(date +%T) $T $out"
       if echo "$out" | grep -q "ok=True" && echo "$out" | grep -q "unnecessary=\[\]" && echo "$out" | grep -Eq "maxvisits=[123] "; then
         cp subagents/lns/tmp/cand.txt subagents/lns/best.txt
-        rm -f subagents/lns/NEW_RECORD_*.txt; cp subagents/lns/tmp/cand.txt subagents/lns/NEW_RECORD_$T.txt
+cp subagents/lns/tmp/cand.txt subagents/lns/NEW_RECORD_$T.txt
       fi
     fi
   done

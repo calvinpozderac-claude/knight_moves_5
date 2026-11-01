@@ -2,7 +2,8 @@
 # Free-wait pass over every not-yet-processed distinct pool tour >= 8,200 (best first), T seconds each,
 # until UNTIL (epoch seconds).   usage: bash r3_fw.sh T UNTIL POOL...
 T=$1; UNTIL=$2; shift 2; mkdir -p tmp/fw3; touch tmp/fw3/done.txt
-cat "$@" 2>/dev/null | awk -F'\t' 'NF==2 && $1>=8200' | sort -t$'\t' -k1,1nr | awk -F'\t' '!s[$2]++' > tmp/fw3/cands_$$.txt
+# tmp/fw3/extra.txt (minutes<TAB>tour, any minutes) goes first, e.g. the best outside-basin tour
+(cat tmp/fw3/extra.txt 2>/dev/null; cat "$@" 2>/dev/null | awk -F'\t' 'NF==2 && $1>=8200' | sort -t$'\t' -k1,1nr) | awk -F'\t' '!s[$2]++' > tmp/fw3/cands_$$.txt
 i=0; P=$$
 while IFS=$'\t' read m t; do
   [ $(date +%s) -ge $UNTIL ] && break
