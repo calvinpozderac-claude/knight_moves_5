@@ -123,3 +123,26 @@ Each base converges to one best skeleton (8,295 / 8,290 / 8,291). That skeleton 
 3 rngs x 600 s: bests 7,693 / **8,162** / 7,481. Every finish was distinct (23 of 23). 8,162 shares only
 13 moves with 8,123 and 56 with its seed, and has one free wait at move 39. It is the best tour outside the
 8,211 family so far (+283 over the seed). The free-wait pass found nothing to add (8,162 -> 8,162).
+
+## Round 3, resumed (12:12-13:27 UTC; 4 cores from 12:24)
+- **8,338 (record)**: `NEW_RECORD_8338.txt`, checker ok, 4 free waits ((127,84,d3), (132,80,c1), (134,80,d4),
+  (147,72,g8)). It came from the free-wait pass (`fw_multi.sh`: fnrpa warm L2, 120-180 s) on the **strict
+  8,297** skeleton (`STRICT_8297.txt`, strict_check STRICT; the strict record). That skeleton was found by
+  `r3c.sh dance` (L3 pnrpa, anchors 55-80 of 8,334, prior_r3, beta-set 0.5-2.5, init-noise 0.5, rng 502),
+  and again in a separate run (anchors 55-95, rng 703).
+  Free-wait pass on 8,297, 9 runs with different rngs: 8,338 x2 (rngs 81, 31), 8,334 x1, 8,301 x6.
+- Free-wait pass on the 8,295 skeletons: the original one gave 8,299 x5 and 8,307 x2 over 7 rngs (the 8,334 seen
+  earlier was 1 of 13 runs); a second 8,295 skeleton (from the 8,334 base) gave 8,334 in 3 of 3 runs.
+  Warm fnrpa from 8,334 itself: 8,334 in 5 of 5 runs (no gain).
+- Dance re-search, 55-80, rngs 501-503 (distinct finishes per run): 8,334 base: {8224, 8244}, {8210, 8297},
+  {8207}; 8,330 base: {8206, 8291}, {8240, 8291}, {8131, 8240}; 8,329 base: {7713, 8290}, {8255, 8290}.
+  Anchors 55-95 of 8,334, rngs 701-704: {8210, 8295}, {8210, 8264, 8295}, {8255, 8275, 8295, 8297},
+  {8210, 8275, 8295}. So only the 8,334 base produced a better strict skeleton (8,297, 2 of 7 runs).
+- Climb track from the 8,162 7,200-family tour (anchors 20-60, 3 rngs x 400 s): bests 7,964 / 7,988 / 7,838.
+  All 13 finishes are distinct, but none beats its seed. The free-wait pass on 7,988 gives 7,989.
+
+## Recommendation
+The loop that works: guided L3 dance re-search (anchors 55-95) from the current record -> new strict
+skeleton -> free-wait pass with 6-10 rngs (the pass is high-variance). Each turn of the loop gave +4 to +40.
+Next: (a) the same loop from 8,338; (b) add free-sink moves inside pnrpa, so the prior search sees free-wait
+gains directly; (c) give the outside-basin climb track (8,162) more depth, e.g. level 4 with --iters 50, or lns.
