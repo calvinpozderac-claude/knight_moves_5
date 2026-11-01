@@ -130,7 +130,7 @@ Each base converges to one best skeleton (8,295 / 8,290 / 8,291). That skeleton 
   8,297** skeleton (`STRICT_8297.txt`, strict_check STRICT; the strict record). That skeleton was found by
   `r3c.sh dance` (L3 pnrpa, anchors 55-80 of 8,334, prior_r3, beta-set 0.5-2.5, init-noise 0.5, rng 502),
   and again in a separate run (anchors 55-95, rng 703).
-  Free-wait pass on 8,297, 9 runs with different rngs: 8,338 x2 (rngs 81, 31), 8,334 x1, 8,301 x6.
+  Free-wait pass on 8,297, 15 runs with different rngs: 8,338 x3 (rngs 81, 90, 31), 8,334 x1, 8,301 x11.
 - Free-wait pass on the 8,295 skeletons: the original one gave 8,299 x5 and 8,307 x2 over 7 rngs (the 8,334 seen
   earlier was 1 of 13 runs); a second 8,295 skeleton (from the 8,334 base) gave 8,334 in 3 of 3 runs.
   Warm fnrpa from 8,334 itself: 8,334 in 5 of 5 runs (no gain).
@@ -144,5 +144,7 @@ Each base converges to one best skeleton (8,295 / 8,290 / 8,291). That skeleton 
 ## Recommendation
 The loop that works: guided L3 dance re-search (anchors 55-95) from the current record -> new strict
 skeleton -> free-wait pass with 6-10 rngs (the pass is high-variance). Each turn of the loop gave +4 to +40.
-Next: (a) the same loop from 8,338; (b) add free-sink moves inside pnrpa, so the prior search sees free-wait
+Loop from 8,338 (anchors 55-95, rngs 801-803, 330 s): distinct finishes {8210, 8264, 8295, 8297},
+{8210, 8257, 8260, 8295}, {8275, 8295, 8297}. No strict skeleton better than 8,297 yet.
+Next: (a) more of the loop from 8,338 at level 4 --iters 50; (b) add free-sink moves inside pnrpa, so the prior search sees free-wait
 gains directly; (c) give the outside-basin climb track (8,162) more depth, e.g. level 4 with --iters 50, or lns.
