@@ -1,19 +1,23 @@
 # fractional: free (and fractional) waits on top of the strict engine
 
-## Headline (round 2)
-- **New strict record: 8,235** (`NEW_RECORD_8235.txt`, also `best.txt`).
-  - `check_tour.py`: `ok=True maxvisits=3 unnecessary=[]`. `strict_check.py`: STRICT.
-  - It is 8,211 with the dance re-ordered from move 96: the d1/e1 block is visited after the c1 sit
-    instead of before c5. That is +24, all pinned.
-  - How I first got it: the free-wait search found 8,239 (one floppy free wait at move 153). Setting
-    that wait to 0 and re-pinning later waits gives 8,235 (`repin.py ... 153 0`).
-  - It is not specific to free waits: the strict control run (`--free 0`, same settings) finds it in under
-    5 s. Warm level-2 NRPA from 8,211 finds it right away.
-- **Free-wait scoreboard** (kept separate, see RULES.md): **8,239** (`FREEWAIT_8239.txt`), 8,183
-  (`FREEWAIT_8183.txt`, base 8,130), 8,176 (`FREEWAIT_8176.txt`, base 8,123).
-  - The 8,183 and 8,176 free waits are *rigid*: only one value works, even when later waits are
-    re-pinned. They are like the 4x4 example's.
-  - The +4 free wait in 8,239 is *floppy*: every s in [0,4] works after re-pinning.
+## Headline
+- **The rules are settled** (user, round 2): a free wait is legal if some t' breaks that move or a later
+  one. `check_tour.py` is a sound test of that (RULES.md).
+- **Records from this folder** (all `check_tour.py ok=True maxvisits=3 unnecessary=[]`):
+  - 8,235 (strict): `NEW_RECORD_8235.txt`
+  - 8,264 (1 free wait): `NEW_RECORD_8264.txt`
+  - 8,288 (1 free wait): `NEW_RECORD_8288.txt`
+  - **8,292** (2 free waits): `NEW_RECORD_8292.txt` = `best.txt`
+- **The overall record is now 8,329** (prior + free-wait pass). Round 3 found nothing above it here
+  (see the round-3 table).
+- **Mechanisms:**
+  - The +53: a rigid free sink at a1 (a1 -> b3, 1 unit). It also raises h8, which is opposite a1.
+    That moves h8's group, and a late zero-wait hop becomes a sit.
+  - The +24 (8,211 -> 8,235): a pure dance reorder (the d1/e1 block later). Strict warm L2 finds it in
+    seconds.
+  - The +4 (8,288 -> 8,292): a second free sink at d3, move 129. It came from 1 of 655 finishes, in
+    1 of 5 seeds.
+  - Smaller, common gains: the floppy +4 at the f6 -> g8 endgame hop.
 
 ## Method
 1. **Theory** (RULES.md):
@@ -58,7 +62,13 @@ $B --sc 1 --free 1 --fstep 1 --fmax 4 --warm 10 --level 3 --time 1200 --amin 35 
 bash subagents/fractional/campaign.sh    # round 1: seeds 8,123 / 8,130, level 2, 240 s each (sc2 r2 lost to the container restart)
 # round 2
 bash subagents/fractional/campaign2.sh   # seed 8,211: free vs strict A/B, 5 rngs x 240 s each, then 2 x sc=2
-bash subagents/fractional/campaign3.sh   # seed best.txt (8,235): strict vs free, 3 rngs x 240 s each
+bash subagents/fractional/campaign3.sh   # (stopped after the ruling; never ran)
+bash subagents/fractional/campaign4.sh   # seeds 8,264/8,235/8,239 (stopped after its first runs: 8,288 found)
+bash subagents/fractional/campaign5.sh   # seed 8,288 (8,292 at g_all_r32)
+bash subagents/fractional/campaign6.sh; bash subagents/fractional/campaign7.sh   # seed 8,292 (interrupted by the container restart)
+bash subagents/fractional/campaign8.sh   # round 3: seed 8,329, 5 seeds x 240 s
+bash subagents/fractional/campaign9.sh   # round 3: 8,329 with sc 2 (2 seeds) and level 3 for 600 s
+python3 subagents/fractional/insert.py data/tours/record_8329.txt [OUT] [--flex]   # insertion sweep
 python3 subagents/fractional/postproc.py subagents/fractional/tmp/pool*.txt
 python3 subagents/fractional/strict_check4.py --example
 python3 subagents/fractional/nec_detail.py --example
@@ -90,7 +100,42 @@ counts are completed restarts.
 - Half-unit sinks (sc 2) found 8,183, but its free wait is a whole unit; no fractional sink was ever
   part of a best tour.
 
-### Round 2 (seed 8,211) -- see the table filled in below
+### Round 2 (each 240 s, level 2, warm)
+| seed | run | best | restarts | spread of finishes |
+|---|---|---|---|---|
+| 8211 | free r1 | **8,264** | 447 | 389x8215, 41x8239, 16x8211, 1x8264 |
+| 8211 | free r2 | 8,239 | 486 | 407x8215, 52x8239, 25x8211, 2x8214 |
+| 8211 | strict r1 | 8,235 | 542 | 394x8211, 148x8235 |
+| 8211 | strict r2 | 8,235 | 398 | 282x8211, 116x8235 |
+| 8264 | free r21 | **8,288** | 472 | 413x8264, 59x8288 |
+| 8235 | free r21 | 8,239 | 73 (killed) | 70x8239, 3x8235 |
+| 8288 | free all r31/r32/r33 | 8,288 / **8,292** / 8,288 | 444/655/420 | r32: 1x8292 |
+| 8288 | free early (anchors 35-80) r34/r35 | 8,288 / 8,288 | 338/235 | all 8288 |
+| 8288 | free level 3, 600 s, r36 | 8,288 | 10 | all 8288 |
+| 8292 | free r41/r42 | 8,292 / 8,292 | 481/7 (killed by the container restart) | all 8292 |
+
+At equal time from 8,211 (2 seeds each): free reached 8,264 and 8,239; strict reached 8,235 twice. The
+strict runs were stopped after the ruling.
+
+### Round 3
+- **Insertion sweep** (`insert.py`, with and without `--flex`) over every in-group zero-wait hop:
+  - each hop gets a free sink of s = 1/2..6 units, with every later wait re-pinned;
+  - pairs are built from the best singles;
+  - `--flex` also tries the other dz sign when the original one would need a negative sink.
+
+  | tour | in-group zero-wait hops | improving singles | improving pairs |
+  |---|---|---|---|
+  | 8,329 | 23 | none | none |
+  | 8,297 | 15 | none | none |
+  | 8,292 | 21 | none | none |
+  | 8,288 | 22 | none | none |
+
+  Every insertion either breaks a later jump or needs a negative later wait. With the squares fixed, the
+  records are rigid: a new free sink only pays when the following squares change too, and that needs
+  search.
+- **Warm level-2 from 8,329** (`campaign8.sh`, 5 seeds x 240 s) and **variants** (`campaign9.sh`):
+  see the table below.
+
 
 ## What failed
 - Fresh (non-warm) free-sink NRPA is poor: the free moves dilute the policy and lead into pumps
@@ -100,10 +145,13 @@ counts are completed restarts.
 - Without `free_ok`, the search "wins" with giant-group pumps (11,465). The checker rejects those
   (72 unnecessary waits).
 
-## Recommendation
-- Treat free waits as legal only if the orchestrator accepts the 4x4-example argument (RULES.md), and
-  even then report them separately.
-- Run `postproc.py` on every free-wait pool: floppy free waits re-pin to strict tours, and that is how
-  8,235 surfaced.
-- Re-run warm level-2 strict NRPA from every new strict record. It found +24 in seconds, so the dance
-  of 8,211 was not at a local optimum.
+## Recommendation (next round)
+- **Warm L2 and L3 from a record converge at once** (every finish equals the seed). Insertion with
+  the squares fixed finds nothing. New gains need **new squares around a free sink**:
+  - Run guided or fresh NRPA from merge and early-dance anchors with free moves on (prior's guided
+    search plus the `--free 1` move set).
+  - Then run `postproc.py` and `insert.py` on every pool tour.
+- **The a1 free sink (+53) has been found three times** in 3 independent bases. Free sinks at points
+  whose opposite is h8 or another group-boundary point are the high-value pattern. A targeted generator
+  could offer "free sink at P where opp(P) is in the other group" first.
+- Keep `free_ok` (+e only) as the in-search filter. The checker decides.

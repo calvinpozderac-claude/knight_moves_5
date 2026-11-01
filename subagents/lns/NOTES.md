@@ -202,6 +202,46 @@ Every number is checker-verified (`ok=True maxvisits=3 unnecessary=[]`).
 - The reviewer notes that fractional's 8,288 has the same last 94 squares, so the two agents converged on
   this tail.
 
+**How 8,288 was found.**
+- Run: run5 arm A, seed 42. Command (from `run5.sh`):
+  ```
+  ./lns_v3 --tours <the 9 inputs> --xover 0 --seed 42 --t0 40 --budget 400000 --focus 1 60 0.7
+    --dmax 8 --pdmax 4 --rmax 8 --wide 8 --skel 0.5 --reroute 0.05 --free 2 --iters 12000
+  ```
+- Start: the 8,241, whose merge goes through g5 (T = 299 at the dance start).
+- Two dance moves:
+  - it 6,212: op 2 at i=141 with DFS depth 9, giving 8,261;
+  - it 7,101: op 5 (segment reversal) at a=117, length 5, giving 8,288.
+- The result has a new free sink on a1 (the a1->b3 hop waits 24, and a1 sits 0->1).
+- Against 8,239: g8 sits 2->3, g6 sits 1->2, h6 and f7 lose a sit each, and there are 6 fewer landings in the
+  merge (f4, d5, a6 and c3 are not visited).
+
+**How 8,297 was found.**
+- Run: run7 (`run7.sh`), a 2×2 at 6,000 iterations: {start 8,123, start 8,292} × {with div seeds (the 12
+  8,123 variants + 7,200 + 7,066), without}, seeds 61 and 62, free sinks on.
+- Two cells reached 8,297 independently:
+  - start 8,292 + div, seed 61: op 2 at i=37, D=3, at it 2,577;
+  - start 8,292 without div, seed 62: op 6 at a=31, len 2, at it 193.
+
+  The two tours differ in their zero-wait routing, but have the same minutes.
+- What changed: 8,297 = 8,292's dance (the same 7,998 dance minutes, 85 dance sits, both of fractional's
+  free waits: (108, 24, b3) and (122, 84, d3)) + the 8,241-style merge.
+  - That merge goes through g5/a7/c8, and skips the f4/d5/a6 shuffle and the h6 sit.
+  - The dance now starts at move 58 instead of 65, with T = 299 instead of 294.
+  - That is +5 minutes, with 7 fewer landings.
+
+**run7: full table** (best per run; CPU about 91-100 s each).
+
+| start | div | seed 61 | seed 62 |
+|---|---|---|---|
+| 8,123 | yes | 8,131 | 8,127 |
+| 8,123 | no | 8,130 | 8,130 |
+| 8,292 | yes | **8,297** | 8,292 |
+| 8,292 | no | 8,293 | **8,297** |
+
+At 6k iterations, diversity of the starting set made no visible difference. From 8,123, every run finds
++4 to +8 within about 4k iterations. From 8,292, the merge transplant (+5) is found in 2 of 4 runs.
+
 **run6: continuation from 8,288.** Stopped after a few minutes, without a result, to make room for the 2×2
 test. The partial log is `tmp/r6_s51_f2_killed.log`.
 

@@ -69,3 +69,20 @@ is still higher.
   Too few positions have 2 or more labelled moves, so this throws away the signal.
 - `--unk-gap 100` (an unlabelled move counts as Lmax - 100 minutes, so it is "worse but not dead"): top-1 0.77,
   the same as before, but softer (p(best) 0.37 instead of 0.63). Used as the second arm below.
+
+## (2) How 8,290 (strict) and 8,329 (record, 2 free waits) were found
+1. `bash round2_search.sh 1500` (02:51 UTC): retrains the prior on every data/tours file (incl. 8,211-8,292),
+   polish's 8,127 and the A/B pools -> `prior_r2.txt` (+ `prior_r2_unk.txt`, `--unk-gap 100`), then fresh
+   level-3 pnrpa from anchors 30-70 of `data/tours/record_8235.txt` (same first 95 moves as 8,211):
+   `./pnrpa --level 3 --threads 1 --time 1500 --rng 21 --seed-tours ../../data/tours/record_8235.txt
+    --anchor-min 30 --anchor-max 70 --seed-adapt 0 --no-warm --prior prior_r2.txt --beta 2 --pool tmp/r2_pool_r2.txt`
+   Strict **8,290** at restart 8 (anchor 64, ~500 s), again at anchors 63 and 67; the `--unk-gap` model
+   also reached 8,290 (and 8,255). Saved as `STRICT_8290.txt` (strict_check: STRICT).
+2. Free-wait pass on 8,290 with fractional's fnrpa (built from ../fractional/fnrpa.cpp into tmp/fnrpa):
+   `./tmp/fnrpa --sc 1 --free 1 --fstep 1 --fmax 4 --warm 10 --level 2 --time 240 --amin 35 --amax 999 --rng 1
+    --seed tmp/s8290.txt --out tmp/fw/fw_8290_r1.txt --pool tmp/fw/pool.txt --pool-min 8200`
+   8,294 at restart 0 and **8,329** within 26 s (free waits at moves 141 (80, d4) and 154 (72, g8));
+   checker ok, maxvisits 3, unnecessary []. `NEW_RECORD_8329.txt`.
+
+Unfinished in round 2 (container restart): the second A/B rng at anchor 40 and the free-wait pass over the
+other pool tours >= 8,200 (8,255, 8,253, 8,240, 8,239, 8,205).

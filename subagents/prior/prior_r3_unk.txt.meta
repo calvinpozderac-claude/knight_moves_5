@@ -1,0 +1,22 @@
+train/val files (val-frac 0.000, rng 1):
+  ../../data/tours/curriculum.txt
+  ../../data/tours/from_scratch_2952.txt
+  ../../data/tours/openings.txt
+  ../../data/tours/record_7066.txt
+  ../../data/tours/record_7200.txt
+  ../../data/tours/record_7911.txt
+  ../../data/tours/record_8002.txt
+  ../../data/tours/record_8123.txt
+  ../../data/tours/record_8130.txt
+  ../../data/tours/record_8211.txt
+  ../../data/tours/record_8235.txt
+  ../../data/tours/record_8239.txt
+  ../../data/tours/record_8292.txt
+  ../../data/tours/record_8329.txt
+  ../../data/tours/tour_6303.txt
+  ../polish/NEW_RECORD_8127.txt
+  ../lns/NEW_RECORD_8297.txt
+  tmp/r3/prevpool.txt
+val-only files:
+1378 distinct tours (0 val), best 8329
+trained with: train_prior.py tmp/r3.bin --hidden 16 --epochs 20 --l2 1e-3 --wpow 1 --drop 28,29,35,36,37 --unk-gap 100 --out prior_r3_unk.txt

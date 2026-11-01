@@ -1,6 +1,6 @@
 # Free waits: the ruling, and the case for and against (now historical)
 
-**Current record: 8,292** (`NEW_RECORD_8292.txt`, two free waits, checker ok). It replaced 8,288 and 8,264.
+**Current record: 8,329** (`data/tours/record_8329.txt`, prior + free-wait pass, free waits at moves 141 and 154, checker ok). This folder's records, in order: 8,264 -> 8,288 -> 8,292.
 
 ## RULING (user, round 2): free waits are legal
 The puzzle's only condition on waits: if a jump (t, P) has t > 0, there must be **some** t' such that
@@ -17,10 +17,28 @@ What this means for the checker, under that ruling:
   good tours; it never accepts bad ones.
 - **`fnrpa`'s `free_ok` filter is stricter still.** It only probes +e, so it only ever loses candidates.
 
-**Pump tours are illegal.** In a pump tour, a big group (containing h8) sinks by free waits while every
-later move stays inside that group, for example the 11,465 tour in round 1. Changing any of those waits
-breaks nothing later, so no t' exists, and `check_tour.py` rejects them (unnecessary = 72 waits).
-`fnrpa`'s `free_ok` filter rejects them during the search.
+**Pump tours are truly illegal, not just unwitnessed.** In a pump tour, a big group (containing h8) sinks by
+free waits while every later move is a dz=0 move inside that one group, for example the 11,465 tour in
+round 1. Hold the other waits fixed and change one of those waits to any t' >= 0: every later jump stays
+legal, because dz=0 moves inside a group that sinks together are unaffected. That holds even though
+group sizes change as the group sinks onto lower points. So no witness t' exists, under any probe set.
+`check_tour.py` rejects them (72 unnecessary waits), and `fnrpa`'s `free_ok` filter rejects them during
+the search. The probe set's incompleteness therefore does not hide a huge legal tour.
+
+**Precision on incompleteness.** If neither t +/- 1/997 breaks the tour, then t *almost surely* lies inside a
+working interval. The exception is the measure-zero case where t +/- 1/997 land exactly on other isolated
+working points, which a second epsilon would rule out. For a near-record tour the checker rejects, there
+is a cheap exact witness search:
+1. solve each later jump's affine dz equation for t';
+2. add the group-membership breakpoints;
+3. simulate each candidate.
+
+**Exact fractions.** Tours must give waits as exact integers or fractions `a/b`. The checker uses Fraction
+arithmetic, and a decimal wait would be misparsed.
+
+**Under the ruling, "floppy" free waits are legal.** A floppy wait is one where a range of values would
+work once the later waits are recomputed. It is legal as long as some t' breaks the tour with the other
+waits fixed. AGAINST-2 and the three-part test below go beyond the rule. Don't use them as filters.
 
 The analysis below was written before the ruling. It is **historical**. In particular, the "three-part
 acceptance test" is stricter than the user's rule, so a tour does not need to pass it.
@@ -82,7 +100,7 @@ later waits are recomputed (T = 8123 + s). That is the weakest kind of free wait
    the only working value on a fine grid with the other waits fixed, and the only one when the later
    waits are re-pinned. The example's free waits behave exactly the same way.
 
-## The case AGAINST
+## The case AGAINST (historical; AGAINST-2 is moot under the ruling)
 1. **The natural reading of "every wait must be necessary"** is local: necessary *for the jump that
    follows*. A free wait is never necessary in that sense, because the jump is legal at 0.
 2. **"Necessary for later moves" is circular.** The later waits are fixed numbers chosen *after*
