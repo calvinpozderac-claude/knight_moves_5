@@ -148,3 +148,15 @@ Loop from 8,338 (anchors 55-95, rngs 801-803, 330 s): distinct finishes {8210, 8
 {8210, 8257, 8260, 8295}, {8275, 8295, 8297}. No strict skeleton better than 8,297 yet.
 Next: (a) more of the loop from 8,338 at level 4 --iters 50; (b) add free-sink moves inside pnrpa, so the prior search sees free-wait
 gains directly; (c) give the outside-basin climb track (8,162) more depth, e.g. level 4 with --iters 50, or lns.
+
+# Round 4
+## 8,348 (record): free waits at moves 100 (104, c3), 117 (88, b1), 119 (22, b3)
+- Skeleton search: `bash r4.sh dance 8338 901/902 2900` and `bash r4.sh dance 8334 903 2900` (level 4, --iters 50,
+  anchors 55-95, prior_r3, beta-set 0.5-2.5, init-noise 0.5). 23 completed restarts, but only 2 distinct values:
+  8,295 and 8,297. The deeper search collapses onto the same skeleton values, though the pool held 3 new
+  distinct strict 8,295 tours (different tours with the same minutes).
+- Free-wait pass (`fw4.sh`: 4 workers, 8 rngs x 120 s per new skeleton) on 5 new skeletons: one 8,295 skeleton
+  (`tmp/r4/round4a_skel/skel_0_5.txt`) gave **8,348** with rng 1055 (1 of 8; the other 7 gave 8,299). Results for the
+  other skeletons: 8,299 x7 + 8,300; 8,299 x7 + 8,300; 8,299 x8; 8,303 x4, 8,306, 8,307 x3.
+  Here the free waits land earlier (moves 100-119), so the pass rewrites the merge-to-dance stretch.
+- Climb basin (L4 iters 50, anchors 20-60 of 8,162, 2900 s): 3 restarts, 7,296 / 7,729 / 7,894. No gain.

@@ -8,7 +8,7 @@ k=0
 while IFS=$'\t' read m t; do
   grep -qxF "$t" tmp/r4/passed.txt 2>/dev/null && continue
   k=$((k+1)); [ $(( (k-1) % N )) -ne $ID ] && continue
-  f=tmp/r4/skel_${ID}_$k.txt; printf '%s\n%s\n' "$m" "$t" > $f
+  f=tmp/r4/skel_b_${ID}_$k.txt; printf '%s\n%s\n' "$m" "$t" > $f
   bash fw_multi.sh 120 "$((1000+k*10+1)) $((1000+k*10+2)) $((1000+k*10+3)) $((1000+k*10+4)) $((1000+k*10+5)) $((1000+k*10+6)) $((1000+k*10+7)) $((1000+k*10+8))" $UNTIL $f
   [ $(date +%s) -ge $UNTIL ] && break
 done < tmp/r4/cand_$ID.txt
