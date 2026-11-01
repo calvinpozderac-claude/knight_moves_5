@@ -296,3 +296,30 @@ Reading:
   - Landings drop by 9 (152 vs 161). Sits per point: d7 2->3, d8 1->2, f7 3->2. a6 and b7 are no longer
     visited.
 - The SA had drifted to a different merge, and the crossover copied 8,329's dance tail back onto it.
+
+## run9: the 7,200-family basin, 30k iterations, 3 seeds (`run9.sh` seed 81, `run9b.sh` seeds 82-83)
+- Start: run8's B_div s73 best (7,611; its bottom climb comes from 7,200). Donors: 7,200, 7,066, 6,303 and
+  the 10 outside curriculum tours. No tour from the 8,123 family was an input.
+- Settings: `lns_v3`, `--free 2`, the same flags as run8, 30,000 iterations, about 515-560 CPU-seconds each.
+
+| seed | best | dance start | T at dance start | dance sits | dance minutes | first moves shared with 8,123 |
+|---|---|---|---|---|---|---|
+| 81 | 7,998 | move 59 | 303 | 85 | 7,695 | 12 |
+| 82 | **8,103** | move 49 | 303 | 87 | 7,800 | 14 |
+| 83 | 8,060 | move 57 | 291 | 85 | 7,769 | 14 |
+
+All three are checker-legal (`ok=True`, `unnecessary=[]`). They are
+3 different finishes.
+
+- Every seed climbs +390 to +490 over 30k iterations, and is still improving near the end: seed 81 gained
+  +4 in its last 1,200 iterations.
+- **All three seeds drifted back onto 8,123's bottom climb** (the first 12-14 moves) without any 8,123-family
+  input. The b1-d1-d2-c2-a1-b1-c1-e1-e2-d4-c4-b4 start looks like a strong attractor, not an accident of
+  seeding.
+- The upper climb, merge and dance stay different. Seed 82 has the most dance sits seen so far (87; 8,330 has
+  83) and the highest T at the dance start (303). Its dance order is worse, though: 7,800 dance minutes
+  against 8,035 for 8,330.
+
+## run11: 8,330 + run9's tours as op-7 donors (2 seeds × 6k)
+- Both seeds stay at 8,330. Crossover did not transplant anything useful from the outside basin in 6k
+  iterations.

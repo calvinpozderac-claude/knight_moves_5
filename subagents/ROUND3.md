@@ -18,3 +18,9 @@ Rules: at least 3 improving seeds before claiming a method works; one record hit
 | rev_portfolio | cheap | passes at ~30 and ~75 minutes |
 
 Round budget: about 90 minutes of wall-clock time.
+
+## Pruned to one agent (user request)
+lns and fractional were stopped mid-round 3 (their files and notes are kept as-is); the reviewer is no longer
+invoked. **prior** continues alone, on all 4 cores: guided NRPA with the learned move prior plus the free-wait
+pass. It produced the last two records (8,329 and 8,334), and it combines the strongest search method from
+round 1 with fractional's free-wait engine.

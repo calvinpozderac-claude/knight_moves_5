@@ -1,7 +1,7 @@
 """Run insert.py (plain and --flex) on every tour in a two-line-per-tour file; print the best per tour.
 usage (repo root): python3 subagents/fractional/sweep_many.py FILE"""
 import sys, subprocess, os
-L = open(sys.argv[1]).read().splitlines(); D = 'subagents/fractional/tmp/sweep'
+L = open(sys.argv[1]).read().splitlines(); D = sys.argv[2] if len(sys.argv) > 2 else "subagents/fractional/tmp/sweep"
 os.makedirs(D, exist_ok=True); best = (0, None)
 for k in range(0, len(L) - 1, 2):
     fn = f'{D}/in_{k//2}.txt'; open(fn, 'w').write(L[k] + '\n' + L[k + 1] + '\n')

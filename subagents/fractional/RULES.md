@@ -1,6 +1,6 @@
 # Free waits: the ruling, and the case for and against (now historical)
 
-**Current record: 8,330** (`data/tours/record_8330.txt`, lns; free waits at moves 132 and 145, checker ok). Before it: 8,329 (prior + free-wait pass). This folder's records, in order: 8,264 -> 8,288 -> 8,292.
+**Current record: 8,334** (`data/tours/record_8334.txt`, prior, 3 free waits, checker ok). Before it: 8,330 (lns) and 8,329 (prior + free-wait pass). This folder's records, in order: 8,264 -> 8,288 -> 8,292.
 
 ## RULING (user, round 2): free waits are legal
 The puzzle's only condition on waits: if a jump (t, P) has t > 0, there must be **some** t' such that

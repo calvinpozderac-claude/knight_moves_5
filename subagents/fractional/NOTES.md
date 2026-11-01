@@ -8,8 +8,8 @@
   - 8,264 (1 free wait): `NEW_RECORD_8264.txt`
   - 8,288 (1 free wait): `NEW_RECORD_8288.txt`
   - **8,292** (2 free waits): `NEW_RECORD_8292.txt` = `best.txt`
-- **The overall record is now 8,329** (prior + free-wait pass). Round 3 found nothing above it here
-  (see the round-3 table).
+- **The overall record is now 8,334** (prior, 3 free waits). Round 3 found nothing above 8,329, 8,330 or
+  8,334 here (see Round 3).
 - **Mechanisms:**
   - The +53: a rigid free sink at a1 (a1 -> b3, 1 unit). It also raises h8, which is opposite a1.
     That moves h8's group, and a late zero-wait hop becomes a sit.
@@ -161,8 +161,16 @@ strict runs were stopped after the ruling.
     restarts per seed at 7,967.
   - The free waits are placed by the search: 7,967 has 4 (a2, c4, f2, f7), against 3 in the seed.
   - Saved as `tmp/n_r71.txt`.
-  - `campaign11.sh` then iterates warm L2 (5 x 240 s, each run seeded with the best so far); the result is
-    in the next line.
+  - `campaign11.sh` then iterated warm L2 (5 x 240 s, each run seeded with the best so far): 7,967 ->
+    **7,983** (at r82), then flat for r83-r85.
+  - Saved as `tour7200fam_7983.txt` (checker ok). That is still about 350 below the record, so this
+    family needs far more compute.
+  - `campaign12.sh`: level 3 warm from 7,983 (900 s with all anchors, 900 s with anchors 6-60). Results
+    are in the final report.
+- **Resumed sweep** (`sweep_many.py tmp/sweep_in2.txt tmp/sweep2`): 136 new distinct pool tours of at
+  least 8,250, from prior, lns and data/tours, including 8,334.
+  - No tour of 8,301 or more improves (8,334, 8,329, 8,307, 8,302 and 8,301 are rigid).
+  - Lower tours gain +4 to +8 (8,297 -> 8,301, 8,295 -> 8,299, 8,255 -> 8,263), always below the record.
 
 
 ## What failed
