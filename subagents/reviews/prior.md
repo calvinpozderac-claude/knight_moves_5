@@ -152,3 +152,44 @@ Next steps:
 3. One extra rng at anchor 40 to close the evidence gap.
 
 Success means a new strict best, or any tour above 8,292 after the free-sink pass.
+
+---
+# Round 3 review: prior, pass 1 (rev_portfolio), 2026-11-01 ~07:50 UTC
+
+## 1. Claims checked
+| Claim | Verdict | Command |
+|---|---|---|
+| `data/tours/record_8329.txt` = 8,329 | **VERIFIED** | `check_tour.py` prints `moves=160 ok=True maxvisits=3 unnecessary=[]`; free waits (141, 80, d4) and (154, 72, g8) |
+| Strict skeleton `tmp/s8290.txt` = 8,290 | **VERIFIED, STRICT** | it beat the 8,255 strict record; 8,329 = 8,290 plus the free-wait pass (+39) |
+| `tmp/r3/s8295.txt` = 8,295 (= `best_NEW_RECORD_8297_a60-75_r1`) | **VERIFIED, STRICT: the new strict record** | `check_tour.py` ok and `strict_check.py` STRICT. Put it on the board as the strict record |
+
+## 2. Guided L3 runs (anchors 30-45 and 60-75; random β per restart)
+| run | finished restarts | best |
+|---|---|---|
+| 8329 a30-45 r1 | 7863, 7861, 7863, 7717 | 7,863 |
+| 8329 a30-45 r2 | 7863, 7639, 7717 | 7,863 |
+| 8329 a60-75 r1 | 8290, 8290, 8255, 8290, 8290 | 8,290 |
+| 8329 a60-75 r2 | 8290 ×6 | 8,290 |
+| 8297 a30-45 r1 | 7542, 7942, 7671, 7482 | 7,942 |
+| 8297 a60-75 r1 | 8295, 8210, 8295, 8210, 8210 | **8,295** |
+| 8297 r2 (both ranges) | — | **died: `cannot open ../lns/NEW_RECORD_8297.txt`** |
+
+- **BLOCKER for the r2/r3 rows: missing seed file.** lns's saver deleted `NEW_RECORD_8297.txt`. Copy it from lns history, or use `tmp/r3/s8295.txt`/`s8290.txt` as seeds stored *in your own folder*. Re-run the failed configurations.
+- **MAJOR: mode collapse across rngs.** Rng 101 and rng 102 return *the identical* 8,290 tour in 10 of 11 restarts. At anchors 30-45 both rngs give the same 7,863 / 7,717. Fresh restarts with different rngs should not collide this often.
+  - Either the rng does not reach the rollout policy, or the prior (β ≥ 1) plus the shared anchor dominate.
+  - Test: run 2 rngs at β=0 from the same anchor. If they collide too, the rng plumbing is broken.
+  - Either way, n identical finishes is **one** sample, not n, under the evidence standard.
+- **MAJOR (scope):** anchors 30-45 of the current lineage cost about 400-500 min against anchors 60-75. Merge re-search from fresh weights at L3 is not competitive with the existing merge; it needs L4-level effort or a merge-specific objective.
+
+## 3. Are the new-climb runs (anchors 12-35) leaving the 8,123 basin? Partly; not the bottom climb
+- `pool_climb.txt` (8 tours) plus two bests: 7,081-7,557.
+- **Every one keeps 8,123's first 15 moves**, so the *bottom climb is unchanged*. That is by construction: 8,329's first 15 moves are 8,123's, and only anchors 12-14 can change moves 13-15.
+- They do produce **different merges and ladder orders**: dance starts at moves 36-48, beginning at a8/a7, g5/g6, e1/f1, g2/g1 and others, against h3/h2 for every record. That is genuine diversity in the dance structure.
+- But they sit about 770 below the record, with two unfinished restarts at anchors 12/17.
+- To change the bottom climb at all, anchors must be < 12 and the seed should be a tour whose bottom climb differs (7,200 diverges at move 6, as lns uses). L3 from a1-ish anchors has never found the raise trick (README). Use lns's run9 outside-family tour as the anchor source instead.
+
+## 4. Recommendation: CONTINUE (2 cores), re-balanced
+1. **Fix the seed files** (copy 8,295/8,290 into `prior/`). Re-run the failed rng-2/3 configurations at anchors 60-75. That is where every strict gain this round came from (8,290 and 8,295).
+2. **Diagnose the rng collision** (5 min).
+3. **Swap the 0.75-core climb track** from "anchors 12-35 of 8,329" to "anchors 20-60 of lns's best 7,200-family tour". That is a real alternative basin.
+4. Keep the free-wait pass on every pool tour ≥ 8,250.

@@ -248,3 +248,51 @@ test. The partial log is `tmp/r6_s51_f2_killed.log`.
 **run4: v3 vs v2.** Started, then stopped within a minute when the free-wait ruling arrived, and its logs
 were deleted. While it ran, it produced a strict 8,233 (v3, seed 31), which `saver.sh` verified
 (`tmp/saver2.log`). Not used as evidence.
+
+---
+# Round 3 (2026-11-01, 07:13-)
+
+## 2×2 starting-set test (`run8.sh`)
+- Settings: free sinks on (`--free 2`), `lns_v3`, 9,000 iterations per run, seeds 71-73,
+  deterministic, one thread. About 140-168 CPU-seconds per run.
+- Start A = 8,329 (prior's record, in the 8,211 family). Start B = 7,200: its bottom climb leaves 8,123's at
+  move 6, so it is outside the 8,211 family.
+- Diverse sets:
+  - for A: the outside tours (7,066, 6,303, and 10 curriculum tours whose openings leave 8,123's within the
+    first 9 moves: `tmp/curr_outside.txt`, 283-4,841 minutes), 12 8,123 variants with re-routed climbs
+    (`tmp/outside_climbs.txt`, built from opening's `m1s*` prefixes plus 8,123's dance; all checker-legal),
+    8,002 and 7,911;
+  - for B: only the outside tours (all below 7,200, so the start stays outside the family).
+  - "no div" = the start tour alone (op 7 then crosses over with its own elite pool).
+- Note on the outside sources: opening's `full/r_*` variants all share 8,123's first 13 moves, and its
+  `rr44_*` re-routed climbs could not be completed with 8,123's dance (every one breaks a visit cap). That
+  is why curriculum tours and 7,200/7,066/6,303 were used.
+
+| cell | s71 | s72 | s73 | spread |
+|---|---|---|---|---|
+| A (8,329) + div | 8,329 | 8,329 | 8,329 | +0 / +0 / +0 |
+| A (8,329), no div | 8,329 | 8,329 | **8,330** | +0 / +0 / +1 |
+| B (7,200) + div | 7,577 | 7,392 | 7,611 | +377 / +192 / +411 |
+| B (7,200), no div | 7,430 | 7,504 | 7,501 | +230 / +304 / +301 |
+
+Reading:
+- From 8,329, the method is at a plateau: 1/6 runs improve, by +1, and the diverse set does not help.
+- From 7,200, every run climbs by 190-410 in 9k iterations; with div the mean is +327, without it +278
+  (n=3, a large overlap, so this is not significant).
+- No outside-family run got near 8,000 at this budget, so the outside basin would need far more compute
+  (see run9).
+
+## 8,330 (new record, +1)
+- Run: `run8.sh` cell A_nodiv, seed 73, at it 2,389, op 7 (crossover with an elite tour, a=137, partner
+  [138, 150), b=147).
+- The check gives `moves=151 ok=True T=8330 maxvisits=3 unnecessary=[]`. Free waits (the same two as 8,329):
+  (132, 80, d4) and (145, 72, g8). Saved as `NEW_RECORD_8330.txt` and `best.txt`.
+- **What changed against 8,329:**
+  - The dance is identical: from h3 onwards it is the same sequence of squares, and the dance is worth
+    8,035 minutes in both.
+  - The climb and merge are rewritten from move 23 on: e7 waits 2 (after f7), d7 52, f7 18, d8 7, c8 48, then
+    g6 -> h4 -> h5 -> h6 and 80 at h5, entering h3 at move 56 instead of 65.
+  - T at the dance start is 295 (8,329: 294), and the first dance groups are 30/26+ instead of 32/24.
+  - Landings drop by 9 (152 vs 161). Sits per point: d7 2->3, d8 1->2, f7 3->2. a6 and b7 are no longer
+    visited.
+- The SA had drifted to a different merge, and the crossover copied 8,329's dance tail back onto it.

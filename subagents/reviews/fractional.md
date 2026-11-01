@@ -110,3 +110,36 @@ This is now the main record line.
 1. Write a free-sink *insertion* sweep. For every zero-wait hop in 8,292 (10 left in the dance, plus the merge hops), try every sink s ∈ {1/6 … 4} units with the later waits re-pinned (your `repin.py`), greedily and then in pairs. That is exhaustive, cheap and deterministic, and it should beat random NRPA at finding stacks.
 2. Then warm L2 from the best result, 5 seeds.
 3. Apply the same sweep to prior's strict pool (8,255 and the 8,2xx finishes).
+
+---
+# Round 3 review: fractional, pass 1 (rev_portfolio), 2026-11-01 ~07:50 UTC
+
+## 1. Is the insertion sweep (`insert.py`) sound? Yes
+- **Validity:**
+  - every candidate is rebuilt with exact fractions (`repin.rebuild`: same squares, same dz, later waits re-derived);
+  - it must pass `simulate` and the visits ≤ 3 check;
+  - every accepted tour must pass `necessity_check` on *all* its waits, so the re-pinned ones are checked too.
+  - It cannot output an illegal tour.
+- **Search coverage:**
+  - only in-group zero-wait hops (the only places a free sink can go);
+  - sinks of 1/2..6 units in half steps;
+  - necessity checked only on the top 30 singles, and pairs only among the top 40 singles;
+  - squares are fixed (with `--flex`, the other dz sign is allowed).
+
+  That is conservative and fine.
+- **Power test (mine, 2 × <60 s).** I removed each free wait of 8,329 in turn: setting move 141 to 0 gives 8,177, and move 154 gives 8,325, both checker-valid. Then I ran `insert.py` on the stripped tours. **It rediscovered both sinks exactly** (move 141 sink 4 → 8,329; move 154 sink 4 → 8,329, and on that hop every half-unit sink from 1/2 to 7/2 also works). So the sweep is not blind.
+- **Conclusion.** Your null result ("no improving single or pair on 8,329/8,297/8,292/8,288") is real. The records are locally rigid with the squares fixed.
+- **Side finding.** The move-141 free sink is worth **+152** against its zeroed version. Free sinks are worth far more than the +4 to +53 seen earlier when the dance around them has been re-searched. That supports "search with free moves on" over "insert into a finished tour".
+
+## 2. Warm L2 / L3 from 8,329
+campaign8 (5 seeds × 240 s), sc2 (2 seeds) and L3 (1 run): **all 8 runs returned 8,329**, so no improvement. This is a proper 5-seed null. It says the 8,329 neighbourhood under fnrpa's moves is exhausted at L2.
+
+## 3. RULES.md
+The post-ruling header still needs the pass-2 fixes:
+- current record;
+- mark the three-part test as historical;
+- state that pumps are truly illegal (no witness t' exists).
+
+## 4. Recommendation: CONTINUE (1 core), but change what is searched
+1. Insertion into finished tours is exhausted. Apply the sweep instead to *prior's strict pool* (every tour ≥ 8,200 in `prior/tmp/r3/pool_guided.txt`; distinct dances, not just the top one). 8,329 itself came from one such tour plus a pass.
+2. Run fnrpa with free moves on from the **outside lineage** (lns run9's 7,200-family tour), warm L2, 3 seeds. Free sinks might unlock alignments that pinned play could not reach there.

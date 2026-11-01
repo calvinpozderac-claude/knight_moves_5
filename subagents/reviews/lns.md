@@ -102,3 +102,53 @@ Next steps, in order:
 1. Finish run5 and report it.
 2. Run the 2×2 starting-set test with free sinks on.
 3. Seed from 8,292 plus a deliberately *different* starting set: re-routed variants of 8,292's first 62 moves, and the 7,200/7,066 families.
+
+---
+# Round 3 review: lns, pass 1 (rev_portfolio), 2026-11-01 ~07:50 UTC
+
+## 1. Claims checked
+| Claim | Verdict | Command |
+|---|---|---|
+| `data/tours/record_8330.txt` = `NEW_RECORD_8330.txt` = 8,330 | **VERIFIED** | `check_tour.py` prints `moves=151 ok=True T=8330 maxvisits=3 maxwait=132 unnecessary=[]`; free waits (132, 80, d4) and (145, 72, g8) |
+| Origin | from the log | `tmp/r8_A_nodiv_s73.log`: start 8,329, **no diversity set**, seed 73, 9k iters; NEW BEST 8330 at it 2389 (op 7 crossover) |
+| 8,297 | checker-valid at 03:01 (`saver2.log`) | the file has since been **deleted** from lns/ (see issue 3) |
+
+## 2. Is 8,330 a real step or a +1 variant of 8,329? A +1 variant, same lineage
+- **Shared with 8,329:**
+  - the first 22 moves;
+  - the **last 53 (wait, square) pairs**, including both free waits (80 at d4, 72 at g8) and the reordered ladder tail (f2/f1 after a3/a2, then b2/b3 …).
+- **What lns changed:** only the merge and the early ladder (moves 23-98). It enters the dance at move 53 instead of 62 (151 moves vs 160), with more balanced early groups (120/104 against 128/96).
+- **Net effect:** at the start of the shared suffix, T is 4,995 against 4,994. The whole +1 comes from the front, and the tail contributes identically.
+- **Verdict:** a legitimate new record, but structurally a re-arranged merge on prior's tail.
+
+## 3. The 2×2 starting-set test (`run7.sh` round 2, `run8.sh` round 3)
+- **Design: correct.** Equal iterations, deterministic, cpu_user logged (about 90-170 CPU-s per run), free sinks on, and the "outside" start is 7,200, whose bottom climb diverges at move 6.
+- **run7** (start {8,123, 8,292} × {div, nodiv}, 2 seeds, 6k iters):
+  - from 8,123: div 8131/8127, nodiv 8130/8130;
+  - from 8,292: div 8297/8292, nodiv 8293/8297.
+  - No effect of the diversity set.
+- **run8** (start {8,329 = A, 7,200 = B} × {div, nodiv}, 3 seeds, 9k iters; B_nodiv s73 still running):
+
+  | cell | s71 | s72 | s73 |
+  |---|---|---|---|
+  | A_div | 8329 | 8329 | 8329 |
+  | A_nodiv | 8329 | 8329 | **8330** |
+  | B_div | 7577 | 7392 | 7611 |
+  | B_nodiv | 7430 | 7504 | (running, 7443) |
+
+  - B_div median 7,577 against B_nodiv's 7,430/7,504.
+  - The diversity set helps the outside lineage a little (2/2 complete paired seeds), but the outside lineage stays about 700 below the record.
+  - A is flat: 1 of 6 runs improved, by +1.
+- **Conclusion:**
+  - At these budgets (≤ 9k iters ≈ 150 CPU-s; the 8,211 jump came at it 32,570), the test is **under-powered**. It cannot distinguish "diversity doesn't matter" from "not enough iterations to use it".
+  - The honest summary is "no detectable effect at 6-9k iters". It is not "diversity is useless". run9 (30k iters from the best 7,200-family tour) is the right follow-up.
+
+## 4. Issues
+- **MAJOR (process):** saver.sh removes superseded `NEW_RECORD_*` files. prior's round-3 script seeds from `../lns/NEW_RECORD_8297.txt`, and its rng-2 runs now die with `cannot open ../lns/NEW_RECORD_8297.txt`. Never delete record files: keep them, or copy each one to `data/tours/record_<T>.txt`, which is the coordinator's job, then tell prior.
+- **MAJOR (evidence):** op 7 against the current record mostly reshuffles the merge with ±1-5 net. Don't count +1 steps as method evidence.
+- **MINOR:** NOTES.md still lacks the Round 2/3 sections: run4 to run8 tables, per-seed bests, CPU-s.
+
+## 5. Recommendation: CONTINUE (1 core), weighted toward the outside lineage
+1. run9 (30k iters, 7,200 family). Success means ≥ 8,000 from a non-8,123 bottom climb. That would be the first real alternative basin.
+2. If run9 stalls below 7,900, use B's best tour as a crossover *donor* (op 7) for A, so its climb and merge can be transplanted.
+3. Stop spending iterations on A-only polishing.

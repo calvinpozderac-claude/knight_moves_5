@@ -25,3 +25,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 2 | lns | LNS + free waits | 8,297 (verified) | |
 | 2 | prior | guided NRPA + free-wait pass | **8,329 (verified)** | record |
 | 3 | lns | LNS + free waits | **8,330 (verified)** | record (+1) |
+| 3 | prior | guided dance re-search (strict) | 8,295 (verified, STRICT) | strict record |

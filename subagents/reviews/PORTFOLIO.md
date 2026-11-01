@@ -313,3 +313,54 @@ All three strict-board results this round (8,130, 8,211 and the free-wait stacks
 - **"Method X works".** Requires ≥ 3 seeds that improve at equal CPU, not one hit.
 - **New records.** A new record (a single hit) does not move cores.
 - **Seeding.** No agent may seed *only* from the current record. Every run file must list at least one input tour from outside the record's prefix family.
+
+---
+# Round 3, pass 1 (rev_portfolio), 2026-11-01 ~07:50 UTC
+
+## Boards (re-verified)
+- **Overall record: 8,330** (lns; `data/tours/record_8330.txt`; free waits at moves 132 and 145). Before it, 8,329 (prior).
+- **Strict record: 8,295** (prior `tmp/r3/s8295.txt`: `check_tour.py` ok, `strict_check.py` STRICT). It is not yet in `data/tours`. Then 8,290 (prior `tmp/s8290.txt`, the strict base of 8,329).
+
+## Is 8,330 a real step? No: it is a +1 variant of 8,329, in the same lineage
+- 8,330 and 8,329 share the first 22 moves and the **last 53 (wait, square) pairs**, including both free waits.
+- lns rewrote the merge (dance at move 53, not 62) and re-balanced the early ladder groups.
+- The two tours reach the shared suffix at T = 4,995 and 4,994 respectively.
+- The new structural content of this round is **prior's** reordered dance (the f2/f1 block moved after a3/a2) plus a free sink at d4 worth +152 against its zeroed version. lns added a neutral merge rewrite.
+
+## Over-indexing check
+- **Every tour ≥ 8,200 is still the 8,123 basin:** the same first 15 moves and the same opening ladder h3/h2 → h1/g1.
+- **Diversity actually being tried:**
+  - prior's anchor-12-35 runs keep the bottom climb, but they produce *different ladder orders* (dances starting a8/a7, g5/g6, e1/f1, ...). They reach 7,081-7,557.
+  - lns's outside lineage (7,200 start, bottom climb diverges at move 6) reaches 7,392-7,611 in 9k iterations.
+  - Both are about 700 below. They are kept alive, but nothing outside the basin is competitive yet.
+- **Mode collapse in prior's guided runs:** different rngs return the identical 8,290 tour 10 of 11 times. Under the evidence standard, that is one sample.
+- **Process bug:** lns's saver deletes superseded record files, and prior's seed `../lns/NEW_RECORD_8297.txt` is gone, so its rng-2 runs from 8,297 died at start. Rule: record files are never deleted, and every seed lives in `data/tours/` or in the agent's own folder.
+
+## What this round established (evidence standard)
+| Finding | n | Verdict |
+|---|---|---|
+| Free-sink insertion into finished records (8,288/8,292/8,297/8,329) | 4 tours, all hops, singles + pairs | **robust null.** The sweep is proven able to find sinks (it rediscovered 8,329's two removed sinks), so the records are rigid with squares fixed |
+| Warm free-sink L2/L3 from 8,329 | 8 runs (5 seeds) | robust null |
+| prior dance re-search at anchors 60-75 | 2 seeds × 2 base tours (2 runs dead) | **produces every strict gain** (8,290, 8,295). Real, but collapsed onto 1-2 tours |
+| prior merge re-search, anchors 30-45 | 3 runs | 400-500 below; not competitive at L3 |
+| lns 2×2, diversity set | 2 × 2 × 2 (run7) + 3 × 2 × 2 (run8) at 6-9k iters | no detectable effect for the 8,123-family start; small help (+70-150 median) for the 7,200 start. Under-powered |
+| lns op 7 on the record | 1/6 runs, +1 | not evidence of a method |
+
+## Revised headroom
+- **Dance re-search plus free-wait pass.** The best strict dances so far (8,295) plus a re-optimised free-wait pass (+39 to +150 when sinks are placed *during* search): plausible +20 to +100 → about 8,350-8,430.
+- **Insertion into fixed tours:** exhausted.
+- **Merge/climb:** still the big unknown, +0-300. It is reachable only with more effort per restart (L4 / long LNS) or an alternative basin.
+- **Ceiling:** about 8,866 for the two-group dance, unchanged.
+
+## CPU split for the rest of round 3 / round 4 (4 cores)
+| Cores | Track | Change |
+|---|---|---|
+| 1.25 | **prior, dance re-search at anchors 55-80** of the strict 8,295 / 8,290 / 8,330 skeletons, ≥ 3 rngs, after the rng-collision check and seed fix. Each pool tour ≥ 8,250 goes to the free-wait pass | unchanged share; it is the only source of strict gains this round |
+| 0.75 | **prior + fnrpa, free moves *inside* the search.** Port the free-sink move into pnrpa, or run fnrpa warm from prior's distinct strict tours (not only from the record) | new: sinks found during search are worth up to +152, against ≤ +53 by insertion |
+| 1.0 | **alternative basin**: lns run9 (30k iterations, 7,200 family), then prior L3 at anchors 20-60 of that tour (instead of anchors 12-35 of 8,329) | anti-convergence. Kill it after 2 more rounds if nothing ≥ 8,000 appears |
+| 0.75 | **lns on the record**: long runs (≥ 30k iterations) with op 7 donors from prior's *distinct* strict pool tours and from the alternative basin | down from 1.0; short polishing gives +1 |
+| 0.25 | fractional sweep on prior's pool, plus RULES.md cleanup | down; insertion into finished tours is exhausted |
+
+**Over-indexing guard:**
+- The +1 record (lns) does not shift cores toward lns.
+- The strict gains (prior, anchors 60-75) justify keeping prior at 2 cores, but only with seed diversity. Every prior run must use ≥ 3 distinct base tours, and identical finishes count once.
