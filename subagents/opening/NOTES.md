@@ -56,6 +56,48 @@ g++ -O3 -march=native -std=c++17 -pthread -o tmp/splice_nrpa splice_nrpa.cpp
    --anchor-min 30 --anchor-max 130 --seed-adapt 0 --no-warm --level 2 --threads 1 --time 480 --pool tmp/spl_pool.txt --pool-min 8124 --out tmp/spl_l2.txt
 ```
 
+
+## 4. Round 2 (after the coordinator's review)
+
+### 4a. What 8,130 (subagents/lns) changed relative to 8,123
+`python3 analyse.py ../lns/NEW_RECORD_8130.txt`, `python3 pairs.py ../lns/NEW_RECORD_8130.txt 60`.
+- Moves 1-15 identical. Moves 16-27 insert zero hops (d5 f5, h4 h6 h4 h6): same altitudes, T=37 at d8.
+- Moves 28-34 identical to 8,123's 24-30 (T=70 after f7 -> d7).
+- **Merge, 7 sits in both:** 8,123 sits c7 8, d7 6, e7 52, d7 12, h5 63, h6 19, h5 60 = 220 min (moves 31-42).
+  8,130 sits c7 8, e7 52, c7 27, b8 6, d7 30, b8 24, h6 80 = 227 min (moves 35-59). It uses the top-left corner that
+  8,123 never touches (zero hops a7 a8 a7 a8 c8 b8, sits on c7 and b8). The partners of those points (f2, g1) are
+  still below the groups, so they rise into the dance and are not lost ("partner below"). One merge sit on h6
+  (80 at n=20) replaces 8,123's three sits around h5/h6 (63+19+60 at n=7-21).
+- **Dance entry is the same state:** groups 31+26, h8 2 below the knight. T=297 against 290. 8,130 enters at g2
+  (move 61) instead of h3 (move 44). The dance minutes are identical (7,833). The 8,130 dance is the 8,123 dance
+  with g and h swapped in the first 18 sits (g2 g1 ... h1 h2 ... h3 g3, the same minutes sequence). One change near
+  the end: the d1 sit of 80 is split into 60 + 20 around a zero hop to b1. That gives the same minutes and uses
+  d1's spare visit and b1.
+- Per point (8,123 -> 8,130): b8 sits 0->2, c7 1->2, d7 2->1, h5 1->0, h6 2->1. Visits rise on non-sitters only
+  (a7 0->2, a8 0->2, c8 0->3, d5 1->3, d8 1->3, d6, f5, b7, c3, d3, b1). **The sitter-visit ledger before the dance is
+  unchanged (d1, c2, d2, e2, b4, c4).** So the +7 is minutes in the merge at an identical dance entry. No sits
+  were freed.
+- Same re-route on 8,130 (`MODE1=1 ./tmp/reroute ../lns/NEW_RECORD_8130.txt 61 2 30000 5 tmp/MODE1_8130`): cost 6,
+  equal to its own. It gives a legal 148-move version of 8,130 (`tmp/MODE1_NEW_RECORD_8130_0.txt`, checker ok,
+  8,130) that frees the non-sitter corner visits.
+
+### 4b. Bottom climb (moves 1-12): exhaustive, no cheaper route exists
+`bottom.cpp`: exhaustive DFS from a1 over **every** pinned move (any sit at any point, any sink, any zero hop) with
+T <= 37 and at most L moves, that reaches exactly 8,123's altitudes and knight point (b4) after move 12, and from
+which 8,123's moves 13-44 still replay legally. The cost is the visits on points that sit later in 8,123
+(the record costs 5: d1, c2, d2, e2, c4).
+```
+g++ -O2 -std=c++17 -o tmp/bottom bottom.cpp
+./tmp/bottom ../../data/tours/record_8123.txt 12 14      # L=12: 62M nodes; L=14: 207M nodes, about 3 min
+```
+- L <= 12 and L <= 14: **no route cheaper than the record.** The cheapest is the record's own route (at L=14 with one
+  extra a1-b1 detour). L=16 was stopped for lack of CPU. So c2, e2 and c4 cannot be freed while keeping the same
+  state at move 12. Freeing them needs a different altitude state after the bottom climb (different raise sinks), so the
+  top climb must change too. That is a whole new climb, not a re-route.
+- The sit-order permutations of the three raise sits (`PERM=...` in reroute) are infeasible or cost more (021: 7).
+- Sitter-weighted cost without keeping the record dance legal (`MODE3`): cost 6 for 8,123 (move 44) and for
+  8,130 (move 61), equal to the records.
+
 ## Conclusions / recommendations
 1. The 8,123 tour is locally tight: zero-wait routing is optimal for its sits, no short loop can be added, and windows
    that re-join it give no gain. Beating it needs a different sit sequence in the climb/merge **and** a dance as

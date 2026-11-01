@@ -13,12 +13,19 @@
 // Scorers of a dance-start state s (T = minutes so far):
 //   ideal  = T + idealised dance (README "--objective opening"; copy of dance_pot in src/nrpa.cpp)
 //   bound2 = ideal, refined: a point can only sit if it has an orthogonal neighbour in the other group
-//            (the knight leaves a sit by an orthogonal +2 jump), a1/h8 never sit, and each opposite pair
-//            supplies one sitting point (sitting kills the partner); the final jump into h8 is added
-//   dnrpa  = T + best dance found by a small NRPA restricted to dance moves (sit 4 then jump onto the
-//            other group, zero-wait same-altitude hops, any jump into h8) on the real engine: includes
-//            adjacency, opposite pairs, joins, and visit caps exactly; noisy, a lower bound
-//
+//            (the knight leaves a sit by an orthogonal +2 jump), a1/h8 never sit, each opposite pair
+//            supplies one sitting point (sitting kills the partner); + the final partial sit into h8
+//   bound3 = bound2 + joins (points outside the groups join when a sinking group reaches their altitude);
+//            cheap, optimistic, used to rank candidates during the search (--scorer to change)
+//   dbeam  = an exact, legal dance found by a beam over dance moves (sit 4 then jump onto the other group,
+//            zero-wait same-altitude hops, h8), ranked by minutes at equal move count; pessimistic but it
+//            separates dance starts the bounds rate equal (record 7,234 at width 1000 vs 7,200-tour 6,392).
+//            Used for the design variants and to re-rank the search's best candidates; each dbeam result
+//            is a finished tour (written to best.txt / pool.txt)
+//   dnrpa  = NRPA restricted to dance moves (kept for comparison; weak at levels 1-2)
+// Search priority = T + target estimate - distance(s, target), max over all targets; the distance is
+// frame-free (target groups must share one level r / r-2, wherever r is): wClu per distinct level left,
+// wAlt per unit of altitude off, wVis per visit beyond the target's; plus a 1-2 move lookahead.
 // Build: g++ -O3 -march=native -std=c++17 -pthread -o goal goal.cpp
 #include "../../src/eng.h"
 #include <atomic>
@@ -65,7 +72,7 @@ static bool legal_move(const S& s, Mv m) {
   return false;
 }
 static int sq_of(const string& n) { return (n[0] - 'a') + 8 * (n[1] - '1'); }
-static int ntype(int p, int q) {  // 0 knight, 1 orthogonal, 2 two-away, -1 none
+[[maybe_unused]] static int ntype(int p, int q) {  // 0 knight, 1 orthogonal, 2 two-away, -1 none
   for (int k = 0; k < NBN[p]; k++) if (NBQ[p][k] == q) return NBT[p][k];
   return -1;
 }
@@ -323,7 +330,7 @@ static vector<Target> read_targets(const string& fn) {
 struct Opts {
   string tour = "data/tours/record_8123.txt", targets, trace, outDir = "subagents/goal/tmp/run", startTour;
   int k = -1, startK = 0, variants = 12, edits = 6, scoreLevel = 1, scoreRuns = 2, threads = 1, beam = 20000, maxDepth = 60,
-      topOut = 50, maxFound = 20000, rerank = 200, writeMax = 2000, bucketCap = -1, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
+      topOut = 50, maxFound = 20000, rerank = 200, rerankClose = 50, writeMax = 2000, bucketCap = -1, finishTop = 0, finishLevel = 2, maxPerTarget = 0, kmin = 30, kmax = 50;
   double time = 60, finishTime = 0, wClu = 150, wAlt = 5, wVis = 100, wKnight = 0, wT = 1, noise = 0, poolMin = 7500, altCap = 6;
   unsigned rng = 1; int lookahead = 2; double laMargin = 0; bool expandDance = false, visKey = true;
 };
@@ -659,8 +666,14 @@ static int run_search() {
       printf("  new best finished tour %lld minutes (%s) -> %s/best.txt\n", minutes, how, O.outDir.c_str()); fflush(stdout);
     }
   };
-  if (O.rerank > 0 && !found.empty() && DBEAM > 0) {
+  if ((O.rerank > 0 || O.rerankClose > 0) && !found.empty() && DBEAM > 0) {
+    // the best --rerank by the cheap score (found is sorted by it), plus the --rerank-close closest to a target
     int nR = min<int>(O.rerank, (int)found.size());
+    if (O.rerankClose > 0 && nR < (int)found.size()) {
+      int nC = min<int>(O.rerankClose, (int)found.size() - nR);
+      std::partial_sort(found.begin() + nR, found.begin() + nR + nC, found.end(), [](const Found& a, const Found& b) { return a.dist < b.dist; });
+      nR += nC;
+    }
     auto r0 = std::chrono::steady_clock::now();
     std::atomic<int> nextR{0}, doneR{0};
     auto rw = [&]() {
@@ -759,7 +772,7 @@ int main(int argc, char** argv) {
     else if (a == "--w-alt") O.wAlt = stod(nx()); else if (a == "--w-clu") O.wClu = stod(nx()); else if (a == "--w-vis") O.wVis = stod(nx()); else if (a == "--w-knight") O.wKnight = stod(nx());
     else if (a == "--w-t") O.wT = stod(nx()); else if (a == "--alt-cap") O.altCap = stod(nx()); else if (a == "--noise") O.noise = stod(nx());
     else if (a == "--expand-dance") O.expandDance = true; else if (a == "--dedup-novis") O.visKey = false; else if (a == "--trace") O.trace = nx(); else if (a == "--bucket-cap") O.bucketCap = stoi(nx());
-    else if (a == "--rerank") O.rerank = stoi(nx()); else if (a == "--lookahead") O.lookahead = stoi(nx()); else if (a == "--la-margin") O.laMargin = stod(nx()); else if (a == "--write-max") O.writeMax = stoi(nx());
+    else if (a == "--rerank") O.rerank = stoi(nx()); else if (a == "--rerank-close") O.rerankClose = stoi(nx()); else if (a == "--lookahead") O.lookahead = stoi(nx()); else if (a == "--la-margin") O.laMargin = stod(nx()); else if (a == "--write-max") O.writeMax = stoi(nx());
     else if (a == "--top-out") O.topOut = stoi(nx()); else if (a == "--max-per-target") O.maxPerTarget = stoi(nx()); else if (a == "--max-found") O.maxFound = stoi(nx());
     else if (a == "--finish-top") O.finishTop = stoi(nx()); else if (a == "--finish-level") O.finishLevel = stoi(nx()); else if (a == "--pool-min") O.poolMin = stod(nx());
     else if (a == "--finish-time") O.finishTime = stod(nx());

@@ -25,6 +25,7 @@
 #include <csignal>
 #include <mutex>
 #include <thread>
+#include <sys/resource.h>
 
 struct Mv { int delta, q; };
 static const uint32_t NONE = 0xffffffffu;
@@ -152,6 +153,7 @@ static int ideal_dance(const S& s, int U, bool knightSits, int sink = 0) {
 // onward neighbours); with no such neighbour it hops (no wait) by a knight move inside its group. Unlike
 // ideal_dance it respects adjacency, so it is close to what a real dance can get. Returns the minutes up
 // to the last time the knight stood next to h8 (where the tour can end).
+static uint64_t H8NB = 0;  // neighbours of h8 (set in main)
 static int walk_dance(const S& s, int U) {
   int8_t grp[64]; int8_t vl[64]; int n[2] = {0, 0};
   for (int i = 0; i < 64; i++) {
@@ -159,8 +161,6 @@ static int walk_dance(const S& s, int U) {
     vl[i] = (grp[i] >= 0 && i != H8 && i != A1) ? (int8_t)max(0, 3 - (int)s.vis[i]) : 0;
   }
   if (grp[s.pos] != 0 || !n[1] || grp[H8] < 0) return 0;
-  static uint64_t H8NB = 0;
-  if (!H8NB) for (int k = 0; k < NBN[H8]; k++) H8NB |= 1ULL << NBQ[H8][k];
   int p = s.pos, fut = 0, best = (H8NB >> p & 1) ? 0 : -1;
   auto viable = [&](int q, int g) {  // q (in group g) can be sat on and left by an orthogonal jump
     for (int k = 0; k < NBN[q]; k++) { int r = NBQ[q][k]; if (NBT[q][k] == 1 && grp[r] == (g ^ 1) && vl[r] > 0) return true; }
@@ -361,6 +361,7 @@ static BeamResult run_beam(const vector<Mv>& seed, int k, int width, double nois
       std::mt19937_64 r2(rngSeed * 7919 + depth * 104729 + tid);
       vector<pair<int, int>> mv; S s, c;
       while (!STOP) {
+        if (TIME > 0 && elapsed() >= TIME) { STOP = true; break; }
         int i0 = next.fetch_add(256); if (i0 >= N) break;
         for (int i = i0; i < min(N, i0 + 256); i++) {
           if (REPLAY) state_of_trace(meta[i].trace, s); else unpack(st[i], meta[i].T, s);
@@ -480,6 +481,7 @@ static BeamResult run_beam(const vector<Mv>& seed, int k, int width, double nois
 
 int main(int argc, char** argv) {
   init_board(); T0 = std::chrono::steady_clock::now();
+  for (int k = 0; k < NBN[H8]; k++) H8NB |= 1ULL << NBQ[H8][k];
   bool DIAG = false;
   for (int i = 1; i < argc; i++) {
     string a = argv[i]; auto nx = [&]() { if (i + 1 >= argc) { fprintf(stderr, "missing value for %s\n", a.c_str()); exit(1); } return string(argv[++i]); };
@@ -538,5 +540,6 @@ int main(int argc, char** argv) {
     fflush(stdout);
     w *= WIDEN;
   }
-  printf("done: best %lld minutes after %.1fs, %lld finishes seen -> %s\n", gBest, elapsed(), gFinished, outFile.c_str());
+  struct rusage ru; getrusage(RUSAGE_SELF, &ru);
+  printf("done: best %lld minutes after %.1fs, %lld finishes seen, peak RSS %.0f MB -> %s\n", gBest, elapsed(), gFinished, ru.ru_maxrss / 1024.0, outFile.c_str());
 }
