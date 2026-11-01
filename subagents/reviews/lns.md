@@ -65,3 +65,40 @@ Next steps, in order:
 3. Build a new diversity set from 8,211: `tools/reroute_zero_wait.py`, or ask for opening's reroute on 8,211's first 64 moves. Run 3 seeds × 55k iterations with op 7 drawing from it. Success: > 8,211 in at least 1/3 seeds, or a documented plateau with the best per seed.
 
 **Pass 1 addendum (02:40 UTC):** `tmp/repro_s21.log` reached NEW BEST 8211 at it 32570 (op 7 a 63 c 64 d 89 b 84). That matches the original run's trajectory, so **8,211 reproduces deterministically from `--seed 21 --iters 55000`**. The reproducibility issue is closed. The evidence issue (one seed, confounded comparison) is still open.
+
+---
+# Round 2 review: lns, pass 2 (rev_portfolio), 2026-11-01 ~02:55 UTC
+
+## 1. Claims checked
+| Claim | Verdict | Command |
+|---|---|---|
+| `NEW_RECORD_8288.txt` = 8,288 | **VERIFIED, legal under the user's rule** | `check_tour.py` prints `moves=153 ok=True T=8288 maxvisits=3 unnecessary=[]`; `strict_check.py` reports 1 free wait `(111, 24, b3)` |
+| How it was found | from the log | `tmp/r5A_s42.log`, v3 `--free 2`, seed 42, 12k iters: NEW BEST 8288 at it 7101 (op 5, a=117, len 5) |
+| 8,211 reproduces | **VERIFIED** (pass 1) | `repro_s21` matches the original trajectory |
+
+## 2. Did the 2×2 starting-set test happen? No
+- What ran instead:
+  - `run4.sh` (v3 vs v2, 5 seeds each) has no logs in tmp/. Either it was not run or its logs were removed.
+  - `run5.sh` is a different A/B: free sinks (A) vs strict (B), both v3, the same 9 input tours, 12k iters, seeds 41-45.
+- Status at this pass: A s41-44 done; B s41-43 done, s44 running, s45 pending.
+  - A: 8241, **8288**, 8241, 8241 (1/4 seeds improve).
+  - B: 8241, 8241, 8241 (0/3).
+- So the free-sink operator helped in 1 of 4 seeds. That is a single success, not yet a rate. Every other run returned the best input, 8,241.
+- The question of whether the *starting set* matters, the one the 8,211 jump raised, is still untested.
+
+## 3. Lineage and convergence
+- lns's 8,288 shares only 8,123's first 13 moves with fractional's 8,288. Its merge is the 8,241 (smoke2) merge: it enters the dance at move 59, against move 62 for fractional's tour.
+- But its **last 94 squares are identical to fractional's 8,288**, including the same free wait (24 min at a1 → b3). lns's inputs did not contain fractional's 8,288 (it appeared 2 minutes earlier and is not in `run5.sh`).
+- So two different searches **converged independently on the same dance-tail improvement**. That is good evidence the improvement is easy to find. It is also evidence that everyone sits in one basin: the 8,123 dance ladder.
+- Both tours give exactly 8,288 on top of different merges. So lns's 8,241 merge is worth no more than the 8,211/8,235 merge.
+
+## 4. Issues
+- **MAJOR:** NOTES.md promises a "Round 2 section below" that is not there. Add `run4`/`run5`: commands, per-seed bests, CPU time (`cpu_user` is already logged).
+- **MAJOR (evidence):** the free vs strict A/B is one hit out of 4. Finish s44/s45, then report n, the median and the max per arm.
+- **MAJOR (portfolio):** the 2×2 starting-set test is still the most informative experiment for this agent, because diversity was what produced 8,211. Run it next, at 12k iters × 3 seeds per cell (about 12 runs × 4 min).
+- **MINOR:** stack test. Fractional's 8,292 adds a second free wait at move 129 (84 min at d3). Feed `data/tours/record_8292.txt` into lns's inputs; op 7 can transplant that tail onto other merges.
+
+## 5. Recommendation: CONTINUE (1 core)
+1. Finish run5 and report it.
+2. Run the 2×2 starting-set test with free sinks on.
+3. Seed from 8,292 plus a deliberately *different* starting set: re-routed variants of 8,292's first 62 moves, and the 7,200/7,066 families.

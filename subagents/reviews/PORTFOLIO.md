@@ -263,3 +263,53 @@ All three strict-board results this round (8,130, 8,211 and the free-wait stacks
 **Guards:**
 - Don't send everyone into free sinks. The +28 to +53 gains are single-sink re-phasings with one seed each.
 - Require ≥ 3 seeds, equal time, and a free vs strict control (campaign2 design) before claiming that stacking pays.
+
+---
+# Round 2, pass 2 (rev_portfolio), 2026-11-01 ~02:55 UTC
+
+## Boards (all re-verified with `check_tour.py`; free waits counted with `strict_check.py`)
+- **Overall record: 8,292** (`data/tours/record_8292.txt`, fractional), with 2 free waits (moves 115 and 129).
+- 8,288 was found twice: by fractional (1 free wait, move 115) and by lns (1 free wait, move 111).
+- 8,264 (fractional).
+- **Strict best: 8,255** (prior, L3 anchor 70), ahead of 8,235.
+
+## Convergence: one lineage, one basin
+- **Every tour above 8,200 is the 8,123 lineage:** the same first 13-15 moves and the same dance-ladder order (h3/h2 → h1/g1 → g2/g3 → f2/f1 → f3/e3 → c5/b5 → a5/a4 → a3/a2 → b3/b2 → …).
+  - The strict tours share 81-114 moves with 8,211.
+  - lns's and fractional's 8,288s have different merges, but their **last 94 squares are identical**, including the same 24-minute free wait at a1→b3. They found it independently.
+- **What this tells us:**
+  - (i) The tail improvement is easy and robust.
+  - (ii) The merge difference between them is worth exactly 0.
+  - (iii) All three agents are exploiting the same basin. Nobody has run a different bottom climb or ladder order since round 1.
+
+## Robustness of the gains
+| Gain | Evidence | Robust? |
+|---|---|---|
+| prior vs stock at L3 | 3 anchors, 11-34 restarts per arm; at anchors 40/55 the prior's worst restart beats stock's best | **yes**, conclusive at the restart level (1 rng; add a second) |
+| free vs strict (fractional, campaign2) | 2/2 paired seeds, +29 and +4 | likely; n is short of 5 |
+| free vs strict (lns run5) | 1 of 4 seeds improves (8,288), 0/3 strict | weak so far |
+| 8,288 tail | found independently by two agents; 59/472 finishes in one fractional run | **yes** |
+| 8,292 | 1 of 5 seeds, 1 of 655 finishes | single event; legal, but no repeatable method yet |
+| dance re-search (anchor 70 of 8,211) | both arms beat the 8,235 strict record (8,240, 8,255) | **yes**. It corrects my earlier "dance near-saturated" claim |
+
+## Revised headroom (free waits legal)
+- **Free sinks.** 8,292 has 10 zero-wait hops left in the dance and about 6 in the merge. Each hop is a candidate free sink. Gains so far are 24-84 min per sink before re-pinning losses, and +4 to +53 net per sink. An exhaustive insertion sweep (every hop × every sink k/6, later waits re-pinned) is cheap and has not been run. Estimate: **+20 to +150**.
+- **Dance re-search** (shown above, at anchor 70): +20-60.
+- **Merge/climb:** +0-300, unchanged and still the largest lever. It is untouched since 8,211, because every agent now seeds from the same merge.
+- **Ceiling.** The relaxation still bounds the two-group dance at about 8,866. Free sinks don't add sitters or points.
+- **Round-3 target: 8,350-8,500.**
+- **Pumps (giant one-group free-sink loops, 11k+):** genuinely illegal under the user's rule, since no witness t' exists (see fractional.md). There is no hidden headroom there.
+
+## Round-3 CPU split (4 cores)
+| Cores | Agent / track | Why |
+|---|---|---|
+| 1.25 | **fractional**: exhaustive free-sink insertion sweep on 8,292 and on prior's strict pool, then warm L2, ≥ 5 seeds | biggest *cheap* expected gain now that free waits are legal; deterministic |
+| 1.25 | **prior**: guided L3 at anchors 30-45 (merge) *and* 60-75 (dance) of 8,255/8,292's skeleton, ≥ 2 rngs; every pool tour ≥ 8,200 goes through the free-sink pass | the only method with conclusive equal-time evidence; it gave the strict record |
+| 1.0 | **lns**: the 2×2 starting-set test with free sinks on; seed sets **not** derived from 8,211, i.e. re-routed 8,292 prefixes plus the 7,200/7,066 families | its 8,211 jump came from diversity. This is also the anti-convergence slot: at least half of it must start from tours outside the current lineage |
+| 0.5 | **reserved: lineage diversity**. Prior-guided search from small anchors (12-35), i.e. new bottom climbs, plus lns op 7 crossover with those | guards against all four cores polishing one basin. Cut it after round 3 if it produces nothing ≥ 8,100 |
+
+**Evidence rules for round 3:**
+- **Seeds.** Report n seeds and per-seed bests for every claim.
+- **"Method X works".** Requires ≥ 3 seeds that improve at equal CPU, not one hit.
+- **New records.** A new record (a single hit) does not move cores.
+- **Seeding.** No agent may seed *only* from the current record. Every run file must list at least one input tour from outside the record's prefix family.

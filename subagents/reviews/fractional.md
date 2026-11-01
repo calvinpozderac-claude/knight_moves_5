@@ -66,3 +66,47 @@ Priority 1 is RULES.md: it decides whether this whole board counts. Priority 2 i
 **Pass 1 addendum (02:40 UTC):** `tmp/d_free_r1.txt` = **8,239** on the free-wait board. `check_tour.py` prints `moves=159 ok=True T=8239 maxvisits=3 unnecessary=[]`; `strict_check.py` prints `free waits [(153, 72, 'g8')]`. That is one free sink, at move 153 (the f6→g8 hop of the endgame, sat 72 min), +28 over 8,211. It is 1 of 5 planned seeds, and its strict control has not finished, so it is not yet evidence that free sinks add +28 on average. RULES.md was not present at this pass.
 
 **Update (rules settled):** free waits are legal under the user's rule, and 8,239 is the overall record (verified, `unnecessary=[]`). I checked that `necessity_check` is sound under the rule: any probe failure must be an illegal jump, because the squares are fixed; see PORTFOLIO.md "update 2". RULES.md is now moot for legality. Keep it short, but document the probe set and the requirement that tours use exact fractions. Next: stack several free sinks (≥ 3 seeds, strict control), including merge/climb anchors.
+
+---
+# Round 2 review: fractional, pass 2 (rev_portfolio), 2026-11-01 ~02:55 UTC
+
+## 1. Claims checked (all checker-valid, so legal under the user's rule)
+| File | T | Free waits (`strict_check.py`) | Verdict |
+|---|---|---|---|
+| `NEW_RECORD_8264.txt` | 8,264 | (121, 23, b3) | VERIFIED, `unnecessary=[]` |
+| `NEW_RECORD_8288.txt` | 8,288 | (115, 24, b3) | VERIFIED |
+| `NEW_RECORD_8292.txt` = `data/tours/record_8292.txt` (cmp identical) | **8,292** | (115, 24, b3), (129, 84, d3) | VERIFIED, `moves=157 ok=True maxvisits=3 unnecessary=[]` |
+
+Structure (`portfolio_analysis.py`, which counts free waits as sits):
+- 8,292 has the same prefix as 8,235 up to move 114 and the same lineage as 8,123.
+- 84 pinned dance sits plus 2 free sinks. Zero-wait hops in the dance fall from 14 to 10.
+- That is the mechanism: **free sinks turn existing hops into paid sits** (24 min at a1, 84 min at d3), and the later waits re-pin around them.
+
+## 2. Robustness across seeds
+- **campaign2** (equal-time free vs strict from 8,211, L2, 240 s): only 2 of the planned 5 seeds per arm were run.
+  - free: best 8,264 / 8,239;
+  - strict: best 8,235 / 8,235.
+  - Free beats strict in 2/2 paired seeds, by +29 and +4. This is consistent but not the promised n=5. Say why the campaign stopped early.
+- **The 8,264 → 8,288 → 8,292 chain** is three warm single-seed hits:
+  - f_s8264_r21: 59 of 472 finishes reach 8,288, which is common;
+  - g_all_r32: **1 of 655** finishes reach 8,292;
+  - r31, r33, r34 and r35 stayed at 8,288.
+
+  So 8,288 is robust (and lns found the same tail independently). 8,292 is a 1/5-seed, 1/655-finish event. It is legal, but it is not evidence of a repeatable +4.
+
+## 3. RULES.md review
+- **Sound on the point that matters.** Its post-ruling header says `necessity_check` is sound (any breaking probe is a witness t') and only possibly incomplete. I agree, and I checked the reason independently: with one wait changed and all squares fixed, `simulate` can fail only through an illegal jump, which is exactly the rule's condition. 8,292's two free waits get `unnecessary=[]`, so each has a witness. For 8,239's free wait at move 153 I listed the witnesses explicitly: all five probes break moves 154/155 (PORTFOLIO.md, update 2).
+- **Stale:** the header names 8,264 as the overall record; it is now 8,292.
+- **Moot sections:** "AGAINST-2" and the recommended three-part acceptance test (grid uniqueness, re-pin rigidity) go beyond the user's rule. Mark them as historical, so nobody filters out legal "floppy" tours. Under the rule, a floppy free wait whose later waits are fixed is legal.
+- **Missing, a cheap safety check on the incompleteness claim.** The "giant-group pumps" (11,465) that the checker rejects are *truly* illegal, not just unwitnessed:
+  - every later move is a dz=0 move inside one group, so with the other waits fixed, every t' ≥ 0 leaves every jump legal;
+  - group sizes changing as the group sinks onto lower points doesn't matter for dz=0 moves.
+
+  State this explicitly. It closes the worry that the probe set hides a huge legal tour. For future near-record rejections, an exact witness search is cheap: solve each later jump's affine dz equation for t', add the membership breakpoints, and simulate each candidate.
+- **Precision:** "if neither ±1/997 breaks the tour then t lies in a working interval" ignores the measure-zero case where t ± 1/997 land on other isolated working points. Say "almost surely", or test a second ε.
+
+## 4. Recommendation: CONTINUE, increase to 1.5 cores
+This is now the main record line.
+1. Write a free-sink *insertion* sweep. For every zero-wait hop in 8,292 (10 left in the dance, plus the merge hops), try every sink s ∈ {1/6 … 4} units with the later waits re-pinned (your `repin.py`), greedily and then in pairs. That is exhaustive, cheap and deterministic, and it should beat random NRPA at finding stacks.
+2. Then warm L2 from the best result, 5 seeds.
+3. Apply the same sweep to prior's strict pool (8,255 and the 8,2xx finishes).

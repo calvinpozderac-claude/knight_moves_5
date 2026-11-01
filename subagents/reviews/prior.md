@@ -107,3 +107,48 @@ Running now (`ab.sh`): an equal-time L3 A/B. Stock and `prior_h16c_holdout.txt` 
 
 ## 3. Recommendation: CONTINUE with the A/B. Do not start "guided searches" until it is decided
 The prior has 2 cores, the largest allocation, on the strength of L2 evidence only. The L3 A/B is the gate.
+
+---
+# Round 2 review: prior, pass 2 (rev_portfolio), 2026-11-01 ~02:55 UTC
+
+## 1. Claims checked
+| Claim | Verdict | Command |
+|---|---|---|
+| `NEW_RECORD_8255.txt` = 8,255, strict | **VERIFIED** | `check_tour.py` prints `moves=161 ok=True T=8255 unnecessary=[]`; `strict_check.py` prints `STRICT` |
+| Origin | from the log | `tmp/ab/prior_a70.log`: L3, anchor 70 of 8,211, fresh weights, holdout prior β=2. Found at restart 11 of 13, and again at restart 12 |
+
+## 2. Is the L3 A/B complete, and does it meet the evidence standard?
+Mostly yes, with one gap. Equal time (720 s), one thread each, run concurrently, anchors 40/55/70 of 8,211, rng 11. Finished restarts per arm:
+
+| anchor | arm | n | min | median | best |
+|---|---|---|---|---|---|
+| 40 | stock | 31 | 3,692 | 6,015 | 6,746 |
+| 40 | prior | 11 | 7,249 | 7,717 | **8,095** |
+| 55 | stock | 34 | 4,127 | 6,712 | 7,584 |
+| 55 | prior | 14 | 7,631 | 7,834 | **7,918** |
+| 70 | stock | 28 | 7,022 | 7,850 | 8,240 |
+| 70 | prior | 13 | 8,097 | 8,178 | **8,255** |
+
+- **At anchors 40 and 55, the prior's *worst* restart beats stock's *best*.** Its median is also above stock's best-of-run in all three anchors. Fresh restarts are independent samples, so with n = 11-34 per arm this is conclusive at the restart level. It also holds at equal wall time on the same machine.
+- **Gap: one rng per anchor.** The standard asks for ≥ 5 seeds. With separation this large, a second rng at anchor 40 (12 min × 2 arms) is enough to close it formally. Do it, but don't wait for it before using the prior.
+- **Measured speed:** prior ~15-18k rollouts/s, stock ~42-46k/s, i.e. 2.5-3× slower, better than the 4-5× in round 1.
+- **The diversity concern is confirmed:**
+  - prior finishes repeat (7,839 ×3, 8,178 ×3, 8,239 ×2, 8,255 ×2);
+  - stock finishes rarely repeat;
+  - so the prior concentrates on a few tours.
+
+  For record hunting, keep β ≤ 2 and the holdout model. Also run 1 in 4 restarts at β=1 or stock, to keep variety.
+- **Correction to my pass-1 note.** I called anchor 70 "near-saturated dance", yet both arms beat the 8,235 strict record from there (stock 8,240, prior 8,255). The 8,211/8,235 dance was *not* locally optimal. 8,255 uses 85 dance sits (8,235: 84), adding the pair d5/e4 with both members sat. Dance headroom is real at the +20-50 scale.
+- **Leakage:** the holdout model never saw 8,211's lineage or any record ≥ 7,911. Its anchor-40 gain therefore can't be memorisation of 8,211's merge. That point is settled.
+
+## 3. Issues
+- **MAJOR (scope):** pnrpa is strict-only. Since free waits became legal, every prior tour leaves the free-sink gains (+28 to +53 each) on the table. Either pipe the prior pools through fractional's warm free-sink pass (`fnrpa --warm`, 240 s), or port the free-sink moves into pnrpa with prior features for them.
+- **MINOR:** the pool is still `minutes\ntour` rather than TAB-separated. Write the training-file list into the model header.
+
+## 4. Recommendation: CONTINUE, now as a proven method
+Next steps:
+1. Run guided L3 searches at anchors 30-45 of 8,292's strict skeleton (or of 8,255), 2 threads, with ≥ 2 rngs.
+2. Pass every pool tour ≥ 8,200 through the free-sink pass.
+3. One extra rng at anchor 40 to close the evidence gap.
+
+Success means a new strict best, or any tour above 8,292 after the free-sink pass.
