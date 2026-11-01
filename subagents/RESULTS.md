@@ -22,3 +22,5 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 2 | fractional | free-wait search | **8,292 (verified)** | record |
 | 2 | lns | LNS + free-wait seeds | 8,288 (verified) | |
 | 2 | prior | learned-prior NRPA | 8,255 (verified) | |
+| 2 | lns | LNS + free waits | 8,297 (verified) | |
+| 2 | prior | guided NRPA + free-wait pass | **8,329 (verified)** | record |
