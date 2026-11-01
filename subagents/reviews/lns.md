@@ -25,3 +25,43 @@ This agent holds the only clean record. It is a cheap local method, and the impr
 1. **Restart from 8,130.** Use `--tours NEW_RECORD_8130 record_8123 record_8002`, 3 seeds x 20 min, one thread, `nice -n 5`. Success means > 8,130, or a documented plateau (best per seed).
 2. **Focus ablation at equal time.** Compare `--focus 15 65 0.7` with uniform `i`, 2 seeds each x 15 min from 8,130. Success means a clear difference in the best and in time-to-first-improvement. If focus wins, the merge region is where to put compute.
 3. **Diversity seeds.** `subagents/opening/tmp/full/r_*.txt` holds 300 checker-legal variants of 8,123 (I spot-checked r_0, r_1, r_150 and r_299). They have the same altitudes and minutes but different visit patterns, i.e. freed visits in different places. Feed the 20 with the fewest moves as `--tours` crossover and elite sources (op 7), 15 min. Success means any tour > 8,130.
+
+---
+# Round 2 review: lns (rev_portfolio), 2026-11-01, pass 1 (02:20 UTC)
+
+## 1. Claims checked
+| Claim | Verdict | Command |
+|---|---|---|
+| `data/tours/record_8211.txt` = `NEW_RECORD_8211.txt` = 8,211 | **VERIFIED** | `cmp` gives identical files; `tools/check_tour.py` prints `moves=159 ok=True T=8211 maxvisits=3 maxwait=140 unnecessary=[]` |
+| 8,211 is strict | **VERIFIED** | `python3 subagents/strict_check.py data/tours/record_8211.txt` prints `STRICT`; `portfolio_analysis.py` finds 0 free waits |
+| How it was found | from the log | `tmp/run3_s21.log`, seed 21, `--iters 55000`, seeds = `tmp/div_8123.txt` (12 re-routed 8,123 variants from opening/reroute) plus records, *without* 8,130. Gains: 8126/8127 (op 0) → **8155, 8166 (op 7 crossover)** → **8193 (op 2 at i=113, in the dance)** → 8205 (op 7) → 8206-8210 (ops 0/1/2 at i=30-45) → **8211 (op 7)** at 136 s |
+| Reproducibility | in progress | `tmp/repro_s21.log` re-runs seed 21 with the same `--iters`. Its first NEW BEST (8126 at it 7913, op 0 i 42 D 5) matches the original exactly, so the run looks deterministic. Confirm in pass 2 |
+
+## 2. What changed structurally, 8,211 vs 8,123 (`subagents/reviews/portfolio_analysis.py`)
+- **Same lineage.** Moves 1-14 (the bottom climb) are identical. The dance ladder order is the same, apart from one inserted block.
+- **Climb/merge (moves 15-61) rewritten.** There are 15 pre-dance sits instead of 13: f7 ×3, b8 ×2 and e8 ×2 are new. The tour reaches the dance at move 62 with T=218 (211 before).
+  - The first dance sit is **76 at h6 (4 units × 19)**, against 8,123's 19 (1 unit). That is +57.
+  - The first ladder groups are bigger and more lopsided: 128/96/140/108 against 120/104/136/112. That is +52 more by dance sit 6.
+- **One more sitter in the dance.** The pair d8/e1 was never sat in 8,123's dance; now e1 sits there (block `e1 d1 e1 d1` after the e3 ladder, gain op 2 at i=113). The result is 32 sitting points and 84 dance sits, against 31 and 83.
+  - Cost: the middle of the dance loses about 90 min against 8,123 (sits 18-54), because the inserted block shifts the parity of the group sizes.
+  - Gain: one extra 68-minute sit at the end.
+- **Visit ledger.** 32 sitters × 3 = 96 possible sits; 84 are made. The other 12:
+  - 9 are visits spent before the dance (h6 ×2, e1, d1, b4, c4, c2, e2, d2; 8,123 had 7);
+  - 1 is a hop on a sitter (f6, the same as 8,123);
+  - 2 are unused (b2, c2).
+  - Every opposite pair now supplies a sitter.
+- **Net +88:** about +116 from the merge and dance entry, about −90 in the middle of the dance, +48 for the extra final sit, and roughly +14 from the small re-phasing around it.
+
+## 3. Issues
+- **MAJOR (portfolio): this is one lineage being polished.** 8,130, 8,166, 8,206 and 8,211 all keep 8,123's moves 1-14 and its dance ladder. The jump to 8,211 came from *diversity in the seed set* (the re-routed variants in `div_8123`) combined with op 7 crossover, not from more iterations: the three run2 seeds from 8,130 all plateaued at 8,130. Fix: make "number of distinct starting lineages" the main knob, not the iteration count. Feed op 7 from other families too: 7,200/7,066 (different climb timing), the opening agent's other `r_*` files, and NRPA pool tours from different anchors.
+- **MAJOR (evidence): one seed again.** The only success was seed 21 with div seeds; the comparison against run2 (8,130 seeds) is confounded, because the seed set, the focus and the starting tour all changed together. Fix: a 2×2 at equal `--iters`, {div seeds, no div seeds} × {start 8,123, start 8,211}, with 3 seeds each. That is 12 runs × about 4 min at the observed ~230 it/s. Report the best per seed.
+- **MINOR: the "gains only in moves 15-60" claim in ROUND2.md is not quite right.** The 8,193 step was op 2 at i=113 (inside the dance) and added the e1 sitter. Keep `--focus` at 0.7, not 1.0. The dance still has 2 unused visits and one possible sitter swap.
+- **MINOR:** NOTES.md doesn't describe 8,211 yet. Add the run3 command, the seed set, and the trajectory above.
+
+## 4. Recommendation: CONTINUE (1 core), but diversify the input, not the iterations
+Next steps, in order:
+1. Confirm `repro_s21` reproduces 8,211 (success: identical trajectory).
+2. Run the 2×2 seed-set ablation above.
+3. Build a new diversity set from 8,211: `tools/reroute_zero_wait.py`, or ask for opening's reroute on 8,211's first 64 moves. Run 3 seeds × 55k iterations with op 7 drawing from it. Success: > 8,211 in at least 1/3 seeds, or a documented plateau with the best per seed.
+
+**Pass 1 addendum (02:40 UTC):** `tmp/repro_s21.log` reached NEW BEST 8211 at it 32570 (op 7 a 63 c 64 d 89 b 84). That matches the original run's trajectory, so **8,211 reproduces deterministically from `--seed 21 --iters 55000`**. The reproducibility issue is closed. The evidence issue (one seed, confounded comparison) is still open.

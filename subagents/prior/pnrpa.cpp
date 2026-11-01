@@ -286,7 +286,7 @@ static string tour_text(const vector<Mv>& seq) {
 int main(int argc, char** argv) {
   init_board(); D0 = 1; D0 = h8dist(start_state());
   for (int p = 0; p < 64; p++) { for (int q = 0; q < 64; q++) KIDX[p][q] = 0; for (int k = 0; k < NBN[p]; k++) KIDX[p][NBQ[p][k]] = k; }
-  int LEVEL = 3, THREADS = max(1u, std::thread::hardware_concurrency() / 2), SEEDADAPT = 10, AMIN = 0, AMAX = 0;
+  int LEVEL = 3, THREADS = 1, SEEDADAPT = 10, AMIN = 0, AMAX = 0;
   double TIME = 0, SEEDBEST = 0; bool WATCH = false, WARM = true; string poolFile; long long POOLMIN = 0; int SEEDTOP = 0; double SEEDALPHA = -1;
   unsigned RNG = 1; string seedFile, outFile = "nrpa_best.txt", prefixFile, priorFile;
   for (int i = 1; i < argc; i++) {
@@ -371,8 +371,10 @@ int main(int argc, char** argv) {
       Result r = nrpa(LEVEL, root, pol, rng, (rest.empty() || !WARM) ? nullptr : &init);
       r.seq.insert(r.seq.begin(), prefix.begin(), prefix.end());
       std::lock_guard<std::mutex> lk(mtx);
-      printf("[%7.0fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)\n", elapsed(), tid, restart, k,
-             r.finished ? "finished" : "unfinished", r.minutes, r.seq.size(), gbest.finished ? gbest.minutes : 0LL, (long long)PLAYOUTS);
+      bool partial = STOP.load();  // stopped by --time or a signal before this restart's search completed
+      printf("[%7.0fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)%s\n", elapsed(), tid, restart, k,
+             r.finished ? "finished" : "unfinished", r.minutes, r.seq.size(), gbest.finished ? gbest.minutes : 0LL, (long long)PLAYOUTS,
+             partial ? " PARTIAL" : "");
       if (OBJ == 1) {
         printf("  opening: potential %.0f at move %zu (T %lld)\n", r.score, r.seq.size(), r.minutes);
         if (!poolFile.empty() && r.score >= POOLMIN) { FILE* f = fopen(poolFile.c_str(), "a"); if (f) { fprintf(f, "%.0f\n%s\n", r.score, tour_text(r.seq).c_str()); fclose(f); } }

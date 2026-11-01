@@ -1,0 +1,13 @@
+train/val files (val-frac 0.150, rng 7):
+  ../../data/tours/curriculum.txt
+  ../../data/tours/openings.txt
+  ../../data/tours/record_7066.txt
+  ../../data/tours/record_7200.txt
+  ../../data/tours/tour_6303.txt
+  ../../data/tours/from_scratch_2952.txt
+val-only files:
+  ../../data/tours/record_7911.txt
+  ../../data/tours/record_8002.txt
+  ../../data/tours/record_8123.txt
+(trained on the train split only: no tour >= 7,500 minutes, nothing from 8,130 / 8,127 / 8,211)
+trained with: train_prior.py tmp/split.bin --hidden 16 --epochs 20 --l2 1e-3 --wpow 1 --drop 28,29,35,36,37 --out prior_h16c_holdout.txt

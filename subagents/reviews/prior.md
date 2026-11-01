@@ -82,3 +82,28 @@ Don't move other agents onto it until then.
    so queue it through the runner. Success: the prior's median best beats `--bias 1` at every anchor.
 3. **If (2) holds:** L3, 600 s per run, 3 seeds, anchors {35, 40}, against stock L3 at the same time.
    Success: the prior's median is ≥ stock's. Only then try L4.
+
+---
+# Round 2 review: prior (rev_portfolio), 2026-11-01, pass 1 (02:20 UTC)
+
+## 1. Status
+Running now (`ab.sh`): an equal-time L3 A/B. Stock and `prior_h16c_holdout.txt` β=2 run concurrently, 720 s each, at anchors 40, 55 and 70 of 8,211, fresh weights, `--rng 11`, one thread each, nice 5. No results yet.
+
+## 2. Issues with the A/B design (fix before drawing conclusions)
+- **MAJOR: one rng per anchor.** Each L3 restart is an independent fresh sample, so a 720 s run gives about 10-15 stock samples (≈50 s per 1M rollouts) but only 2-4 prior samples (4-5× slower). "Best of the run" for the prior arm is a best-of-3. Report, per anchor:
+  - the per-restart distribution for each arm (n, median, max; count only completed restarts);
+  - best-at-equal-time;
+  - the median time to reach 8,000.
+
+  Then repeat with a second rng (`--rng 12`). That costs another 2 × 3 × 12 min = 72 core-min. Compare "best within 720 s", not mean per restart: the prior wins on means by construction, because its rollouts are better, which says nothing about finding records.
+- **MAJOR: what the anchors test.** In 8,211 the dance starts at move 62.
+  - Anchor 40 re-searches the climb end + merge + dance. This is the valuable one: that region holds the headroom.
+  - Anchor 55 starts inside the merge.
+  - Anchor 70 is pure dance. This is the near-saturated part (relaxation ceiling about 8,866 at move 68, and the visit ledger has only 2 unused visits plus 1 wasted hop), and the end is proven optimal for the older records.
+
+  So weight anchor 40 (and add 30 or 35) in the decision, not 70.
+- **MAJOR (leakage, from the round-1 review): partly fixed.** The holdout model excludes 7,911/8,002/8,123 and 15% of the other tours. But the curriculum's network-generated tours share the record climb, so climb positions are still near-duplicates of training data. That matters at anchor 40. Write the training file list into the model header. If time allows, also test a model trained without any tour ≥ 7,000.
+- **MINOR: success criterion.** State it before the results come in. Suggestion: the prior is adopted for guided searches if its best-within-720 s ≥ stock's at ≥ 2 of 3 anchors in *both* rngs, including anchor 40. Otherwise the 2 cores go back to stock NRPA at anchors 30-45 (or to lns-style diversity).
+
+## 3. Recommendation: CONTINUE with the A/B. Do not start "guided searches" until it is decided
+The prior has 2 cores, the largest allocation, on the strength of L2 evidence only. The L3 A/B is the gate.

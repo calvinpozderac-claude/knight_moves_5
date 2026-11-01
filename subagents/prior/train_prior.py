@@ -26,6 +26,8 @@ ap.add_argument('--wmin', type=float, default=0.02)
 ap.add_argument('--seed', type=int, default=1)
 ap.add_argument('--out', default=None)
 ap.add_argument('--eval-every', type=int, default=5)
+ap.add_argument('--mask', action='store_true', help='train the softmax over labelled moves only (unlabelled moves get no target)')
+ap.add_argument('--unk-gap', type=float, default=None, help='label unlabelled moves Lmax - GAP minutes instead of 0 (soft discovery target)')
 ap.add_argument('--drop', default='', help='comma-separated feature indices to zero (ablation)')
 args = ap.parse_args()
 
@@ -43,7 +45,8 @@ print(f'{NG} positions, {NR} rows, {F} features; train {np.sum(gsplit == 0)}, va
 
 # targets
 Lmax_r = gL[gid]
-tgt = np.where(lab > 0, np.exp((lab - Lmax_r) / args.tau), 0.0)
+lab_t = lab if args.unk_gap is None else np.where(lab > 0, lab, Lmax_r - args.unk_gap)
+tgt = np.where(lab_t > 0, np.exp((lab_t - Lmax_r) / args.tau), 0.0)
 tsum = np.add.reduceat(tgt, gstart)
 tgt = (tgt / tsum[gid]).astype(np.float64)
 gw = (gL / 8123.0) ** args.wpow + args.wmin
@@ -110,7 +113,11 @@ step = 0; t0 = time.time()
 # fixed minibatches of groups (random assignment, reused every epoch, cheap)
 _perm = rng.permutation(tr_g); tr_batches = []
 for b in range(0, len(_perm), args.batch):
-    gs = np.sort(_perm[b:b + args.batch]); tr_batches.append((gs,) + batch_rows(gs))
+    gs = np.sort(_perm[b:b + args.batch]); idx, starts, gidl = batch_rows(gs)
+    if args.mask:  # keep only labelled moves; every position has at least one
+        keep = lab[idx] > 0; idx, gidl = idx[keep], gidl[keep]
+        starts = np.searchsorted(gidl, np.arange(len(gs)))
+    tr_batches.append((gs, idx, starts, gidl))
 for ep in range(args.epochs):
     for b in rng.permutation(len(tr_batches)):
         gs, idx, starts, gidl = tr_batches[b]
@@ -147,4 +154,7 @@ if args.out:
             for r in P['W1']: f.write(' '.join(f'{x:.6g}' for x in r) + '\n')
             f.write(' '.join(f'{x:.6g}' for x in P['b1']) + '\n')
         f.write(' '.join(f'{x:.6g}' for x in P['w2']) + '\n')
+    import os, shutil
+    if os.path.exists(args.data + '.meta'): shutil.copy(args.data + '.meta', args.out + '.meta')
+    with open(args.out + '.meta', 'a') as f: f.write('trained with: ' + ' '.join(sys.argv) + '\n')
     print('wrote', args.out)

@@ -10,7 +10,7 @@
 #include <chrono>
 #include <unordered_set>
 
-struct M { uint8_t q; int8_t dz; };
+struct M { uint8_t q; int8_t dz; uint8_t key = 0; };  // key: waits in the tour it came from (or final move)
 static int TYP[64][64];
 static inline bool operator==(const M& a, const M& b) { return a.q == b.q && a.dz == b.dz; }
 
@@ -40,7 +40,7 @@ static vector<M> parse_tour(const string& line, long long* Tout) {
     vector<pair<int, int>> mv; pinned_moves(s, 3, true, mv);
     bool found = false;
     for (auto& [d, qq] : mv) if (qq == q && d * n == w) {
-      apply_move(s, d, q); out.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p])}); found = true; break;
+      apply_move(s, d, q); out.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), (uint8_t)(d > 0 || q == H8)}); found = true; break;
     }
     if (!found) { fprintf(stderr, "parse: move %zu (%d,%s) not pinned\n", out.size() + 1, w, sq); exit(1); }
   }
@@ -69,7 +69,12 @@ static long long score_full(const vector<M>& X) {
   return (s.pos == H8) ? s.T : -1;
 }
 
+static void mark_keys(vector<M>& X) {
+  S s = start_state();
+  for (auto& m : X) { long long T0 = s.T; stepM(s, m); m.key = (s.T > T0 || m.q == H8); }
+}
 static std::mt19937_64 rng;
+static double SKELP = 0, PENV = 4;
 static double U() { return std::uniform_real_distribution<double>(0, 1)(rng); }
 static int RI(int a, int b) { return std::uniform_int_distribution<int>(a, b)(rng); }
 
@@ -119,8 +124,72 @@ struct Search {
       finish_check(s);
       if (y[k].q == H8) break;
       S s2 = s;
-      if (!stepM(s2, y[k])) { if (pd > 0) patch(s, k, pd - 1); break; }
+      if (!stepM(s2, y[k])) { if (SKELP > 0 && U() < SKELP) skel_replay(s, k, 0, (float)PENV); if (pd > 0) patch(s, k, pd - 1); break; }
       path.push_back(y[k]); s = s2;
+    }
+    path.resize(base);
+  }
+  // polish-style repair: keep the key moves of Y[k..] (square + dz, either sign), re-route every zero-wait
+  // stretch by a min-cost zero-wait path when it no longer fits (mode 0), or always (mode 1)
+  bool route(const S& s, int target, const int* res, const float* pen, vector<int>& out) {
+    if (s.pos == target) return true;
+    float dist[64]; int prev[64]; bool done[64];
+    for (int i = 0; i < 64; i++) { dist[i] = 1e30f; prev[i] = -1; done[i] = false; }
+    dist[s.pos] = 0;
+    for (int it = 0; it < 64; it++) {
+      int u = -1; float bu = 1e30f;
+      for (int i = 0; i < 64; i++) if (!done[i] && dist[i] < bu) { bu = dist[i]; u = i; }
+      if (u < 0) return false;
+      if (u == target) break;
+      done[u] = true;
+      for (int k = 0; k < NBN[u]; k++) {
+        int v = NBQ[u][k]; if (v == H8 || done[v]) continue;
+        if (!legal_dz(NBT[u][k], s.alt[v] - s.alt[u])) continue;
+        if (s.vis[v] + 1 + res[v] > 3) continue;
+        float c = bu + 1.f + pen[v];
+        if (c < dist[v]) { dist[v] = c; prev[v] = u; }
+      }
+    }
+    if (dist[target] >= 1e29f) return false;
+    int buf[64], n = 0; for (int v = target; v != s.pos; v = prev[v]) buf[n++] = v;
+    for (int i = n - 1; i >= 0; i--) out.push_back(buf[i]);
+    return true;
+  }
+  long long skel_calls = 0;
+  void skel_replay(S s, int k, int mode, float PEN) {
+    const vector<M>& y = *Y; skel_calls++;
+    int res[64]; float pen[64]; bool isFrom[64]; memset(res, 0, sizeof res); memset(isFrom, 0, sizeof isFrom);
+    for (int m = k; m < (int)y.size(); m++) if (y[m].key) { if (y[m].q != H8) res[y[m].q]++; isFrom[P0[m]] = true; }
+    for (int i = 0; i < 64; i++) pen[i] = (res[i] > 0 || isFrom[i]) ? PEN : 0.f;
+    size_t base = path.size(); vector<int> rt;
+    int m = k;
+    while (m < (int)y.size()) {
+      int e = m; while (e < (int)y.size() && !y[e].key) e++;   // stretch y[m..e), key y[e]
+      if (e >= (int)y.size()) break;
+      nodes += e - m + 1;
+      bool done = false;
+      if (mode == 0 && s.pos == P0[m]) {
+        S c = s; bool ok = true;
+        for (int t = m; t < e; t++) { int p = c.pos, q = y[t].q;
+          if (TYP[p][q] < 0 || !legal_dz(TYP[p][q], c.alt[q] - c.alt[p]) || c.vis[q] + 1 + res[q] > 3) { ok = false; break; }
+          c.vis[q]++; c.pos = q; }
+        if (ok && c.pos == P0[e]) { int p = s.pos; for (int t = m; t < e; t++) { int q = y[t].q; path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), 0}); p = q; } s = c; done = true; }
+      }
+      if (!done) {
+        rt.clear(); if (!route(s, P0[e], res, pen, rt)) break;
+        for (int q : rt) { path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[s.pos]), 0}); s.vis[q]++; s.pos = q; }
+      }
+      finish_check(s);
+      int p = s.pos, q = y[e].q, t = TYP[p][q]; if (t < 0) break;
+      int a = s.alt[p], delta, dz = y[e].dz;
+      if (s.alt[q] == a && q != 63 - p) { if (t != 0) break; delta = 0; dz = 0; }
+      else { int diff = s.alt[q] - a; delta = dz - diff;
+        if (delta < 0) { if (t == 0) break; dz = -dz; delta = dz - diff; if (delta < 0) break; } }
+      if (q != H8) { if (s.vis[q] + res[q] > 3) break; res[q]--; }
+      else if (e + 1 != (int)y.size()) break;
+      if (q == H8) { long long T = s.T + (delta ? (long long)delta * group_n(s, p) : 0); record(T, {(uint8_t)H8, (int8_t)dz, 1}); break; }
+      apply_move(s, delta, q); path.push_back({(uint8_t)q, (int8_t)dz, 1});
+      m = e + 1;
     }
     path.resize(base);
   }
@@ -131,10 +200,10 @@ struct Search {
     }
     if (d >= PD) return;
     auto& mv = mvbuf[8 + d]; pinned_moves(s, 3, false, mv);
-    auto local = mv;
+    auto local = mv; std::shuffle(local.begin(), local.end(), rng);
     for (auto& [dl, q] : local) {
       S s2 = s; int p = s.pos; apply_move(s2, dl, q);
-      path.push_back({(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p])});
+      path.push_back({(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl > 0)});
       nodes++; finish_check(s2);
       patch_dfs(s2, k, d + 1, pd);
       path.pop_back();
@@ -154,10 +223,10 @@ struct Search {
       replay(s, j, pd);
     }
     if (d >= D) return;
-    vector<pair<int, int>> mv; pinned_moves(s, 3, false, mv);
+    vector<pair<int, int>> mv; pinned_moves(s, 3, false, mv); std::shuffle(mv.begin(), mv.end(), rng);
     for (auto& [dl, q] : mv) {
       S s2 = s; int p = s.pos; apply_move(s2, dl, q);
-      M m{(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p])};
+      M m{(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl > 0)};
       bool on2 = onX && sameXY && i0 + d < (int)Y->size() && (*Y)[i0 + d] == m;
       path.push_back(m); nodes++;
       win_dfs(s2, d + 1, on2, pd);
@@ -253,12 +322,17 @@ int main(int argc, char** argv) {
   for (int i = 0; i < 64; i++) for (int j = 0; j < 64; j++) TYP[i][j] = -1;
   for (int i = 0; i < 64; i++) for (int k = 0; k < NBN[i]; k++) TYP[i][NBQ[i][k]] = NBT[i][k];
   vector<string> files; double TIME = 60, T0 = 30, T1 = 1; string out = "best_lns.txt"; uint64_t seed = 1;
-  long long BUDGET = 200000, ITERS = 0; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
+  long long BUDGET = 200000, ITERS = 0; int PDMAX = 3, RMAX = 6, WIDE = 0; double P9 = 0; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
   for (int a = 1; a < argc; a++) {
     string s = argv[a];
     if (s == "--tours") { while (a + 1 < argc && argv[a + 1][0] != '-') files.push_back(argv[++a]); }
     else if (s == "--time") TIME = atof(argv[++a]);
     else if (s == "--iters") ITERS = atoll(argv[++a]);
+    else if (s == "--pdmax") PDMAX = atoi(argv[++a]);
+    else if (s == "--rmax") RMAX = atoi(argv[++a]);
+    else if (s == "--wide") WIDE = atoi(argv[++a]);
+    else if (s == "--skel") SKELP = atof(argv[++a]);
+    else if (s == "--reroute") P9 = atof(argv[++a]);
     else if (s == "--t0") T0 = atof(argv[++a]);
     else if (s == "--t1") T1 = atof(argv[++a]);
     else if (s == "--out") out = argv[++a];
@@ -328,7 +402,7 @@ int main(int argc, char** argv) {
   }
   // ---- SA
   Elite cur = gbest; long long it = 0, acc = 0, impr = 0;
-  long long stat_gain[9] = {0}, stat_cnt[9] = {0};
+  long long stat_gain[10] = {0}, stat_cnt[10] = {0};
   double lastImpr = el(); int restarts = 0;
   vector<S> st = states_of(cur.X);
   long long lastImprIt = 0;
@@ -339,6 +413,18 @@ int main(int argc, char** argv) {
     int N = (int)cur.X.size();
     Search SR; SR.setY(cur.X); SR.X = &cur.X; SR.budget = BUDGET;
     int op = RI(0, 7);
+    if (P9 > 0 && U() < P9) {  // op 9: polish-style re-route of every zero-wait stretch after move i (same keys)
+      int i = (U() < FOCP) ? RI(max(0, FLO), min(N - 2, FHI)) : RI(0, N - 2);
+      SR.path.assign(cur.X.begin(), cur.X.begin() + i);
+      SR.skel_replay(st[i], i, RI(0, 1), (float)(U() * 8));
+      if (SR.bestT >= cur.T && score_full(SR.best) == SR.bestT && (SR.bestT > cur.T || SR.best.size() <= cur.X.size())) {
+        long long dT = SR.bestT - cur.T; acc++; stat_cnt[9]++; if (dT > 0) stat_gain[9] += dT;
+        cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; save(gbest, "op 9 reroute"); }
+        add_elite(cur);
+      }
+      continue;
+    }
     if (op == 5 && U() < 0.7) op = RI(1, 2);  // reversal is mostly invalid: give its share to ops 1/2
     if (op == 7) {  // two-point crossover: X[0..a) + Z[c..d) + X[b..] with Z another elite/record tour
       const vector<M>& Z = (U() < 0.5 ? recs[RI(0, (int)recs.size() - 1)] : elite[RI(0, (int)elite.size() - 1)]).X;
@@ -351,7 +437,7 @@ int main(int argc, char** argv) {
       vector<int> bs; for (int b = a; b < N; b++) if (cur.X[b - 1].q == pd_) bs.push_back(b);
       int b = bs.empty() ? RI(a, N - 1) : bs[RI(0, (int)bs.size() - 1)];
       vector<M> Y2(cur.X.begin(), cur.X.begin() + a); Y2.insert(Y2.end(), Z.begin() + c, Z.begin() + d); Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.end());
-      SR.setY(Y2); SR.PD = RI(1, 3); SR.R = RI(2, 8);
+      SR.setY(Y2); SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX + 2);
       SR.path.assign(cur.X.begin(), cur.X.begin() + a);
       S s0 = st[a]; SR.replay(s0, a, RI(2, 4));
       if (SR.bestT < 0) continue;
@@ -359,7 +445,7 @@ int main(int argc, char** argv) {
       if (dT >= 0 || U() < exp(dT / temp)) {
         if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
-        cur = {SR.bestT, SR.best}; st = states_of(cur.X);
+        cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
         if (cur.T >= gbest.T - 30) add_elite(cur);
       }
@@ -389,7 +475,7 @@ int main(int argc, char** argv) {
         Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.end()); from = b;
       }
       if (from >= (int)Y2.size()) continue;
-      SR.setY(Y2); SR.PD = RI(1, 3); SR.R = RI(2, 8);
+      SR.setY(Y2); SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX + 2);
       SR.path.assign(cur.X.begin(), cur.X.begin() + from);
       S s0 = st[from]; SR.replay(s0, from, RI(2, 4));
       if (SR.bestT < 0) continue;
@@ -397,7 +483,7 @@ int main(int argc, char** argv) {
       if (dT >= 0 || U() < exp(dT / temp)) {
         if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
-        cur = {SR.bestT, SR.best}; st = states_of(cur.X);
+        cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d a %d len %d", op, a, len); save(gbest, w); }
         if (cur.T >= gbest.T - 30) add_elite(cur);
       }
@@ -405,11 +491,11 @@ int main(int argc, char** argv) {
     }
     int i = (U() < FOCP) ? RI(max(0, FLO), min(N - 2, FHI)) : RI(0, N - 2);
     SR.path.assign(cur.X.begin(), cur.X.begin() + i);
-    SR.i0 = i; SR.sameXY = true; SR.PD = RI(1, 3); SR.R = RI(2, 6);
+    SR.i0 = i; SR.sameXY = true; SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX);
     int pd = RI(0, 2);
-    if (op == 0) { SR.D = RI(1, DMAX); SR.jlo = i; SR.jhi = i + SR.D + 2; }        // window replace / delete / insert
-    else if (op == 1) { SR.D = RI(1, 3); SR.jlo = i + 1; SR.jhi = i + 12; }       // skip up to 12 moves
-    else if (op == 2) { SR.D = RI(2, DMAX + 1); SR.jlo = i - 4; SR.jhi = i + 4; } // detours, repeat
+    if (op == 0) { SR.D = RI(1, DMAX); SR.jlo = i; SR.jhi = i + SR.D + 2 + WIDE; }        // window replace / delete / insert
+    else if (op == 1) { SR.D = RI(1, 3); SR.jlo = i + 1; SR.jhi = i + 12 + WIDE; }       // skip up to 12 moves
+    else if (op == 2) { SR.D = RI(2, DMAX + 1); SR.jlo = i - 4 - WIDE / 2; SR.jhi = i + 4 + WIDE; } // detours, repeat
     else { SR.D = RI(1, 2); SR.jlo = 0; SR.jhi = N - 1; }                         // jump anywhere in own tour
     S s0 = st[i];
     bool walked = false;
@@ -420,7 +506,7 @@ int main(int argc, char** argv) {
         auto [dl, q] = mv[RI(0, (int)mv.size() - 1)]; int p = s0.pos; apply_move(s0, dl, q);
         SR.path.push_back({(uint8_t)q, (int8_t)(s0.alt[q] - s0.alt[p])});
       }
-      walked = true; SR.D = RI(1, 3); SR.jlo = i; SR.jhi = i + r + 10;
+      walked = true; SR.D = RI(1, 3); SR.jlo = i; SR.jhi = i + r + 10 + WIDE;
     }
     SR.win_dfs(s0, 0, !walked, pd);
     if (SR.bestT < 0) continue;
@@ -429,14 +515,14 @@ int main(int argc, char** argv) {
       if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
       acc++; stat_cnt[op]++;
       if (dT > 0) stat_gain[op] += dT;
-      cur = {SR.bestT, SR.best}; st = states_of(cur.X);
+      cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);
       if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d i %d D %d", op, i, SR.D); save(gbest, w); }
       if (cur.T >= gbest.T - 30) add_elite(cur);
     }
     if (it % 2000 == 0) {
-      printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
-             elite.size(), stat_gain[0], stat_gain[1], stat_gain[2], stat_gain[3], stat_gain[4], stat_gain[5], stat_gain[6], stat_gain[7], stat_gain[8],
-             stat_cnt[0], stat_cnt[1], stat_cnt[2], stat_cnt[3], stat_cnt[4], stat_cnt[5], stat_cnt[6], stat_cnt[7], stat_cnt[8]);
+      printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
+             elite.size(), stat_gain[0], stat_gain[1], stat_gain[2], stat_gain[3], stat_gain[4], stat_gain[5], stat_gain[6], stat_gain[7], stat_gain[8], stat_gain[9],
+             stat_cnt[0], stat_cnt[1], stat_cnt[2], stat_cnt[3], stat_cnt[4], stat_cnt[5], stat_cnt[6], stat_cnt[7], stat_cnt[8], stat_cnt[9]);
       fflush(stdout);
     }
     // restart from elite if stuck far below best

@@ -176,3 +176,46 @@ That gives no speed-up, only noise, and it makes every wall-clock budget meaning
    A method that fails these is buggy, not refuted.
 7. **A record counts** when it passes `check_tour.py`, has 0 free waits, and is reproducible from the logged
    command and seed. Checker-only tours go on the separate board.
+
+---
+# Round 2 update (rev_portfolio), 2026-11-01 02:40 UTC: pass 1 of 3 only (later passes not run)
+
+## Verified boards
+- **Strict:** 8,211 (`data/tours/record_8211.txt`). Checker ok, strict_check STRICT, and it reproduces deterministically (lns seed 21, `--iters 55000`).
+- **Free-wait (checker-valid, one free sink each):**
+  - 8,239 (fractional `tmp/d_free_r1.txt`, free wait at move 153);
+  - 8,183 (8,130 lineage);
+  - 8,176.
+
+## Correction to §0/§2(d) above
+The 4×4 worked example in `tools/sim.py` contains three free waits that are legal at 0: moves 5, 6 and 7, one of them a 5/2-unit sink (`strict_check4.py --example`). So the pinned reading is *not* clearly "the natural reading". If that example is the official one, free waits are what the puzzle intends. The open question is the example's provenance: it must be quoted with its source in fractional/RULES.md. Until then: two boards, and the strict one is the conservative record.
+
+## What changed in 8,211 vs 8,123 (`portfolio_analysis.py`)
+- **Same lineage.**
+  - Moves 1-14 are identical, and so is the dance ladder order.
+  - Moves 15-61 (climb top and merge) are rewritten: 15 pre-dance sits instead of 13 (new: f7 ×3, b8 ×2, e8 ×2).
+  - The dance is entered with a 4-unit sit at h6 (76 against 19), and its first ladder groups are larger (35/27 against 34/28). Together that is about +116 by dance sit 6.
+- **One more dance sitter.**
+  - Pair d8/e1 was unused in 8,123; now e1 sits in a `e1 d1 e1 d1` block in the mid-dance, found by op 2 at i=113. So not all gains are in moves 15-60.
+  - That gives 32 sitters and 84 dance sits (against 31/83), with about −90 in the middle and +48 for one more final sit.
+- **Ledger.** Possible sits 96; the dance makes 84. Lost: 9 to pre-dance visits on sitters (against 7), 1 to a hop on a sitter, 2 unused. Every opposite pair now supplies a sitter.
+
+## Revised headroom (strict)
+- **(a) Dance.** The relaxation ceiling is unchanged, about 8,866 from 8,211's state after move 68. Realistic gain: +20-150 (1 hop, 2 unused visits, break parity).
+- **(b)+(c) Climb top and merge.** Still the main lever: the 8,211 step was +88 here. Each re-routed pre-dance visit on a sitter is worth about 70-95. 9 such visits are now spent, and maybe 4-6 of them are avoidable routing. Realistic gain: +0-300.
+- **Strict target for round 3:** 8,250-8,400.
+- **Free waits.** Each well-placed free sink has added +28 to +53 so far. Whether several stack is untested.
+
+## Portfolio risk
+All three strict-board results this round (8,130, 8,211 and the free-wait stacks) are the **8,123 lineage**: the same bottom climb and the same dance ladder. The decisive ingredient of 8,211 was **seed diversity plus crossover** (re-routed variants in `lns/tmp/div_8123.txt` and op 7), not iterations: three seeds from 8,130 plateaued.
+- No agent now explores a different bottom climb or a different ladder order.
+- The prior A/B, the only non-LNS strict search, had finished 1 prior and 3 stock restarts at anchor 40 at 02:40 (best 7,689 vs 6,618). It is too early to judge, and the A/B has one rng per anchor.
+
+## Recommended CPU split for round 3 (4 cores)
+| Share | Cores | Track |
+|---|---|---|
+| 30% | 1.2 | **lns**: diversity-fed. Build a new re-routed variant set from 8,211 and other families; 3 seeds; the 2×2 seed-set ablation |
+| 25% | 1.0 | **prior (or stock NRPA)**: anchors 30-45 of 8,211, fresh weights, ≥ 2 rngs. Only if the L3 A/B shows best-within-720 s ≥ stock at anchor 40 in both rngs; otherwise stock NRPA on the same anchors |
+| 25% | 1.0 | **New: lineage diversity.** Re-route the bottom climb (moves 1-14, 7-9 sitter visits) and alternative ladder orders, e.g. reviving opening/reroute or goal for one round. Feed the outputs to lns op 7 |
+| 15% | 0.6 | **fractional**: stack free sinks on 8,211 (5 seeds, equal-time strict control) + RULES.md |
+| 5% | 0.2 | polish/exact certification of each new best |

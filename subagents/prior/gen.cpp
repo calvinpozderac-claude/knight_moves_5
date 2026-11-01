@@ -120,6 +120,12 @@ int main(int argc, char** argv) {
   fwrite(&F, 4, 1, fo); fwrite(&nr, 4, 1, fo); fwrite(&ng, 4, 1, fo);
   for (int i = 0; i < ng; i++) { fwrite(&gstart[i], 4, 1, fo); fwrite(&gcount[i], 4, 1, fo); fwrite(&gsplit[i], 4, 1, fo); fwrite(&gidx[i], 4, 1, fo); fwrite(&gL[i], 4, 1, fo); }
   fwrite(rows.data(), 4, rows.size(), fo); fclose(fo);
+  {  // provenance: which tour files went in, and the split
+    FILE* fm = fopen((out + ".meta").c_str(), "w");
+    if (fm) { fprintf(fm, "train/val files (val-frac %.3f, rng %u):\n", valFrac, rng); for (auto& f : files) fprintf(fm, "  %s\n", f.c_str());
+      fprintf(fm, "val-only files:\n"); for (auto& f : valFiles) fprintf(fm, "  %s\n", f.c_str());
+      fprintf(fm, "%zu distinct tours (%d val), best %lld\n", tours.size(), nval, best); fclose(fm); }
+  }
   int ntr = 0; for (int x : gsplit) ntr += x == 0;
   fprintf(stderr, "%d positions (%d train, %d val), %d rows -> %s\n", ng, ntr, ng - ntr, nr, out.c_str());
 }
