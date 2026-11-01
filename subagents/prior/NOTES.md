@@ -160,3 +160,22 @@ gains directly; (c) give the outside-basin climb track (8,162) more depth, e.g. 
   other skeletons: 8,299 x7 + 8,300; 8,299 x7 + 8,300; 8,299 x8; 8,303 x4, 8,306, 8,307 x3.
   Here the free waits land earlier (moves 100-119), so the pass rewrites the merge-to-dance stretch.
 - Climb basin (L4 iters 50, anchors 20-60 of 8,162, 2900 s): 3 restarts, 7,296 / 7,729 / 7,894. No gain.
+
+## Round 4b (17:12-18:37 UTC, 4 cores): no new record
+- Skeleton search: L3 rather than L4 (L4 had collapsed to 2 values), anchors 55-99 of 8,348 (rngs 1101 and 1102,
+  init-noise 0.5 / 1.0) and 55-95 of 8,338 (rng 1103, noise 0.7), 2100 s each (`r5.sh`).
+  Completed restarts / distinct finishes: 37/9, 33/11, 33/8; best 8,297 in all three. More noise gives more
+  distinct finishes but no better skeleton.
+- Free-wait pass (`fw4.sh`, 8 rngs x 120 s) on 7 new distinct skeletons (8,295 x3, 8,291 x4): best 8,334
+  (one 8,295 skeleton, 8 of 8 rngs); everything else 8,299-8,303. Nothing above 8,348.
+- Climb basin: warm L3 polish of 8,162 (seed-adapt 10, anchors 20-140): 8,166 (`CLIMB_8166.txt`, checker ok),
+  43 restarts, 2 distinct values. Still about 180 below the record.
+- Not done: free-sink moves inside pnrpa (the 4 cores were in use the whole time).
+
+## Status of the loop
+Record gains so far all came from the free-wait pass on some strict skeleton of 8,290-8,297:
+8,290 -> 8,329, 8,291 -> 8,330, 8,295 -> 8,334, 8,297 -> 8,338, 8,295' -> 8,348. Per skeleton the pass is
+mostly deterministic per family, with rare jumps (8,348 was 1 of 8 rngs). Strict skeletons above 8,297 have not
+appeared in about 200 L3/L4 restarts since round 3, so the strict dance looks saturated for this climb.
+The next lever is free waits *inside* the search (pnrpa with fnrpa's free-sink moves and the `free_ok`
+filter), so the guided search can optimise the dance around free waits directly instead of post hoc.
