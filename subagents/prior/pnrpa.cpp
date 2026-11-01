@@ -68,10 +68,10 @@ static double h8dist(const S& s) {
 // waited minutes for a move (the group size times the sink)
 static inline int move_minutes(const S& s, int delta) { return delta ? delta * group_n(s, s.pos) : 0; }
 // learned prior: exp(beta x prior) of each move of a state's pinned-move list, cached per state
-static PriorModel PM; static bool USE_PRIOR = false; static double BETA = 0; static int CACHE_LOG2 = 17;
+static PriorModel PM; static bool USE_PRIOR = false; static double BETA = 0; static thread_local double TBETA = 0; static vector<double> BETASET; static int CACHE_LOG2 = 17;
 static std::atomic<long long> PRIOR_EVALS{0}, PRIOR_LOOKUPS{0};
 static const int MAXMV = 40;
-struct PCEntry { uint64_t key = 0; int n = -1; float ex[MAXMV]; };
+struct PCEntry { uint64_t key = 0; int n = -1; float sc[MAXMV]; };  // raw prior scores (beta applied on lookup)
 static const float* prior_ex(const S& s, const vector<pair<int, int>>& mv) {
   static thread_local vector<PCEntry> cache; static thread_local float tmp[MAXMV];
   if (cache.empty()) cache.resize((size_t)1 << CACHE_LOG2);
@@ -79,18 +79,23 @@ static const float* prior_ex(const S& s, const vector<pair<int, int>>& mv) {
   if (++nl == 4096) { PRIOR_LOOKUPS += nl; PRIOR_EVALS += ne; nl = ne = 0; }
   uint64_t h = hashS(s) ^ (uint64_t)mv.size() * 0x9E3779B97F4A7C15ULL;
   PCEntry& e = cache[h & (((uint64_t)1 << CACHE_LOG2) - 1)];
-  if (e.key == h && e.n == (int)mv.size()) return e.ex;
+  if (e.key == h && e.n == (int)mv.size()) {
+    if (TBETA == 0) { for (int i = 0; i < e.n; i++) tmp[i] = 1.f; return tmp; }
+    float mx = -1e30f; for (int i = 0; i < e.n; i++) if (mv[i].second != H8) mx = max(mx, (float)TBETA * e.sc[i]);
+    for (int i = 0; i < e.n; i++) tmp[i] = mv[i].second == H8 ? 0.f : expf((float)TBETA * e.sc[i] - mx);
+    return tmp;
+  }
   ne++;
   int n = min<int>((int)mv.size(), MAXMV); static thread_local float F_[PF * 64]; float sc[MAXMV]; float mx = -1e30f;
   all_move_features(s, mv, F_, PM.cheap());
   for (int i = 0; i < n; i++) {
     if (mv[i].second == H8) { sc[i] = 0; continue; }
-    sc[i] = (float)BETA * PM.score(F_ + PF * i); mx = max(mx, sc[i]);
+    sc[i] = PM.score(F_ + PF * i); mx = max(mx, (float)TBETA * sc[i]);
   }
-  for (int i = 0; i < n; i++) tmp[i] = mv[i].second == H8 ? 0.f : expf(sc[i] - mx);  // normalised: max 1
+  for (int i = 0; i < n; i++) tmp[i] = mv[i].second == H8 ? 0.f : expf((float)TBETA * sc[i] - mx);  // normalised: max 1
   if ((int)mv.size() > MAXMV) return tmp;  // never happens (at most 24 pinned moves)
-  e.key = h; e.n = n; memcpy(e.ex, tmp, sizeof(float) * n);
-  return e.ex;
+  e.key = h; e.n = n; memcpy(e.sc, sc, sizeof(float) * n);
+  return tmp;
 }
 // exp(weight + bias) of a move (pex: its exp(beta x prior), 1 without a prior)
 static inline double move_e(const Policy& pol, const S& s, int d, int q, double pex = 1.0) {
@@ -161,7 +166,7 @@ static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
   while (true) {
     if (OBJ == 1 && (int)r.seq.size() >= MAXSTEPS) break;
     pinned_moves(s, 3, OBJ == 0, mv);
-    const float* pex = USE_PRIOR ? prior_ex(s, mv) : nullptr;
+    const float* pex = (USE_PRIOR && TBETA != 0) ? prior_ex(s, mv) : nullptr;
     w.clear(); double z = 0; int nonfin = 0; int mi = -1;
     for (auto& [d, q] : mv) {
       mi++;
@@ -209,7 +214,7 @@ static void adapt(Policy& pol, const S& root, const vector<Mv>& seq, double alph
   for (const Mv& m : seq) {
     if (m.q == H8) break;
     pinned_moves(s, 3, true, mv);
-    const float* pex = USE_PRIOR ? prior_ex(s, mv) : nullptr;
+    const float* pex = (USE_PRIOR && TBETA != 0) ? prior_ex(s, mv) : nullptr;
     e.clear(); double z = 0;
     for (size_t i = 0; i < mv.size(); i++) { auto [d, q] = mv[i]; double x = q == H8 ? 0 : move_e(pol, s, d, q, pex ? pex[i] : 1.0); e.push_back(x); z += x; }
     for (size_t i = 0; i < mv.size(); i++) if (mv[i].second != H8) upd.push_back({code_of(s, mv[i].first, mv[i].second), (float)(-alpha * e[i] / z)});
@@ -304,14 +309,16 @@ int main(int argc, char** argv) {
     else if (a == "--prefix-file") prefixFile = nx();
     else if (a == "--out") outFile = nx();
     else if (a == "--prior") priorFile = nx(); else if (a == "--beta") BETA = stod(nx());
+    else if (a == "--beta-set") { string v = nx(); size_t st = 0; while (st < v.size()) { size_t e = v.find(',', st); if (e == string::npos) e = v.size(); BETASET.push_back(stod(v.substr(st, e - st))); st = e + 1; } }
     else if (a == "--prior-cache-log2") CACHE_LOG2 = stoi(nx());
     else { fprintf(stderr, "unknown option %s (see the comment at the top of src/nrpa.cpp)\n", a.c_str()); return 1; }
   }
   if (AMAX < AMIN) AMAX = AMIN;
   prior_init();
-  if (!priorFile.empty()) { if (!PM.load(priorFile)) { fprintf(stderr, "cannot load prior %s\n", priorFile.c_str()); return 1; } USE_PRIOR = BETA != 0; }
+  if (!priorFile.empty()) { if (!PM.load(priorFile)) { fprintf(stderr, "cannot load prior %s\n", priorFile.c_str()); return 1; } USE_PRIOR = BETA != 0 || !BETASET.empty(); }
   printf("prior: %s, beta %.3f (%s%s)\n", priorFile.empty() ? "none" : priorFile.c_str(), BETA, USE_PRIOR ? "on" : "off", PM.cheap() ? ", cheap features" : "");
   signal(SIGINT, [](int) { STOP = true; }); signal(SIGTERM, [](int) { STOP = true; });
+  TBETA = BETA;
   if (getenv("NRPA_BENCH")) {  // time rollouts from the anchor of the first seed tour with a zero policy
     auto sd = read_tours(seedFile.c_str()); S root = start_state(); for (int i = 0; i < AMIN; i++) apply_move(root, sd[0][i].delta, sd[0][i].q);
     Policy pol; std::mt19937 rng(1); int N = atoi(getenv("NRPA_BENCH")); double tot = 0; long long len = 0;
@@ -346,6 +353,7 @@ int main(int argc, char** argv) {
     std::mt19937 rng(RNG * 1000003u + tid);
     for (int restart = 0; !STOP; restart++) {
       Policy pol; vector<Mv> seed;
+      TBETA = BETASET.empty() ? BETA : BETASET[std::uniform_int_distribution<size_t>(0, BETASET.size() - 1)(rng)];
       {
         std::lock_guard<std::mutex> lk(mtx);
         if (WATCH && !seedFile.empty() && mtime() != seedMtime) {  // another process improved the shared file
@@ -372,7 +380,7 @@ int main(int argc, char** argv) {
       r.seq.insert(r.seq.begin(), prefix.begin(), prefix.end());
       std::lock_guard<std::mutex> lk(mtx);
       bool partial = STOP.load();  // stopped by --time or a signal before this restart's search completed
-      printf("[%7.0fs] thread %d restart %d (anchor %d): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)%s\n", elapsed(), tid, restart, k,
+      printf("[%7.0fs] thread %d restart %d (anchor %d, beta %.2f): %s %lld minutes, %zu jumps (best %lld, %lld rollouts)%s\n", elapsed(), tid, restart, k, TBETA,
              r.finished ? "finished" : "unfinished", r.minutes, r.seq.size(), gbest.finished ? gbest.minutes : 0LL, (long long)PLAYOUTS,
              partial ? " PARTIAL" : "");
       if (OBJ == 1) {

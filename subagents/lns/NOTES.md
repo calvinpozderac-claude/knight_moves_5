@@ -96,3 +96,115 @@ nice -n 5 ./lns_v1 --tours ../../data/tours/record_8123.txt ../../data/tours/rec
    8130 plateaued, so diversity of the starting tour matters more than more iterations.
 4. **Combine with structural search.** Give NRPA or nnastar the 8,130 prefix (the first 61 moves) as an
    anchor, or start from LNS-improved merges and re-search the dance.
+
+---
+# Round 2 (2026-11-01)
+
+## How 8,211 was found (round 1, run3)
+- **Binary and source:** `lns_v2` / `lns_v2.cpp`, the same code as the end of round 1.
+- **Command** (`run3.sh`):
+  ```
+  ./lns_v2 --tours tmp/div_8123.txt ../../data/tours/record_8123.txt ../../data/tours/record_8002.txt \
+    ../../data/tours/record_7911.txt --xover 0 --seed 21 --t0 40 --budget 400000 --focus 1 60 0.7 \
+    --iters 55000 --time 660 --out tmp/run3_s21_best.txt
+  ```
+- **Inputs:** `tmp/div_8123.txt` holds 12 checker-legal variants of 8,123 (`subagents/opening/tmp/full/r_0..r_11`).
+  They have the same minutes but different visit patterns. 8,130 was *not* an input, so 8,211 is an
+  independent lineage from 8,123.
+- **Deterministic.** A re-run (`tmp/repro_s21.log`) followed the identical trajectory and output
+  (`cmp` identical).
+
+Trajectory (iteration: score, operator and window):
+
+| iteration | score | operator, window |
+|---|---|---|
+| 7,913 | 8,126 | op 0, i=42, D=5 |
+| 11,358 | 8,127 | op 0, i=35 |
+| 15,293 | **8,155** | op 7 crossover, a=76, partner [83, 94), b=81 |
+| 15,463 | 8,166 | op 7, a=94, partner [90, 92), b=94 |
+| 17,278 | **8,193** | op 2, i=113, D=6 (in the dance) |
+| 17,327 | **8,205** | op 7, a=51, partner [43, 70), b=76 (merge plus early dance from a partner) |
+| 18,096 | 8,206 | op 0, i=34 |
+| 24,595 | 8,207 | op 2, i=41 |
+| 26,038 | 8,209 | op 2, i=45 |
+| 26,577 | 8,210 | op 1, i=30 |
+| 32,570 | 8,211 | op 7, a=63, partner [64, 89), b=84 |
+
+- By operator, the +88 over 8,123 splits into op 7 (crossovers with the 8,123 variants and the older records)
+  ≈ +57, op 2 ≈ +30 (+27 of it in the dance at i=113), and op 0/1 windows in moves 30-45 ≈ +5.
+- The diversity of the starting set (op 7 partners that free visits in different places) made the
+  difference. With 8,130 as the only lineage (run2, 3 seeds), the search stayed at 8,130.
+
+**What changed structurally, 8,123 -> 8,211** (`compare.py`, `pervisit.py`):
+- Sits went from 96 to 99, and dance sits from 81 to 83.
+  - The dance starts at move 65 (8,123: move 45), with T = 294 at its start (8,123: 290).
+  - The dance is worth 7,917 minutes (8,123: 7,833).
+  - The first dance groups are 35/27 (8,123: 34/28).
+- Dance: the two visits left free at the end of 8,123 (d1 and e1) became sits. Sits per point: e1 1->3,
+  d1 2->3, c2 2->1. The block is now e1-d1-c1, plus f1->f3 78 and f3->e3 87.
+- Climb and merge:
+  - sits per point: f7 1->3, b8 0->2, e8 1->2; h5, h6, e7 and g7 each lose one sit;
+  - more zero-wait landings: f5, d6, b6, a6, d8 and others.
+- Landings went from 136 to 160 in total.
+
+## Round 2 code: `lns_v3` / `lns_v3.cpp` (identical to the current `lns.cpp` except for a debug print)
+- **Bigger neighbourhoods:**
+  - `--dmax 8`: op 0 uses DFS depth 1-8, op 2 depth 2-9;
+  - `--pdmax 4`: patch depth 1-4;
+  - `--rmax 8`: patch re-sync range;
+  - `--wide 8`: widens the re-sync windows of ops 0-3 and 8 by 8 moves;
+  - DFS move order is shuffled with the seeded RNG, so the node budget no longer always truncates the same
+    branches.
+- **Operators borrowed from polish** (`subagents/polish/polish.cpp`, ported into `Search::route` and
+  `Search::skel_replay`):
+  - The repair keeps the tour's *key* moves (every move that waits, plus the final one): their square,
+    their from-square and their dz (either sign).
+  - It re-routes the zero-wait stretches between key moves with min-cost Dijkstra. Landings on squares that
+    later key moves need are penalised, and visits are reserved for later key landings.
+  - `--skel P`: when a suffix replay breaks, try this skeleton repair with probability P.
+  - `--reroute P`: op 9, re-route every stretch after move i. It is accepted if the minutes do not drop
+    and the jumps do not grow.
+- **Free sinks** (`--free F`), following the user's ruling that free waits are legal when a later move needs
+  them:
+  - A move can carry `fd` > 0: the knight sinks fd units while the target is in its own group, then makes a
+    knight move with dz = 0.
+  - The DFS adds these options (fd = 1..F) for every same-group knight target.
+  - The parser reads free sinks, so it accepts 8,239, 8,288 and 8,292.
+  - Necessity is not checked inside the search. `saver.sh` only promotes tours that `tools/check_tour.py`
+    accepts with `unnecessary=[]`.
+  - Moves also carry their from-square. This fixed a skeleton bug at segment seams, where a key move was
+    tried from the wrong square.
+
+## Round 2 results
+Every number is checker-verified (`ok=True maxvisits=3 unnecessary=[]`).
+
+**8,241: smoke test.** Command: `lns_v3 --tours 8239 8235 8211 --seed 1 --free 2 --iters 3000`, about 70 s.
+- One free wait: (142, 18, g8).
+- The merge is changed: it passes through g5 and drops the f4/d5/a6 shuffle. The dance starts at move 56
+  (T = 299), with 84 dance sits and 148 jumps.
+
+**run5: free sinks (A) vs strict (B).**
+- Settings: `run5.sh`, 5 seeds each (41-45), 12,000 iterations each, the same 9 inputs (8241, 8239, 8235,
+  8211, the 8,211 elite, the 12 8,123 variants, 8123, 8002, 7911).
+- "Strict" means no *new* free sinks; the inputs' free waits can still be copied.
+
+| seed | A (--free 2) | B (--free 0) |
+|---|---|---|
+| 41 | 8,241 | 8,241 |
+| 42 | **8,288** (it 6,212: 8,261 by op 2, i=141, D=9; it 7,101: 8,288 by op 5 reverse, a=117, len 5) | 8,241 |
+| 43 | 8,241 | 8,241 |
+| 44 | 8,241 | 8,255 (op 3, i=93; then op 2, i=43, D=6) |
+| 45 | 8,241 | 8,241 |
+| CPU-seconds per run | 190-218 | 140-155 |
+
+- At equal iterations, 1/5 seeds improve in each arm. A costs about 40% more CPU per iteration.
+- 8,288 has one free wait, (111, 24, b3). Its gains came in the **dance** (i = 117-141), not the merge.
+- The reviewer notes that fractional's 8,288 has the same last 94 squares, so the two agents converged on
+  this tail.
+
+**run6: continuation from 8,288.** Stopped after a few minutes, without a result, to make room for the 2×2
+test. The partial log is `tmp/r6_s51_f2_killed.log`.
+
+**run4: v3 vs v2.** Started, then stopped within a minute when the free-wait ruling arrived, and its logs
+were deleted. While it ran, it produced a strict 8,233 (v3, seed 31), which `saver.sh` verified
+(`tmp/saver2.log`). Not used as evidence.

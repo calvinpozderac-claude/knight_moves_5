@@ -9,7 +9,7 @@ for fn in logs:
     m = re.search(r'([^/]+)_a(\d+)\.log$', fn); arm, A = m.group(1), int(m.group(2))
     sc, ts = [], []
     for line in open(fn):
-        r = re.match(r'\[\s*(\d+)s\] thread \d+ restart \d+ \(anchor \d+\): (finished|unfinished) (\d+) minutes', line)
+        r = re.match(r'\[\s*(\d+)s\] thread \d+ restart \d+ \(anchor \d+[^)]*\): (finished|unfinished) (\d+) minutes', line)
         if not r or 'PARTIAL' in line: continue
         ts.append(int(r.group(1))); sc.append(int(r.group(3)) if r.group(2) == 'finished' else 0)
     data[(arm, A)] = (sc, ts)

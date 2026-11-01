@@ -1,9 +1,11 @@
-# Are "free waits" legal? The case for and against
+# Free waits: the ruling, and the case for and against (now historical)
+
+**Current record: 8,292** (`NEW_RECORD_8292.txt`, two free waits, checker ok). It replaced 8,288 and 8,264.
 
 ## RULING (user, round 2): free waits are legal
 The puzzle's only condition on waits: if a jump (t, P) has t > 0, there must be **some** t' such that
 replacing (t, P) with (t', P) makes that move or a later move illegal. Free waits that a later move needs
-are legal. The two scoreboards are merged; **8,264** (`NEW_RECORD_8264.txt`) is the overall record.
+are legal. The two scoreboards are merged, and the current record is at the top.
 
 What this means for the checker, under that ruling:
 - **Sound.** `necessity_check` only accepts a wait if one of its probes (t +/- 1/997, 0, t+1, 2t, all
@@ -15,7 +17,13 @@ What this means for the checker, under that ruling:
   good tours; it never accepts bad ones.
 - **`fnrpa`'s `free_ok` filter is stricter still.** It only probes +e, so it only ever loses candidates.
 
-The analysis below, written before the ruling, is kept for the record.
+**Pump tours are illegal.** In a pump tour, a big group (containing h8) sinks by free waits while every
+later move stays inside that group, for example the 11,465 tour in round 1. Changing any of those waits
+breaks nothing later, so no t' exists, and `check_tour.py` rejects them (unnecessary = 72 waits).
+`fnrpa`'s `free_ok` filter rejects them during the search.
+
+The analysis below was written before the ruling. It is **historical**. In particular, the "three-part
+acceptance test" is stricter than the user's rule, so a tour does not need to pass it.
 
 ## Definitions
 - **Pinned wait.** The jump that follows is legal only at this exact wait. Nudge the wait and that jump
@@ -110,7 +118,7 @@ calls the wait necessary if **any** of these breaks the tour.
 - **It isn't free of false alarms in principle.** For example, t-1/997 < 0 is skipped, and a probe can
   hit an accidental coincidence. In practice I saw none.
 
-**What I recommend as a stronger acceptance test for any free-wait tour:**
+**(Historical, superseded by the ruling.) The stronger acceptance test I recommended for any free-wait tour:**
 - all five probes break the tour, including drop-to-0;
 - with the other waits fixed, the wait is the only working value on a 1/12 grid up to 3s+2
   (`nec_detail.py`);
@@ -118,7 +126,7 @@ calls the wait necessary if **any** of these breaks the tour.
 
 8,176, 8,183 and the official example pass all three; the floppy counterexample fails the third.
 
-## Verdict
+## Verdict (historical, before the ruling)
 - If the 4x4 example is official, free waits are **legal by example**: the example itself uses three, one
   of them fractional.
 - The 8,176 and 8,183 tours (and any future FREEWAIT tour that passes the three-part test above) are then

@@ -8,6 +8,31 @@ sys.path.insert(0, 'tools'); sys.path.insert(0, 'subagents/fractional')
 from sim import MAIN_ROWS, simulate, necessity_check
 from repin import profile, rebuild, fmt
 from collections import Counter
+from sim import init_alt, parse, apply_wait, legal_jump
+FLEX = '--flex' in sys.argv
+if FLEX: sys.argv.remove('--flex')
+
+
+def rebuild_flex(prof, override):
+    # like repin.rebuild, but when the original dz needs a negative sink, try the other legal dz values
+    alt = init_alt(MAIN_ROWS); pos = parse('a1'); moves = []
+    for i, (qs, dz, free, sink) in enumerate(prof):
+        q = parse(qs); O = (7 - pos[0], 7 - pos[1]); A = alt[pos]
+        n = sum(1 for p in alt if alt[p] == A and p != O); ingroup = alt[q] == A and q != O
+        if i in override: s = override[i]
+        elif ingroup: s = sink
+        else:
+            opts = [dz] + [d for d in ([2, -2] if abs(dz) == 2 else [1, -1] if abs(dz) == 1 else [0]) if d != dz]
+            s = None
+            for d in opts:
+                x = d - (alt[q] - A)
+                if x >= 0: s = x; break
+        if s is None or s < 0: return None
+        apply_wait(pos, s * n, alt, 8)
+        if not legal_jump(pos, q, alt): return None
+        moves.append((s * n, qs)); pos = q
+    return moves
+if FLEX: rebuild = rebuild_flex
 
 
 def good(m):
