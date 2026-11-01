@@ -527,11 +527,60 @@ def cmd_search(a):
     prefix_file = a.anchor_tour or ''
     if prefix_file and not os.path.isabs(prefix_file):
         prefix_file = os.path.join(ROOT, prefix_file)
-    astar = K.AStar(prefix_file, a.anchor_len if prefix_file else 0, a.max_nodes, a.max_open, a.dedup_log2)
     workers = K.Workers(a.workers, a.seed + 1) if a.workers > 0 else None
     cap = 24 * a.pop_batch + 64
     bufs = [torch.empty((cap, REC), dtype=torch.uint8).pin_memory() for _ in range(2)]
     ex = ThreadPoolExecutor(1)
+
+    def new_tree():
+        """A fresh search tree. With --bfs-nodes N: first a breadth-first search (shallowest first, no network,
+        no novelty) until N positions are open, then every open position is scored by the network, and the
+        A* search continues from that scored frontier."""
+        plen = a.anchor_len if prefix_file else 0
+        if a.bfs_nodes <= 0:
+            return K.AStar(prefix_file, plen, a.max_nodes, a.max_open, a.dedup_log2)
+        N = int(a.bfs_nodes)
+        K.set_param('novelty_w', 0)
+        tree = K.AStar(prefix_file, plen, max(a.max_nodes, int(2.2 * N)), max(a.max_open, int(1.3 * N)), max(a.dedup_log2, 28))
+        t1 = time.time()
+        lastp = t1
+        n = tree.expand(0, 8192, a.expand_threads, bufs[0].numpy())
+        while not STOP:
+            depth = bufs[0][:n, 194:196].numpy().copy().view('<u2').reshape(-1).astype(np.float32)
+            tree.push(0, -depth)  # f = -depth: shallowest first
+            st = tree.stats()
+            if st['open'] >= N or st['open'] == 0:
+                break
+            if time.time() - lastp >= 20:
+                log(f"  BFS: {st['open'] / 1e6:.1f}M open positions of {N / 1e6:.0f}M, depth {st['maxdepth']:.0f}, "
+                    f"{st['expansions'] / 1e6:.1f}M expanded, {st['finishes']:.0f} finishes, best {st['best']:.0f}")
+                lastp = time.time()
+            n = tree.expand(0, 8192, a.expand_threads, bufs[0].numpy())
+        st = tree.stats()
+        log(f"BFS done in {time.time() - t1:.0f}s: {st['open'] / 1e6:.1f}M frontier positions, deepest {st['maxdepth']:.0f} moves, "
+            f"{st['expansions'] / 1e6:.1f}M expanded, {st['finishes']:.0f} finished paths found, best {st['best']:.0f}")
+        total, chunk, t2 = int(st['open']), int(a.bfs_chunk), time.time()
+        ebuf = np.zeros(chunk, K.SAMPLE_DTYPE)
+        fsum = fmax = 0.0
+        for start in range(0, total, chunk):
+            if STOP:
+                break
+            m = tree.heap_export(start, chunk, a.expand_threads, ebuf)
+            rt = torch.from_numpy(ebuf[:m].view(np.uint8).reshape(-1, REC))
+            v, _, _ = predict(eval_fwd, rt, a.gamma, a.depth_bonus, noise=a.noise)
+            vv = v.cpu().numpy()
+            tree.heap_import(start, vv)
+            fsum += float(vv.sum())
+            fmax = max(fmax, float(vv.max()))
+            if (start // chunk) % 5 == 4:
+                log(f"  network scored {start + m:,} of {total:,} frontier positions ({(start + m) / (time.time() - t2) / 1e3:.0f}k/s)")
+        tree.heap_rebuild()
+        tree.set_novelty(a.novelty_w)
+        K.set_param('novelty_w', a.novelty_w)
+        log(f'frontier scored in {time.time() - t2:.0f}s: mean value {fsum / max(1, total):.0f}, best {fmax:.0f}; continuing with A*')
+        return tree
+
+    astar = new_tree()
 
     pool_path = os.path.join(a.run, 'pool.txt')
     best_path = os.path.join(a.run, 'best.txt')
@@ -619,7 +668,7 @@ def cmd_search(a):
                 if st['open'] == 0:
                     restarts += 1
                     log(f'open list empty: restarting the search (restart {restarts})')
-                    astar = K.AStar(prefix_file, a.anchor_len if prefix_file else 0, a.max_nodes, a.max_open, a.dedup_log2)
+                    astar = new_tree()
                     slot = 0
                     n_cur = astar.expand(slot, a.pop_batch, a.expand_threads, bufs[slot].numpy())
                     continue
@@ -659,7 +708,7 @@ def cmd_search(a):
                 log(f'no new best for {a.restart_stale_minutes:.0f} min: restarting the search tree (restart {restarts}); '
                     f'final sample of the old tree: {nfs} positions, {npos / max(1, nfs):.0%} with a finished path')
                 node_hist.clear()
-                astar = K.AStar(prefix_file, a.anchor_len if prefix_file else 0, a.max_nodes, a.max_open, a.dedup_log2)
+                astar = new_tree()
                 last_restart = time.time()
                 slot = 0
                 n_cur = astar.expand(slot, a.pop_batch, a.expand_threads, bufs[slot].numpy())
@@ -833,6 +882,10 @@ def main():
     g.add_argument('--label-path-rate', type=float, default=0.25, help='share of a labelling path\'s positions also emitted')
     g.add_argument('--harvest', type=int, default=0, help='search-tree positions with a finished descendant sampled per drain')
     g.add_argument('--train-frac', type=float, default=0.3, help='share of GPU time spent training during the search')
+    g.add_argument('--bfs-nodes', type=float, default=0,
+                   help='start every tree with a breadth-first search until this many positions are open (e.g. 100e6), score '
+                        'them all with the network, then continue with A* (0: plain A*). Needs about 2.2x this many 12-byte nodes')
+    g.add_argument('--bfs-chunk', type=int, default=2_000_000, help='frontier positions scored per round trip')
     g.add_argument('--base-frac', type=float, default=0.0, help='share of each training batch from the generated (rollout) data')
     g.add_argument('--sample-rate', type=float, default=10000, help='expanded positions sampled per second as training data')
     g.add_argument('--sample-age', type=float, default=60, help='only positions expanded at least this many seconds ago are sampled')

@@ -40,6 +40,10 @@ def lib():
             'km_astar_best': (i, [C.c_char_p, i]),
             'km_astar_found': (i64, [C.c_char_p, i64]),
             'km_astar_tree_samples': (i64, [vp, i64]),
+            'km_astar_set_novelty': (None, [d]),
+            'km_astar_heap_export': (i64, [i64, i64, i, vp]),
+            'km_astar_heap_import': (None, [i64, vp, i64]),
+            'km_astar_heap_rebuild': (None, []),
             'km_astar_elite_samples': (i64, [vp, i64]),
             'km_astar_harvest': (i64, [vp, i64, i]),
             'km_astar_sample_positions': (i64, [vp, i64, i64, i]),
@@ -164,6 +168,19 @@ class AStar:
         out = np.zeros(cap, SAMPLE_DTYPE)
         n = lib().km_astar_elite_samples(ptr(out), cap)
         return out[:n].copy()
+
+    def set_novelty(self, w):
+        lib().km_astar_set_novelty(float(w))
+
+    def heap_export(self, start, n, threads, out):
+        return lib().km_astar_heap_export(start, n, threads, ptr(out))
+
+    def heap_import(self, start, f):
+        f = np.ascontiguousarray(f, dtype=np.float32)
+        lib().km_astar_heap_import(start, ptr(f), len(f))
+
+    def heap_rebuild(self):
+        lib().km_astar_heap_rebuild()
 
     def sample_positions(self, k, max_id, threads):
         out = np.zeros(max(1, k), SAMPLE_DTYPE)

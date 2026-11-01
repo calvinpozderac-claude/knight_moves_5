@@ -627,6 +627,26 @@ void km_astar_push(int slot, const float* f, long long n) {
   if (HEAP.size() > MAXOPEN) prune_heap((uint64_t)(MAXOPEN * PRUNE_KEEP));
 }
 
+// BFS support: switch novelty on/off after the tree exists; export / import the open list in chunks (heap
+// array order) so every entry can be scored by the network without holding all states in memory at once.
+void km_astar_set_novelty(double w) { NOVELTY_W = w; clear_counts(); }
+long long km_astar_heap_export(long long start, long long n, int threads, Sample* out) {
+  if (start < 0 || start >= (long long)HEAP.size()) return 0;
+  n = min<long long>(n, (long long)HEAP.size() - start);
+  int nt = max(1, threads);
+  auto work = [&](int t) {
+    for (long long i = t; i < n; i += nt) { S st; int d = rebuild(HEAP[start + i].id, st); to_sample(st, d, 4, 0.f, out[i]); }
+  };
+  vector<std::thread> th; for (int t = 0; t < nt; t++) th.emplace_back(work, t); for (auto& x : th) x.join();
+  return n;
+}
+void km_astar_heap_import(long long start, const float* f, long long n) {
+  for (long long i = 0; i < n && start + i < (long long)HEAP.size(); i++) {
+    HE& e = HEAP[start + i]; e.fraw = f[i]; e.f = f[i] - novelty_pen(e);
+  }
+}
+void km_astar_heap_rebuild() { std::make_heap(HEAP.begin(), HEAP.end()); RESC.clear(); }
+
 // stats: expansions, children, finishes, dead, dup, stale, gc, prune, nodes, open, best, maxdepth, dedup
 // entries, dedup clears, best f in the open list
 void km_astar_stats(double* o) {
