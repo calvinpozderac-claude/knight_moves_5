@@ -26,3 +26,11 @@ Evidence standard (from `reviews/PORTFOLIO.md`): fixed tasks, equal CPU-seconds,
 full spread reported; count only completed restarts.
 
 Round budget: about 90 minutes of wall-clock time per agent.
+
+## Rules ruling (from the user, 2026-11-01)
+The puzzle's only stipulation on waits: if a jump (t, P) has t > 0, there must exist a t' such that
+replacing (t, P) with (t', P) makes that move or a later move illegal. So a free wait is legal whenever
+changing it breaks a later move. `tools/check_tour.py`'s `necessity_check` tests exactly this (it tries
+several t'; finding one that breaks the tour proves necessity, so the checker never accepts an invalid
+tour). **The scoreboards are merged: any tour the checker accepts counts.** Record: 8,239
+(`data/tours/record_8239.txt`, one free wait at move 153).

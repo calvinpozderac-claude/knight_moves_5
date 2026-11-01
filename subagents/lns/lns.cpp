@@ -10,7 +10,7 @@
 #include <chrono>
 #include <unordered_set>
 
-struct M { uint8_t q; int8_t dz; uint8_t key = 0; };  // key: waits in the tour it came from (or final move)
+struct M { uint8_t q; int8_t dz; uint8_t key = 0; uint8_t fr = 255; };  // fr: square the move leaves (255 unknown)  // key: waits in the tour it came from (or final move)
 static int TYP[64][64];
 static inline bool operator==(const M& a, const M& b) { return a.q == b.q && a.dz == b.dz; }
 
@@ -40,7 +40,7 @@ static vector<M> parse_tour(const string& line, long long* Tout) {
     vector<pair<int, int>> mv; pinned_moves(s, 3, true, mv);
     bool found = false;
     for (auto& [d, qq] : mv) if (qq == q && d * n == w) {
-      apply_move(s, d, q); out.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), (uint8_t)(d > 0 || q == H8)}); found = true; break;
+      apply_move(s, d, q); out.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), (uint8_t)(d > 0 || q == H8), (uint8_t)p}); found = true; break;
     }
     if (!found) { fprintf(stderr, "parse: move %zu (%d,%s) not pinned\n", out.size() + 1, w, sq); exit(1); }
   }
@@ -71,7 +71,7 @@ static long long score_full(const vector<M>& X) {
 
 static void mark_keys(vector<M>& X) {
   S s = start_state();
-  for (auto& m : X) { long long T0 = s.T; stepM(s, m); m.key = (s.T > T0 || m.q == H8); }
+  for (auto& m : X) { long long T0 = s.T; m.fr = s.pos; stepM(s, m); m.key = (s.T > T0 || m.q == H8); }
 }
 static std::mt19937_64 rng;
 static double SKELP = 0, PENV = 4;
@@ -159,7 +159,8 @@ struct Search {
   void skel_replay(S s, int k, int mode, float PEN) {
     const vector<M>& y = *Y; skel_calls++;
     int res[64]; float pen[64]; bool isFrom[64]; memset(res, 0, sizeof res); memset(isFrom, 0, sizeof isFrom);
-    for (int m = k; m < (int)y.size(); m++) if (y[m].key) { if (y[m].q != H8) res[y[m].q]++; isFrom[P0[m]] = true; }
+    auto KF = [&](int m) { return y[m].fr < 64 ? (int)y[m].fr : P0[m]; };
+    for (int m = k; m < (int)y.size(); m++) if (y[m].key) { if (y[m].q != H8) res[y[m].q]++; isFrom[KF(m)] = true; }
     for (int i = 0; i < 64; i++) pen[i] = (res[i] > 0 || isFrom[i]) ? PEN : 0.f;
     size_t base = path.size(); vector<int> rt;
     int m = k;
@@ -173,10 +174,10 @@ struct Search {
         for (int t = m; t < e; t++) { int p = c.pos, q = y[t].q;
           if (TYP[p][q] < 0 || !legal_dz(TYP[p][q], c.alt[q] - c.alt[p]) || c.vis[q] + 1 + res[q] > 3) { ok = false; break; }
           c.vis[q]++; c.pos = q; }
-        if (ok && c.pos == P0[e]) { int p = s.pos; for (int t = m; t < e; t++) { int q = y[t].q; path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), 0}); p = q; } s = c; done = true; }
+        if (ok && c.pos == KF(e)) { int p = s.pos; for (int t = m; t < e; t++) { int q = y[t].q; path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), 0}); p = q; } s = c; done = true; }
       }
       if (!done) {
-        rt.clear(); if (!route(s, P0[e], res, pen, rt)) break;
+        rt.clear(); if (!route(s, KF(e), res, pen, rt)) break;
         for (int q : rt) { path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[s.pos]), 0}); s.vis[q]++; s.pos = q; }
       }
       finish_check(s);
@@ -185,10 +186,11 @@ struct Search {
       if (s.alt[q] == a && q != 63 - p) { if (t != 0) break; delta = 0; dz = 0; }
       else { int diff = s.alt[q] - a; delta = dz - diff;
         if (delta < 0) { if (t == 0) break; dz = -dz; delta = dz - diff; if (delta < 0) break; } }
+      if (!legal_dz(t, dz)) break;
       if (q != H8) { if (s.vis[q] + res[q] > 3) break; res[q]--; }
       else if (e + 1 != (int)y.size()) break;
       if (q == H8) { long long T = s.T + (delta ? (long long)delta * group_n(s, p) : 0); record(T, {(uint8_t)H8, (int8_t)dz, 1}); break; }
-      apply_move(s, delta, q); path.push_back({(uint8_t)q, (int8_t)dz, 1});
+      apply_move(s, delta, q); path.push_back({(uint8_t)q, (int8_t)dz, 1, (uint8_t)p});
       m = e + 1;
     }
     path.resize(base);
@@ -203,7 +205,7 @@ struct Search {
     auto local = mv; std::shuffle(local.begin(), local.end(), rng);
     for (auto& [dl, q] : local) {
       S s2 = s; int p = s.pos; apply_move(s2, dl, q);
-      path.push_back({(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl > 0)});
+      path.push_back({(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl > 0), (uint8_t)p});
       nodes++; finish_check(s2);
       patch_dfs(s2, k, d + 1, pd);
       path.pop_back();
@@ -226,7 +228,7 @@ struct Search {
     vector<pair<int, int>> mv; pinned_moves(s, 3, false, mv); std::shuffle(mv.begin(), mv.end(), rng);
     for (auto& [dl, q] : mv) {
       S s2 = s; int p = s.pos; apply_move(s2, dl, q);
-      M m{(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl > 0)};
+      M m{(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl > 0), (uint8_t)p};
       bool on2 = onX && sameXY && i0 + d < (int)Y->size() && (*Y)[i0 + d] == m;
       path.push_back(m); nodes++;
       win_dfs(s2, d + 1, on2, pd);
@@ -443,7 +445,9 @@ int main(int argc, char** argv) {
       if (SR.bestT < 0) continue;
       long long dT = SR.bestT - cur.T;
       if (dT >= 0 || U() < exp(dT / temp)) {
-        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
+        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d skel %lld full %lld best %lld len %zu\n", op, SR.skel_calls, score_full(SR.best), SR.bestT, SR.best.size());
+          { S z = start_state(); for (size_t k = 0; k < SR.best.size(); k++) { S z2 = z; if (!stepM(z2, SR.best[k])) { printf("  fail at %zu: %s->%s dz %d altdiff %d vis %d\n", k, nm(z.pos).c_str(), nm(SR.best[k].q).c_str(), SR.best[k].dz, z.alt[SR.best[k].q]-z.alt[z.pos], z.vis[SR.best[k].q]); break; } z = z2; } printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T); }
+          continue; }
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
         cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
@@ -481,7 +485,9 @@ int main(int argc, char** argv) {
       if (SR.bestT < 0) continue;
       long long dT = SR.bestT - cur.T;
       if (dT >= 0 || U() < exp(dT / temp)) {
-        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); continue; }
+        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d skel %lld full %lld best %lld len %zu\n", op, SR.skel_calls, score_full(SR.best), SR.bestT, SR.best.size());
+          { S z = start_state(); for (size_t k = 0; k < SR.best.size(); k++) { S z2 = z; if (!stepM(z2, SR.best[k])) { printf("  fail at %zu: %s->%s dz %d altdiff %d vis %d\n", k, nm(z.pos).c_str(), nm(SR.best[k].q).c_str(), SR.best[k].dz, z.alt[SR.best[k].q]-z.alt[z.pos], z.vis[SR.best[k].q]); break; } z = z2; } printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T); }
+          continue; }
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
         cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d a %d len %d", op, a, len); save(gbest, w); }

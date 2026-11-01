@@ -18,3 +18,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 1 | lns | LNS v2 (after relay: windows in moves 1-60, seeded from 8,130) | **8,211 (verified, STRICT)** | NEW RECORD (+88 over 8,123) |
 | 2 | fractional | free-wait engine run from 8,211 (strict output) | **8,235 (verified, STRICT)** | NEW RECORD |
 | 2 | fractional | free-wait board | 8,239 (1 free wait at move 153) | separate scoreboard |
+| 2 | — | rules ruling: free waits legal when needed for later moves | **record = 8,239** (fractional) | scoreboards merged |
