@@ -24,3 +24,7 @@ build/nrpa: src/nrpa.cpp src/eng.h
 build/libnnastar.so: src/nnastar.cpp src/eng.h
 	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -fPIC -shared -pthread -o $@ src/nnastar.cpp
+
+build/coverage_search: src/coverage_search.cpp src/eng.h
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -pthread -o $@ src/coverage_search.cpp
