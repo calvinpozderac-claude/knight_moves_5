@@ -209,6 +209,7 @@ struct Node { uint32_t parent; uint16_t t; uint8_t q; };
 static vector<Node> GN;  // global (BFS) nodes; node 0 = root
 static vector<Mv> PREFIX;
 static string PROBE;
+static FILE* DUMPF = nullptr; static long long DUMPR = 100000; static thread_local long long DUMPN = 0;
 static std::atomic<long long> BEST{-1};
 static std::mutex BEST_M;
 static string OUTF = "runs/heur_best.txt";
@@ -223,14 +224,22 @@ static string tour_text(const vector<Mv>& mv) {
   return o;
 }
 // path of a node (global or local table), then the finishing move
-static void offer(const vector<Node>* local, uint32_t id, Mv fin, long long minutes) {
-  if (minutes <= BEST.load()) return;
+static vector<Mv> path_of(const vector<Node>* local, uint32_t id, Mv fin) {
   vector<Mv> rev; rev.push_back(fin);
   for (uint32_t c = id; c != 0;) {
     const Node& nd = (c & LOCAL) ? (*local)[c & ~LOCAL] : GN[c];
     rev.push_back({nd.t, nd.q}); c = nd.parent;
   }
   vector<Mv> mv = PREFIX; mv.insert(mv.end(), rev.rbegin(), rev.rend());
+  return mv;
+}
+static void offer(const vector<Node>* local, uint32_t id, Mv fin, long long minutes) {
+  if (DUMPF && (++DUMPN % DUMPR) == 0) {  // sample of finished tours (for testing reachability bounds)
+    vector<Mv> mv = path_of(local, id, fin); std::lock_guard<std::mutex> lk(BEST_M);
+    fprintf(DUMPF, "%lld\n%s\n", minutes, tour_text(mv).c_str());
+  }
+  if (minutes <= BEST.load()) return;
+  vector<Mv> mv = path_of(local, id, fin);
   if (!all_waits_necessary(mv)) { ST_REJ++; return; }
   std::lock_guard<std::mutex> lk(BEST_M);
   if (minutes <= BEST.load()) return;
@@ -341,7 +350,7 @@ int main(int argc, char** argv) {
     if (a == "--threads") TH = stoi(nx()); else if (a == "--seed") SEED = (long long)stod(nx());
     else if (a == "--time") TIME = stod(nx()); else if (a == "--tau") TAU = stod(nx());
     else if (a == "--open-cap") OPENCAP = (size_t)stod(nx()); else if (a == "--node-cap") NODECAP = (size_t)stod(nx());
-    else if (a == "--out") OUTF = nx(); else if (a == "--prefix") prefix = nx(); else if (a == "--probe") PROBE = nx(); else if (a == "--rng") RNG = (unsigned)stoul(nx());
+    else if (a == "--out") OUTF = nx(); else if (a == "--prefix") prefix = nx(); else if (a == "--dump") DUMPF = fopen(nx().c_str(), "w"); else if (a == "--dump-rate") DUMPR = (long long)stod(nx()); else if (a == "--probe") PROBE = nx(); else if (a == "--rng") RNG = (unsigned)stoul(nx());
     else { fprintf(stderr, "unknown option %s\n", a.c_str()); return 1; }
   }
   signal(SIGINT, on_sigint);
@@ -442,5 +451,6 @@ int main(int argc, char** argv) {
   }
   STOP = true;
   for (auto& x : th) x.join();
+  if (DUMPF) fclose(DUMPF);
   printf("done after %.0fs: %lld expansions, best %lld (%s)\n", elapsed(), ST_EXP.load(), BEST.load(), OUTF.c_str());
 }
