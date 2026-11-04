@@ -88,7 +88,7 @@ def setup_engine(a, log):
         raise SystemExit('no seed tours loaded: pass --tours FILE[:weight] ...')
     for name in ['p_level0', 'p_level1', 'p_level2', 'p_level3', 'probes', 'probe_states', 'prefix_rate', 'label_path_rate',
                  'label_level', 'label_level_shallow', 'shallow_depth', 'nice', 'anchor_pow', 'p_label', 'pool_min', 'frac_label',
-                 'novelty_w', 'novelty_k1', 'novelty_k2', 'dead_rate']:
+                 'novelty_w', 'novelty_k1', 'novelty_k2', 'dead_rate', 'lookahead']:
         K.set_param(name, getattr(a, name))
 
 
@@ -767,7 +767,7 @@ def cmd_search(a):
                 de = st['expansions'] - prev_as.get('expansions', 0)
                 log(f"A* {de / dt / 1e3:.1f}k exp/s | since best {(now - last_improve) / 60:.0f} min | open {st['open'] / 1e6:.2f}M nodes {st['nodes'] / 1e6:.1f}M "
                     f"maxdepth {st['maxdepth']:.0f} | best {st['best']:.0f} top f {st['top_f']:.0f} | finishes {st['finishes']:.0f} "
-                    f"dead {st['dead']:.0f} dup {st['dup']:.0f} stale {st['stale']:.0f} gc {st['gc']:.0f} prune {st['prune']:.0f} "
+                    f"dead {st['dead']:.0f} (proven by lookahead {st['proven']:.0f}) dup {st['dup']:.0f} stale {st['stale']:.0f} gc {st['gc']:.0f} prune {st['prune']:.0f} "
                     f"requeued {st['lazy']:.0f}")
                 lt = K.label_stats()
                 dr = st['raised'] - prev_as.get('raised', 0)
@@ -776,7 +776,7 @@ def cmd_search(a):
                 sp = (sampled[0] - prev_samp[0], sampled[1] - prev_samp[1])
                 prev_samp[:] = sampled
                 log(f"   new data: {dr / dt / 1e3:.1f}k/s positions raised by finished paths, {sp[0] / dt / 1e3:.1f}k/s sampled "
-                    f"expanded positions ({sp[1] / max(1, sp[0]):.0%} with a finished path), {dd_ / dt / 1e3:.1f}k/s dead ends | {wl}best-future table "
+                    f"expanded positions ({sp[1] / max(1, sp[0]):.0%} with a finished path), {dd_ / dt / 1e3:.1f}k/s dead ends (incl. proven) | {wl}best-future table "
                     f"{lt['entries'] / 1e6:.1f}M positions ({lt['entries'] / lt['slots']:.0%} full, {lt['clears']:.0f} clears) | "
                     f"elite {tours_rb.n}")
                 log(f"   train: {tr.steps} steps, loss {l:.4f} (fin {lf:.4f} fut {lu:.4f}), GPU {t_train / max(1e-9, t_train + t_inf):.0%} "
@@ -890,6 +890,9 @@ def main():
     g.add_argument('--sample-rate', type=float, default=10000, help='expanded positions sampled per second as training data')
     g.add_argument('--sample-age', type=float, default=60, help='only positions expanded at least this many seconds ago are sampled')
     g.add_argument('--restart-sample', type=int, default=2_000_000, help='positions sampled from a tree before it is discarded')
+    g.add_argument('--lookahead', type=int, default=30,
+                   help='children with moves left get a bounded exhaustive lookahead of this many positions; those proven '
+                        'unable to finish are dropped like dead ends and become label-0 samples (0: off; at most ~1000)')
     g.add_argument('--dead-rate', type=float, default=1.0, help='share of dead ends (no legal move) used as label-0 samples')
     g.add_argument('--fresh-cap', type=int, default=8_000_000)
     g.add_argument('--keep-search-shards', type=int, default=20, help='search-data shards kept on disk (1M samples, 204 MB each)')

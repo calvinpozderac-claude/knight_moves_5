@@ -295,6 +295,8 @@ static std::set<long long> SEEN_SCORES; static vector<pair<long long, string>> F
 static vector<Sample> TREE_OUT;   // positions whose best rose because of a finished path (new training data)
 static vector<Sample> ELITE_OUT;  // every position of new best / pool tours (for the elite buffer)
 static long long A_RAISED = 0, A_DEADOUT = 0;
+static int LOOKAHEAD = 0;  // children proven dead by a bounded exhaustive lookahead of this many nodes are dropped (0: off)
+static long long A_PROVEN = 0;
 static double DEAD_RATE = 1.0;  // share of dead ends (no legal move) emitted as label-0 samples
 static long long A_EXP = 0, A_CHILD = 0, A_FIN = 0, A_DEAD = 0, A_DUP = 0, A_STALE = 0, A_GC = 0, A_PRUNE = 0, A_MAXDEPTH = 0, A_DDCLEAR = 0;
 static std::mt19937_64 ARNG(12345);
@@ -419,7 +421,7 @@ int km_set(const char* name, double v) {
   else if (n == "frac_label") FRAC_LABEL = v; else if (n == "anchor_pow") ANCHOR_POW = v;
   else if (n == "nice") NICE = (int)v; else if (n == "lq_cap") LQ_CAP = (size_t)v; else if (n == "out_cap") OUT_CAP = (size_t)v;
   else if (n == "novelty_w") NOVELTY_W = v; else if (n == "novelty_k1") NOV_K1 = max(1, (int)v); else if (n == "novelty_k2") NOV_K2 = max(1, (int)v);
-  else if (n == "dead_rate") DEAD_RATE = v;
+  else if (n == "dead_rate") DEAD_RATE = v; else if (n == "lookahead") LOOKAHEAD = (int)v;
   else if (n == "p_label") P_LABEL = v; else if (n == "pool_min") POOL_MIN = (long long)v; else if (n == "prune_keep") PRUNE_KEEP = v;
   else return 0;
   return 1;
@@ -503,7 +505,7 @@ int km_astar_init(const char* fn, int prefix_len, unsigned long long max_nodes, 
   clear_counts(); A_LAZY = 0;
   dd_put(skey(ROOT), ROOT.T);
   BEST_SCORE = -1; BEST_SEQ.clear(); SEEN_SCORES.clear(); FOUND.clear(); TREE_OUT.clear(); ELITE_OUT.clear(); A_RAISED = A_DEADOUT = 0;
-  A_EXP = A_CHILD = A_FIN = A_DEAD = A_DUP = A_STALE = A_GC = A_PRUNE = A_MAXDEPTH = A_DDCLEAR = 0;
+  A_PROVEN = 0; A_EXP = A_CHILD = A_FIN = A_DEAD = A_DUP = A_STALE = A_GC = A_PRUNE = A_MAXDEPTH = A_DDCLEAR = 0;
   return 0;
 }
 
@@ -529,7 +531,7 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
   struct Fin { uint32_t parent; int delta; long long score; };
   int nt = max(1, min(threads, (int)pop.size() / 8 + 1));
   vector<vector<Ch>> lch(nt); vector<vector<Fin>> lfin(nt); vector<vector<LJob>> llab(nt); vector<vector<Sample>> lraise(nt), ldeads(nt);
-  vector<long long> ldead(nt, 0), lstale(nt, 0), lmaxd(nt, 0);
+  vector<long long> ldead(nt, 0), lstale(nt, 0), lmaxd(nt, 0), lproven(nt, 0);
   vector<uint64_t> seeds(nt); for (auto& x : seeds) x = ARNG();
   auto work = [&](int t) {
     std::mt19937_64 rng(seeds[t]);
@@ -553,7 +555,9 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
         }
         S c = s; apply_move(c, d, q);
         pinned_moves(c, 3, true, mv2);
-        if (mv2.empty()) {  // dead end: no legal move, so certainly no finish (label 0)
+        bool proven = !mv2.empty() && LOOKAHEAD > 0 && dead_lookahead(c, LOOKAHEAD) == 1;
+        if (proven) lproven[t]++;
+        if (mv2.empty() || proven) {  // dead end (no legal move, or none of the positions it leads to can finish): label 0
           ldead[t]++;
           if (DEAD_RATE >= 1.0 || U(rng) < DEAD_RATE) { Sample o; to_sample(c, depth + 1, 7, 0.f, o); ldeads[t].push_back(o); }
           continue;
@@ -585,7 +589,7 @@ long long km_astar_expand(int slot, int B, int threads, Sample* out, long long c
   A_EXP += (long long)pop.size();
   long long n = 0;
   for (int t = 0; t < nt; t++) {
-    A_DEAD += ldead[t]; A_STALE += lstale[t]; A_MAXDEPTH = max(A_MAXDEPTH, lmaxd[t]);
+    A_DEAD += ldead[t]; A_PROVEN += lproven[t]; A_STALE += lstale[t]; A_MAXDEPTH = max(A_MAXDEPTH, lmaxd[t]);
     for (auto& f : lfin[t]) { S dummy; record_finish(f.parent, dummy, f.delta, f.score); }
     A_RAISED += (long long)lraise[t].size(); A_DEADOUT += (long long)ldeads[t].size();
     if (TREE_OUT.size() < 8000000) {
@@ -652,7 +656,7 @@ void km_astar_heap_rebuild() { std::make_heap(HEAP.begin(), HEAP.end()); RESC.cl
 void km_astar_stats(double* o) {
   o[0] = A_EXP; o[1] = A_CHILD; o[2] = A_FIN; o[3] = A_DEAD; o[4] = A_DUP; o[5] = A_STALE; o[6] = A_GC; o[7] = A_PRUNE;
   o[8] = NNODE; o[9] = HEAP.size(); o[10] = BEST_SCORE; o[11] = A_MAXDEPTH; o[12] = DCOUNT; o[13] = A_DDCLEAR;
-  o[14] = HEAP.empty() ? 0 : HEAP.front().f; o[15] = A_LAZY; o[16] = A_RAISED; o[17] = A_DEADOUT;
+  o[14] = HEAP.empty() ? 0 : HEAP.front().f; o[15] = A_LAZY; o[16] = A_RAISED; o[17] = A_DEADOUT; o[18] = A_PROVEN;
 }
 int km_astar_best(char* buf, int cap) {
   string t = BEST_SEQ.empty() ? "" : tour_text(BEST_SEQ);

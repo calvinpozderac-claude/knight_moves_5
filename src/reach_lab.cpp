@@ -237,5 +237,28 @@ int main(int argc, char** argv) {
              b, 100.0 * c[0] / mid.size(), 100.0 * c[1] / mid.size(), 100.0 * c[2] / mid.size(), (double)tot / mid.size(), us);
     }
   }
+  if (MID > 0) {  // the eng.h lookahead (pinned moves, nnastar's model) on positions along pinned-model tours
+    vector<S> pm; vector<pair<int, int>> pmv;
+    for (auto& t : tours) {
+      if ((int)pm.size() >= MID) break;
+      S s = start_state(); int cut = rng() % t.size(); bool ok = true;
+      for (int i = 0; i < cut && ok; i++) ok = do_move(s, t[i]);
+      if (!ok) continue;
+      int len = 1 + rng() % WLEN; bool stuck = false;
+      for (int k = 0; k < len && !stuck; k++) {
+        pinned_moves(s, 3, false, pmv);
+        if (pmv.empty()) stuck = true; else { auto [d, q] = pmv[rng() % pmv.size()]; apply_move(s, d, q); }
+      }
+      if (!stuck) pm.push_back(s);
+    }
+    printf("eng.h dead_lookahead (pinned moves) on %zu positions at random walk depths:\n", pm.size());
+    for (int b : {10, 30, 100, 300, 1000}) {
+      long long c[3] = {}; auto a = std::chrono::steady_clock::now();
+      for (auto& s : pm) c[dead_lookahead(s, b)]++;
+      double us = std::chrono::duration<double>(std::chrono::steady_clock::now() - a).count() / pm.size() * 1e6;
+      printf("  budget %5d: finish %5.1f%%  proven dead %5.1f%%  unknown %5.1f%%  | %.1f us per position\n",
+             b, 100.0 * c[0] / pm.size(), 100.0 * c[1] / pm.size(), 100.0 * c[2] / pm.size(), us);
+    }
+  }
   return 0;
 }
