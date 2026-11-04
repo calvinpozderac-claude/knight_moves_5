@@ -1,21 +1,21 @@
-// Coverage-heuristic search (C++ port of the "Updated A*" notebook), multi-threaded.
+// Heuristic-guided search (C++ port of the "old_knight_moves" notebook), multi-threaded.
 //
-// Moves (as in the notebook's possible_moves): the necessary sink for every orthogonal (dz +-2), two-away
-// (dz +-1) and knight jump to a lower point, plus same-level knight jumps after waiting any multiple of the
-// group size n, up to how far the group could usefully sink. Every jump is re-checked after the sink.
-// Heuristic (the notebook's reach_end + score): a backward breadth-first search from h8 finds the points from
-// which h8 can still be reached (each step may sink the point's own group once; points whose height an
-// earlier step relies on are "restricted"). A position scores the number of distinct points visited if the
-// knight (or one of its moves) is on that set, else 0; the search orders positions by score / total visits.
-// Search: a parallel BFS from the start (or a prefix) until --seed positions are open, then every thread runs
-// the notebook's randomised best-first search on its share of the frontier: draw l in [lmin, lmax], pick one
-// of the l best positions with probability ~ exp((score - best) / tau). Positions live in a bucket queue
-// (score quantised to 1/4096), so the top l are found in O(l). Finished tours must pass a necessity check
-// (every wait: some other wait makes the tour illegal) before they count; improvements go to --out.
+// Moves (the notebook's possible_moves): the necessary sink for every orthogonal (dz +-2), two-away (dz +-1)
+// and knight jump to a lower point, plus same-level knight jumps after waiting any multiple of the group size
+// n (up to how far the group could usefully sink; h8 only without waiting). Every jump is re-checked after
+// the sink.
+// Heuristic (the notebook's reach_end + score): a backward breadth-first search from h8 finds the points that
+// can still reach h8 and, for each, the minutes of the backward route (each step may sink the point's own
+// group once; points an earlier step relies on are "restricted"). A position scores minutes so far + the
+// minutes from its point (or from the best move onto a reachable point) to h8; 0 if h8 is out of reach.
+// Search: a parallel BFS from the start (or --prefix) until --seed positions are open, then every thread runs
+// the notebook's selection on its share of the frontier: pick a position with probability ~ exp((score -
+// best) / tau). Scores are whole minutes and live in a bucket queue with one bucket per minute, so an exact
+// softmax draw only touches the buckets within ~30 tau of the best. Finished tours must pass a necessity check
+// (every wait: some other wait makes the tour illegal); improvements go to --out.
 //
-// usage: coverage_search [--threads 16] [--seed 16000000] [--time 7200] [--open-cap 2000000]
-//                        [--node-cap 25000000] [--tau 1] [--lmin 5] [--lmax 150] [--out runs/coverage_best.txt]
-//                        [--prefix "(0, b1), ..."] [--rng 1]
+// usage: heur_search [--threads 16] [--seed 30000000] [--time 7200] [--open-cap 3000000] [--node-cap 25000000]
+//                    [--tau 1] [--out runs/heur_best.txt] [--prefix "(0, b1), ..."] [--rng 1]
 #include "eng.h"
 #include <atomic>
 #include <chrono>
@@ -23,7 +23,7 @@
 #include <mutex>
 #include <thread>
 
-static const int SC = 4096;  // score buckets
+static const int SC = 1 << 15;  // score buckets: one per minute
 static const uint32_t NIL = 0xFFFFFFFFu, LOCAL = 0x80000000u;
 
 // ---------------------------------------------------------------- compact state
@@ -104,7 +104,10 @@ static void gen_moves(const S& s, vector<Mv>& out) {
   }
   if (!any) return;
   int maxT = (A - minY) * n;
-  for (int t = 0; t <= maxT; t += n) for (int i = 0; i < nf; i++) out.push_back({t, first[i]});
+  for (int i = 0; i < nf; i++) {
+    if (first[i] == H8) { out.push_back({0, H8}); continue; }
+    for (int t = 0; t <= maxT; t += n) out.push_back({t, first[i]});
+  }
 }
 
 // apply (t, q); false if the jump is not legal after the sink
@@ -127,12 +130,12 @@ static inline bool do_move(S& s, const Mv& m) {
 
 // ---------------------------------------------------------------- heuristic
 // backward BFS from h8; reach = points that can still reach h8, rmask[i] = restricted set of point i
-static uint64_t reach_end(const S& s, uint64_t* rmask) {
+static uint64_t reach_end(const S& s, uint64_t* rmask, int* ts) {
   uint64_t gm[64];  // same-altitude masks
   for (int i = 0; i < 64; i++) gm[i] = 0;
   for (int i = 0; i < 64; i++) { if (gm[i]) continue; uint64_t m = 0; for (int j = i; j < 64; j++) if (s.alt[j] == s.alt[i]) m |= 1ULL << j; for (int j = i; j < 64; j++) if (m >> j & 1) gm[j] = m; }
   uint64_t reach = 0, queued = 1ULL << H8;
-  int q[64], qh = 0, qt = 0; q[qt++] = H8; rmask[H8] = (1ULL << H8) | 1ULL;
+  int q[64], qh = 0, qt = 0; q[qt++] = H8; rmask[H8] = (1ULL << H8) | 1ULL; ts[H8] = 0;
   while (qh < qt) {
     int u = q[qh++]; reach |= 1ULL << u;
     int ux = u % 8, uy = u / 8, A = s.alt[u]; uint64_t R = rmask[u];
@@ -141,6 +144,8 @@ static uint64_t reach_end(const S& s, uint64_t* rmask) {
       int Y = s.alt[X];
       bool ok = (exact == 0 ? Y == A : abs(Y - A) == exact) || (!(R >> X & 1) && Y >= A - lo && (exact == 0 || Y != A));
       if (!ok) return;
+      int nX = __builtin_popcountll(gm[X]) - (int)((gm[X] >> (63 - X)) & 1 && (63 - X) != X);
+      ts[X] = ts[u] + ((R >> X & 1) ? 0 : (Y - A + exact) * nX);
       queued |= 1ULL << X; rmask[X] = R | gm[X] | (1ULL << (63 - X)); q[qt++] = X;
     };
     for (auto& d : ORTH) {
@@ -152,18 +157,14 @@ static uint64_t reach_end(const S& s, uint64_t* rmask) {
   return reach;
 }
 
-// notebook score / total visits
-static float score_of(const S& s, vector<Mv>& mv) {
-  uint64_t rm[64]; uint64_t reach = reach_end(s, rm);
-  int distinct = 0, total = 0;
-  for (int i = 0; i < 64; i++) { distinct += s.vis[i] > 0; total += s.vis[i]; }
+// notebook score: minutes so far + minutes of the backward route to h8 (0 if h8 is out of reach)
+static int score_of(const S& s, vector<Mv>& mv) {
+  uint64_t rm[64]; int ts[64]; uint64_t reach = reach_end(s, rm, ts);
   int best = 0;
-  if (reach >> s.pos & 1) best = distinct;
-  else {
-    gen_moves(s, mv);
-    for (auto& m : mv) if ((reach >> m.q & 1) && (m.t == 0 || !(rm[m.q] >> s.pos & 1))) best = max(best, distinct + (s.vis[m.q] == 0));
-  }
-  return total ? (float)best / total : 0.f;
+  if (reach >> s.pos & 1) best = s.T + ts[s.pos];
+  gen_moves(s, mv);
+  for (auto& m : mv) if ((reach >> m.q & 1) && (m.t == 0 || !(rm[m.q] >> s.pos & 1))) best = max(best, s.T + m.t + ts[m.q]);
+  return best;
 }
 
 // ---------------------------------------------------------------- necessity check (exact enough: doubles)
@@ -209,7 +210,7 @@ static vector<Node> GN;  // global (BFS) nodes; node 0 = root
 static vector<Mv> PREFIX;
 static std::atomic<long long> BEST{-1};
 static std::mutex BEST_M;
-static string OUTF = "runs/coverage_best.txt";
+static string OUTF = "runs/heur_best.txt";
 static std::atomic<bool> STOP{false};
 static std::atomic<long long> ST_EXP{0}, ST_FIN{0}, ST_REJ{0}, ST_GC{0}, ST_PRUNE{0};
 static std::chrono::steady_clock::time_point T0;
@@ -253,35 +254,33 @@ struct Dedup {
 };
 
 // ---------------------------------------------------------------- per-thread best-first search
-struct Entry { CS st; uint32_t node; float pr; };
+struct Entry { CS st; uint32_t node; int32_t pr; };
 struct Searcher {
   vector<vector<Entry>> B; int top = 0; size_t count = 0;
   vector<Node> L; Dedup dd; std::mt19937_64 rng;
-  size_t openCap, nodeCap; double tau; int lmin, lmax;
+  size_t openCap, nodeCap; double tau;
   long long exp = 0;
   void push(const Entry& e) {
-    int b = (int)(e.pr * SC); b = max(0, min(SC, b));
+    int b = max(0, min(SC, (int)e.pr));
     B[b].push_back(e); count++; if (b > top) top = b;
   }
-  bool pop(Entry& out) {
+  bool pop(Entry& out) {  // exact softmax over scores: bucket weight = size * exp((b - top) / tau)
     while (top > 0 && B[top].empty()) top--;
     if (count == 0) return false;
-    int l = std::uniform_int_distribution<int>(lmin, lmax)(rng);
-    // the l best entries: walk buckets from the top
-    static thread_local vector<pair<int, int>> cand; static thread_local vector<double> w;
-    cand.clear(); w.clear();
-    float prTop = -1;
-    for (int b = top; b >= 0 && (int)cand.size() < l; b--)
-      for (int j = (int)B[b].size() - 1; j >= 0 && (int)cand.size() < l; j--) {
-        if (prTop < 0) prTop = B[b][j].pr;
-        cand.push_back({b, j}); w.push_back(exp_w(B[b][j].pr - prTop));
-      }
-    std::discrete_distribution<int> dist(w.begin(), w.end());
-    auto [b, j] = cand[dist(rng)];
+    static thread_local vector<pair<int, double>> bw; bw.clear();
+    double z = 0;
+    for (int b = top; b >= 0; b--) {
+      double e = std::exp((b - top) / tau);
+      if (e < 1e-9) break;
+      if (!B[b].empty()) { double wb = e * B[b].size(); bw.push_back({b, wb}); z += wb; }
+    }
+    double u = std::uniform_real_distribution<double>(0, z)(rng);
+    int b = bw.back().first;
+    for (auto& [bb, wb] : bw) { if (u < wb) { b = bb; break; } u -= wb; }
+    size_t j = std::uniform_int_distribution<size_t>(0, B[b].size() - 1)(rng);
     out = B[b][j]; B[b][j] = B[b].back(); B[b].pop_back(); count--;
     return true;
   }
-  double exp_w(float d) const { return std::exp(d / tau); }
   void prune() {  // drop the lowest buckets until 80% of the cap
     size_t target = openCap * 8 / 10;
     for (int b = 0; b <= SC && count > target; b++) {
@@ -334,14 +333,13 @@ static void on_sigint(int) { STOP = true; }
 
 int main(int argc, char** argv) {
   init_board();
-  int TH = 16; long long SEED = 16000000; double TIME = 7200, TAU = 1; size_t OPENCAP = 2000000, NODECAP = 25000000;
-  int LMIN = 5, LMAX = 150; unsigned RNG = 1; string prefix;
+  int TH = 16; long long SEED = 30000000; double TIME = 7200, TAU = 1; size_t OPENCAP = 3000000, NODECAP = 25000000;
+  unsigned RNG = 1; string prefix;
   for (int i = 1; i < argc; i++) {
     string a = argv[i]; auto nx = [&]() { return string(argv[++i]); };
     if (a == "--threads") TH = stoi(nx()); else if (a == "--seed") SEED = (long long)stod(nx());
     else if (a == "--time") TIME = stod(nx()); else if (a == "--tau") TAU = stod(nx());
     else if (a == "--open-cap") OPENCAP = (size_t)stod(nx()); else if (a == "--node-cap") NODECAP = (size_t)stod(nx());
-    else if (a == "--lmin") LMIN = stoi(nx()); else if (a == "--lmax") LMAX = stoi(nx());
     else if (a == "--out") OUTF = nx(); else if (a == "--prefix") prefix = nx(); else if (a == "--rng") RNG = (unsigned)stoul(nx());
     else { fprintf(stderr, "unknown option %s\n", a.c_str()); return 1; }
   }
@@ -356,8 +354,8 @@ int main(int argc, char** argv) {
       PREFIX.push_back(m); p++;
     }
   }
-  printf("coverage search: %d threads, BFS seed %lld positions, %.0fs, open cap %zu/thread, tau %.2f, l in [%d, %d]\n",
-         TH, SEED, TIME, OPENCAP, TAU, LMIN, LMAX); fflush(stdout);
+  printf("heuristic search (time + estimated time to h8): %d threads, BFS seed %lld positions, %.0fs, open cap %zu/thread, tau %.2f\n",
+         TH, SEED, TIME, OPENCAP, TAU); fflush(stdout);
 
   // ---------------- parallel BFS
   GN.push_back({NIL, 0, 0});
@@ -394,7 +392,7 @@ int main(int argc, char** argv) {
   gdd = Dedup();
 
   // ---------------- score the frontier, deal it out by score
-  vector<float> pr(layer.size());
+  vector<int> pr(layer.size());
   {
     std::atomic<size_t> nextI{0};
     auto work = [&]() { vector<Mv> mv; S s; for (size_t i; (i = nextI.fetch_add(1024)) < layer.size();) for (size_t j = i; j < min(layer.size(), i + 1024); j++) { unpack(layer[j], s); pr[j] = score_of(s, mv); } };
@@ -402,12 +400,12 @@ int main(int argc, char** argv) {
   }
   vector<uint32_t> order(layer.size()); std::iota(order.begin(), order.end(), 0);
   std::sort(order.begin(), order.end(), [&](uint32_t a, uint32_t b) { return pr[a] > pr[b]; });
-  printf("[%7.0fs] frontier scored: %zu positions, best score %.3f, median %.3f\n", elapsed(), layer.size(),
-         order.empty() ? 0.f : pr[order[0]], order.empty() ? 0.f : pr[order[order.size() / 2]]); fflush(stdout);
+  printf("[%7.0fs] frontier scored: %zu positions, best score %d, median %d\n", elapsed(), layer.size(),
+         order.empty() ? 0 : pr[order[0]], order.empty() ? 0 : pr[order[order.size() / 2]]); fflush(stdout);
   vector<Searcher> W(TH);
   for (int t = 0; t < TH; t++) {
     W[t].B.assign(SC + 1, {}); W[t].rng.seed(RNG * 1000003ULL + t); W[t].openCap = OPENCAP; W[t].nodeCap = NODECAP;
-    W[t].tau = TAU; W[t].lmin = LMIN; W[t].lmax = LMAX; W[t].dd.init(23);
+    W[t].tau = TAU; W[t].dd.init(23);
   }
   for (size_t r = 0; r < order.size(); r++) { uint32_t j = order[r]; W[r % TH].push({layer[j], layerId[j], pr[j]}); }
   vector<CS>().swap(layer); vector<uint32_t>().swap(layerId);
