@@ -208,6 +208,7 @@ struct Node { uint32_t parent; uint16_t t; uint8_t q; };
 #pragma pack(pop)
 static vector<Node> GN;  // global (BFS) nodes; node 0 = root
 static vector<Mv> PREFIX;
+static string PROBE;
 static std::atomic<long long> BEST{-1};
 static std::mutex BEST_M;
 static string OUTF = "runs/heur_best.txt";
@@ -340,7 +341,7 @@ int main(int argc, char** argv) {
     if (a == "--threads") TH = stoi(nx()); else if (a == "--seed") SEED = (long long)stod(nx());
     else if (a == "--time") TIME = stod(nx()); else if (a == "--tau") TAU = stod(nx());
     else if (a == "--open-cap") OPENCAP = (size_t)stod(nx()); else if (a == "--node-cap") NODECAP = (size_t)stod(nx());
-    else if (a == "--out") OUTF = nx(); else if (a == "--prefix") prefix = nx(); else if (a == "--rng") RNG = (unsigned)stoul(nx());
+    else if (a == "--out") OUTF = nx(); else if (a == "--prefix") prefix = nx(); else if (a == "--probe") PROBE = nx(); else if (a == "--rng") RNG = (unsigned)stoul(nx());
     else { fprintf(stderr, "unknown option %s\n", a.c_str()); return 1; }
   }
   signal(SIGINT, on_sigint);
@@ -353,6 +354,21 @@ int main(int argc, char** argv) {
       if (!do_move(root, m)) { fprintf(stderr, "illegal prefix move (%d, %s)\n", w, sq); return 1; }
       PREFIX.push_back(m); p++;
     }
+  }
+  if (!PROBE.empty()) {  // replay a tour: per move, is h8 reachable per reach_end, and estimated vs actual minutes to go
+    FILE* f = fopen(PROBE.c_str(), "r"); string txt; char buf[4096]; while (fgets(buf, sizeof buf, f)) txt += buf; fclose(f);
+    vector<Mv> mv; const char* p = strchr(txt.c_str(), '('); int w; char sq[8];
+    while (p && sscanf(p, "(%d, %2s)", &w, sq) == 2) { mv.push_back({w, (sq[0] - 'a') + 8 * (sq[1] - '1')}); p = strchr(p + 1, '('); }
+    int total = 0; for (auto& m : mv) total += m.t;
+    S s = start_state(); vector<Mv> g; int bad = 0;
+    for (size_t i = 0; i < mv.size(); i++) {
+      uint64_t rm[64]; int ts[64]; uint64_t reach = reach_end(s, rm, ts);
+      int sc = score_of(s, g);
+      bool r = reach >> s.pos & 1; if (sc == 0) bad++;
+      printf("%3zu T=%5d reach=%d score=%5d est_to_go=%5d actual_to_go=%5d\n", i, s.T, (int)r, sc, sc ? sc - s.T : -1, total - s.T);
+      if (!do_move(s, mv[i])) { printf("illegal move %zu\n", i); return 1; }
+    }
+    printf("moves %zu, positions scored 0 (h8 'unreachable'): %d\n", mv.size(), bad); return 0;
   }
   printf("heuristic search (time + estimated time to h8): %d threads, BFS seed %lld positions, %.0fs, open cap %zu/thread, tau %.2f\n",
          TH, SEED, TIME, OPENCAP, TAU); fflush(stdout);
