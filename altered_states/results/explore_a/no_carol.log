@@ -34,3 +34,25 @@ run 1: weighted-run true 106 -> polished 106 WODEAHAINBRISARUOLKMTAHOC
 run 2: weighted-run true 107 -> polished 107 YWVADJETINRSNGRKAIOECLLFM
 [    18.4s] wsa    TRUE best 110 ICDNVOHAIMWTRKSAUOSAFLINI
 run 3: weighted-run true 107 -> polished 107 UHDNOOTAIZSKRGVANOERTLFMC
+run 4: weighted-run true 106 -> polished 106 NAWOHSTVAINEGIDWORANYMLKS
+[    36.1s] wsa    TRUE best 112 MKLNORASGEBNIORSEDIHWTVAW
+run 5: weighted-run true 112 -> polished 112 MKLONRASGEBNIORWEDIHSTVAW
+run 6: weighted-run true 107 -> polished 107 UOSAEHTKNLDAROFNIGEUVTSIW
+run 7: weighted-run true 103 -> polished 104 DNWSNEYOETLBRGVWAKIAMSNDN
+run 8: weighted-run true 103 -> polished 103 AMGRHNIOEIDHNRVRATSALKOUD
+run 9: weighted-run true 112 -> polished 112 WAVTWHIDESROINBEGSARNOLKM
+run 10: weighted-run true 100 -> polished 100 NOBKLVERASAIGMNDNOIUTAHCT
+[    86.0s] wsa    TRUE best 114 RGIOWOEDAHBNIIRRASOUMKLFC
+run 11: weighted-run true 114 -> polished 114 RGIOWOEDAHBNIIRRASOUMKLFC
+run 12: weighted-run true 111 -> polished 111 MATRNLOHUOKDISLAENAKGVBRM
+run 13: weighted-run true 110 -> polished 110 MYLCGRASOEBINKRWEDAHLAWOI
+run 14: weighted-run true 114 -> polished 114 ROBRMGENAKIDISLOAIOFWHRUC
+[   117.6s] wsa    TRUE best 119 IALOZNSKINIORADLUTHCFLIOC
+run 15: weighted-run true 101 -> polished 105 LRUNDKATAIBSNVHAIEOIMWGRM
+run 16: weighted-run true 105 -> polished 105 WOIIYSAHDMNTKANUORIVSMGEN
+run 17: weighted-run true 100 -> polished 100 MNHWOOTADIRKUINBASOGENLER
+run 18: weighted-run true 111 -> polished 111 MLKAVAODEPTHINBRUSARNOLKM
+run 19: weighted-run true 21 -> polished 21 TUINDAOESVWIHNKDJAASDNIPV
+distinct state sets scoring >=118: 1
+  119 IALOZNSKINIORADLUTHCFLIOC : ALASKA ARIZONA ARKANSAS FLORIDA IDAHO ILLINOIS INDIANA KANSAS LOUISIANA NORTHCAROLINA NORTHDAKOTA OHIO SOUTHCAROLINA SOUTHDAKOTA UTAH
+RESULT mode=wsa best=119 grid=IALOZNSKINIORADLUTHCFLIOC

@@ -182,7 +182,7 @@ static void print_grid(const char* tag, const Grid& G, double t) {
 }
 
 int main(int argc, char** argv) {
-  string mode = "sa", init, setarg, states = "states.txt", scramble;
+  string mode = "sa", init, setarg, states = "states.txt", scramble, forbid;
   double time_lim = 60, T0 = 3, T1 = 0.25, eps = 0.05;
   long long iters = 200000000, oiters = 4000000;
   u64 seed = 1;
@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
     else if (a == "--seed") seed = stoull(nx()); else if (a == "--lambda") LAMBDA = stod(nx());
     else if (a == "--eps") eps = stod(nx()); else if (a == "--maxadd") maxadd = stoi(nx());
     else if (a == "--maxdrop") maxdrop = stoi(nx()); else if (a == "--slack") slack = stoi(nx());
-    else if (a == "--states") states = nx(); else if (a == "--scramble") scramble = nx();
+    else if (a == "--states") states = nx(); else if (a == "--forbid") forbid = nx(); else if (a == "--scramble") scramble = nx();
     else if (a == "--pm") { string v = nx(); stringstream ss(v); for (int k = 0; k < 6; k++) { string x; getline(ss, x, ','); PM[k] = stod(x); } }
     else { fprintf(stderr, "unknown %s\n", a.c_str()); return 1; }
   }
@@ -210,6 +210,7 @@ int main(int argc, char** argv) {
 
   if (mode == "sa") {
     set_weights_all();
+    { stringstream ss(forbid); string x; while (getline(ss, x, ',')) if (!x.empty()) { int s = find_state(x); if (s < 0) { fprintf(stderr, "no state %s\n", x.c_str()); return 1; } W[s] = 0; PARTIAL[s] = false; } }
     int run = 0;
     while (now(t0) < time_lim) {
       Grid G;

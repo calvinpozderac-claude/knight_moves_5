@@ -1,2 +1,3 @@
 gls_a          RESULT mode=gls best=127 grid=SMCLLISOIAIRUNSWATAKCHDOR
 gls_b          RESULT mode=gls best=117 grid=IASOULNKTDFORAHZILWCDAHOI
+no_carol       RESULT mode=wsa best=119 grid=IALOZNSKINIORADLUTHCFLIOC
