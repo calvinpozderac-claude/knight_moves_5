@@ -10,3 +10,5 @@ pt         seed 1  best=127 grid=RKSALOANILDTUOCHARSMCWIIS evals=315136000 runs=
 pt         seed 2  best=127 grid=LASKRLINAOCOUTDMSRAHSIIWC evals=312896000 runs=0
 pt_smooth  seed 1  best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=87200000 runs=0
 pt_smooth  seed 2  best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=89280000 runs=0
+ils        seed 1  best=105 grid=GFLYMEOSARRDNKBGIAESOHVTW evals=394121773 runs=123817
+ils        seed 2  best=105 grid=DNKEWIASRLXTVABNEMIEGORGN evals=385904349 runs=120230
