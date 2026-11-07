@@ -1,0 +1,37 @@
+core (3 states): WESTVIRGINIA,VIRGINIA,PENNSYLVANIA
+[    3.3s] layout   1 blanks 11 ..GR..AI...VN..LTSN..YPEW fill  75 polish 105 MRBWRKAIEALSNDLRICOAGVUHR
+  NEW BEST 105 MRBWRKAIEALSNDLRICOAGVUHR
+[    6.5s] layout   2 blanks 11 ..Y..WSTL..ENV.PNAIR...G. fill  71 polish  90 LUKHWAOTADRSVNIKENIOWARGM
+[    9.6s] layout   3 blanks 11 .P....EW..SNNA.YTVI..LRG. fill  73 polish 100 ALWFNNILASSOUKHCTRIAHAGND
+[   12.7s] layout   4 blanks 11 .G....RIA..TVNP.LSEN.YW.. fill  74 polish  93 IVKAMARTNIEGOSNNIHEADAVWG
+[   16.0s] layout   5 blanks 11 ..YEW.LSPN.TVN..GIA..R... fill  78 polish  92 OHWAXIOSENNVTNBOGIARERMSK
+[   19.0s] layout   6 blanks 11 .LT.RYSVIGEWNA.PN........ fill  69 polish 111 VSLIZAINORGRKACEOTHDSNUIO
+  NEW BEST 111 VSLIZAINORGRKACEOTHDSNUIO
+[   21.9s] layout   7 blanks 11 .LY..WSVAGETNIRPN........ fill  82 polish  97 YBRKMJESALWTNIGOAVORIHGEM
+[   24.9s] layout   8 blanks 11 LAIG.YVNR.TS.N...E....WP. fill  80 polish 100 LVIRENATOGKSMNISREADAWBVL
+[   28.1s] layout   9 blanks 11 ......RTL.GIVSY.ANE...NPW fill  73 polish 106 RGBRMOEIAKVNLSNDAHOIICRTU
+[   31.0s] layout  10 blanks 11 .PEW..SN..YTNA..LVI...RG. fill  74 polish  92 RDSKLTINARNAMEBIORIVHGEAD
+[   34.0s] layout  11 blanks 11 ...NP.ANEWRIVS.GLYT...... fill  87 polish  97 OGVOURIATSNDHNESAOTWLKRMA
+[   37.1s] layout  12 blanks 11 ...RG..LVI.YTNA..SEN..PW. fill  66 polish  87 ALDSLMHKANIOTVISNERGSENOE
+[   40.1s] layout  13 blanks 11 .Y...LTS.PVANE.RIN.WG.... fill  86 polish 107 WJRKCYESALVTNILAIGOFDNREM
+[   43.1s] layout  14 blanks 11 PYS..LETN.WVN...AIR...G.. fill  88 polish 107 JYRKCWESALVTNILAIROFDNGEM
+[   46.1s] layout  15 blanks 11 .LV..YTAIG.SNR..NEW..P... fill  75 polish 107 YWVADJETINRSNRGKAIOECLLFM
+[   49.2s] layout  16 blanks 11 ......TLY.AVS.PINNE.GR.W. fill  67 polish  94 COLFWRKHAOIASIVDNRGNOBEOT
+[   52.5s] layout  17 blanks 11 .TYL.WSVIRENNAG.P........ fill  70 polish  91 HCVLFUTAIOOSNRGENIOEWDAME
+[   55.6s] layout  18 blanks 11 .Y...LTS..VANE..IPNWRG... fill  85 polish 109 UUORCCTKSAHANILDTROFAIGEM
+[   58.8s] layout  19 blanks 11 .W...PENGR..SNI.YTVA..L.. fill  73 polish 102 LKMEVBAORGDHTNIIUSAVLOIRK
+[   61.8s] layout  20 blanks 11 ........N.RANEWGIVSP.LYT. fill  78 polish  90 SOWSKHADARRINELGNISAATOMB
+[   64.9s] layout  21 blanks 11 ..LGR.YTVI.SNNA.WE....P.. fill  69 polish  95 GERGNMOTAILUNHCOIASISWKRM
+[   67.8s] layout  22 blanks 11 WEP..NTSY..NVL..IA..GR... fill  81 polish  92 TNIHBOGOASERMLWVIAKYDNSRO
+[   70.8s] layout  23 blanks 11 .GRL..IVTY.ANSW..NE...P.. fill  68 polish 112 CHDOKAITAHGRNUIEOISOMVLLA
+  NEW BEST 112 CHDOKAITAHGRNUIEOISOMVLLA
+[   74.0s] layout  24 blanks 11 .LVG.YTAIR.SN..EN...WP... fill  87 polish  89 GEVMAXTOIGASNRBINEAKGDWLM
+[   77.0s] layout  25 blanks 11 ..L...YTVRWSAIG.EN..PN... fill  70 polish  81 SENIASNURMIOTOKWHNAHASDIR
+[   80.1s] layout  26 blanks 11 ...GR..AIL.NNVY..EST..WP. fill  79 polish 107 MERNDFOGIALINTVLASEJCKRYW
+[   83.1s] layout  27 blanks 10 ..A..PWGR.ENNI.YSVA..LT.. fill  71 polish  86 OTEOKANGRLMOIAKWAHSNIISCO
+[   86.2s] layout  28 blanks 11 ..PEW.TSN..YVN..LIA..RG.. fill  73 polish 100 HOWTSIAVEDDIBINNGRASLYLKM
+[   89.4s] layout  29 blanks 11 YW.P.LSEN.TVNG..AIR...... fill  84 polish 101 LABAHSOTNMKHURODAIGEINSVU
+[   92.4s] layout  30 blanks 11 ...G...IR..VANN.LTSE..YPW fill  79 polish  95 PNAGEEVIRORADSKMINALZOHTU
+[   95.5s] layout  31 blanks 11 RGL..IVTY.ANS..NE....PW.. fill  68 polish  92 AVNAMRITORGOSKHWENALANDIM
+RESULT core=WESTVIRGINIA,VIRGINIA,PENNSYLVANIA layouts=31 failed=0 best_fill=88 best=112 grid=CHDOKAITAHGRNUIEOISOMVLLA
+blank histogram: 10:1 11:30

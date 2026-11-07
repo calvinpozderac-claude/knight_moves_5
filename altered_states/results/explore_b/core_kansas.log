@@ -1,0 +1,39 @@
+core (6 states): ARKANSAS,KANSAS,NEBRASKA,ALASKA,ALABAMA,OKLAHOMA
+[    3.1s] layout   1 blanks 13 ..EN..BRSA.HAK..MOL...... fill  77 polish  97 NEBRKSOGASURLINITHODVACAR
+  NEW BEST 97 NEBRKSOGASURLINITHODVACAR
+[    6.1s] layout   2 blanks 13 .......AB..MRLE.OKAN..HS. fill  88 polish 100 MADOIVIBAHNERKLFOGASCLUIN
+  NEW BEST 100 MADOIVIBAHNERKLFOGASCLUIN
+[    9.2s] layout   3 blanks 13 ...A.BRLH.EAKO.NSM....... fill  90 polish  94 DMDACNILRHNAKOTESMUNVROTA
+[   12.3s] layout   4 blanks 12 ..K...AS..LRN..KABE.MOH.. fill  82 polish  83 MKNDNYASIALRNEGKABORMOHIV
+[   15.4s] layout   5 blanks 13 .OH..MKLA.RAS..BN....E... fill  98 polish 106 COHATMKLOURASIRBNIAHNEDOW
+  NEW BEST 106 COHATMKLOURASIRBNIAHNEDOW
+[   18.4s] layout   6 blanks 13 .O....LKM..SARO.NBH...E.. fill  84 polish 104 ATOCSWLKROISADUANCHTTMORA
+[   21.5s] layout   7 blanks 13 ......LOH..KAM.ASRB..NE.. fill  85 polish  88 FLORTANIHASKADCAORINTEGOV
+[   24.5s] layout   8 blanks 12 .....HKLE.OABANM.RKS..... fill  74 polish  97 BWMOUDAHNTNILASSORKCIUTHO
+[   27.7s] layout   9 blanks 13 .....NSL..EAKA.BRMOH..... fill  87 polish  99 FLADAOKINHTRSOTEAWURDLCHT
+[   30.9s] layout  10 blanks 13 .....MHB..OARE.LKSN...A.. fill  82 polish  95 DAGIVNIHREEAMOGBLKSNORAAT
+[   33.9s] layout  11 blanks 13 ...E...BN...RAS.ALKM..HO. fill  91 polish  97 LBEGOFORNICIDASVALKMNEHOD
+[   36.9s] layout  12 blanks 13 ALRB.HKA.EOMSN........... fill  99 polish 109 OCRKOIHASTTRDNAUCOILOSULS
+  NEW BEST 109 OCRKOIHASTTRDNAUCOILOSULS
+[   40.1s] layout  13 blanks 13 .SH..NAKO.ERLM..BA....... fill  84 polish  97 LSTGVKANOERBVMRIEAIGOHNDK
+[   43.1s] layout  14 blanks 13 ......HS..OKAN.MLRE..AB.. fill  83 polish  90 TADNVRHSIGOKANRCMLOEBAFIG
+[   46.3s] layout  15 blanks 13 .BRLAENAKH..SMO.......... fill  92 polish  99 EBRLADNAKHWISMOACINTSHOGA
+[   49.3s] layout  16 blanks 13 ..SM.ENAKO.BRLH...A...... fill  96 polish  96 DISMTENAKOWBRLHYOIAILFCDO
+[   52.5s] layout  17 blanks 13 ......A...NSKL.ERAO..BMH. fill  90 polish 111 EUTHCGROADOSKRIENALONBIMF
+  NEW BEST 111 EUTHCGROADOSKRIENALONBIMF
+[   55.5s] layout  18 blanks 13 OLSN..KABE.HRM...O....... fill  94 polish 101 AISKOENALRVDHMAAIORITNGEV
+[   58.7s] layout  19 blanks 12 .AR..SKLB..OANE.HMS...... fill  76 polish  88 AOGEVNKRINSOLADRAHOMUTCIE
+[   61.9s] layout  20 blanks 12 ..ENSHABAKMOLR..K........ fill  77 polish  88 ADISLKHNAKLOTRBMAHOEBSING
+[   65.0s] layout  21 blanks 13 .......O..OHSM..KANE.LRB. fill 103 polish 110 ARUNTCTOLAOHSMIDKANDALRBE
+[   68.0s] layout  22 blanks 13 .......AE..RBSN..KAM..LOH fill  97 polish 107 DAVYWNITEJRGNSREOIAKMFLLC
+[   71.4s] layout  23 blanks 13 ..EN..BLAS.ARKH..MO...... fill  85 polish  91 ERNEMGOSABDILKRNAHOAVEMDC
+[   74.8s] layout  24 blanks 12 ...K...LOM..KAH.RBSN..AE. fill  80 polish  94 DAHOINILUMGOKAIERBSNIVAEN
+[   77.9s] layout  25 blanks 13 ..E...BN..RAS..MKL..OHA.. fill  90 polish 106 OEDOWBNIAHRASIRMKLOUOHATC
+[   81.0s] layout  26 blanks 13 .......MRB.OKAEH.LSN.A... fill  91 polish  96 BLAINNAMRETOKSVRHLANCADID
+[   84.0s] layout  27 blanks 13 .OHA.MKL..SAR...NB...E... fill  88 polish 103 COFABSKLMHNAROWDIGENOAVTS
+[   86.8s] layout  28 blanks 12 ......R.O.ABKMHESALA.N... fill  79 polish 107 ANDHCGIOATHTKRUOSAWOCNILS
+[   89.9s] layout  29 blanks 13 .HS..OKAN.MLRE..AB....... fill  93 polish  93 IHSDAOKANIMLREGYABRORVINE
+[   92.8s] layout  30 blanks 13 NEB..SAR..LKM..AHO....... fill  96 polish  96 NEBIVSARERLKMGOAHONIDRTAD
+[   96.0s] layout  31 blanks 13 .MHB..OARE.LKSN...A...... fill  88 polish  91 EMBXTYRAENILKSNDAOAINHTUM
+RESULT core=ARKANSAS,KANSAS,NEBRASKA,ALASKA,ALABAMA,OKLAHOMA layouts=31 failed=0 best_fill=103 best=111 grid=EUTHCGROADOSKRIENALONBIMF
+blank histogram: 12:6 13:25

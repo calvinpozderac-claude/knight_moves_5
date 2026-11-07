@@ -100,7 +100,7 @@ static int idx(const string& n) { for (int s = 0; s < NS; s++) if (ST[s].name ==
 int main(int argc, char** argv) {
   string mode = "wsa", weights, init, states = "states.txt";
   double tlim = 60, T0 = 3, T1 = 0.3, up = 0.25, relax = 0.5, wmax = 4, wmin = 0.25, pdrop = 0.15, pdouble = 0.15;
-  long long iters = 20000000, polish = 3000000; u64 seed = 1; int restart_every = 0;
+  long long iters = 20000000, polish = 3000000; u64 seed = 1; int restart_every = 0; bool norm = false;
   for (int i = 1; i < argc; i++) { string a = argv[i]; auto nx = [&]() { return string(argv[++i]); };
     if (a == "--mode") mode = nx(); else if (a == "--time") tlim = stod(nx()); else if (a == "--seed") seed = stoull(nx());
     else if (a == "--iters") iters = stoll(nx()); else if (a == "--polish") polish = stoll(nx());
@@ -109,6 +109,7 @@ int main(int argc, char** argv) {
     else if (a == "--up") up = stod(nx()); else if (a == "--relax") relax = stod(nx()); else if (a == "--wmax") wmax = stod(nx());
     else if (a == "--wmin") wmin = stod(nx()); else if (a == "--pdrop") pdrop = stod(nx()); else if (a == "--pdouble") pdouble = stod(nx());
     else if (a == "--restart") restart_every = stoi(nx());
+    else if (a == "--norm") norm = true;
     else { fprintf(stderr, "unknown %s\n", a.c_str()); return 1; } }
   { ifstream f(states); string w; while (f >> w) { St s; s.name = w; s.L = w.size(); for (int i = 0; i < s.L; i++) { s.c[i] = w[i] - 'A'; s.same[i] = i && w[i] == w[i - 1]; } ST.push_back(s); } }
   NS = ST.size();
@@ -143,6 +144,10 @@ int main(int argc, char** argv) {
         if (BASEW[s] == 0) continue;
         if (!G.pres[s]) W[s] = min(wmax, W[s] * (1 + up));
         else W[s] = max(wmin, 1 + (W[s] - 1) * relax - (up * 0.5));
+      }
+      if (norm) {  // keep the length-weighted mean weight at 1 so weights stay relative
+        double num = 0, den = 0; for (int s = 0; s < NS; s++) if (BASEW[s] != 0) { num += W[s] * ST[s].L; den += ST[s].L; }
+        for (int s = 0; s < NS; s++) if (BASEW[s] != 0) W[s] = min(wmax, max(wmin, W[s] * den / num));
       }
       cyc++;
       if (restart_every && cyc % restart_every == 0) randgrid(G); else G.full();
