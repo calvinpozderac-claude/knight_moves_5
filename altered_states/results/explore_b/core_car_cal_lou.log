@@ -1,0 +1,35 @@
+core (4 states): NORTHCAROLINA,SOUTHCAROLINA,CALIFORNIA,LOUISIANA
+[    2.9s] layout   1 blanks 10 .C...HRAFITNOL..UISN...A. fill  91 polish 117 IEGLLVROIATACNSUHDAKSOITO
+  NEW BEST 117 IEGLLVROIATACNSUHDAKSOITO
+[    5.9s] layout   2 blanks 11 ......HT..CRNU.AIOAI.LFS. fill 101 polish 109 ODAKRIHTOACRUNSANOIALIFLL
+[    9.0s] layout   3 blanks 11 ......CALFH.ROI.TUNS..AI. fill  98 polish 106 WASKFOICALDHROIATUNFKOSIA
+[   12.2s] layout   4 blanks 11 ..I....USF.TROI.HNAL..CI. fill  92 polish 105 SSIAHKOUKNATROSDHLADIOCIN
+[   15.3s] layout   5 blanks 11 ........IA.TUNSHCROI..ALF fill 101 polish 112 IKAKROHDIACTUNSDAROILIFLL
+[   18.5s] layout   6 blanks 11 ..SIF.INOL.AURA...TC...H. fill 106 polish 114 ZOCIFHINOLADRADNKHTCASOUH
+[   21.7s] layout   7 blanks 11 FIS..LONI.ARUA..CT...H... fill 102 polish 112 SNLASEOKINGRUADIATHKVNCOI
+[   24.7s] layout   8 blanks 11 .FIS..LONI.ARUA.CT...H... fill  98 polish 102 IFISALLONICARUADHTKDIOOHV
+[   27.7s] layout   9 blanks 11 ......HT..CRNU.AIOAI.LFS. fill 101 polish 109 ODAKAIHTOSCRLURAOIAKWDNSE
+[   30.9s] layout  10 blanks 11 .NS...UOF.TRIL.HNAS..C... fill  89 polish  95 ENCNWBUOSITRILLHKADIGCSNO
+[   33.8s] layout  11 blanks 11 .I....USF.TROI.HNAL..CI.. fill  83 polish  98 GOIAREUNSKTROFAAHILCCDNAK
+[   37.2s] layout  12 blanks 10 ....S.ALOIFIRAU.ONTC...H. fill  97 polish  97 NKRLSSALOIFIRAUGONTCREMHA
+[   40.4s] layout  13 blanks 11 .ORAHFNLTCAIUO...S....... fill 103 polish 110 ZINACLORTHMKUOHAISDKDNSAL
+[   43.6s] layout  14 blanks 11 .......AI..TUNS.HROI.CALF fill 102 polish 106 IKDAMOHAISCTUNSNAROIDIZLL
+[   46.6s] layout  15 blanks 11 ......SFL.IAOIA.UNRC..TH. fill  84 polish 101 AENKRSSNAOMIOTDALURHNLICA
+[   49.9s] layout  16 blanks 11 ..S...OUIA.TLNFHARO.C.... fill 106 polish 109 KCSRKAOUASDTLINHARODCIGEG
+[   53.4s] layout  17 blanks 11 ...H...TC...URA.INOL.ASIF fill 101 polish 110 LDHADAOTCIKSURARINOLKADIF
+[   56.8s] layout  18 blanks 11 ......AI..TUNS.HROI.CALF. fill 102 polish 105 DRKOMHAISTTUNDAHROILACSLW
+[   59.8s] layout  19 blanks 10 .ONA..RFI..TUSL..HOA...CR fill 101 polish 115 GEMARRONIKKTUSLIAHOANDICR
+[   62.7s] layout  20 blanks 10 ..I..ILAF.ANOI.CRUS.HT... fill  92 polish 100 LFOENILRGAANOIDCRUSNHTKAL
+[   65.9s] layout  21 blanks 11 .....CHT..ARU..LONI.FISA. fill 105 polish 109 OHDAKCITOHARUVGLONIRFISAK
+[   68.7s] layout  22 blanks 11 ...IA..UNS.TROIH.ALF.C... fill 110 polish 111 HKWIAOAUNSDTROCHIALFOCDNI
+[   71.8s] layout  23 blanks 10 ..T..SUCH.OIA.TILNR..FO.. fill  91 polish 105 NAROISUKHCIOTADALRNINIZOM
+[   74.9s] layout  24 blanks 11 ....C.ORAHFNLT.AIUO...S.. fill 106 polish 112 MEGACVORIHLINTDLSUAOAOIHK
+[   78.0s] layout  25 blanks 11 ..ALF.CROIHTUNS...IA..... fill 108 polish 113 SKBEGNARONCTULSOHAILIKDNO
+[   80.9s] layout  26 blanks 10 .II..FNLACAORH.SIUT...... fill  98 polish 114 AILSKFLNACSORDHNIUTADAHOK
+[   83.8s] layout  27 blanks 10 .ANIF.IROLSTUA..OHC...... fill 100 polish 104 DANIFNIROLSUTAWLOHCIKADIO
+[   86.8s] layout  28 blanks 11 .IA..SNU..IORTHFLAC...... fill  99 polish 107 NSSAKAIUODMORTHLANACLIDEV
+[   89.6s] layout  29 blanks 11 .SIF.INOL.AURAC..TH...... fill 106 polish 106 ASIFLINOLIAURACWKTHIIOADO
+[   92.7s] layout  30 blanks 11 .ASIF.INOL..URA...TC....H fill 107 polish 116 OANILWISOLNDUCRSAHTARKODH
+[   95.7s] layout  31 blanks 10 .C...HTA..URL..IONIASAF.. fill  95 polish 107 HDSNATCAKTURLHOIOIAMZSNDB
+RESULT core=NORTHCAROLINA,SOUTHCAROLINA,CALIFORNIA,LOUISIANA layouts=31 failed=0 best_fill=110 best=117 grid=IEGLLVROIATACNSUHDAKSOITO
+blank histogram: 10:8 11:23

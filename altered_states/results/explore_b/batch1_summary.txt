@@ -11,3 +11,6 @@ cd_wash layouts=31 failed=0 best_fill=99 best=118 grid=LUDHCIOTAIHSKRGIANOENDLIC
 cd_conn layouts=31 failed=0 best_fill=104 best=127 grid=LASKRLINAOCOUTDMSRAHSIIWC blank histogram: 5:3 6:11 7:17
 cd_penn layouts=31 failed=0 best_fill=101 best=121 grid=MZIDCFORAHLINTKWASOURKCIL blank histogram: 4:18 5:13
 cd_wv layouts=30 failed=0 best_fill=107 best=121 grid=LICKRUOSAWKTNILHAROFCDIZM blank histogram: 4:4 5:12 6:14
+cd_newh layouts=37 failed=2 best_fill=88 best=123 grid=DHTUNCAROIMWKLSOSAILIHNDI blank histogram: 0:2 1:4 2:4 3:10 4:14 5:3
+car_cal_lou layouts=31 failed=0 best_fill=110 best=117 grid=IEGLLVROIATACNSUHDAKSOITO blank histogram: 10:8 11:23
+dak_rhode layouts=31 failed=0 best_fill=105 best=119 grid=KCDIZOAHORRTNAKUOSIWMCLOU blank histogram: 7:3 8:25 9:3
