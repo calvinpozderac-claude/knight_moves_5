@@ -5,3 +5,5 @@ calcar layouts=32 failed=0 best_fill=117 best=121 grid=AILSRFLNAKSORTCMIUHOANDAK
 aheavy layouts=32 failed=0 best_fill=90 best=120 grid=EGNDCROIAHWZKRTLASOULINIL blank histogram: 9:27 10:5
 kansas layouts=31 failed=0 best_fill=103 best=111 grid=EUTHCGROADOSKRIENALONBIMF blank histogram: 12:6 13:25
 cd_cal layouts=32 failed=0 best_fill=114 best=120 grid=CDNGEHAIORTRKZWUOSALLINIL blank histogram: 8:6 9:26
+cd_mass layouts=32 failed=0 best_fill=102 best=116 grid=SODNZUHAIOCTRKSOAONAFLIFL blank histogram: 4:9 5:23
+cd_rhode layouts=32 failed=0 best_fill=112 best=121 grid=CHKULDATOIIRNSCZOIAKMFLWR blank histogram: 5:3 6:8 7:16 8:5
