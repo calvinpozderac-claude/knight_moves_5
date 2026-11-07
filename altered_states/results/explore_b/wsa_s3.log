@@ -81,3 +81,8 @@ weighted SA, sigma 0.4
 [  564.7s] run  75 weighted-end  92 polish 106 FLHCHLIOATSNDRUKAIOIRMLSS
 [  572.2s] run  76 weighted-end  82 polish  98 MNLNRSAIOEOKRGCUTACOWGHDF
 [  579.6s] run  77 weighted-end 114 polish 119 DIMOCNALRHNSKACEOTHDGRUIO
+[  587.5s] run  78 weighted-end  92 polish 119 NCDNZOHAIOITRKILUOSAFLINL
+[  595.5s] run  79 weighted-end 110 polish 113 HCULWATOILHRNSADAKNCOITOM
+[  603.1s] run  80 weighted-end 113 polish 121 AIDKLWOHAOMICTRGASOURKNIL
+RESULT core=NORTHCAROLINA,SOUTHCAROLINA,NORTHDAKOTA,SOUTHDAKOTA layouts=80 failed=0 best_fill=127 best=127 grid=RKSALOANILDTUOCHARSMCWIIS
+blank histogram:

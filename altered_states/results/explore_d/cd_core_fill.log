@@ -1,0 +1,5 @@
+base 127; core NORTHCAROLINA,SOUTHCAROLINA,NORTHDAKOTA,SOUTHDAKOTA; 15 fixed cells, 10 free
+fixed pattern: CHDO..ATAK.RUN..SOI....L.
+[    0.3s] obj 127 bound 412 CHDORWATAKIRUNSISOIASMCLL
+status OPTIMAL obj 127 bound 127 time 0.9s grid CHDORWATAKIRUNSISOIASMCLL
+verified score.py: 127
