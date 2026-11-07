@@ -1,0 +1,30 @@
+2315 words, K=17, bound=letters, threads=4
+first guesses done 100/2315  t=1.65461s
+first guesses done 200/2315  t=3.65887s
+first guesses done 300/2315  t=7.53722s
+first guesses done 400/2315  t=10.9442s
+first guesses done 500/2315  t=13.6745s
+first guesses done 600/2315  t=15.9746s
+first guesses done 700/2315  t=18.4586s
+first guesses done 800/2315  t=22.6241s
+first guesses done 900/2315  t=26.9821s
+first guesses done 1000/2315  t=30.307s
+first guesses done 1100/2315  t=37.0733s
+first guesses done 1200/2315  t=40.1278s
+first guesses done 1300/2315  t=44.0995s
+first guesses done 1400/2315  t=46.2156s
+first guesses done 1500/2315  t=48.9484s
+first guesses done 1600/2315  t=51.6638s
+first guesses done 1700/2315  t=53.1707s
+first guesses done 1800/2315  t=55.8661s
+first guesses done 1900/2315  t=57.7097s
+first guesses done 2000/2315  t=59.5667s
+first guesses done 2100/2315  t=61.0403s
+first guesses done 2200/2315  t=62.7682s
+first guesses done 2300/2315  t=66.4508s
+first guesses done 2315/2315  t=67.3036s
+RESULT: NO chain of 17 words exists. expansions=1901658 t=67.4179s
+
+real	1m7.453s
+user	4m8.116s
+sys	0m0.763s
