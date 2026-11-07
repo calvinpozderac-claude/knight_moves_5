@@ -3,3 +3,4 @@ gls_b          RESULT mode=gls best=117 grid=IASOULNKTDFORAHZILWCDAHOI
 no_carol       RESULT mode=wsa best=119 grid=IALOZNSKINIORADLUTHCFLIOC
 no_dak         RESULT mode=wsa best=121 grid=ADHCHNKOTARSLURBAIOAMENDH
 pen_cd         RESULT mode=wsa best=114 grid=CURHWFOIAOLSIDIKANEGMRBOR
+no_mid         RESULT mode=wsa best=123 grid=CHTUNDAROIMWKLSOSAILIHNDI
