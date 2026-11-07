@@ -7,3 +7,6 @@ sa         seed 2  best=127 grid=CHDORWATAKIRUNSISOIASMCLL evals=315568896 runs=
 sa_smooth  seed 1  best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=91064960 runs=15
 sa_smooth  seed 2  best=127 grid=RKSALOANILDTUOCHARSMCWIIS evals=91667072 runs=15
 pt         seed 1  best=127 grid=RKSALOANILDTUOCHARSMCWIIS evals=315136000 runs=0
+pt         seed 2  best=127 grid=LASKRLINAOCOUTDMSRAHSIIWC evals=312896000 runs=0
+pt_smooth  seed 1  best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=87200000 runs=0
+pt_smooth  seed 2  best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=89280000 runs=0

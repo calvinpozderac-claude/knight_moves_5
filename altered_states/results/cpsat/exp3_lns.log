@@ -6,3 +6,17 @@ start 127 CHDORWATAKIRUNSISOIASMCLL
 [ 140.9s] rand10 n=10 OPTIMAL  obj 127 bound 127 1.6s
 [ 201.0s] 3x3    n= 9 FEASIBLE obj 127 bound 331 60.0s
 [ 261.2s] 3x4    n=12 FEASIBLE obj 127 bound 412 60.1s
+[ 321.3s] 3x3    n= 9 FEASIBLE obj 127 bound 258 60.0s
+[ 381.5s] paths2 n=16 FEASIBLE obj 127 bound 412 60.1s
+[ 441.5s] rand12 n=12 FEASIBLE obj 127 bound 281 60.0s
+[ 443.9s] rand12 n=12 OPTIMAL  obj 127 bound 127 2.3s
+[ 504.0s] paths2 n=12 FEASIBLE obj 127 bound 334 60.0s
+[ 564.0s] 3x4    n=12 FEASIBLE obj 127 bound 412 60.0s
+[ 601.0s] rand12 n=12 FEASIBLE obj 127 bound 319 36.9s
+FINAL 127 CHDORWATAKIRUNSISOIASMCLL
+  paths2 tried   4 proved-optimal   1 improved 0 avg 49.4s
+  4x3    tried   1 proved-optimal   0 improved 0 avg 60.0s
+  rand10 tried   2 proved-optimal   2 improved 0 avg 1.6s
+  3x3    tried   2 proved-optimal   0 improved 0 avg 60.0s
+  3x4    tried   2 proved-optimal   0 improved 0 avg 60.1s
+  rand12 tried   3 proved-optimal   1 improved 0 avg 33.1s

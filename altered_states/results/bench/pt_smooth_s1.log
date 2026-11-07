@@ -1,0 +1,30 @@
+[    0.00s] pt    new best   0  ENAAEISALAOVSTWRNILLRIVCE
+[    0.00s] pt    new best   8  EANTEISATAOVSTIRNILNMILPE
+[    0.00s] pt    new best  14  NKNOPISATAOVSTIRNILNMILAE
+[    0.00s] pt    new best  21  NKNODISATAONSOIRDILNMILAE
+[    0.00s] pt    new best  25  NKNOYISAWAONSOIRDILNMILAE
+[    0.00s] pt    new best  31  NKNOYISAWAONAOIRDILNMILAE
+[    0.00s] pt    new best  33  NKBOYISAWAONAHIRDILNMILAE
+[    0.00s] pt    new best  40  NKBWYISAOAONAHIRDILNFILAE
+[    0.00s] pt    new best  44  CSKRTISAOAONAHIRIDLNASLWE
+[    0.00s] pt    new best  48  ODKRLISAONONAHCRIDLIEGLSS
+[    0.00s] pt    new best  52  OHKRLISAONONADCRIDLIEGLSS
+[    0.00s] pt    new best  60  OHKRLISAOAONADCRIDLIVGLES
+[    0.00s] pt    new best  61  DNHCIIAOISLGWKSMERANDFOII
+[    0.00s] pt    new best  63  DNHCAIAOISLGWKSAERANDBOIV
+[    0.01s] pt    new best  67  ATNIMRNVOHKIDACSAROLNIGEF
+[    0.01s] pt    new best  71  OGLBWIKSATRAHNMDNIORIASGE
+[    0.01s] pt    new best  75  MPLUBOKSATRAHNMDNIOEIASGR
+[    0.01s] pt    new best  82  TLLUBOKIATRAHNMDNIOEIASGR
+[    0.06s] pt    new best  89  SUIHDOATACDNROKAILNSOHFAG
+[    0.10s] pt    new best  92  SUAHDOATACDNROKAILSNHOWAK
+[    0.10s] pt    new best  96  SODHSEUTACDNROKAILANHORKS
+[    0.18s] pt    new best 102  MSNHDOUTACDNROKAILKNOHFAS
+[    0.92s] pt    new best 103  SUDHCMOTAKDNRONAILASHOCRK
+[    1.42s] pt    new best 107  NESOUWNVTHAIRACMGDOLMANIF
+[    3.77s] pt    new best 111  NSKRIIAOANLUTHDFORICGENAM
+[    4.74s] pt    new best 114  NSKRIIAOADLUTHNKORICNEGAV
+[    9.32s] pt    new best 121  RODHWKATACSNURSAIOSILLCMW
+[    9.40s] pt    new best 127  RODHCKATAWSNURIAIOSILLCMS
+pt: swap acceptance 0.546
+RESULT mode=pt lambda=0.5 time=120s threads=1 seed=1 best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=87200000 runs=0

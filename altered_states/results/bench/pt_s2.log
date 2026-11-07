@@ -31,3 +31,5 @@
 [   13.05s] pt    new best 118  FLINLLUOSAITRKIOHAIDNCDWN
 [   13.49s] pt    new best 119  FLINILUOSAITRKLIHAIZOCDNO
 [   20.20s] pt    new best 127  LASKRLINAOCOUTDMSRAHSIIWC
+pt: swap acceptance 0.562
+RESULT mode=pt lambda=0 time=120s threads=1 seed=2 best=127 grid=LASKRLINAOCOUTDMSRAHSIIWC evals=312896000 runs=0
