@@ -61,8 +61,8 @@ from K = 2 (times are cumulative; `search_log.txt`):
 
 - `check` (C++) and `verify.py` (Python, written separately from the puzzle text) both
   confirm the 16-word chain. `verify.py` also reproduces the puzzle's examples: ERROR/ROVER,
-  and TRACK/TIGER with DIRTY, TARDY and TEPID rejected and TOWER allowed. TROMP is rejected
-  because it is not in the list.
+  and TRACK/TIGER with DIRTY, TARDY and TEPID rejected and TOWER allowed. `check` rejects
+  the example TRACK,TROMP,TIGER because TROMP is not in the word list.
 - `crosscheck.py` compares the pruned search with a plain exhaustive search (no bound) on 40
   random sub-lists of 15–45 words. All 40 optima agree.
 
