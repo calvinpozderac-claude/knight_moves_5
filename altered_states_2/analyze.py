@@ -33,6 +33,8 @@ def main():
     ap.add_argument("--top", type=int, default=15)
     ap.add_argument("--logs", nargs="*")
     ap.add_argument("--require", nargs="*", default=[])
+    ap.add_argument("--by-score", action="store_true",
+                    help="merge boards with equal scores (variants differing only in letters no state uses)")
     a = ap.parse_args()
     files = sorted(glob.glob(os.path.join(HERE, "results", "logs", "*.csv")))
     if a.logs:
@@ -48,13 +50,14 @@ def main():
             if any(r not in cites for r in a.require):
                 continue
             total += 1
-            c = canon(p[0])
-            seen[c] = (int(p[1]), int(p[2]), p[4])
+            c = p[1] if a.by_score else canon(p[0])
+            if c not in seen or not a.by_score:
+                seen[c] = (int(p[1]), int(p[2]), p[4], canon(p[0]))
             hits[c] += 1
             where[c].add(os.path.basename(f)[:-4])
-    print(f"{total} restarts, {len(seen)} distinct boards (up to symmetry)")
-    for c, (s, n, cites) in sorted(seen.items(), key=lambda kv: -kv[1][0])[:a.top]:
-        print(f"{s:>12,}  {n:>2} states  found {hits[c]:>3}x  {c}  [{cites}]  in {len(where[c])} runs")
+    print(f"{total} restarts, {len(seen)} distinct {'scores' if a.by_score else 'boards (up to symmetry)'}")
+    for c, (s, n, cites, g) in sorted(seen.items(), key=lambda kv: -kv[1][0])[:a.top]:
+        print(f"{s:>12,}  {n:>2} states  found {hits[c]:>3}x  {g}  [{cites}]  in {len(where[c])} runs")
 
 
 if __name__ == "__main__":

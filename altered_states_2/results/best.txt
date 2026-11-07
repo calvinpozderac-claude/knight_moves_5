@@ -1,0 +1,129 @@
+Altered States 2 -- answer and best boards found (all verified with: python3 score.py GRID --paths)
+
+ANSWER (submit this string):
+hmlfsoaioutsnrcregahoywin
+
+grid hmlfsoaioutsnrcregahoywin
+   H M L F S
+   O A I O U
+   T S N R C
+   R E G A H
+   O Y W I N
+   California       39,538,223  as HALIFORNIA     r1c1 r2c2 r1c3 r2c3 r1c4 r2c4 r3c4 r3c3 r2c3 r2c2
+   Texas            29,145,505  as TETAS          r3c1 r4c2 r3c1 r2c2 r3c2
+   Florida          21,538,187  as FLORIMA        r1c4 r1c3 r2c4 r3c4 r2c3 r1c2 r2c2
+   New York         20,201,249  as NEWYORT        r3c3 r4c2 r5c3 r5c2 r5c1 r4c1 r3c1
+   Illinois         12,812,508  as IMLINOIS       r2c3 r1c2 r1c3 r2c3 r3c3 r2c4 r2c3 r3c2
+   Ohio             11,799,448  as OHMO           r2c1 r1c1 r1c2 r2c1
+   Georgia          10,711,908  as GNORGIA        r4c3 r3c3 r2c4 r3c4 r4c3 r5c4 r4c4
+   North Carolina   10,439,388  as NORCHCAROLINA  r3c3 r2c4 r3c4 r3c5 r4c5 r3c5 r4c4 r3c4 r2c4 r1c3 r2c3 r3c3 r2c2
+   Michigan         10,077,331  as MIRHIGAN       r1c2 r2c3 r3c4 r4c5 r5c4 r4c3 r4c4 r3c3
+   New Jersey        9,288,994  as NEWGERSEY      r3c3 r4c2 r5c3 r4c3 r4c2 r4c1 r3c2 r4c2 r5c2
+   Virginia          8,631,393  as MIRGINIA       r1c2 r2c3 r3c4 r4c3 r5c4 r5c5 r5c4 r4c4
+   Arizona           7,151,502  as ARILONA        r4c4 r3c4 r2c3 r1c3 r2c4 r3c3 r2c2
+   Indiana           6,785,528  as INAIANA        r2c3 r3c3 r2c2 r2c3 r2c2 r3c3 r2c2
+   Missouri          6,154,913  as MIFSOURI       r1c2 r2c3 r1c4 r1c5 r2c4 r2c5 r3c4 r2c3
+   Wisconsin         5,893,718  as WIACONSIN      r5c3 r5c4 r4c4 r3c5 r2c4 r3c3 r3c2 r2c3 r3c3
+   Colorado          5,773,714  as COLORANO       r3c5 r2c4 r1c3 r2c4 r3c4 r4c4 r3c3 r2c4
+   Minnesota         5,706,494  as MIANESOTA      r1c2 r2c3 r2c2 r3c3 r4c2 r3c2 r2c1 r3c1 r2c2
+   South Carolina    5,118,425  as SOURHCAROLINA  r1c5 r2c4 r2c5 r3c4 r4c5 r3c5 r4c4 r3c4 r2c4 r1c3 r2c3 r3c3 r2c2
+   Alabama           5,024,279  as ALAHAMA        r2c2 r1c3 r2c2 r1c1 r2c2 r1c2 r2c2
+   Louisiana         4,657,757  as LOLISIANA      r1c3 r2c4 r1c3 r2c3 r3c2 r2c3 r2c2 r3c3 r2c2
+   Oregon            4,237,256  as ORENON         r5c1 r4c1 r4c2 r3c3 r2c4 r3c3
+   Oklahoma          3,959,353  as OMLAHOMA       r2c1 r1c2 r1c3 r2c2 r1c1 r2c1 r1c2 r2c2
+   Utah              3,271,616  as OTAH           r2c1 r3c1 r2c2 r1c1
+   Iowa              3,190,369  as IOLA           r2c3 r2c4 r1c3 r2c2
+   Arkansas          3,011,524  as ARIANSAS       r4c4 r3c4 r2c3 r2c2 r3c3 r3c2 r2c2 r3c2
+   Kansas            2,937,880  as HANSAS         r1c1 r2c2 r3c3 r3c2 r2c2 r3c2
+   Idaho             1,839,106  as IMAHO          r2c3 r1c2 r2c2 r1c1 r2c1
+   West Virginia     1,793,716  as WESTAIRGINIA   r5c3 r4c2 r3c2 r3c1 r2c2 r2c3 r3c4 r4c3 r5c4 r5c5 r5c4 r4c4
+   Hawaii            1,455,271  as HAWANI         r4c5 r4c4 r5c3 r4c4 r3c3 r2c3
+   Maine             1,362,359  as HAINE          r1c1 r2c2 r2c3 r3c3 r4c2
+   Montana           1,084,225  as MOATANA        r1c2 r2c1 r2c2 r3c1 r2c2 r3c3 r2c2
+   Alaska              733,391  as ALASOA         r2c2 r1c3 r2c2 r3c2 r2c1 r2c2
+score 265,326,530 (80.22% of 330,759,736), 32 states
+states: CA TX FL NY IL OH GA NC MI NJ VA AZ IN MO WI CO MN SC AL LA OR OK UT IA AR KS ID WV HI ME MT AK
+citations: 20S 200M C2C   (C2C chain: VA-WV-OH-IN-IL-MO-KS-CO-UT-AZ-CA)
+
+Best boards earning particular citations:
+
+grid anwypvioeghlsrntcaniemidv
+   A N W Y P
+   V I O E G
+   H L S R N
+   T C A N I
+   E M I D V
+score 264,695,111 (80.03% of 330,759,736), 29 states
+states: CA TX FL NY PA IL OH GA NC MI NJ VA AZ IN MD WI MN SC AL LA OR IA NV AR KS ID ME AK WY
+citations: 20S 200M PA
+
+grid chtrnoaeoylrsewginsmdaoci
+   C H T R N
+   O A E O Y
+   L R S E W
+   G I N S M
+   D A O C I
+score 264,142,662 (79.86% of 330,759,736), 30 states
+states: CA TX FL NY IL OH GA NC MI NJ VA AZ TN IN MO WI CO MN SC LA OR UT IA NV AR KS NM ID ME AK
+citations: 20S 200M 4C C2C   (C2C chain: GA-TN-AR-TX-NM-AZ-CA)
+
+grid dattigieoskrnspyoaiuilmch
+   D A T T I
+   G I E O S
+   K R N S P
+   Y O A I U
+   I L M C H
+score 237,605,369 (71.84% of 330,759,736), 27 states
+states: CA TX FL NY IL OH GA MI VA AZ MA IN MD MO MN AL LA OR IA NV AR MS KS ID ME MT AK
+citations: 20S 200M M8
+
+grid nahipwtscmesogannirkodalo
+   N A H I P
+   W T S C M
+   E S O G A
+   N N I R K
+   O D A L O
+score 230,609,692 (69.72% of 330,759,736), 32 states
+states: TX FL NY IL OH GA NC MI VA AZ TN IN MD MO WI CO MN SC AL LA OR UT IA NV AR MS KS ID WV HI ME AK
+citations: 20S 200M NOCAL C2C   (C2C chain: VA-TN-MO-KS-CO-UT-ID-OR)
+
+grid eitomwesaimsnrguiaoyphclf
+   E I T O M
+   W E S A I
+   M S N R G
+   U I A O Y
+   P H C L F
+score 214,983,909 (65.00% of 330,759,736), 27 states
+states: CA TX FL OH GA MI AZ MA TN IN MD MO WI CO MN AL LA OR UT IA AR MS KS NM ME MT AK
+citations: 20S 200M M8 4C C2C   (C2C chain: GA-TN-AR-TX-NM-AZ-CA)
+
+grid nlmhttaciurossplinetvadnt
+   N L M H T
+   T A C I U
+   R O S S P
+   L I N E T
+   V A D N T
+score 213,327,134 (64.50% of 330,759,736), 30 states
+states: TX FL PA IL OH NC MI VA AZ MA TN IN MD MO WI CO MN SC AL LA UT IA NV AR MS KS ID ME MT AK
+citations: 20S 200M PA M8 NOCAL
+
+grid davyknilkssorancauethimwp
+   D A V Y K
+   N I L K S
+   S O R A N
+   C A U E T
+   H I M W P
+score 219,236,135 (66.28% of 330,759,736), 30 states
+states: TX FL NY PA IL OH NC MI VA AZ IN MD MO WI CO SC AL LA OR UT IA NV AR KS NM NE ID ME MT AK
+citations: 20S 200M PA 4C NOCAL C2C   (C2C chain: MD-PA-OH-IN-IL-IA-NE-CO-UT-ID-OR)
+
+grid nlmhptaciurosstlinetvadmw
+   N L M H P
+   T A C I U
+   R O S S T
+   L I N E T
+   V A D M W
+score 190,412,691 (57.57% of 330,759,736), 28 states
+states: TX FL IL OH NC MI VA AZ MA IN MD MO WI CO MN AL LA UT IA NV AR MS KS NM ID ME MT AK
+citations: 20S M8 4C NOCAL
+

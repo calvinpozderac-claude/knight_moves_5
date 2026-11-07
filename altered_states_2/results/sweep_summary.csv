@@ -1,0 +1,39 @@
+label,restarts,mean_M,median_M,sd_M,max_M,best_grid,seconds,args
+T_t01e6_t11e4,40,242.82,243.37,6.23,255.108,cmhcoidalkunirooeginstwas,37,--threads 4 --restarts 10 --iters 5000000 --t0 1e6 --t1 1e4 --seed 11
+T_t01e6_t11e5,40,245.91,246.91,7.72,259.970,watoshgnewcirsymaioaldnlc,41,--threads 4 --restarts 10 --iters 5000000 --t0 1e6 --t1 1e5 --seed 11
+T_t01e6_t13e5,40,248.62,249.30,6.81,260.062,ewtckaesorhsnigciradmalon,36,--threads 4 --restarts 10 --iters 5000000 --t0 1e6 --t1 3e5 --seed 11
+T_t03e6_t11e4,40,256.83,256.86,3.30,262.810,flywtiosennsrndtaigahcwml,38,--threads 4 --restarts 10 --iters 5000000 --t0 3e6 --t1 1e4 --seed 11
+T_t03e6_t11e5,40,257.59,257.49,2.83,263.593,dglocairahhnstboiesomywrk,38,--threads 4 --restarts 10 --iters 5000000 --t0 3e6 --t1 1e5 --seed 11
+T_t03e6_t13e5,40,258.44,258.79,2.95,264.410,roywduseiaotrnsnagoimical,38,--threads 4 --restarts 10 --iters 5000000 --t0 3e6 --t1 3e5 --seed 11
+T_t01e7_t11e4,40,256.34,256.17,3.76,264.143,chtrnoaeoylrsewginsmdaoci,37,--threads 4 --restarts 10 --iters 5000000 --t0 1e7 --t1 1e4 --seed 11
+T_t01e7_t11e5,40,256.94,256.50,3.32,264.798,krclmdhoaiairnwngseduotay,37,--threads 4 --restarts 10 --iters 5000000 --t0 1e7 --t1 1e5 --seed 11
+T_t01e7_t13e5,40,256.48,257.16,2.92,262.556,entadwenigyrsortocalahmin,36,--threads 4 --restarts 10 --iters 5000000 --t0 1e7 --t1 3e5 --seed 11
+T_t03e6_t11e6,40,259.82,259.67,2.80,265.327,hmlfsoaioutsnrcregahoywin,38,--threads 4 --seed 12 --restarts 10 --iters 5000000 --t0 3e6 --t1 1e6
+T_t05e6_t13e5,40,257.20,256.76,3.26,262.556,entadwenigyrsortocalahmin,37,--threads 4 --seed 12 --restarts 10 --iters 5000000 --t0 5e6 --t1 3e5
+L_1.25M_x160,160,254.36,254.92,4.67,265.327,oywinregahtsnrcoaiouhmlfs,38,--threads 4 --seed 12 --restarts 40 --iters 1250000 --t0 3e6 --t1 3e5
+L_20M_x10,12,260.62,260.51,1.69,264.143,dglocairahonsetcseorimwyn,46,--threads 4 --seed 12 --restarts 3 --iters 20000000 --t0 3e6 --t1 3e5
+S_swap0,40,254.82,254.73,4.13,262.688,nalamdoricyinhgwasornetui,36,--threads 4 --seed 12 --restarts 10 --iters 5000000 --t0 3e6 --t1 3e5 --swap 0
+S_swap0.5,40,258.85,259.31,2.62,262.810,tndabwengmysriwlosacfinth,39,--threads 4 --seed 12 --restarts 10 --iters 5000000 --t0 3e6 --t1 3e5 --swap 0.5
+N_near0.1,40,258.62,258.60,3.02,264.695,anwypvioeghlsrntcaniemidv,59,--threads 4 --seed 12 --restarts 10 --iters 5000000 --t0 3e6 --t1 3e5 --near 0.1
+N_near0.3,40,258.37,258.89,3.48,265.327,htnilcasofwirsymgnewbavnt,59,--threads 4 --seed 12 --restarts 10 --iters 5000000 --t0 3e6 --t1 3e5 --near 0.3
+LONG_sa_20M_t3e6_1e6,243,261.94,262.32,1.92,265.327,sflmhuoiaocrnsthagerniwyo,915,--threads 4 --restarts 1000 --iters 20000000 --t0 3e6 --t1 1e6 --seed 31 --seconds 900
+ILS_noise0.3,256,253.33,254.36,7.24,265.327,hmlfsoaioutsnrcregahoywin,243,--threads 4 --restarts 1000 --iters 5000000 --t0 1e6 --t1 5e5 --start hmlfsoaioutsnrcregahoywin --noise 0.3 --seed 51 --seconds 240
+ILS_noise0.6,256,260.50,260.46,2.39,265.327,niwyohagercrnstuoiaosflmh,243,--threads 4 --restarts 1000 --iters 5000000 --t0 2e6 --t1 1e6 --start hmlfsoaioutsnrcregahoywin --noise 0.6 --seed 52 --seconds 240
+AW_PA,263,256.86,257.86,4.12,264.409,nadokrilyrgosameenicpnthw,243,--award PA --threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 1e6 --seconds 240 --seed 61
+AW_M8,270,239.35,241.12,8.93,260.229,ispuhtosictenamairoldgkyi,243,--award M8 --threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 1e6 --seconds 240 --seed 61
+AW_4C,256,255.12,254.81,2.59,264.143,imwyncseoronsetairahdgloc,242,--award 4C --threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 1e6 --seconds 240 --seed 61
+AW_NOCAL,259,225.66,224.87,3.16,230.610,nwenoatsndhsoiaicgrlpmako,244,--award NOCAL --threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 1e6 --seconds 240 --seed 61
+AW_C2C,132,256.45,256.32,3.29,265.327,suchnforailingwmaseyhotro,244,--award C2C --threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 1e6 --seconds 240 --seed 61
+AW_ALL7,172,203.71,200.75,12.38,245.166,mhigeuaciorosnmlinewvadtp,609,--award 20S,200M,PA,M8,4C,NOCAL,C2C --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 600 --seed 62
+EQ_sa5M_t3e6_1e6,258,259.68,259.68,2.71,265.327,ortohyesamwgniliarofnhcus,243,--threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 1e6 --seed 71 --seconds 240
+EQ_sa5M_t3e6_2e6,265,256.72,256.30,3.28,264.898,cltywiaoegdnrsnoisamvhciw,243,--threads 4 --restarts 1000 --iters 5000000 --t0 3e6 --t1 2e6 --seed 72 --seconds 240
+EQ_pt_16x_3e5_3e6,4,265.06,265.11,0.27,265.327,nhcusiarofwgnilyesamortoh,240,--threads 4 --seconds 240 --replicas 16 --tlo 3e5 --thi 3e6 --steps 200 --seed 73
+AW_M8_long,136,231.31,229.29,13.58,252.177,hcmliuiaoypsnrgsoeikittad,487,--award M8 --penalty 40e6 --threads 4 --restarts 1000 --iters 20000000 --t0 3e6 --t1 1e6 --seconds 480 --seed 81
+AW_ALL7_p40_20M,86,194.57,193.42,9.05,218.530,pstdhyenadlanigmisorpscla,624,--award 20S,200M,PA,M8,4C,NOCAL,C2C --penalty 40e6 --threads 4 --restarts 1000 --iters 20000000 --t0 3e6 --t1 1e6 --seconds 600 --seed 91
+AW_ALL7_seeded,166,191.86,192.01,12.47,222.508,mnhiptacsmrosatlinetvadnp,303,--award 20S,200M,PA,M8,4C,NOCAL,C2C --penalty 40e6 --threads 4 --restarts 1000 --iters 5000000 --t0 2e6 --t1 1e6 --start mhigeuaciorosnmlinewvadtp --noise 0.4 --seconds 300 --seed 92
+AW_M8_NOCAL,168,201.17,199.90,11.00,223.134,vadntlinetrossptaciulnmht,307,--award M8,NOCAL --penalty 40e6 --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 300 --seed 101
+AW_ALL_but_200M,120,183.46,183.43,15.58,219.236,wepshmnsicvanomlideuyorat,434,--award 20S,PA,M8,4C,NOCAL,C2C --penalty 40e6 --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 420 --seed 102
+AW_ALL7_seeded2,171,194.70,195.81,11.34,226.021,mihasgactnrosnelinspvadim,368,--award 20S,200M,PA,M8,4C,NOCAL,C2C --penalty 40e6 --threads 4 --restarts 1000 --iters 5000000 --t0 2e6 --t1 1e6 --start lnmhttaciurossplinetvadnt --noise 0.3 --seconds 360 --seed 111
+AW_ALL_but_C2C,137,194.77,195.13,9.33,217.638,etahiistcmsnoanailrdwmgpi,308,--award 20S,200M,PA,M8,4C,NOCAL --penalty 40e6 --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 300 --seed 121
+AW_M8_4C,164,214.41,217.00,14.72,252.721,phclfuiaoymsnrgwesaieitom,305,--award M8,4C --penalty 40e6 --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 300 --seed 131
+AW_ALL7_seeded3,169,192.95,193.31,12.12,231.529,cmgrmioiaossndlaneyihtspp,307,--award 20S,200M,PA,M8,4C,NOCAL,C2C --penalty 40e6 --threads 4 --restarts 1000 --iters 5000000 --t0 2e6 --t1 1e6 --start eitomwesaimsnrguiaoyphclf --noise 0.3 --seconds 300 --seed 141
