@@ -38,3 +38,5 @@
 [   55.10s] pt    new best 119  FLIOMLUTHCIORADNSKINLAIZO
 [   57.40s] pt    new best 121  AIDKLWOHAOMICTRGASOUKRNIL
 [   65.99s] pt    new best 127  CHDORWATAKIRUNSISOIASMCLL
+pt: swap acceptance 0.718
+RESULT mode=pt lambda=0 time=900s threads=1 seed=21 best=127 grid=CHDORWATAKIRUNSISOIASMCLL evals=2361120000 runs=0
