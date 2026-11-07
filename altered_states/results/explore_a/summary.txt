@@ -5,3 +5,4 @@ no_dak         RESULT mode=wsa best=121 grid=ADHCHNKOTARSLURBAIOAMENDH
 pen_cd         RESULT mode=wsa best=114 grid=CURHWFOIAOLSIDIKANEGMRBOR
 no_mid         RESULT mode=wsa best=123 grid=CHTUNDAROIMWKLSOSAILIHNDI
 rsub           RESULT mode=rsub best=127 grid=SIIWCMSRAHCOUTDLINAOLASKR
+gls_norm       RESULT mode=gls best=121 grid=KGWMARAIOINSCHDIOTALLUROK

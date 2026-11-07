@@ -45,3 +45,5 @@
 [   52.43s] sa    new best 122  WOHILMAIADBLKSNDAROICHTUL
 [   56.43s] sa    new best 123  NUTHDIORACSLKWMLIASOIDNHI
 [   77.75s] sa    new best 127  SIIWCMSRAHCOUTDLINAOLASKR
+RESULT mode=sa lambda=0 time=400s threads=1 seed=12 best=127 grid=SIIWCMSRAHCOUTDLINAOLASKR evals=1054668800 runs=2
+run-end score histogram (top): 127:2
