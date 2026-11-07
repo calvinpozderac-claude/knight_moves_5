@@ -147,9 +147,9 @@ Every grid that differs from the 127 grid in at most k cells was scored exactly:
 | 1 | 600 | 0 | 0 | 121 |
 | 2 | 172,800 | 0 | 0 | 121 |
 | 3 | 31,795,200 | 0 | 0 | 121 |
-| 4 | (running) | | | |
+| 4 | 4,196,966,400 | 0 | 0 | 121 |
 
-So the 127 grid is a strict local optimum: no change of up to 3 cells matches it.
+So the 127 grid is a strict local optimum: no change of up to 4 cells matches it (4.2 billion grids, 431 s on 2 threads).
 
 ### 5. Search without the CAROLINA/DAKOTA states (`results/alt/`)
 
@@ -166,7 +166,7 @@ reflection:
 - parallel tempering in both its raw and smoothed forms
 - state-insertion search from random starts and from a forced seed
 
-The grid is a strict 3-opt local optimum. Grids without the Carolina/Dakota cluster top out
+The grid is a strict 4-opt local optimum. Grids without the Carolina/Dakota cluster top out
 around 114. None of this is a proof of optimality: the CP-SAT bound never moved off 412.
 
 ## Files
