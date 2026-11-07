@@ -5,3 +5,5 @@ hc_smooth  seed 2  best=117 grid=IEGLLVROIATACNSUHDAKOSIOT evals=124923351 runs=
 sa         seed 1  best=123 grid=WODILHAINAILRKSFOATONCHDU evals=312079104 runs=15
 sa         seed 2  best=127 grid=CHDORWATAKIRUNSISOIASMCLL evals=315568896 runs=15
 sa_smooth  seed 1  best=127 grid=RODHCKATAWSNURIAIOSILLCMS evals=91064960 runs=15
+sa_smooth  seed 2  best=127 grid=RKSALOANILDTUOCHARSMCWIIS evals=91667072 runs=15
+pt         seed 1  best=127 grid=RKSALOANILDTUOCHARSMCWIIS evals=315136000 runs=0

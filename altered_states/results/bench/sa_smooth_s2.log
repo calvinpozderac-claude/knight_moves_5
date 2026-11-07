@@ -34,3 +34,5 @@
 [   10.06s] sa    new best 119  FLINLLUOSAITRKIOHAIOBCDNZ
 [   11.15s] sa    new best 121  RKSALOANILDTUOCHARSMWCWIS
 [   11.19s] sa    new best 127  RKSALOANILDTUOCHARSMCWIIS
+RESULT mode=sa lambda=0.5 time=120s threads=1 seed=2 best=127 grid=RKSALOANILDTUOCHARSMCWIIS evals=91667072 runs=15
+run-end score histogram (top): 127:1 123:1 121:1 120:3 119:2 118:1 117:3 116:1 115:1 114:1

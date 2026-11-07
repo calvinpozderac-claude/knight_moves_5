@@ -1,1 +1,2 @@
 [    0.00s] lns   new best 127  CHDORWATAKIRUNSISOIASMCLL
+RESULT mode=lns time=90s threads=2 seed=3 best=127 grid=CHDORWATAKIRUNSISOIASMCLL evals=390620000 iters=33674
