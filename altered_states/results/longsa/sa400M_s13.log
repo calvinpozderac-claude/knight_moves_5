@@ -34,3 +34,5 @@
 [   45.68s] sa    new best 121  KRNILGASOUMICTRWOHAOAIDLK
 [   59.98s] sa    new best 123  IHNDIOSAILMWKLSDAROICHTUN
 [   62.13s] sa    new best 127  SMCLLISOIAIRUNSWATAKCHDOR
+RESULT mode=sa lambda=0 time=400s threads=1 seed=13 best=127 grid=SMCLLISOIAIRUNSWATAKCHDOR evals=1069336576 runs=2
+run-end score histogram (top): 127:1 123:1
