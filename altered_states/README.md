@@ -157,17 +157,111 @@ To check whether the four-Carolina/Dakota cluster is a trap, SA was run with tho
 removed from the list (90 s, 2 threads). The best grid then scores **114** against the full
 list. The cluster is worth 48 points, and the best grids without it do about 13 points worse.
 
+## Round 2: three more agents, plus exact fills around the cluster
+
+These runs were aimed at escaping the 127 basin. Every run used 1 thread. Logs are in
+`results/explore_a/` to `results/explore_d/`.
+
+### Agent A: change what the search rewards (`explore_a/wsa.cpp`)
+
+| Experiment | Best true score |
+|---|---|
+| Guided local search: weights of absent states ×1.25 after each annealing cycle, capped at 4 (300 s) | 127 (same grid) |
+| Same with ×1.5, cap 6, restarts (300 s) | 117 |
+| Normalised weights (mean 1, range 0.3–3) (400 s) | 121 |
+| Both CAROLINAs given weight 0 / both DAKOTAs given weight 0 (150 s each) | 119 / 121 |
+| All four Carolina/Dakota states given weight −0.5 (150 s) | 114 |
+| LOUISIANA, WISCONSIN, ILLINOIS, MISSOURI given weight 0 (150 s) | 123 |
+| 177 short runs, each dropping 15% of states and doubling 15% (450 s) | 127 (same grid) |
+
+About 100 distinct sets of states scored 118 or more. Every one of them contains NORTH/SOUTH ×
+CAROLINA/DAKOTA, and all but one also contain KANSAS and ARKANSAS. Without the 127 grid, the
+best sets of states score 123:
+
+- `CHTUNDAROIMWKLSOSAILIHNDI`
+- `LIDAWANIOHSKRLIOTAOFUDHCN`
+
+### Agent B: build a compact core, then fill the rest (`explore_b/core.cpp`)
+
+For 17 cores, about 30 layouts each were made with as many empty squares as possible. The empty
+squares were filled by annealing, then the whole grid was polished. The best result for each
+core:
+
+| Core | Best |
+|---|---|
+| CD + CONNECTICUT, and the NEW-states | 127 (same grid) |
+| CD + NEW HAMPSHIRE | 123 |
+| CD + RHODE ISLAND / PENNSYLVANIA / WEST VIRGINIA, CALIFORNIA + CAROLINAs | 121 |
+| A-heavy states | 120 |
+| MASSACHUSETTS, MISSISSIPPI, MISSOURI, MINNESOTA, TENNESSEE | 118 |
+| VIRGINIA / WEST VIRGINIA / PENNSYLVANIA | 112 |
+| KANSAS group | 111 |
+
+80 runs of annealing with random weights (600 s) also gave 127, the same grid.
+
+### Agent C: search over sets of states (`explore_c/xc.cpp`)
+
+A fast checker answers "can one grid hold all of these states?". It rebuilds the 127 set from a
+random grid in 1.6 s.
+
+- **Set search from the 127 set:** about 760 nearby sets were proposed (add 1–3 states, drop 0–2,
+  even accepting sets up to 8 points worse). The checker found a grid for none of them.
+- **Exclusion sweep:** each of the 15 states was dropped in turn. The best result without one of
+  them is 123.
+- **Long annealing:** 300M moves with richer moves (2×2 rotations, row/column shifts, copying a
+  neighbour, writing a 2–3 letter piece of a state along a walk) gave 127.
+
+### Parent: exact fills around the Carolina/Dakota cluster (`explore_d/`)
+
+1. **The 127 grid's own layout.** The 15 squares that the four CD states use in the 127 grid were
+   fixed, and CP-SAT optimised the other 10 squares exactly against all 50 states. It proved
+   127 optimal in 0.9 s, so no refill of that layout does better.
+2. **Other layouts.** `compact.cpp` searches for minimal layouts of the four CD states. 14 squares
+   is the smallest it found; the 127 grid's layout needs 15. Each layout was then filled exactly
+   with CP-SAT (`fill_layouts.py`). Fill quality falls with core size:
+
+   | Squares used by the CD layout | Mean exact fill |
+   |---|---|
+   | 14 | 103 |
+   | 15 | 98 |
+   | 16 | 92 |
+   | 18 | 83 |
+
+3. **Sweeps.**
+   - First sweep: 913 layouts. 815 fills were proved optimal and 98 hit the 30 s limit. Best:
+     **118**.
+   - Second sweep: 456 of 2,023 further layouts finished before the 30-minute job limit. 266 were
+     proved optimal. Best: **117**.
+4. **Coverage.** The layout space is not saturated. Three 5-minute generator runs found 2,290
+   distinct layouts with at most 15 squares and barely overlapped. So this is a large sample, not
+   a complete list.
+5. **Whole grid with CD forced.** A whole-grid CP-SAT run with the four CD states required stayed
+   at 127 for 15 min, with the bound stuck at 412.
+6. **Long annealing.** Three single-thread 400M-move SA runs all gave 127. A 15-minute single-thread parallel-tempering run (24 replicas, T 0.25–8)
+   also gave 127.
+
 ## Conclusion
 
-127 is the best score found, and these methods reached the same grid, up to rotation and
-reflection:
+**127 is the best score found.** The same grid, up to rotation and reflection, was reached by:
 
-- annealing in both its raw and smoothed forms
-- parallel tempering in both its raw and smoothed forms
-- state-insertion search from random starts and from a forced seed
+- annealing in its raw and smoothed forms
+- parallel tempering in its raw and smoothed forms
+- state-insertion search
+- guided local search
+- random reweighting
+- the core-plus-fill design
+- long rich-move annealing
 
-The grid is a strict 4-opt local optimum. Grids without the Carolina/Dakota cluster top out
-around 114. None of this is a proof of optimality: the CP-SAT bound never moved off 412.
+What is proved:
+
+- No change of up to 4 squares improves or ties the grid.
+- No refill of the squares around its own Carolina/Dakota layout beats it.
+- Nothing above 127 turned up in the roughly 1,000 other layouts whose fills were proved optimal.
+  This is a sample: the layout space is not exhausted, and about 200 fills hit the time limit.
+
+The best grids that differ from it score 123. A grid above 127, if it exists, needs a placement of
+the cluster that was not sampled, or a state set none of these methods reached. The CP-SAT bound
+never moved off 412, so optimality is not proved.
 
 ## Files
 
@@ -180,6 +274,8 @@ around 114. None of this is a proof of optimality: the CP-SAT bound never moved 
 | `bench.sh` | runs the equal-budget method benchmark |
 | `lns/lns.cpp`, `lns/overlap.py` | state-insertion search, tabu, late acceptance, genetic algorithm; shared-substring analysis |
 | `cpsat/*.py` | CP-SAT model, whole-model solve, window re-solve, plus-one feasibility |
+| `explore_a/`, `explore_b/`, `explore_c/` | round-2 agents: reweighting, core-plus-fill, state-set search |
+| `explore_d/` | compact Carolina/Dakota layout generator and exact CP-SAT fills |
 | `results/` | logs of every run quoted above |
 
 To build: `g++ -O3 -march=native -std=c++17 -pthread -o build/as as.cpp`
