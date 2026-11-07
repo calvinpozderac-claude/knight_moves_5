@@ -20,3 +20,18 @@ NEBRASKA       + 8 UNKNOWN     12.0s
 OKLAHOMA       + 8 UNKNOWN     12.0s 
 DELAWARE       + 8 UNKNOWN     12.0s 
 NEWYORK        + 7 UNKNOWN     12.1s 
+ALABAMA        + 7 UNKNOWN     12.0s 
+ARIZONA        + 7 UNKNOWN     12.0s 
+GEORGIA        + 7 UNKNOWN     12.0s 
+VERMONT        + 7 UNKNOWN     12.0s 
+INDIANA        + 7 UNKNOWN     12.0s 
+FLORIDA        + 7 UNKNOWN     12.0s 
+WYOMING        + 7 UNKNOWN     12.0s 
+NEVADA         + 6 UNKNOWN     12.0s 
+OREGON         + 6 UNKNOWN     12.0s 
+TEXAS          + 5 UNKNOWN     12.0s 
+MAINE          + 5 UNKNOWN     12.0s 
+IDAHO          + 5 UNKNOWN     12.0s 
+IOWA           + 4 UNKNOWN     12.0s 
+OHIO           + 4 UNKNOWN     12.0s 
+SUMMARY {'UNKNOWN': 35}
