@@ -24,3 +24,25 @@
 [     2.6s] wsa    TRUE best 102 CCYRAUOLKMRISARHAINBWODEU
 [     2.6s] wsa    TRUE best 106 TAHOCUOLKMRISARHAINBWODEB
 run 1: weighted-run true 102 -> polished 102 NILOCUOLKMRISARHAINBWODES
+[    11.8s] wsa    TRUE best 107 CURHWFOIAOLSIDIKANEAMRBCV
+[    11.8s] wsa    TRUE best 109 CURHIFOIAOLSIDWKANEAMRBLR
+[    11.8s] wsa    TRUE best 114 CURHWFOIAOLSIDIKANEGMRBOR
+run 2: weighted-run true 114 -> polished 109 UWRHIIOCAOLSNDWKAIEAMRBIV
+run 3: weighted-run true 112 -> polished 112 WHRENAIOGOVDISLTENAKSWBRM
+run 4: weighted-run true 112 -> polished 112 WAVTSHIDEWROINBEGSARONLKM
+run 5: weighted-run true 100 -> polished 100 KRGZOATIDNSNVAIOEWIHMRGON
+run 6: weighted-run true 107 -> polished 103 WBLFVKAMOERSNRGWETIDYJVAN
+run 7: weighted-run true 114 -> polished 114 WHRUCOAIOFIDISLGENAKROBRM
+run 8: weighted-run true 114 -> polished 102 MRBRWKANEALSIDLOIAORUWHRC
+run 9: weighted-run true 114 -> polished 114 MRBORKANEGLSIDIFOIAOCURHW
+run 10: weighted-run true 105 -> polished 106 MIHDNROVAIGENTLWISAYOAMKR
+run 11: weighted-run true 106 -> polished 106 SEWOHATVAINEGIDWORANYMLKS
+run 12: weighted-run true 104 -> polished 102 LKBOASAREVNMGINTOIADWAHCM
+run 13: weighted-run true 114 -> polished 114 MKLFCRASOUBNIIROEDAHRGIOW
+run 14: weighted-run true 112 -> polished 112 OERHWNGOIALSIDVKANETMRBSW
+run 15: weighted-run true 114 -> polished 114 WHRUCOAIOFIDISLGENAKROBRM
+run 16: weighted-run true 102 -> polished 102 FLTSLEONAKGRMRBNISEWDAVTN
+run 17: weighted-run true 109 -> polished 103 RIZRHKACOAMSNDLLAIEAYRBWR
+run 18: weighted-run true 98 -> polished 96 IORKOMHLASDAVYNNIRENPEGOP
+distinct state sets scoring >=118: 0
+RESULT mode=wsa best=114 grid=CURHWFOIAOLSIDIKANEGMRBOR

@@ -7,3 +7,4 @@ kansas layouts=31 failed=0 best_fill=103 best=111 grid=EUTHCGROADOSKRIENALONBIMF
 cd_cal layouts=32 failed=0 best_fill=114 best=120 grid=CDNGEHAIORTRKZWUOSALLINIL blank histogram: 8:6 9:26
 cd_mass layouts=32 failed=0 best_fill=102 best=116 grid=SODNZUHAIOCTRKSOAONAFLIFL blank histogram: 4:9 5:23
 cd_rhode layouts=32 failed=0 best_fill=112 best=121 grid=CHKULDATOIIRNSCZOIAKMFLWR blank histogram: 5:3 6:8 7:16 8:5
+cd_wash layouts=31 failed=0 best_fill=99 best=118 grid=LUDHCIOTAIHSKRGIANOENDLIC blank histogram: 4:1 6:8 7:22
