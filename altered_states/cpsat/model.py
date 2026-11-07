@@ -37,6 +37,7 @@ def build(fixed=None, hint=None, states=STATES, symmetry=False, force=None,
         for c, l in fixed.items():
             m.Add(x[c][l] == 1)
     present = {}
+    yv = {}
     for s in states:
         L = len(s)
         prev = None
@@ -55,6 +56,7 @@ def build(fixed=None, hint=None, states=STATES, symmetry=False, force=None,
                     else:
                         m.AddBoolOr(ps).OnlyEnforceIf(v)
                 cur.append(v)
+                yv[(s, i, c)] = v
             prev = cur
         p = m.NewBoolVar(f"p{s}")
         last = [v for v in prev if v is not None]
@@ -80,6 +82,15 @@ def build(fixed=None, hint=None, states=STATES, symmetry=False, force=None,
         for c in range(25):
             for l in LETTERS:
                 m.AddHint(x[c][l], int(hint[c] == l))
+        for s in states:
+            reach = {c for c in range(25) if hint[c] == s[0]}
+            for i, ch in enumerate(s):
+                if i:
+                    reach = {c for c in range(25) if hint[c] == ch and any(d in reach for d in NB[c])}
+                for c in range(25):
+                    if (s, i, c) in yv:
+                        m.AddHint(yv[(s, i, c)], int(c in reach))
+            m.AddHint(present[s], int(bool(reach)))
     if symmetry:
         # lexicographic-ish symmetry breaking on corner letters: corner 0 letter index
         # <= every other corner's letter index (weak D4 breaking, sound)
