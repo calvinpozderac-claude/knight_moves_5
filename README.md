@@ -23,7 +23,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_8337.txt` | **8,337** | AlphaZero-style self-play (MCTS with max backup; policy target from the search's values only, with no factor from the network's prior), seeded only with heuristic-search tours, never the records: 3 h into a run, as a finish found inside a search tree |
+| `data/tours/record_8484.txt` | **8,484** | Same AlphaZero-style run as 8,337, 3 h 23 min in |
+| `data/tours/record_8337.txt` | 8,337 | AlphaZero-style self-play (MCTS with max backup; policy target from the search's values only, with no factor from the network's prior), seeded only with heuristic-search tours, never the records: 3 h into a run, as a finish found inside a search tree |
 | `data/tours/record_8123.txt` | 8,123 | NN-guided A* (`nnastar/`), full run: 25 min generation, 31 min training (early-stopped), then found within 2 minutes of searching from a1 |
 | `data/tours/record_8002.txt` | 8,002 | NN-guided A* (`nnastar/`, see below) from a1: found about 4 minutes into the first (smoke-test) search, after 1.5 minutes of data generation and 2 minutes of training |
 | `data/tours/record_7911.txt` | 7,911 | NRPA level 4 re-searching everything after move 35 of the 7,512 tour, from fresh weights: 68 minutes on 1 thread |
