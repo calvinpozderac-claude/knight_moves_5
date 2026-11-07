@@ -10,3 +10,4 @@ cd_rhode layouts=32 failed=0 best_fill=112 best=121 grid=CHKULDATOIIRNSCZOIAKMFL
 cd_wash layouts=31 failed=0 best_fill=99 best=118 grid=LUDHCIOTAIHSKRGIANOENDLIC blank histogram: 4:1 6:8 7:22
 cd_conn layouts=31 failed=0 best_fill=104 best=127 grid=LASKRLINAOCOUTDMSRAHSIIWC blank histogram: 5:3 6:11 7:17
 cd_penn layouts=31 failed=0 best_fill=101 best=121 grid=MZIDCFORAHLINTKWASOURKCIL blank histogram: 4:18 5:13
+cd_wv layouts=30 failed=0 best_fill=107 best=121 grid=LICKRUOSAWKTNILHAROFCDIZM blank histogram: 4:4 5:12 6:14
