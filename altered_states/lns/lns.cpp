@@ -78,7 +78,7 @@ static void revert(Grid& G, const Move& m) { apply_cells(G, m, false); }
 struct Opt {
   string mode = "lns"; double time = 60; int threads = 2; u64 seed = 1;
   int lahc_len = 2000; double protect = 0.5; long long repair = 20000; double Trep = 0.6;
-  int pop = 24; long long polish = 300000; int tenure = 12; string init;
+  int pop = 24; long long polish = 300000; int tenure = 12; string init, seedstates;
 } O;
 struct Shared {
   mutex mu; atomic<int> best{-1}; string best_grid;
@@ -162,6 +162,26 @@ static bool embed(const Grid& G, int s, const double* load, double pw, mt19937_6
 static void run_lns(int tid) {
   mt19937_64 rng(O.seed * 7919 + tid);
   Grid cur; if (O.init.empty()) { random_grid(cur, rng); sa_polish(cur, 2000000, 3.0, rng); } else load_grid(cur, O.init);
+  if (!O.seedstates.empty()) {  // force a cluster of states in (comma separated), protecting earlier ones
+    double ld[25]; int pth[16];
+    for (int attempt = 0; attempt < 200; attempt++) {
+      Grid G; random_grid(G, rng);
+      stringstream ss(O.seedstates); string nm; bool all = true;
+      while (getline(ss, nm, ',')) {
+        int s = -1; for (int k = 0; k < NS; k++) if (ST[k].name == nm) s = k;
+        if (s < 0 || G.pres[s]) continue;
+        witness_load(G, ld);
+        bool ok = false; for (int t = 0; t < 30 && !ok; t++) ok = embed(G, s, ld, 50.0, rng, pth);
+        if (!ok) { all = false; break; }
+        for (int i = 0; i < ST[s].L; i++) G.g[pth[i]] = ST[s].c[i];
+        G.full_eval();
+      }
+      ss.clear(); ss.str(O.seedstates);
+      while (all && getline(ss, nm, ',')) for (int k = 0; k < NS; k++) if (ST[k].name == nm && !G.pres[k]) all = false;
+      if (all) { cur = G; break; }
+    }
+    printf("seeded grid %d %s\n", cur.score, cur.str().c_str()); fflush(stdout);
+  }
   SH.offer(cur, "lns");
   vector<int> hist(O.lahc_len, cur.score);
   long long it = 0, ev = 0; double load[25]; int path[16];
@@ -292,6 +312,7 @@ int main(int argc, char** argv) {
     else if (a == "--repair") O.repair = stoll(nx()); else if (a == "--Trep") O.Trep = stod(nx());
     else if (a == "--pop") O.pop = stoi(nx()); else if (a == "--polish") O.polish = stoll(nx());
     else if (a == "--tenure") O.tenure = stoi(nx()); else if (a == "--init") O.init = nx();
+    else if (a == "--seedstates") O.seedstates = nx();
     else if (a == "--states") states = nx(); else { fprintf(stderr, "unknown %s\n", a.c_str()); return 1; }
   }
   ifstream f(states); string w;

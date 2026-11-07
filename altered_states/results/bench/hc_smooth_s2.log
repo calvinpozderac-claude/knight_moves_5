@@ -1,0 +1,15 @@
+[    0.02s] hc    new best  62  VNORAILTUCRIAHOGNDSKONEAN
+[    0.05s] hc    new best  66  AIRSAGONTHERMADASKINTOSEN
+[    0.08s] hc    new best  70  FBATACLMINEOUOSGRNSHKAIDA
+[    0.09s] hc    new best  71  WKROCSADELNILNISIOATSUMBU
+[    0.15s] hc    new best  72  LWMAGAKOIRSHVNKAITANDNOSE
+[    0.27s] hc    new best  81  KORBNALAMERSOHWKNIUATADID
+[    0.83s] hc    new best  87  INWORSARIELKHGVAUOAIBMTND
+[    4.25s] hc    new best  91  MCAINORHDGNTOIAAULKNSORAS
+[    6.23s] hc    new best  92  CFICROLAHULRDOTSINSRZOAAK
+[    7.14s] hc    new best  95  TNIDFOANGLMREORKABVILSNDA
+[   19.01s] hc    new best  99  LSENMKANWAOHDILCTUOSHARCN
+[   32.46s] hc    new best 111  OYWDCDEOAHNIKRTBASOUMLNIL
+[   83.56s] hc    new best 117  IEGLLVROIATACNSUHDAKOSIOT
+RESULT mode=hc lambda=0.5 time=120s threads=1 seed=2 best=117 grid=IEGLLVROIATACNSUHDAKOSIOT evals=124923351 runs=8036
+run-end score histogram (top): 117:1 111:1 105:2 104:1 102:3 101:1 100:1 99:6 98:4 97:4

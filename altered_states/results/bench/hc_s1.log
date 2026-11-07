@@ -6,3 +6,5 @@
 [    0.16s] hc    new best  80  MVBDCIAERNDNLAKHAWSNOIIOO
 [    5.78s] hc    new best  85  IOMEVHNBANSARIDDKLOCIFORM
 [    5.88s] hc    new best  91  DHGRVAIOEITNLMRASAIDKRBEN
+RESULT mode=hc lambda=0 time=120s threads=1 seed=1 best=91 grid=DHGRVAIOEITNLMRASAIDKRBEN evals=480088072 runs=84129
+run-end score histogram (top): 91:1 90:1 87:2 86:3 85:4 84:2 83:3 82:4 81:5 80:16

@@ -1,0 +1,10 @@
+[    0.02s] hc    new best  70  NSKLOENARCOGDHARNIOWIVAMY
+[    0.05s] hc    new best  81  KSNTBRALAMHODIVCINESMGALS
+[    0.11s] hc    new best  86  DHOLAIAFUDWOLINEYRASNEBKM
+[    1.30s] hc    new best  90  ISLNDNAKAITOHRVMIGEOBANFL
+[    2.51s] hc    new best  94  AGRKNNIBASDELMSVARONWCHTU
+[    6.60s] hc    new best 101  KSNOZOAIILLURGLCATOEDHKNR
+[   16.61s] hc    new best 102  SODNLUHIASCTRKFIAOLLHWNIS
+[   40.73s] hc    new best 111  UTHDOORACTSKONASMLISBALOU
+RESULT mode=hc lambda=0.5 time=120s threads=1 seed=1 best=111 grid=UTHDOORACTSKONASMLISBALOU evals=124161427 runs=7971
+run-end score histogram (top): 111:1 107:1 104:1 102:2 101:6 99:2 98:5 97:5 96:6 95:7

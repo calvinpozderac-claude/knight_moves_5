@@ -1,0 +1,15 @@
+[    0.00s] hc    new best  45  OIGRAHWIVILIANEWMDHOCLEAN
+[    0.01s] hc    new best  61  REBSLGONAKIHMIRADEDNAOTKO
+[    0.01s] hc    new best  65  LMNDVYABEAKRSKUHADSNOINAI
+[    0.02s] hc    new best  66  RNEVAMBNDARAIAIAKLHONSAWH
+[    0.09s] hc    new best  69  BKSABOALREMHKNCSAISONNDWS
+[    0.12s] hc    new best  71  URRKIITAONZNWHIOESAIRMVDN
+[    0.23s] hc    new best  75  KANOURSMTNBNIAWEUDIHVAOLO
+[    0.47s] hc    new best  76  KOHADLAMINSNBOELKNGRTTAIV
+[    0.66s] hc    new best  82  MOGKRRENNAGIVTSDIOWENHANN
+[   17.31s] hc    new best  83  MIHAFAONDVLBIEIRAEGRKSNOA
+[   25.42s] hc    new best  85  ANSMOCKWAHROLBRAHIEVODNAD
+[   60.70s] hc    new best  87  OKRYBSALAWINDHMGOIAORENIW
+[   84.83s] hc    new best  88  WIVUSRENTIGOSARMIHKLANDAO
+RESULT mode=hc lambda=0 time=120s threads=1 seed=2 best=88 grid=WIVUSRENTIGOSARMIHKLANDAO evals=474849991 runs=83216
+run-end score histogram (top): 88:2 87:1 85:1 84:2 83:5 82:2 81:10 80:11 79:17 78:15
