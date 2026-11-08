@@ -240,6 +240,33 @@ random grid in 1.6 s.
 6. **Long annealing.** Three single-thread 400M-move SA runs all gave 127. A 15-minute single-thread parallel-tempering run (24 replicas, T 0.25–8)
    also gave 127.
 
+## Round 3: exact re-optimisation around kept states (`explore_e/xlns.py`)
+
+Each step works as follows:
+
+1. Keep a random subset of the states currently present.
+2. Fix only a minimal set of squares that spells them, padded or trimmed with random squares so
+   that 7–13 squares are free (10–15 in the "big" run).
+3. Let CP-SAT re-optimise every free square exactly against all 50 states (cap of 8–15 s).
+
+The current grid is always a valid fill, so a step never loses points. Equal-scoring new grids are
+accepted, and 2–4 random squares are kicked after 25 steps without progress. Unlike the earlier
+square-window re-solves, the Carolina/Dakota squares themselves get freed and rebuilt. Each walk
+ran 25 min on 1 thread, at about 4 s per step.
+
+| Start | Steps | Distinct grids | Best |
+|---|---|---|---|
+| 127 grid, 10–15 squares freed | 115 | 9 | 127 (no other grid at 127 found) |
+| 123 `CHTUNDAROIMWKLSOSAILIHNDI` | 390 | 23 | 123 |
+| 123 `LIDAWANIOHSKRLIOTAOFUDHCN` | 358 | 40 | 123 (start), walk reached 114 after kicks |
+| 118 (best compact-layout fill) | 389 | 13 | 118 (start), walk reached 114 after kicks |
+
+A first version spun without solving when no layout fitted the free-square range. Its logs are
+kept in `results/explore_e/v1_spinning/` and are not counted above.
+
+Every exact neighbourhood of the 127 grid tried, about 330 across the smoke test and the walks,
+returned 127 or less.
+
 ## Conclusion
 
 **127 is the best score found.** The same grid, up to rotation and reflection, was reached by:
@@ -276,6 +303,7 @@ never moved off 412, so optimality is not proved.
 | `cpsat/*.py` | CP-SAT model, whole-model solve, window re-solve, plus-one feasibility |
 | `explore_a/`, `explore_b/`, `explore_c/` | round-2 agents: reweighting, core-plus-fill, state-set search |
 | `explore_d/` | compact Carolina/Dakota layout generator and exact CP-SAT fills |
+| `explore_e/xlns.py` | exact re-optimisation around random subsets of present states |
 | `results/` | logs of every run quoted above |
 
 To build: `g++ -O3 -march=native -std=c++17 -pthread -o build/as as.cpp`
