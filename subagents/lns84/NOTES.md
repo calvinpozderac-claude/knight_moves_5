@@ -1,6 +1,6 @@
 # lns84: LNS + polisher + exact tail proof on the 8,484 basin
 
-Status: round 2 in progress (resumed 04:52 after a container restart). **Best: 8,600** (`NEW_RECORD_8600.txt`, = data/tours/record_8600.txt), checker ok=True maxvisits=3 unnecessary=[], free waits (42, 36, g6) and (49, 25, f4).
+Status: finished 07:00. **Best: 8,605** (`NEW_RECORD_8605.txt`, = data/tours/record_8605.txt), checker ok=True maxvisits=3 unnecessary=[], one free wait (48, 25, g6). Earlier best 8,600 had free waits (42, 36, g6) and (49, 25, f4).
 
 ## Build (all in subagents/lns84/, against current src/eng.h)
 ```
@@ -142,7 +142,11 @@ with its seed; 30k iterations, otherwise the round-1 flags. `pol_one.sh`: `--wma
 - LJ s71/s73, LK s72/s74 (30k, inputs incl. the LI s62 elites as crossover donors): all 8,605.
 - Lineages LI s63 / s64 (40k, original records only): **8,601 and 8,603** (polished: s64 stays 8,603).
   So 3 of 4 from-scratch seeds land at 8,601-8,603 within 40k iterations, and 1 stays at 8,484.
-- LM s81, LN s82 (climb focus), LO s91-s93 (30k, donors incl. all lineage bests): see the summary below.
+- LM s81, LN s82 (climb focus), LO s91-s93 (30k, donors incl. all lineage bests): all 8,605.
+- Polish of lineage LI s63 (8,601) -> **8,605** (`tmp/keep_8605_PLIs63.txt`, checker ok, 159 moves): a third
+  8,605, reached from the original records with no 86xx input. It differs from NEW_RECORD_8605 only in climb
+  routing (moves 20-27, 44), so it is the same skeleton, reached independently.
+- All jobs stopped at 07:00 (saver included).
 
 ## Summary (round 2)
 - Records found here: 8,526 (polish, strict) -> 8,595/8,596/8,599/8,600 (LNS round 1, free waits) ->
