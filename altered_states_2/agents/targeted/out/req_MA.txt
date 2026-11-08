@@ -1,0 +1,67 @@
+r0 yttuuweshknrcrgiaoiadlsnm score 250282810 states 27 obj 290282810 *best*
+r1 mdgkdairnmnsoaineslcwtthi score 251791262 states 27 obj 291791262 *best*
+r2 wahasmscilsinotdareychusw score 246160828 states 28 obj 286160828
+r3 mclkdhaoiausrnstoegiatywm score 255472456 states 30 obj 295472456 *best*
+r4 ldsilmanofcircyhgsewtuttn score 261438923 states 29 obj 301438923 *best*
+r5 mhutacasotloreykingwdasim score 255472456 states 30 obj 295472456
+r6 mchwtgiatesrnssieoiawyflm score 255077780 states 29 obj 295077780
+r7 iuttjmhsewcaniydirolsmgac score 256367414 states 28 obj 296367414
+r8 magewainrksloaifsacmettho score 247134029 states 27 obj 287134029
+r9 mhclfaiaokssnreteoigetwls score 249709440 states 26 obj 289709440
+r10 jweuheystcnsoaiairnlmdgoc score 248543735 states 29 obj 288543735
+r11 magoksinrlwsoiaetacdtnhmi score 251145724 states 28 obj 291145724
+r12 atywmtoegiusrnshaoiamclkd score 255472456 states 30 obj 295472456
+r13 asilfknohaerictwgastemnse score 245031003 states 27 obj 285031003
+r14 fchwtklateirosngnscioiamh score 249366774 states 27 obj 289366774
+r15 roywtgineidarsmnouassilhc score 251384671 states 28 obj 291384671
+r16 lmchtdaigusnrstiocetlfywn score 261438923 states 29 obj 301438923
+r17 hcflaatorctsnigresamoywil score 248460679 states 27 obj 288460679
+r18 atywmtoegiusrnshaoiamclkd score 255472456 states 30 obj 295472456
+r19 twhcmetaigssnrsaioeimlfyw score 255077780 states 29 obj 295077780
+r20 wjniayeghcforatlinstmaseo score 251134195 states 27 obj 291134195
+r21 thwimuecsssnoamairlndgkyi score 254112976 states 28 obj 294112976
+r22 dagwnnileorosaekacstnmihu score 246498705 states 27 obj 286498705
+r23 caywtsonetlirsedagasnhcim score 253378003 states 26 obj 293378003
+r24 mauhcwstaoiesrlmonigrkhad score 250813693 states 29 obj 290813693
+r25 ainjwhcgeytaroftsnileosam score 251134195 states 27 obj 291134195
+r26 sadnwnilaerocsegahtsnimut score 248403907 states 30 obj 288403907
+r27 mgsiwcireyhanofwtsiltesam score 255077780 states 29 obj 295077780
+r28 fygkmilrianaonsmctseihatw score 251859973 states 28 obj 291859973
+r29 dasimkingwloreycasotmhuta score 255472456 states 30 obj 295472456
+r30 nttutwesghycricfonamlisdl score 261438923 states 29 obj 301438923
+r31 ihcmsutaigtsnrdreioaowylc score 254347025 states 28 obj 294347025
+r32 vgrlfoiaoiwnscmyesahortud score 239703886 states 26 obj 279703886
+r33 maseolinstforatyegchwjnia score 251134195 states 27 obj 291134195
+r34 lmchtdaigusnrsniocetlfywt score 261438923 states 29 obj 301438923
+r35 mkgyccirowhaniltssadotecm score 248619975 states 27 obj 288619975
+r36 finsmlosaidarncnigehwcsut score 238148983 states 28 obj 278148983
+r37 aghkiinrcmsioasdalesnewtt score 242444598 states 27 obj 282444598
+r38 twyactenosesrilsagadmichn score 253378003 states 26 obj 293378003
+r39 tehsmhtsiacaonwrlireodagk score 250483173 states 28 obj 290483173
+r40 nylfwweoidtsrnstgiasahcml score 252560595 states 27 obj 292560595
+r41 stwadienigrosrlkusaoeehcm score 250800233 states 29 obj 290800233
+r42 flsoaoiasmgrncioesohwytta score 252396450 states 27 obj 292396450
+r43 kweisdrlnaeaorgtscimuhsad score 243541615 states 27 obj 283541615
+r44 uimaccssilhanowdireyogstt score 258137293 states 29 obj 298137293
+r45 vsdillinahworucyesaitgnsm score 256013696 states 27 obj 296013696
+r46 chdirtarogtsniloesamwyrkc score 253158951 states 29 obj 293158951
+r47 mgwkfairlmsnoaiestcnwtahd score 257020300 states 28 obj 297020300
+r48 wjniayeghcforatlinstmaseo score 251134195 states 27 obj 291134195
+r49 csldnaoiahynrgcwesaittesm score 253378003 states 26 obj 293378003
+r50 hutrlctsewmaniydirolchgac score 252793882 states 28 obj 292793882
+r51 hottecasewginsmmrocaakilf score 245801897 states 28 obj 285801897
+r52 mchwtgiatesrnssieoiawyflm score 255077780 states 29 obj 295077780
+r53 imcdsuhaimtsnrgteioajwylc score 256367414 states 28 obj 296367414
+r54 uteafhsalkscoriaiengdmwia score 249632773 states 28 obj 289632773
+r55 jwyrwteouionsshairacdglom score 247147415 states 27 obj 287147415
+r56 jttuiweshmyinacloridcagms score 256367414 states 28 obj 296367414
+r57 ortuiwesthyinaclorimcadgs score 254347025 states 28 obj 294347025
+r58 mhutacasotloreykingwdasim score 255472456 states 30 obj 295472456
+r59 tywlcteoiasrnsmgiasiodhcu score 258137293 states 29 obj 298137293
+r60 clywjaoietgrnstmiahusdcmi score 256367414 states 28 obj 296367414
+r61 tuttnhgsewcircymanofldsil score 261438923 states 29 obj 301438923
+r62 tswymuterohcsndiaoiamrlrg score 258185030 states 30 obj 298185030
+r63 fokegclmriaioanwnsscnetth score 246426660 states 27 obj 286426660
+r64 wnnofyeriltosanntcsmwahiw score 246558097 states 28 obj 286558097
+r65 wisgmyericfonahlistwmaset score 255077780 states 29 obj 295077780
+BEST ldsilmanofcircyhgsewtuttn obj 301438923 score 261438923

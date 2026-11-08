@@ -1,0 +1,22 @@
+gen 50 t=40 popbest 264142662 popmed 261438923 worst 259706959 globalbest 264142662 hits 0
+gen 100 t=82 popbest 264142662 popmed 263109365 worst 261693534 globalbest 264142662 hits 0
+gen 150 t=124 popbest 264142662 popmed 263593371 worst 261693534 globalbest 264142662 hits 0
+gen 200 t=166 popbest 264142662 popmed 263593371 worst 261954606 globalbest 264142662 hits 0
+gen 250 t=207 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+gen 300 t=250 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+gen 350 t=291 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+gen 400 t=333 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+gen 450 t=373 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+gen 500 t=415 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+gen 550 t=457 popbest 264142662 popmed 263593371 worst 262555582 globalbest 264142662 hits 0
+SUMMARY ga runs 598 mean 261.912M median 263.593M max 264142662 hits(>=265326530) 0 time 481s best rywminoesctesnohariacolgd
+  move single   tried  463506682 acc 0.0213 improve 0.00158
+  move swap     tried  114618302 acc 0.0082 improve 0.00119
+  pop 264142662 imwyncseoronsetairahdgloc
+  pop 264142662 icoadmsnigwesrlyoeaonkthc
+  pop 264142662 icoadmsnigwesrlyoeaoknthc
+  pop 264142662 rywminoesctesnohariacolgd
+  pop 263593371 mocadyinigwesrlrstaokobhc
+  pop 263593371 krwymoseiohtsnhcariamolgd
+  pop 263593371 krwymoseiohtsnccariabolgd
+  pop 263593371 dglocairahcnstmoiesomywrk

@@ -1,0 +1,8 @@
+allsub k=4 base 264409206 target 265326530 kodanrylirmasogcineewhtnp
+done 2000 nodes 910260 t 9
+done 4000 nodes 1637223 t 17
+done 6000 nodes 2533800 t 26
+done 8000 nodes 3249467 t 34
+done 10000 nodes 3860743 t 41
+done 12000 nodes 4385151 t 47
+finished subsets 12650 nodes 4550911 found 0 time 48.4

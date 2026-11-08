@@ -1,0 +1,8 @@
+allsub k=4 base 263292871 target 265326530 jotaswenghyurimioladnschn
+done 2000 nodes 1319154 t 10
+done 4000 nodes 2785962 t 21
+done 6000 nodes 3900486 t 30
+done 8000 nodes 5050023 t 40
+done 10000 nodes 5611900 t 46
+done 12000 nodes 6322826 t 53
+finished subsets 12650 nodes 6461923 found 0 time 54.8

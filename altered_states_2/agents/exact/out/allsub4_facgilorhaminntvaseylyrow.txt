@@ -1,0 +1,8 @@
+allsub k=4 base 263410377 target 265326530 facgilorhaminntvaseylyrow
+done 2000 nodes 1451975 t 12
+done 4000 nodes 2438377 t 21
+done 6000 nodes 3639127 t 32
+done 8000 nodes 5196797 t 46
+done 10000 nodes 5956706 t 53
+done 12000 nodes 6848552 t 63
+finished subsets 12650 nodes 7114181 found 0 time 65.3

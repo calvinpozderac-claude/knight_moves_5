@@ -1,0 +1,24 @@
+gen 50 t=42 popbest 264897652 popmed 261245115 worst 260087569 globalbest 264897652 hits 0
+gen 100 t=81 popbest 265326530 popmed 263593371 worst 261150838 globalbest 265326530 hits 1
+gen 150 t=121 popbest 265326530 popmed 263593371 worst 261693534 globalbest 265326530 hits 3
+gen 200 t=162 popbest 265326530 popmed 263593371 worst 261887370 globalbest 265326530 hits 5
+gen 250 t=202 popbest 265326530 popmed 263593371 worst 261978731 globalbest 265326530 hits 8
+gen 300 t=243 popbest 265326530 popmed 263593371 worst 262569716 globalbest 265326530 hits 8
+gen 350 t=284 popbest 265326530 popmed 263593371 worst 262687801 globalbest 265326530 hits 8
+gen 400 t=325 popbest 265326530 popmed 263593371 worst 262809503 globalbest 265326530 hits 8
+gen 450 t=366 popbest 265326530 popmed 263593371 worst 262809503 globalbest 265326530 hits 8
+gen 500 t=407 popbest 265326530 popmed 263593371 worst 262809503 globalbest 265326530 hits 9
+gen 550 t=448 popbest 265326530 popmed 263593371 worst 262809503 globalbest 265326530 hits 11
+gen 600 t=489 popbest 265326530 popmed 263593371 worst 262809503 globalbest 265326530 hits 14
+gen 650 t=531 popbest 265326530 popmed 263593371 worst 262809503 globalbest 265326530 hits 16
+SUMMARY ga runs 674 mean 259.085M median 261.694M max 265326530 hits(>=265326530) 16 time 540s best suchnforailingwmaseyhotro
+  move single   tried  513935380 acc 0.0220 improve 0.00153
+  move swap     tried  127082127 acc 0.0078 improve 0.00078
+  pop 265326530 suchnforailingwmaseyhotro
+  pop 264897652 vodichinalcsrotiaseymwngw
+  pop 264897652 cidovlanihtorscyesaiwgnmw
+  pop 264897652 cltygiaoewdnrsnoisawvhcim
+  pop 264897652 cidovlanihtorscyesaigwnmw
+  pop 264410348 dasilwinoayergcostairuonm
+  pop 264410348 dasilwinoayergcostaikuonm
+  pop 264142662 colgdhariatesnonoesckywmi

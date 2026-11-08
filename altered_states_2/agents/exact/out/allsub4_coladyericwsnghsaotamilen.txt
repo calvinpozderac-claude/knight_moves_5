@@ -1,0 +1,8 @@
+allsub k=4 base 263611218 target 265326530 coladyericwsnghsaotamilen
+done 2000 nodes 2412889 t 18
+done 4000 nodes 3510473 t 27
+done 6000 nodes 4951227 t 39
+done 8000 nodes 6518948 t 52
+done 10000 nodes 7429419 t 61
+done 12000 nodes 8259204 t 70
+finished subsets 12650 nodes 8539162 found 0 time 72.4

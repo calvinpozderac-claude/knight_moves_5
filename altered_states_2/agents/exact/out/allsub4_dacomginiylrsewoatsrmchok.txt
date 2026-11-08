@@ -1,0 +1,8 @@
+allsub k=4 base 263593371 target 265326530 dacomginiylrsewoatsrmchok
+done 2000 nodes 755347 t 7
+done 4000 nodes 1229757 t 13
+done 6000 nodes 2095008 t 20
+done 8000 nodes 2939771 t 28
+done 10000 nodes 3431424 t 34
+done 12000 nodes 4032565 t 39
+finished subsets 12650 nodes 4191260 found 0 time 40.6

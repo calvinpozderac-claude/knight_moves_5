@@ -1,0 +1,14 @@
+  pass: 868160000 evals, best 264897652 (cur 264897652)
+FINAL cidovlanihtorscyesaigwnmw obj 264897652 score 264897652
+  pass: 868160000 evals, best 264798019 (cur 264798019)
+FINAL kdanurhigocorstlaneamiwdy obj 264798019 score 264798019
+  pass: 868160000 evals, best 264695111 (cur 264695111)
+FINAL anwypvioeghlsrntcaniemidv obj 264695111 score 264695111
+  pass: 868160000 evals, best 264410348 (cur 264410348)
+FINAL dasilwinoayergcostairuonm obj 264410348 score 264410348
+  pass: 868160000 evals, best 264409206 (cur 264409206)
+FINAL kodanrylirmasogcineewhtnp obj 264409206 score 264409206
+  pass: 868160000 evals, best 264275018 (cur 264275018)
+FINAL hcmdugiaotsrnshteoiawyflw obj 264275018 score 264275018
+  pass: 868160000 evals, best 264142662 (cur 264142662)
+FINAL chtrnoaeoylrsewginsmdaoci obj 264142662 score 264142662

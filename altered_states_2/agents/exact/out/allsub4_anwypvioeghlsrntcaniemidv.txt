@@ -1,0 +1,8 @@
+allsub k=4 base 264695111 target 265326530 anwypvioeghlsrntcaniemidv
+done 2000 nodes 1056084 t 10
+done 4000 nodes 2043922 t 19
+done 6000 nodes 3122900 t 29
+done 8000 nodes 4299228 t 40
+done 10000 nodes 5056419 t 48
+done 12000 nodes 5772478 t 55
+finished subsets 12650 nodes 5891154 found 0 time 56.0

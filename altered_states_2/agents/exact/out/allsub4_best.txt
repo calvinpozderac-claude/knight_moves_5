@@ -1,0 +1,12 @@
+allsub k=4 base 265326530 target 265326530 hmlfsoaioutsnrcregahoywin
+done 2000 nodes 1373920 t 11
+done 4000 nodes 2498664 t 21
+done 6000 nodes 3168691 t 27
+done 8000 nodes 4308903 t 36
+done 10000 nodes 5060644 t 44
+done 12000 nodes 5789787 t 51
+finished subsets 12650 nodes 5965245 found 0 time 52.5
+
+real	0m52.530s
+user	0m51.780s
+sys	0m0.012s

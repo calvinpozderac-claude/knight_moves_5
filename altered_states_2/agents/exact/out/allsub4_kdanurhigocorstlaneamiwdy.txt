@@ -1,0 +1,8 @@
+allsub k=4 base 264798019 target 265326530 kdanurhigocorstlaneamiwdy
+done 2000 nodes 1700663 t 12
+done 4000 nodes 3338929 t 25
+done 6000 nodes 4481392 t 34
+done 8000 nodes 6090142 t 47
+done 10000 nodes 6984809 t 56
+done 12000 nodes 7699836 t 63
+finished subsets 12650 nodes 7871267 found 0 time 64.9

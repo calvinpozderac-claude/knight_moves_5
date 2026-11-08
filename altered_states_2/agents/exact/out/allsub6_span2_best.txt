@@ -1,0 +1,2 @@
+allsub k=6 base 265326530 target 265326530 hmlfsoaioutsnrcregahoywin
+done 10 nodes 5243999 t 86

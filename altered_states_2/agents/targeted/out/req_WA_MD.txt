@@ -1,0 +1,42 @@
+r0 mndswsalicciroyhgnewwatoj score 260157599 states 31 obj 340157599 *best*
+r1 snwytaioejmlrnwoaigandchs score 256885983 states 30 obj 336885983
+r2 kgndwtrialcorsylanetmiwnp score 259478669 states 29 obj 339478669
+r3 ywminreaghksnrtnaioecdlsc score 256307991 states 29 obj 336307991
+r4 usawtohinecloglsarnamksid score 256287458 states 30 obj 336287458
+r5 tnmiheanclwysoalairtvdngk score 260036805 states 28 obj 340036805
+r6 esnawwesioytrndaogainilcm score 262317652 states 29 obj 342317652 *best*
+r7 sawtsnigeoorinukladiochmc score 255108376 states 29 obj 335108376
+r8 mcgriaihoulrnstaoiaendywn score 262687801 states 29 obj 342687801 *best*
+r9 gywasretdhsonicviramcolko score 257610895 states 29 obj 337610895
+r10 jyrmcweoanantldsiorihcgan score 254763547 states 28 obj 334763547
+r11 stwasoeginenirondalkomich score 254713400 states 29 obj 334713400
+r12 amhcuinakohgrlsatoiawyend score 252968440 states 30 obj 332968440
+r13 wlishmaonascrythigewdandj score 259692276 states 31 obj 339692276
+r14 ehteacdnswmaioylirgtconah score 255775906 states 30 obj 335775906
+r15 scaihukonswlrgamaidwchnet score 253166882 states 29 obj 333166882
+r16 hsgakainrmwnoiaercldstane score 254426071 states 30 obj 334426071
+r17 nhcsndaloimiruyhgnewsatoj score 263292871 states 29 obj 343292871 *best*
+r18 sityjohoewclrnaiagismndhw score 258731521 states 28 obj 338731521
+r19 tywcsjeoiewnrldagianshcsm score 256791706 states 30 obj 336791706
+r20 satoshgneycirowdalinonmas score 255119828 states 30 obj 335119828
+r21 owytnineorasrlcwgiaitondm score 253613096 states 27 obj 333613096
+r22 trsawoenidwyrotdalgnmchia score 249707750 states 27 obj 329707750
+r23 njwasoeyintgrolaniachdmhw score 259424208 states 30 obj 339424208
+r24 whcnmagiadtnroloesinkywad score 259424208 states 30 obj 339424208
+r25 umhcmwsaigaldrninoessiwyt score 253123970 states 28 obj 333123970
+r26 mschwnaigadlrntwioeoscywj score 260157599 states 31 obj 340157599
+r27 hkonsclriaiaigwmdnetoneos score 254713400 states 29 obj 334713400
+r28 tuashhgniacirowdaleymondt score 256243587 states 31 obj 336243587
+r29 iutenrosawghniycirodmalan score 262687801 states 29 obj 342687801
+r30 mclishaonawirywdngejhaton score 258339983 states 29 obj 338339983
+r31 midnikaralrsgoctenihywasw score 255731140 states 28 obj 335731140
+r32 hncmoagiadtrsnroeaionywlf score 255778997 states 28 obj 335778997
+r33 eosahnetikwngrmaioacsfldn score 254430484 states 28 obj 334430484
+r34 oyweureastsgndhiaricnolam score 252285961 states 28 obj 332285961
+r35 himconagadntrnsweoiajyflw score 262569716 states 30 obj 342569716
+r36 omtsyikaerdrgnwnaoiailchs score 252209130 states 29 obj 332209130
+r37 dewahtnlishaongicaresmidk score 251281702 states 30 obj 331281702
+r38 fhciwoisamdnlrniaoesgrtyw score 254759584 states 28 obj 334759584
+r39 uocmlshdaiairnsngoeriltyw score 256842810 states 29 obj 336842810
+r40 nmchwdaigalorntniseodawyr score 259424208 states 30 obj 339424208
+BEST nhcsndaloimiruyhgnewsatoj obj 343292871 score 263292871

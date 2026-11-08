@@ -1,0 +1,23 @@
+gen 50 t=39 popbest 264142662 popmed 259749270 worst 252665612 globalbest 264142662 hits 0
+gen 100 t=79 popbest 264142662 popmed 259749270 worst 252665612 globalbest 264142662 hits 0
+gen 150 t=118 popbest 264142662 popmed 259754696 worst 253436123 globalbest 264142662 hits 0
+gen 200 t=157 popbest 264142662 popmed 259754696 worst 253436123 globalbest 264142662 hits 0
+gen 250 t=196 popbest 264142662 popmed 259754696 worst 253436123 globalbest 264142662 hits 0
+gen 300 t=234 popbest 264142662 popmed 259754696 worst 256285232 globalbest 264142662 hits 0
+gen 350 t=274 popbest 264142662 popmed 259754696 worst 256285232 globalbest 264142662 hits 0
+gen 400 t=312 popbest 264142662 popmed 259754696 worst 256285232 globalbest 264142662 hits 0
+gen 450 t=351 popbest 264142662 popmed 260068772 worst 256285232 globalbest 264142662 hits 0
+gen 500 t=389 popbest 264142662 popmed 260068772 worst 256285232 globalbest 264142662 hits 0
+gen 550 t=428 popbest 264798019 popmed 260087569 worst 256285232 globalbest 264798019 hits 0
+gen 600 t=467 popbest 265326530 popmed 260325239 worst 256285232 globalbest 265326530 hits 3
+SUMMARY ga runs 637 mean 256.231M median 257.440M max 265326530 hits(>=265326530) 4 time 480s best sflmhuoiaocrnsthagerniwyo
+  move single   tried  491500212 acc 0.0356 improve 0.00258
+  move swap     tried  121430831 acc 0.0096 improve 0.00108
+  pop 265326530 sflmhuoiaocrnsthagerniwyo
+  pop 264798019 yatoudesgnwnriaiaohdmlcrk
+  pop 264142662 daociginsmlrsewoaeoychtrn
+  pop 263292871 satojhgnewmiruydaloinhcsn
+  pop 263137868 wyouwoeriftsnclhaioacgrmh
+  pop 262569716 wjnnhyetaiforgmlinacwasdo
+  pop 262555582 datneginewrosrylacotnimha
+  pop 261859086 sotanrengdwyrimaioahsnlcw

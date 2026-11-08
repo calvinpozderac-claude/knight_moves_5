@@ -1,0 +1,3 @@
+polishw: 12650 subsets of 4 squares, 21 letters
+  pass: 2024000000 evals, best 265326530 (cur 265326530)
+FINAL hmlfsoaioutsnrcregahoywin obj 265326530 score 265326530

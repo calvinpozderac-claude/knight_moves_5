@@ -1,0 +1,8 @@
+allsub k=4 base 264275018 target 265326530 hcmdugiaotsrnshteoiawyflw
+done 2000 nodes 1098544 t 10
+done 4000 nodes 2209979 t 19
+done 6000 nodes 3373710 t 30
+done 8000 nodes 4478845 t 40
+done 10000 nodes 5181725 t 48
+done 12000 nodes 5823593 t 54
+finished subsets 12650 nodes 5945760 found 0 time 55.3

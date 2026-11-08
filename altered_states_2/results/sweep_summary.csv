@@ -37,3 +37,4 @@ AW_ALL7_seeded2,171,194.70,195.81,11.34,226.021,mihasgactnrosnelinspvadim,368,--
 AW_ALL_but_C2C,137,194.77,195.13,9.33,217.638,etahiistcmsnoanailrdwmgpi,308,--award 20S,200M,PA,M8,4C,NOCAL --penalty 40e6 --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 300 --seed 121
 AW_M8_4C,164,214.41,217.00,14.72,252.721,phclfuiaoymsnrgwesaieitom,305,--award M8,4C --penalty 40e6 --threads 4 --restarts 1000 --iters 10000000 --t0 3e6 --t1 1e6 --seconds 300 --seed 131
 AW_ALL7_seeded3,169,192.95,193.31,12.12,231.529,cmgrmioiaossndlaneyihtspp,307,--award 20S,200M,PA,M8,4C,NOCAL,C2C --penalty 40e6 --threads 4 --restarts 1000 --iters 5000000 --t0 2e6 --t1 1e6 --start eitomwesaimsnrguiaoyphclf --noise 0.3 --seconds 300 --seed 141
+PT_long_1core,1,265.33,265.33,0.00,265.327,suchnforailingwmaseyhotro,3600,--threads 1 --seconds 3600 --replicas 16 --tlo 3e5 --thi 3e6 --steps 200 --seed 201

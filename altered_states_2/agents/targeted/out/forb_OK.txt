@@ -1,0 +1,37 @@
+r0 wyetaneorhtnscnaioaidgrlm score 261978731 states 30 obj 261978731 *best*
+r1 lktoydasewnirnmgioaiwrlch score 257881997 states 31 obj 257881997
+r2 natordgnesmirywhaoiawclns score 261859086 states 30 obj 261859086
+r3 idlchgiatasrnsmteoiswylch score 258765297 states 31 obj 258765297
+r4 ndmhwagiactnroloeyinrswas score 261859086 states 30 obj 261859086
+r5 hgnewcirsymadowtoniluesac score 261821966 states 31 obj 261821966
+r6 tnnalwegnmysriwfosahlintc score 258714941 states 29 obj 258714941
+r7 snlcwaioahwyrimrengdsotan score 261859086 states 30 obj 261859086
+r8 hdgltsairatsnocreniloywma score 256836406 states 28 obj 256836406
+r9 licsimadolorniryesagwothc score 262305440 states 30 obj 262305440 *best*
+r10 kmadearilngnocasinrthawes score 254426071 states 30 obj 254426071
+r11 ndmhwagiactnroloeyinrswas score 261859086 states 30 obj 261859086
+r12 jntmwwerasdylchaioaisnrgn score 260063322 states 31 obj 260063322
+r13 cgrdnhaioatsnlcoeraiwyomw score 260190774 states 30 obj 260190774
+r14 iwylcseoianrdnsgiaoehcmtu score 261821966 states 31 obj 261821966
+r15 nlrgdiaoiamcsnthorenatywe score 262555582 states 31 obj 262555582 *best*
+r16 ietafmichlwasoiyerinaknga score 255717241 states 28 obj 255717241
+r17 thmiacaignlorntniseodawyk score 259976154 states 29 obj 259976154
+r18 kywadoesintnrolngiacaimht score 259976154 states 29 obj 259976154
+r19 entadwenigyrsortocalahmin score 262555582 states 31 obj 262555582
+r20 dasrogineyrociwtalhmhewas score 252319299 states 28 obj 252319299
+r21 aedalwrnigyosortecalahnim score 261150838 states 30 obj 261150838
+r22 anlcssioahwyrimrengdsotan score 261137206 states 30 obj 261137206
+r23 atywehorenmcsntiaoianlrgd score 262555582 states 31 obj 262555582
+r24 mohadyinigwesrlrstaokobhc score 263593371 states 32 obj 263593371 *best*
+r25 whmdncaigalorntniyeosawsr score 261859086 states 30 obj 261859086
+r26 nmhndicatksloreesnigwesad score 259170058 states 29 obj 259170058
+r27 gadntrinewlosrycaroemitue score 261155701 states 29 obj 261155701
+r28 washuenicttgolarmarkvindi score 254597985 states 30 obj 254597985
+r29 dkegdntriahaonsmclseoisew score 259170058 states 29 obj 259170058
+r30 idnigtrarkemolawnictgashu score 256649281 states 31 obj 256649281
+r31 ahmidtocaryrsolwenirentag score 261978731 states 30 obj 261978731
+r32 niheygascmwrolaenirytsadk score 256285232 states 28 obj 256285232
+r33 cwmlcaigansnrtdioesolfywn score 260358425 states 29 obj 260358425
+r34 nmhnmktacierolsginswdasee score 258111259 states 29 obj 258111259
+r35 sawsrniyeolorntcaigawhmdn score 261859086 states 30 obj 261859086
+BEST mohadyinigwesrlrstaokobhc obj 263593371 score 263593371

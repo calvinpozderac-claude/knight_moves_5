@@ -1,0 +1,37 @@
+r0 lyerpdasneginlweroiaktacm score 258596325 states 27 obj 258596325 *best*
+r1 wamhwnesiaatonghlireocadk score 255999774 states 30 obj 255999774
+r2 entadwenigyrsortocalahmin score 262555582 states 31 obj 262555582 *best*
+r3 hovadcgliniarosmnseytenpw score 260673547 states 28 obj 260673547
+r4 orewddsntnaioahgrlciokams score 255915474 states 30 obj 255915474
+r5 dawyrniseolorntcaigathomb score 260869491 states 30 obj 260869491
+r6 omlvdhaoiatcrnseosengaywp score 261219222 states 29 obj 261219222
+r7 wahtulisodfonamyericwtsgh score 264275018 states 32 obj 264275018 *best*
+r8 tahavwesidynrgnaoiamcslhc score 260133699 states 30 obj 260133699
+r9 dasilwinoayergcostaikuonm score 264410348 states 31 obj 264410348 *best*
+r10 grdnmaioaisnrclnesohtwyta score 259427499 states 28 obj 259427499
+r11 dlrteaioahgnscmdreiaioywl score 259427499 states 28 obj 259427499
+r12 jwtahdeynsngroiaicaldhsmw score 259692276 states 31 obj 259692276
+r13 entadwenigyrsortocalahmin score 262555582 states 31 obj 262555582
+r14 wyflwteoianrsnhgiaoghcmtu score 259152928 states 30 obj 259152928
+r15 chtnkoaeonlrseyginmwdaoci score 259071974 states 30 obj 259071974
+r16 dhtewncseniaonsmlriaokmgd score 254233217 states 28 obj 254233217
+r17 ladeaginrwrosoylacetminha score 261150838 states 30 obj 261150838
+r18 dalcssioaigrnmwkaterchyos score 254723876 states 30 obj 254723876
+r19 hcmtugiaoenrdnsseoiaoywlc score 261821966 states 31 obj 261821966
+r20 okgwdmlriaiaonsncgtedahwu score 257890361 states 29 obj 257890361
+r21 siwynanoeuglrstriamhodnci score 255031247 states 29 obj 255031247
+r22 aomdngniakirlsrhaoeytctnw score 257312901 states 30 obj 257312901
+r23 wgnnwmireycasofhtniliedai score 258563848 states 31 obj 258563848
+r24 gavthnilcmwosaiyerndtpnio score 259756917 states 29 obj 259756917
+r25 hsaosainguworideylahtnmoc score 255024153 states 29 obj 255024153
+r26 eindirmarktgolaenicuwasht score 254597985 states 30 obj 254597985
+r27 lcmwcnagiadtrnsoseoinwylf score 260358425 states 29 obj 260358425
+r28 dnimoecalkhsoreatnigwesad score 256624965 states 30 obj 256624965
+r29 rywjatoethasdncniraiwolgm score 256983959 states 28 obj 256983959
+r30 lmdhcagiattnrinnesolewyac score 258117135 states 31 obj 258117135
+r31 wlfywaioejsnrtndaganocmih score 262569716 states 30 obj 262569716
+r32 nolgddariacmsnohiermutwyk score 255538621 states 29 obj 255538621
+r33 odsawcanilmgrofiateyhnnjw score 262569716 states 30 obj 262569716
+r34 oflmhaoiaocrnsthigeremwyo score 255292294 states 31 obj 255292294
+r35 ndmhwagiactnroloeyinrswas score 261859086 states 30 obj 261859086
+BEST dasilwinoayergcostaikuonm obj 264410348 score 264410348
