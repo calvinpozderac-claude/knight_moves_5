@@ -130,3 +130,34 @@ with its seed; 30k iterations, otherwise the round-1 flags. `pol_one.sh`: `--wma
   anchors 35+) on 8,605: rngs 1, 2 -> 8,605.
 - 06:10: two more independent lineages from the original records only (`lineage.sh LI 61|62 40000
   record_8484 record_8337`), each followed by a 600 s polish, to get other 86xx families for crossover.
+- exact on 8,605 continued (1500 s per k): **k=136 proven** (809 s, 1.41G nodes, optimum 8,605); k=134 timed
+  out at 1500 s (2.65G nodes, nothing better). The last 25 moves of 8,605 are optimal for its prefix.
+- fw pass: 5 runs (8,605 rngs 1-3, LDs16 8,605 rngs 1-2), every one 8,605 -> 8,605; stopped to free the core.
+- Lineages from the original records only (`lineage.sh LI`, 40k): s61 stayed at 8,484 (no improvement at all);
+  **s62 reached 8,602 on its own** (it 35,883-37,142: op 7 a=136 -> 8,595, op 2 i=13 -> 8,596, op 2 i=15 ->
+  8,599, op 0 i=155 D=7 -> 8,601, op 6 a=154 -> 8,602), polished to 8,603 (PLI_s62). Its climb differs from
+  8,605's (moves 20-33: no g2/g4/g5/h5/h4/h2 loop, f3/f4/h5 shuffles and g4/f4/h6 sits instead), the merge is
+  the same pattern. So the +100 over 8,484 is reproducible from scratch in ~36k iterations (1 of 2 seeds).
+  Continuing that lineage alone (LL s65, 30k): 8,603, nothing.
+- LJ s71/s73, LK s72/s74 (30k, inputs incl. the LI s62 elites as crossover donors): all 8,605.
+- Lineages LI s63 / s64 (40k, original records only): **8,601 and 8,603** (polished: s64 stays 8,603).
+  So 3 of 4 from-scratch seeds land at 8,601-8,603 within 40k iterations, and 1 stays at 8,484.
+- LM s81, LN s82 (climb focus), LO s91-s93 (30k, donors incl. all lineage bests): see the summary below.
+
+## Summary (round 2)
+- Records found here: 8,526 (polish, strict) -> 8,595/8,596/8,599/8,600 (LNS round 1, free waits) ->
+  8,601/8,602 (polish 8,600) -> 8,603 (polish 8,596, w=10 at move 72) -> 8,604 (LNS LD s16, op 0 i=15) ->
+  **8,605** (polish of 8,604, w=1 at move 25; found independently by LD s16 at it 29,506 with other routing).
+  Best: `NEW_RECORD_8605.txt` (= data/tours/record_8605.txt), checker ok=True maxvisits=3 unnecessary=[],
+  one free wait (48, 25, g6).
+- Since 05:15, about 25 LNS runs of 30-40k iterations (seeds 13-93, three focus settings, T0 40 and 80,
+  four independent lineages as donors), wide polishing (wmax 12 and 16) and the free-wait pass all ended at
+  8,605 or below. This basin looks saturated for these methods at about 8,600-8,605.
+- Exact: the last 25 moves of 8,605 (from move 136) are optimal for its prefix (strict continuations).
+- Where the gains were: every big step (+42, +70) came from a small merge/climb change (moves 13-60) that
+  shifted the dance group sizes, followed by a re-optimised dance tail (moves 130-160, the e-file block).
+  Single windows found these only when they spanned both effects in sequence (polish: w=1 in the merge, then
+  w=3 in the tail; LNS: crossover/op 0 in the tail after merge drift).
+- Lessons: (1) apply the polisher before anything else on a new basin: +42 in under a second;
+  (2) a from-scratch LNS lineage reproduces about +100 over 8,484 in ~36k iterations, so these numbers are a
+  local ceiling of this basin rather than luck; (3) polish and bb did not support free waits; patched here.
