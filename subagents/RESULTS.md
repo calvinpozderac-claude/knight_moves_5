@@ -30,3 +30,6 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 3 | prior (sole agent) | guided NRPA + free-wait pass, 4 cores | **8,338 (verified)** | record |
 | 3 | prior | strict skeleton (L3 prior, random beta + init noise) | 8,297 (verified, STRICT) | strict record |
 | 4 | prior | deeper guided search + free-wait pass | **8,348 (verified)** | record |
+| 5 | guided84 | prior-guided NRPA on the 8,484 basin | 8,488 (verified, strict) | stopped (one-idea pruning) |
+| 5 | lns84 | LNS + polisher on the 8,484 basin | **8,596 (verified)** | record, 1 free wait |
+| 5 | fw84 | free-wait pass on 8,484 | 8,484 (no gain) | stopped |

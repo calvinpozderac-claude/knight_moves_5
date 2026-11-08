@@ -21,3 +21,7 @@ Machine: 4 cores, no GPU. `src/eng.h` changed on main (merged in): rebuild what 
 | fw84 | `subagents/fw84/` | 1 | free waits on 8,484 and 8,337: fnrpa pass with many rngs, insertion sweep, then warm searches |
 | guided84 | `subagents/guided84/` | 2 | prior-guided NRPA anchored across 8,484 (retrain the prior with this basin), then the free-wait pass on each distinct skeleton |
 | lns84 | `subagents/lns84/` | 1 | LNS + polisher over the whole 8,484 tour; crossovers with 8,337; exact tail proof |
+
+## Pruned to one idea (user request)
+LNS + polisher (lns84) had already reached 8,596 when pruning, against 8,488 for guided84 and no gain for fw84,
+so only lns84 continues, on all 4 cores. fw84 and guided84 are stopped; their notes are kept.
