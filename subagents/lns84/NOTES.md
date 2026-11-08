@@ -113,3 +113,20 @@ with its seed; 30k iterations, otherwise the round-1 flags. `pol_one.sh`: `--wma
 - LNS LD s12, LC s11 (30k each): nothing. LD s14: ends at 8,603 (= input). **LD s16: 8,604** at it 7,192
   (op 0, i=15, D=4: climb).
 - polish 8,604 (PA_8604): **8,605** (reroute variant, then w=1 at move 25: climb).
+- 05:15-05:45: LD s18/s20, LC s13/s15/s17/s19, LB s21 (30k each, focus 1-145): all end at 8,605 or below
+  (LD s16 also found a second, differently routed 8,605 at it 29,506, op 0 i=13 D=6: `tmp/keep_8605_LDs16.txt`).
+  Polish 8,605 (wmax 12): converged, nothing. `pol_big.sh` (wmax 16, ext 4, ext0 5, node limit 6M) on the
+  LDs16 8,605 for 1200 s: nothing.
+- Independent lineage LE (`threadB2.sh`, inputs only polished 8,390 + pol37_pool + 8,337, no 8,484 family):
+  s31 8,390 -> 8,537, s33 -> 8,548 (30k each). Still 57 below the main line. (The saver wrote
+  NEW_RECORD_8520/8524/8532/8536/8537/8548 for these before I raised its threshold to "above the best
+  NEW_RECORD so far"; they are not records.)
+- LF (focus 1-70 p 0.7, climb/merge emphasis) s41: nothing.
+- 05:47-06:08: LF s43/s45 (climb focus), LH s51/s53/s55 (`T0=80`, hotter SA; 19-27 restarts each),
+  LB s25/s27: all 8,605, nothing new. Polish of the LE lineage best (8,548): nothing.
+- exact on 8,605 (`tmp/exact_8605.log`): optimum 8,605 for every k from 160 down to **138** (k=138: 75 s,
+  131M nodes). The last 23 moves of 8,605 are optimal for its prefix.
+- fw84's free-wait pass (`fw_thread.sh`: fnrpa copied from fw84, warm 10, level 2, free sinks 1-4, 300 s,
+  anchors 35+) on 8,605: rngs 1, 2 -> 8,605.
+- 06:10: two more independent lineages from the original records only (`lineage.sh LI 61|62 40000
+  record_8484 record_8337`), each followed by a 600 s polish, to get other 86xx families for crossover.

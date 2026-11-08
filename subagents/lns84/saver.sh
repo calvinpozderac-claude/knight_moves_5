@@ -6,7 +6,8 @@ while true; do
   for f in $D/tmp/*_best.txt; do
     [ -f "$f" ] || continue
     T=$(head -1 "$f"); [ -n "$T" ] || continue
-    if [ "$T" -gt 8484 ] && [ ! -f $D/NEW_RECORD_$T.txt ]; then
+    MAXT=$(cat $D/NEW_RECORD_*.txt 2>/dev/null | awk 'NR%2==1' | sort -n | tail -1)
+    if [ "$T" -gt "$MAXT" ] && [ ! -f $D/NEW_RECORD_$T.txt ]; then
       cp "$f" $D/tmp/cand.txt; T=$(head -1 $D/tmp/cand.txt)
       out=$(python3 tools/check_tour.py "$(sed -n 2p $D/tmp/cand.txt)")
       echo "$(date +%T) $f $T $out" >> $D/tmp/saver.log
