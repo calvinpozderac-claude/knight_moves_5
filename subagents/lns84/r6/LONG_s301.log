@@ -1,0 +1,57 @@
+r6/in_LONG_s301/B_s213_best.txt.elite: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s213_best.txt.elite: 165 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s213_best.txt.elite: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s221_best.txt: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s222_best.txt: 159 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s222_best.txt.elite: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s222_best.txt.elite: 169 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s222_best.txt.elite: 165 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s223_best.txt: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s223_best.txt.elite: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s223_best.txt.elite: 169 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/B_s223_best.txt.elite: 167 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/L8537_s123_best.txt: 166 moves, 8608 minutes (replay 8608)
+r6/in_LONG_s301/L8545_s131_best.txt: 162 moves, 8608 minutes (replay 8608)
+r6/in_LONG_s301/L8545_s132_best.txt: 160 moves, 8608 minutes (replay 8608)
+r6/in_LONG_s301/L8545_s133_best.txt: 163 moves, 8607 minutes (replay 8607)
+r6/in_LONG_s301/L8549_s111_best.txt: 161 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/L8549_s113_best.txt: 165 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/L8553_s101_best.txt: 163 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/L8553_s102_best.txt: 164 moves, 8608 minutes (replay 8608)
+r6/in_LONG_s301/L8553_s103_best.txt: 165 moves, 8609 minutes (replay 8609)
+r6/in_LONG_s301/P8537_best.txt: 157 moves, 8603 minutes (replay 8603)
+r6/in_LONG_s301/P8545_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_LONG_s301/P8549_best.txt: 157 moves, 8607 minutes (replay 8607)
+r6/in_LONG_s301/P8553_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_LONG_s301/Q8537_best.txt: 157 moves, 8607 minutes (replay 8607)
+r6/in_LONG_s301/Q8549_best.txt: 157 moves, 8607 minutes (replay 8607)
+r6/in_LONG_s301/record_8605.txt: 161 moves, 8605 minutes (replay 8605)
+r6/in_LONG_s301/start.txt: 163 moves, 8609 minutes (replay 8609)
+start r6/in_LONG_s301/start.txt: 163 moves, 8609 minutes
+[27s] it 2000 acc 261 cur 8483 best 8609 temp 29.8 elite 40 gains 175/9/105/1/0/2/346/844/0/0 acc 51/57/66/21/6/1/17/36/2/4
+[55s] it 4000 acc 487 cur 8593 best 8609 temp 22.2 elite 40 gains 315/51/216/1/12/42/502/1369/0/0 acc 87/104/122/41/16/8/34/61/4/10
+[109s] it 8000 acc 846 cur 8587 best 8609 temp 12.3 elite 40 gains 413/55/294/14/12/54/543/1619/0/0 acc 156/184/215/76/17/16/62/95/11/14
+[165s] it 12000 acc 1180 cur 8588 best 8609 temp 6.8 elite 40 gains 462/61/316/19/16/64/575/1698/0/0 acc 216/256/306/106/27/24/88/127/14/16
+[303s] it 22000 acc 1867 cur 8603 best 8609 temp 1.6 elite 40 gains 494/77/359/25/16/78/630/1799/0/0 acc 349/397/489/180/39/36/129/208/19/21
+[355s] it 26000 acc 2135 cur 8593 best 8609 temp 34.5 elite 40 gains 633/126/375/34/20/86/886/2288/0/0 acc 395/467/566/201/50/38/148/228/21/21
+[410s] it 30000 acc 2563 cur 8601 best 8609 temp 19.1 elite 40 gains 655/161/777/101/62/90/1052/2788/0/0 acc 479/560/671/244/60/41/177/282/23/26
+[467s] it 34000 acc 2910 cur 8578 best 8609 temp 10.6 elite 40 gains 727/169/869/113/71/94/1060/2877/0/0 acc 560/629/747/282/74/45/207/314/25/27
+[549s] it 40000 acc 3345 cur 8602 best 8609 temp 4.4 elite 40 gains 783/192/898/131/71/98/1090/2986/0/0 acc 645/726/865/323/86/50/237/354/30/29
+[576s] it 42000 acc 3493 cur 8609 best 8609 temp 3.3 elite 40 gains 784/193/902/136/71/102/1099/2987/0/0 acc 676/771/901/338/88/51/242/363/33/30
+[604s] it 44000 acc 3638 cur 8607 best 8609 temp 2.4 elite 40 gains 795/194/905/136/71/102/1107/2993/0/0 acc 707/809/943/352/90/53/248/373/33/30
+[663s] it 48000 acc 3892 cur 8608 best 8609 temp 1.3 elite 40 gains 805/198/909/142/75/104/1113/3017/0/0 acc 751/859/1026/383/96/55/260/393/39/30
+[720s] it 52000 acc 4228 cur 8350 best 8609 temp 29.8 elite 40 gains 866/348/1166/185/83/274/1573/3364/1/0 acc 819/926/1103/411/103/63/285/435/43/40
+[776s] it 56000 acc 4664 cur 8576 best 8609 temp 16.5 elite 40 gains 1210/504/1341/363/129/279/1699/3930/95/0 acc 892/1013/1221/457/110/69/314/480/51/57
+[834s] it 60000 acc 5021 cur 8597 best 8609 temp 9.1 elite 40 gains 1219/518/1422/363/135/283/1771/4057/95/0 acc 966/1095/1317/493/116/73/343/505/54/59
+[917s] it 66000 acc 5484 cur 8586 best 8609 temp 3.8 elite 40 gains 1236/525/1454/375/135/285/1808/4131/95/0 acc 1053/1210/1445/538/122/78/376/543/56/63
+[944s] it 68000 acc 5626 cur 8603 best 8609 temp 2.8 elite 40 gains 1237/526/1464/375/135/285/1816/4161/95/0 acc 1076/1246/1487/555/125/79/382/555/58/63
+[1082s] it 78000 acc 6370 cur 8584 best 8609 temp 25.7 elite 40 gains 1321/937/1778/483/141/435/2098/4960/95/0 acc 1210/1418/1695/626/137/89/423/639/64/69
+[1111s] it 80000 acc 6573 cur 8558 best 8609 temp 19.1 elite 40 gains 1336/988/1907/491/141/435/2102/5244/95/0 acc 1254/1461/1757/638/139/94/434/659/67/70
+[1168s] it 84000 acc 6949 cur 8585 best 8609 temp 10.6 elite 40 gains 1353/1081/1989/495/141/437/2218/5453/111/0 acc 1324/1553/1859/669/144/96/470/691/71/72
+[1279s] it 92000 acc 7552 cur 8604 best 8609 temp 3.3 elite 40 gains 1373/1089/2041/499/145/447/2246/5620/111/0 acc 1448/1681/2014/721/153/106/514/759/82/74
+[1306s] it 94000 acc 7680 cur 8606 best 8609 temp 2.4 elite 40 gains 1378/1089/2041/499/145/447/2250/5647/111/0 acc 1477/1710/2048/733/154/107/519/772/84/76
+[1362s] it 98000 acc 7956 cur 8607 best 8609 temp 1.3 elite 40 gains 1389/1091/2051/499/145/453/2264/5667/111/0 acc 1543/1780/2111/759/158/113/537/790/87/78
+[1391s] it 100000 acc 8071 cur 8604 best 8609 temp 40.0 elite 40 gains 1393/1092/2052/499/145/453/2264/5671/111/0 acc 1564/1805/2150/768/162/114/538/803/87/80
+done it 100000 acc 8071 best 8609 restarts 7
+elite: 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609 8609
+cpu_user=1375.225 wall=1390.638

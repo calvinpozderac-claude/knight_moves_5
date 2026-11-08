@@ -45,3 +45,15 @@
 17:59:27 8537 k=135/157 :: DONE k=135 37.8s nodes=58711175 tthits=6992991 EXACT suffix optimum from k: 8607 (prefix T=7383) [sound: exhaustive]
 18:00:03 8549 k=131/157 :: TIMEOUT k=131 after 150.1s nodes=245104640 best=8607
 18:01:57 8537 k=133/157 :: TIMEOUT k=133 after 150.0s nodes=166592512 best=8607
+19:11:47 8609 k=159/163 :: DONE k=159 0.0s nodes=15 tthits=0 EXACT suffix optimum from k: 8609 (prefix T=8405) [sound: exhaustive]
+19:11:47 8609 k=157/163 :: DONE k=157 0.0s nodes=70 tthits=10 EXACT suffix optimum from k: 8609 (prefix T=8261) [sound: exhaustive]
+19:11:48 8609 k=155/163 :: DONE k=155 0.0s nodes=415 tthits=66 EXACT suffix optimum from k: 8609 (prefix T=8117) [sound: exhaustive]
+19:11:48 8609 k=153/163 :: DONE k=153 0.0s nodes=837 tthits=132 EXACT suffix optimum from k: 8609 (prefix T=8024) [sound: exhaustive]
+19:11:48 8609 k=151/163 :: DONE k=151 0.0s nodes=3005 tthits=432 EXACT suffix optimum from k: 8609 (prefix T=7929) [sound: exhaustive]
+19:11:49 8609 k=149/163 :: DONE k=149 0.1s nodes=76109 tthits=10737 EXACT suffix optimum from k: 8609 (prefix T=7777) [sound: exhaustive]
+19:11:50 8609 k=147/163 :: DONE k=147 0.3s nodes=502675 tthits=65193 EXACT suffix optimum from k: 8609 (prefix T=7621) [sound: exhaustive]
+19:11:58 8609 k=145/163 :: DONE k=145 8.0s nodes=13397720 tthits=1638420 EXACT suffix optimum from k: 8609 (prefix T=7465) [sound: exhaustive]
+19:12:06 8609 k=143/163 :: DONE k=143 7.7s nodes=13397722 tthits=1638420 EXACT suffix optimum from k: 8609 (prefix T=7465) [sound: exhaustive]
+19:12:38 8609 k=141/163 :: DONE k=141 32.3s nodes=56725092 tthits=6982578 EXACT suffix optimum from k: 8609 (prefix T=7385) [sound: exhaustive]
+19:14:18 8609 k=139/163 :: DONE k=139 98.9s nodes=170786283 tthits=20564996 EXACT suffix optimum from k: 8609 (prefix T=7305) [sound: exhaustive]
+19:19:18 8609 k=137/163 :: TIMEOUT k=137 after 300.0s nodes=526581760 best=8609

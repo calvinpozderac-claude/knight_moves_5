@@ -217,3 +217,32 @@ first, for 8549/8537 which were still improving). Seeds: 8553: 101-103, 8549: 11
 - bigB (wmax 16, ext 4, node limit 6M on 8,609): only a re-route (163 -> 161 jumps) in the first minutes.
 - Step 3 sweep (`r6/sweepC.sh`, 18:42): polish each of the 10 distinct >= 8,608 finishes, 600 s, wmax 12,
   3 in parallel (`r6/C/in_<T>_<md5>.txt` -> `r6/C_<T>_<md5>_best.txt`).
+- Sweep results: every one of the 10 distinct finishes polishes to 8,608 or 8,609 (one 8,608 -> 8,609,
+  C_8608_4cc4332d). Nothing above 8,609. Most converged in 360-445 s.
+- (`r6/bigB.sh` was meant to run seeds 231/232 after the wmax-16 polish, but it waited on pid 1 by mistake, so
+  those seeds never ran; killed.)
+- Final jobs (19:03): two long LNS runs, 100k iterations each (`LONG s301` from NEW_RECORD_8609 at t0 40,
+  `LONG s302` from the distinct 8,609 C_8609_b57fa838 at t0 80; donors `r6/donL/`, every r6 best);
+  fw84's free-wait pass on the two strict 8,607 skeletons (`r6/fw.sh`, rngs 1-2, 300 s); exact tail proof on
+  8,609 (300 s per k).
+- LONG s301 (100k, t0 40) and LONG s302 (100k, t0 80, 79 restarts): both 8,609. Nothing above.
+- fw pass on the strict 8,607s: S8549 r1, r2 and Q8537 r1, r2 -> 8,607 (no gain).
+- Exact tail on 8,609 (300 s per k): optimum 8,609 for k = 159 ... **139** (k=139: 99 s, 171M nodes);
+  k=137 timed out (527M nodes, nothing better). The last 25 moves of 8,609 are optimal for its prefix.
+
+## Round 6 summary
+- **Best: 8,609** (`NEW_RECORD_8609.txt`, from L8553 s101: polished 8,553 -> LNS op 2 i=22 + op 7 climb
+  crossover), checker ok=True maxvisits=3 unnecessary=[], one free wait (48, 25, g6) that came in through
+  the 8,605 crossover donors. **Best strict: 8,607** (`NEW_RECORD_8607.txt`, polished 8,549; a second,
+  distinct strict 8,607 from the 8,537 line, `r6/Q8537_best.txt`).
+- Distinct finishes (md5 of the tour line): 10 at 8,609, 6 at 8,608, reached from all four AlphaZero
+  lineages (8,553: s101/s103; 8,549: s111/s113; 8,537 line: B s221-s223; 8,545 via crossover).
+- Polish alone took every tour from 8,537-8,553 to 8,603-8,607 in 10-25 min, with the same pattern each time:
+  one sit inserted late in the dance tail (w=1, moves 132-138) gives +42, then w=8-10 windows in the dance give
+  +4 each. LNS then adds +1 to +2 via climb crossovers. Round B, the polish sweep of the 10 distinct >= 8,608
+  finishes, wmax 16, 100k-iteration runs and the free-wait pass found nothing above 8,609.
+- The four lineages converge to the same dance tail (identical exact-proof node counts for the polished
+  8,545 and 8,553). Their differences are in the climb and opening, and they are worth at most +4. So this
+  family's ceiling for polish + LNS looks like ~8,609. Further gains probably need a different dance (order
+  or group sizes), not more local search.
+- All round-6 jobs stopped 19:32.

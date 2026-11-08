@@ -3,3 +3,16 @@ tour 1: 8609 minutes, 163 jumps, budget 600s
   new overall best 8609 (input) -> r6/C_8609_8bc55715_best.txt
   reroute 1000/10: 163 -> 161 jumps
   new overall best 8609 (reroute 1000/10) -> r6/C_8609_8bc55715_best.txt
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [reroute 1000/10] pass: 2027/2027 windows, 1714791972 nodes, 813708281 tail replays, 374.6s (4577522 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.1s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8609 -> 8609 minutes (161 jumps), 375.2s (converged)
+done: best 8609 minutes after 375s -> r6/C_8609_8bc55715_best.txt
+cpu_user=371.641 wall=375.241

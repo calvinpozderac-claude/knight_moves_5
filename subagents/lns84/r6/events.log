@@ -74,3 +74,22 @@
 18:55:30 polish C_8609_92b949eb start on r6/C/in_8609_92b949eb.txt (8609) wmax 12
 18:55:30 polish C_8608_f9ddaa5f end: done: best 8608 minutes after 366s -> r6/C_8608_f9ddaa5f_best.txt
 18:55:30 polish C_8609_b57fa838 start on r6/C/in_8609_b57fa838.txt (8609) wmax 12
+18:58:16 polish C_8609_8bc55715 end: done: best 8609 minutes after 375s -> r6/C_8609_8bc55715_best.txt
+18:58:16 polish C_8609_f3c72893 start on r6/C/in_8609_f3c72893.txt (8609) wmax 12
+19:01:43 polish C_8609_b57fa838 end: done: best 8609 minutes after 373s -> r6/C_8609_b57fa838_best.txt
+19:01:43 polish C_8609_fd218aa9 start on r6/C/in_8609_fd218aa9.txt (8609) wmax 12
+19:01:53 polish C_8609_92b949eb end: done: best 8609 minutes after 383s -> r6/C_8609_92b949eb_best.txt
+19:03:01 LONG s301 start 8609 focus 1 131 0.85 donors: B_s213_best.txt.elite B_s221_best.txt B_s222_best.txt B_s222_best.txt.elite B_s223_best.txt B_s223_best.txt.elite L8537_s123_best.txt L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt record_8605.txt 
+19:03:01 LONG s302 start  focus 1 131 0.85 donors: B_s213_best.txt.elite B_s221_best.txt B_s222_best.txt B_s222_best.txt.elite B_s223_best.txt B_s223_best.txt.elite L8537_s123_best.txt L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt record_8605.txt 
+19:03:01 LONG s302 end: 
+19:03:08 LONG s302 start 8609 focus 1 131 0.85 donors: B_s213_best.txt.elite B_s221_best.txt B_s222_best.txt B_s222_best.txt.elite B_s223_best.txt B_s223_best.txt.elite L8537_s123_best.txt L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt record_8605.txt 
+19:04:21 polish C_8609_f3c72893 end: done: best 8609 minutes after 365s -> r6/C_8609_f3c72893_best.txt
+19:11:44 polish C_8609_fd218aa9 end: done: best 8609 minutes after 601s -> r6/C_8609_fd218aa9_best.txt
+19:11:44 sweepC end
+19:16:46 fw S8549_r1: 8607 -> 8607 end
+19:19:18 exact 8609: proven from move 139 of 163
+19:21:46 fw S8549_r2: 8607 -> 8607 end
+19:26:11 LONG s301 end: done it 100000 acc 8071 best 8609 restarts 7
+19:26:40 LONG s302 end: done it 100000 acc 8733 best 8609 restarts 79
+19:26:46 fw Q8537_best_r1: 8607 -> 8607 end
+19:31:46 fw Q8537_best_r2: 8607 -> 8607 end
