@@ -24,3 +24,10 @@ build/nrpa: src/nrpa.cpp src/eng.h
 build/libnnastar.so: src/nnastar.cpp src/eng.h
 	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -fPIC -shared -pthread -o $@ src/nnastar.cpp
+
+build/heur_search: src/heur_search.cpp src/eng.h
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -pthread -o $@ src/heur_search.cpp
+
+build/reach_lab: src/reach_lab.cpp src/heur_search.cpp src/eng.h
+	g++ -O3 -march=native -std=c++17 -pthread -o $@ src/reach_lab.cpp

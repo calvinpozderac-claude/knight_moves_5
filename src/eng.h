@@ -136,3 +136,32 @@ static S start_state() {
   S s; for (int i = 0; i < 64; i++) { s.alt[i] = ALT0[i]; s.vis[i] = 0; }
   s.vis[A1] = 1; s.pos = A1; s.T = 0; return s;
 }
+
+// Bounded exhaustive lookahead (pinned moves, at most 3 visits per point): depth-first over distinct positions.
+// Returns 0 if a finish was found, 1 if the position is proven dead (every position reachable from it was
+// expanded within `budget` and none can jump to h8), 2 if the budget ran out first. Exact: "dead" is never
+// wrong. Uses a per-thread open-addressing table cleared by a generation stamp, so a call allocates nothing.
+static int dead_lookahead(const S& s0, int budget) {
+  static const int LG = 14, SZ = 1 << LG;  // supports budgets up to ~1000 (children per node <= 16)
+  static thread_local uint64_t key[SZ]; static thread_local uint32_t gen[SZ]; static thread_local uint32_t G = 0;
+  static thread_local S stk[SZ]; static thread_local vector<pair<int, int>> mv;
+  if (++G == 0) { memset(gen, 0, sizeof gen); G = 1; }
+  int sp = 0, nodes = 0, stored = 0; stk[sp++] = s0;
+  while (sp) {
+    S c = stk[--sp];
+    if (++nodes > budget) return 2;
+    pinned_moves(c, 3, true, mv);
+    for (auto& [d, q] : mv) if (q == H8) return 0;
+    for (auto& [d, q] : mv) {
+      S n = c; apply_move(n, d, q); n.T = 0;
+      uint64_t h = hashS(n, true); if (!h) h = 1;
+      uint32_t i = (uint32_t)(h >> (64 - LG));
+      bool fresh = true;
+      while (gen[i] == G) { if (key[i] == h) { fresh = false; break; } i = (i + 1) & (SZ - 1); }
+      if (!fresh) continue;
+      if (++stored > SZ / 2 || sp >= SZ) return 2;
+      gen[i] = G; key[i] = h; stk[sp++] = n;
+    }
+  }
+  return 1;
+}

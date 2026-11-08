@@ -23,7 +23,9 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_8123.txt` | **8,123** | NN-guided A* (`nnastar/`), full run: 25 min generation, 31 min training (early-stopped), then found within 2 minutes of searching from a1 |
+| `data/tours/record_8484.txt` | **8,484** | Same AlphaZero-style run as 8,337, 3 h 23 min in |
+| `data/tours/record_8337.txt` | 8,337 | AlphaZero-style self-play (MCTS with max backup; policy target from the search's values only, with no factor from the network's prior), seeded only with heuristic-search tours, never the records: 3 h into a run, as a finish found inside a search tree |
+| `data/tours/record_8123.txt` | 8,123 | NN-guided A* (`nnastar/`), full run: 25 min generation, 31 min training (early-stopped), then found within 2 minutes of searching from a1 |
 | `data/tours/record_8002.txt` | 8,002 | NN-guided A* (`nnastar/`, see below) from a1: found about 4 minutes into the first (smoke-test) search, after 1.5 minutes of data generation and 2 minutes of training |
 | `data/tours/record_7911.txt` | 7,911 | NRPA level 4 re-searching everything after move 35 of the 7,512 tour, from fresh weights: 68 minutes on 1 thread |
 | `data/tours/record_7200.txt` | 7,200 | NRPA (`build/nrpa`), warm-started from the 7,066 tour: 6 minutes on 2 threads |
@@ -152,7 +154,15 @@ search runs. It found 8,002.
    Even a single path through a position sets its label. Every position of the known tours and of the
    search's tours of at least 7,500 minutes stays in an elite buffer, which supplies 5% of each batch.
    The search value is `p_finish^0.5 × (T + future)` (`--gamma`).
-3. **search** (CPU + GPU, `--hours`, default 8). Each position's priority f is the network's value plus
+3. **search** (CPU + GPU, `--hours`, default 8). During the search the only new training data comes from
+   the search itself; there are no rollouts:
+   - Every finished path raises each position on it to max(its best, the new score).
+   - Every expanded position is sampled 60 s after expansion. Its label is the best finished score through
+     it, or 0 if none so far. A later finish raises it through the best-future table.
+   - Every dead end (no legal move) gets label 0.
+   - Finishing positions carry 50% of the finish-loss weight in every batch (`--pos-share`). Generated
+     rollout data stays out of training (`--base-frac 0`). When a tree restarts, 2M of its positions are
+     sampled with their final labels first. Each position's priority f is the network's value plus
    random exploration noise (`--noise`, 60 minutes), minus a **novelty penalty**. That penalty is
    `--novelty-w` (10) minutes for each doubling of the expansions already made under the node's ancestors
    8 and 32 moves up, so crowded subtrees lose priority and the search spreads out. Further rules: The open list is a max-heap capped at 40M entries; when
