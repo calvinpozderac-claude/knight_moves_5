@@ -209,3 +209,11 @@ first, for 8549/8537 which were still improving). Seeds: 8553: 101-103, 8549: 11
 - Round B (`r6/roundB.sh`, queued behind each worker): starts 8,609 (two variants) and the 8,537-line 8,607,
   donors = every r6 best + 3 newest elite dumps; seeds 201-203, 211-213, 221-223; plus `r6/bigB.sh`: wmax 16
   polish of the best record (1200 s), then seeds 231-232 from it.
+- Remaining step-2 seeds: L8553 s103 8,609; L8549 s112 8,607, s113 8,609; L8537 s121/s122 8,607, s123
+  8,608; L8545 s133 8,607. Every lineage reaches 8,607-8,609 and stops there.
+- Round B (seeds 201-203, 211-213, 221-222; 30k each; starts 8,609 / 8,609 / 8,537-line 8,607): all 8,609
+  (s221/s222 from the 8,537-line 8,607 also reach 8,609). Distinct finishes at 8,609 so far: 6 (md5 of the
+  tour line), at 8,608: 4. None above 8,609.
+- bigB (wmax 16, ext 4, node limit 6M on 8,609): only a re-route (163 -> 161 jumps) in the first minutes.
+- Step 3 sweep (`r6/sweepC.sh`, 18:42): polish each of the 10 distinct >= 8,608 finishes, 600 s, wmax 12,
+  3 in parallel (`r6/C/in_<T>_<md5>.txt` -> `r6/C_<T>_<md5>_best.txt`).

@@ -1,0 +1,38 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 600s
+tour 1: 8608 minutes, 166 jumps, budget 600s
+  new overall best 8608 (input) -> r6/C_8608_160e749f_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] window w=1 at move 19: 8608 -> 8608 minutes, 166 -> 164 jumps
+  [as is] pass: 314/2092 windows, 179275 nodes, 107646 tail replays, 0.2s (877127 nodes/s)
+  new overall best 8608 (window) -> r6/C_8608_160e749f_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] window w=1 at move 16: 8608 -> 8608 minutes, 164 -> 162 jumps
+  [as is] pass: 313/2066 windows, 199929 nodes, 119625 tail replays, 0.2s (1297426 nodes/s)
+  new overall best 8608 (window) -> r6/C_8608_160e749f_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] window w=2 at move 21: 8608 -> 8608 minutes, 162 -> 160 jumps
+  [as is] pass: 465/2040 windows, 596797 nodes, 342135 tail replays, 0.2s (2628038 nodes/s)
+  new overall best 8608 (window) -> r6/C_8608_160e749f_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] pass: 2014/2014 windows, 1718647010 nodes, 811287090 tail replays, 443.2s (3877947 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.2s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8608 -> 8608 minutes (160 jumps), 444.6s (converged)
+done: best 8608 minutes after 445s -> r6/C_8608_160e749f_best.txt
+cpu_user=377.220 wall=444.609

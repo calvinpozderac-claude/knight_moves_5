@@ -1,0 +1,5 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 600s
+tour 1: 8609 minutes, 161 jumps, budget 600s
+  new overall best 8609 (input) -> r6/C_8609_92b949eb_best.txt
+  reroute 1000/10: 161 -> 159 jumps
+  new overall best 8609 (reroute 1000/10) -> r6/C_8609_92b949eb_best.txt

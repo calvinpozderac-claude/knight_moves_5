@@ -1,0 +1,24 @@
+r6/in_L8537_s123/P8537_best.txt: 157 moves, 8603 minutes (replay 8603)
+r6/in_L8537_s123/P8545_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_L8537_s123/P8549_best.txt: 157 moves, 8607 minutes (replay 8607)
+r6/in_L8537_s123/P8553_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_L8537_s123/keep_8605_LDs16.txt: 165 moves, 8605 minutes (replay 8605)
+r6/in_L8537_s123/keep_8605_PLIs63.txt: 159 moves, 8605 minutes (replay 8605)
+r6/in_L8537_s123/record_8537.txt: 164 moves, 8537 minutes (replay 8537)
+r6/in_L8537_s123/record_8545.txt: 166 moves, 8545 minutes (replay 8545)
+r6/in_L8537_s123/record_8549.txt: 162 moves, 8549 minutes (replay 8549)
+r6/in_L8537_s123/record_8553.txt: 170 moves, 8553 minutes (replay 8553)
+r6/in_L8537_s123/record_8605.txt: 161 moves, 8605 minutes (replay 8605)
+r6/in_L8537_s123/start.txt: 157 moves, 8607 minutes (replay 8607)
+start r6/in_L8537_s123/start.txt: 157 moves, 8607 minutes
+[86s] it 6000 acc 614 cur 8484 best 8607 temp 2.1 elite 27 gains 133/152/118/2/0/8/235/314/0/0 acc 111/129/158/68/15/7/52/58/11/5
+[112s] it 8000 acc 786 cur 8558 best 8607 temp 31.3 elite 27 gains 134/154/163/2/0/8/314/440/0/0 acc 153/162/200/85/19/9/68/71/14/5
+[142s] it 10000 acc 1023 cur 8595 best 8607 temp 11.7 elite 40 gains 197/335/359/7/72/8/332/746/1/0 acc 192/208/265/104/27/14/85/99/18/11
+[172s] it 12000 acc 1178 cur 8602 best 8607 temp 4.4 elite 40 gains 203/336/377/20/72/8/418/782/1/0 acc 209/243/311/128/28/15/97/118/18/11
+[231s] it 16000 acc 1477 cur 8497 best 8607 temp 24.5 elite 40 gains 212/370/395/21/76/68/434/1000/1/0 acc 268/312/379/157/38/27/116/148/20/12
+[383s] it 26000 acc 2341 cur 8592 best 8607 temp 7.2 elite 40 gains 376/590/513/134/174/80/539/1329/1/0 acc 428/498/619/251/62/50/170/218/28/17
+[392s it 26618] NEW BEST 8608 (op 0 i 13 D 3) len 166
+[446s] it 30000 acc 2591 cur 8602 best 8608 temp 40.0 elite 40 gains 392/590/517/134/174/86/539/1366/1/0 acc 476/562/695/278/69/55/176/233/29/18
+done it 30000 acc 2591 best 8608 restarts 2
+elite: 8608 8608 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607
+cpu_user=441.506 wall=446.012

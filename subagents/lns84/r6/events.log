@@ -34,3 +34,43 @@
 18:11:22 L8545 s133 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
 18:13:47 L8553 s103 end: done it 30000 acc 2498 best 8609 restarts 3
 18:13:56 B s201 start 8609 focus 1 131 0.85 donors: L8537_s121_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s132_best.txt.elite L8549_s111_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt L8553_s103_best.txt.elite P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:16:56 L8549 s112 end: done it 30000 acc 2480 best 8607 restarts 1
+18:16:57 L8549 s113 start 8607 focus 1 132 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:18:11 L8537 s122 end: done it 30000 acc 2484 best 8607 restarts 3
+18:18:11 L8537 s123 start 8607 focus 1 134 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:18:23 L8545 s133 end: done it 30000 acc 2492 best 8607 restarts 2
+18:18:26 B s211 start 8609 focus 1 131 0.85 donors: L8537_s122_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8545_s133_best.txt.elite L8549_s111_best.txt L8549_s112_best.txt.elite L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:21:09 B s201 end: done it 30000 acc 2495 best 8609 restarts 1
+18:21:09 B s202 start 8609 focus 1 131 0.85 donors: B_s201_best.txt.elite L8537_s122_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8545_s133_best.txt.elite L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:24:25 L8549 s113 end: done it 30000 acc 2439 best 8609 restarts 3
+18:24:26 B s221 start 8607 focus 1 131 0.85 donors: B_s201_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8545_s133_best.txt.elite L8549_s111_best.txt L8549_s113_best.txt L8549_s113_best.txt.elite L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:25:37 L8537 s123 end: done it 30000 acc 2591 best 8608 restarts 2
+18:25:46 polish-big BIG on NEW_RECORD_8609.txt
+18:25:49 B s211 end: done it 30000 acc 2426 best 8609 restarts 3
+18:25:49 B s212 start 8609 focus 1 131 0.85 donors: B_s211_best.txt.elite L8537_s123_best.txt L8537_s123_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8549_s113_best.txt.elite L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:28:53 B s202 end: done it 30000 acc 2266 best 8609 restarts 2
+18:28:53 B s203 start 8609 focus 1 131 0.85 donors: B_s202_best.txt.elite B_s211_best.txt.elite L8537_s123_best.txt L8537_s123_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:32:03 B s221 end: done it 30000 acc 2670 best 8609 restarts 2
+18:32:03 B s222 start 8607 focus 1 131 0.85 donors: B_s202_best.txt.elite B_s211_best.txt.elite B_s221_best.txt.elite L8537_s123_best.txt L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:33:25 B s212 end: done it 30000 acc 2401 best 8609 restarts 3
+18:33:25 B s213 start 8609 focus 1 131 0.85 donors: B_s202_best.txt.elite B_s212_best.txt.elite B_s221_best.txt.elite L8537_s123_best.txt L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:36:05 B s203 end: done it 30000 acc 2374 best 8609 restarts 4
+18:39:16 B s222 end: done it 30000 acc 2526 best 8609 restarts 1
+18:39:16 B s223 start 8607 focus 1 131 0.85 donors: B_s203_best.txt.elite B_s212_best.txt.elite B_s222_best.txt.elite L8537_s123_best.txt L8545_s131_best.txt L8545_s132_best.txt L8545_s133_best.txt L8549_s111_best.txt L8549_s113_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 
+18:40:35 B s213 end: done it 30000 acc 2512 best 8609 restarts 2
+18:42:01 sweepC: 10 distinct tours >= 8608
+18:42:01 polish C_8608_168fb4ef start on r6/C/in_8608_168fb4ef.txt (8608) wmax 12
+18:42:01 polish C_8608_160e749f start on r6/C/in_8608_160e749f.txt (8608) wmax 12
+18:42:01 polish C_8608_4cc4332d start on r6/C/in_8608_4cc4332d.txt (8608) wmax 12
+18:45:47 polish-big BIG end: done: best 8609 minutes after 1201s -> r6/BIG_best.txt
+18:46:34 B s223 end: done it 30000 acc 2614 best 8609 restarts 2
+18:49:24 polish C_8608_168fb4ef end: done: best 8608 minutes after 443s -> r6/C_8608_168fb4ef_best.txt
+18:49:24 polish C_8608_f9ddaa5f start on r6/C/in_8608_f9ddaa5f.txt (8608) wmax 12
+18:49:25 polish C_8608_160e749f end: done: best 8608 minutes after 445s -> r6/C_8608_160e749f_best.txt
+18:49:25 polish C_8609_6ce78424 start on r6/C/in_8609_6ce78424.txt (8609) wmax 12
+18:52:01 polish C_8608_4cc4332d end: done: best 8609 minutes after 600s -> r6/C_8608_4cc4332d_best.txt
+18:52:01 polish C_8609_8bc55715 start on r6/C/in_8609_8bc55715.txt (8609) wmax 12
+18:55:30 polish C_8609_6ce78424 end: done: best 8609 minutes after 364s -> r6/C_8609_6ce78424_best.txt
+18:55:30 polish C_8609_92b949eb start on r6/C/in_8609_92b949eb.txt (8609) wmax 12
+18:55:30 polish C_8608_f9ddaa5f end: done: best 8608 minutes after 366s -> r6/C_8608_f9ddaa5f_best.txt
+18:55:30 polish C_8609_b57fa838 start on r6/C/in_8609_b57fa838.txt (8609) wmax 12
