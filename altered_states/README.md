@@ -264,7 +264,7 @@ ran 25 min on 1 thread, at about 4 s per step.
 A first version spun without solving when no layout fitted the free-square range. Its logs are
 kept in `results/explore_e/v1_spinning/` and are not counted above.
 
-Every exact neighbourhood of the 127 grid tried, about 330 across the smoke test and the walks,
+Every exact neighbourhood of the 127 grid that was tried
 returned 127 or less.
 
 ## Conclusion
