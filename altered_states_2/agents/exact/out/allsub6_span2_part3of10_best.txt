@@ -1,0 +1,5 @@
+allsub k=6 base 265326530 target 265326530 hmlfsoaioutsnrcregahoywin
+done 25 nodes 12523574 t 175
+done 50 nodes 17236197 t 230
+done 75 nodes 20758386 t 266
+finished subsets 75 nodes 20758386 found 0 time 265.7

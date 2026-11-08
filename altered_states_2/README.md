@@ -66,8 +66,8 @@ North Dakota 0.8M, Vermont 0.6M, Wyoming 0.6M.
 
 Is it the best possible board? There is strong evidence, but not a proof:
 
-- **It is a local optimum.** No change of 1, 2 or 3 squares improves it (checked exhaustively,
-  about 40M boards).
+- **It is a local optimum.** No change of up to 4 squares improves it, and neither does any
+  5-square change inside a 4x4 box (proved exhaustively, section 8).
 - **Nothing scored higher in any run.** The runs logged 4,767 restarts in total, about 2.3 hours
   on 4 cores.
 - **The search keeps converging on it.** Starting from random boards, it was found 28 times
@@ -326,6 +326,79 @@ What this shows:
   best of them, `nlmhptaciurosstlinetvadmw`, scores 190,412,691 with 20S, M8, 4C and NOCAL, but no
   PA and no coast-to-coast chain. Seven citations at once may be impossible, but this search
   cannot prove that.
+
+### 8. Second round: three parallel search agents (one core each, about 80 minutes each)
+
+The goal of this round was a higher score only. Each agent took a different line of attack, and
+its code and logs are in `agents/<name>/`. **None found a board above 265,326,530.** The
+1-hour parallel-tempering control run (`results/logs/PT_long_1core.csv`) also ended on that same
+board.
+
+**`agents/meta/`: different search methods** (`meta.cpp`, with an incremental scorer that
+re-traces only the states affected by a change):
+
+| method | runs | mean | runs reaching 265.33M |
+|---|---:|---:|---:|
+| plain SA (reimplemented) | 71 | 259.60 | 0 |
+| SA + structured moves (row/col shift, 2x2 rotate, adjacent pair, plant 3 letters of a missing state) | 93 | 259.94 | 3 |
+| SA on randomly reweighted state values, then the true score | 88 | 259.26 | 3 |
+| short SA + exhaustive 3-square search | 407 | 255.70 | 3 |
+| late-acceptance hill climbing | 61 | 249.26 | 0 |
+| memetic GA, from scratch, replace worst | 578 children | 262.03 | 0 (stuck at 264.14) |
+| memetic GA, from scratch, replace most similar | 617 children | 256.18 | 4 |
+| memetic GA seeded with runner-ups (best board excluded) | 662 children | 259.13 | rebuilt it after ~85 s |
+
+Row/column swaps and 3x3 symmetries were almost never accepted (under 0.1%), so they are useless
+as moves.
+
+**`agents/targeted/`: forcing states in or out** (`as2t.cpp`):
+
+- *Best board containing each missing big state:*
+
+  | Must contain | Best score |
+  |---|---:|
+  | WA or NV | 264,897,652 |
+  | PA | 264,695,111 |
+  | TN | 264,409,206 |
+  | MA | 261,438,923 |
+  | CT | 261,046,205 |
+  | KY | 260,044,457 |
+  | MS | 258,788,356 |
+
+  Every one costs at least 0.43M.
+- *Conflicts.* Across the 947 distinct boards scoring at least 255M, WA conflicts with TN, PA
+  with MI and MO, and MA/KY/CT with MN/MI/NJ. MA, KY, CT, NH, RI and SD never appear among the
+  top 50 boards.
+- *Banning one of the best board's states, then releasing the ban:* nothing went above 264.7M.
+- *Ruin and recreate* (blank a 3x3 window or 5 to 8 squares, re-anneal, accept within 1.5M to 3M):
+  46,600 iterations from the best board found nothing better.
+
+**`agents/exact/`: exact methods** (`bb.cpp`, a branch-and-bound search that treats unassigned
+squares as wildcards to get an upper bound):
+
+- *Proven, with no sampling, for the best board:*
+  - no change of up to 4 squares improves it (all 12,650 square sets);
+  - no change of 5 squares inside any 3x3 or 4x4 box does (15,492 square sets);
+  - no change of any 2x3 or 3x2 rectangle does;
+  - nor does any change of 6 squares inside a 3x3 box, over the 40% of those square sets that
+    were checked.
+- *Runner-ups:* none of the 13 runner-up boards (264.9M and below) can reach 265.33M with 4 or
+  fewer changes.
+- *Cross-check:* the targeted agent independently checked all 4-square changes (2.0 billion
+  boards, restricted to 21 letters) and every 5-square change inside a 3x3 window (3.4 billion
+  boards). It found nothing either.
+- *Global proof not achieved.*
+  - CP-SAT with letter variables plus reachability had a bound still above 300M after 120 s,
+    with only one 3x3 window free.
+  - SAT (CaDiCaL) could not even rebuild a board containing the best board's own 32 states
+    within 150 s.
+  - So proving "no board holds a set of states worth more than 265.33M" is out of reach at this
+    budget.
+
+**Conclusion.** Eight different search families (four in round one, plus GA, LAHC, LNS and exact
+branch-and-bound) all top out at the same board. It is optimal against any change of up to 4
+squares, and any 5-square change inside a 4x4 box. 265,326,530 is very likely the global
+optimum.
 
 ## Reproduce
 
