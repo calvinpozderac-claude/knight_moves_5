@@ -165,3 +165,47 @@ with its seed; 30k iterations, otherwise the round-1 flags. `pol_one.sh`: `--wma
 - Lessons: (1) apply the polisher before anything else on a new basin: +42 in under a second;
   (2) a from-scratch LNS lineage reproduces about +100 over 8,484 in ~36k iterations, so these numbers are a
   local ceiling of this basin rather than luck; (3) polish and bb did not support free waits; patched here.
+
+# Round 6: AlphaZero tours (8,537 / 8,545 / 8,549 / 8,553), started 17:33
+Folder: `r6/` (all logs; event log `r6/events.log`; saver log `r6/saver.log`). Records go to
+`subagents/lns84/NEW_RECORD_<m>.txt` (and a copy in `r6/`). The saver only writes tours above the best
+NEW_RECORD so far (8,605) that the checker accepts.
+- Rebuilt lns/polish/bb after the merge (src/eng.h unchanged since 01:44). All four tours replay exactly
+  (lns: 8537/8545/8549/8553; bb at k=n-2 gives the same totals).
+- New `lns_r6` = lns.cpp + `--start FILE`: start the SA from that tour even when a donor (8,605) scores
+  higher, so each lineage keeps its own start and the other tours are only crossover donors/elite seeds.
+- Scripts: `r6/pol.sh TAG IN TIME [WMAX]`, `r6/lns.sh TAG SEED ITERS START FOCUSFILE DONORS...`,
+  `r6/exact.sh TOUR TAG TIME` (writes `r6/focus_TAG.txt`), `r6/saver.sh`.
+
+## Step 1: polish the four tours (4 in parallel, `r6/pol.sh P<t> r6/record_<t>.txt 900 12`)
+| tour | polished (900 s) | steps that gained (polish log) |
+|---|---|---|
+| 8,537 | 8,603 (time up, still improving) | w=0 at 19 (+1); **w=1 at 136 (+42)**; w=6/8 at 100-103 (+4 x3); w=8 at 20 (+3); w=10 at 128, w=8 at 132 (+4 each) |
+| 8,545 | 8,604 (time up) | w=0 at 22 (+1); **w=1 at 134 (+42)**; w=4 at 103, w=10 at 127, w=8 at 131, w=10 at 99 (+4 each) |
+| 8,549 | **8,607** (time up, still improving) | w=0 at 19 (+1); **w=1 at 132 (+42)**; w=8 at 20 (+3); w=10 at 128, w=8 at 132, **w=10 at 60** (+4 each) |
+| 8,553 | 8,604 (converged, 674 s) | w=0 at 20 (+1); **w=1 at 138 (+42)**; w=10 at 127, w=8 at 131 (+4 each) |
+
+**8,607 (polished 8,549) is a new record, strict** (`NEW_RECORD_8607.txt`; checker ok=True maxvisits=3
+unnecessary=[]; strict_check: STRICT). Same pattern on all four as on 8,484 -> 8,526: one sit inserted into
+the late dance tail is worth +42, then large windows (w=8-10) in the dance (moves 99-132) give +4 each.
+
+## Step 2: exact tail + LNS per lineage (`r6/worker1.sh` for 8553/8545, `r6/worker2.sh` = 600 s more polish
+first, for 8549/8537 which were still improving). Seeds: 8553: 101-103, 8549: 111-113, 8537: 121-123,
+8545: 131-133. 30k iterations, free sinks on, start = the lineage's polished best (`--start`), donors = the
+4 originals, the 4 polished bests, 8,605 and its two variants. Focus 1..(first proven move - 1), p 0.85.
+- Q polish (600 s more): 8,549 line stays 8,607 (converged 347 s); **8,537 line 8,603 -> 8,607** (converged
+  550 s), a different tour from the 8,549 one (different opening), so 8,607 was reached twice independently.
+- Exact tail proofs (`r6/exact.log`, 150 s per k): polished 8553 and 8545 (both 8,604) proven from move 132
+  of 156, and their last ~24 moves are identical (same prefix T and node counts at every k: the four
+  lineages converge on one dance tail); 8,549 line from move 133/157; 8,537 line from 135/157.
+- LNS results so far (all checker-verified, NEW_RECORD files written by `r6/saver.sh`):
+  - L8553 s101: 8,604 -> 8,608 (it 13,419, op 2 i=22 D=5) -> **8,609** (it 27,600, op 7 crossover a=15, donor
+    [15,45), b=48: a climb transplant). Free wait (48, 25, g6), carried in from the 8,605 donor family.
+  - L8553 s102, s103: 8,608 (two more distinct 8,608s). L8545 s131: 8,607 (op 5 a=163) -> 8,608 (op 7 a=81);
+    L8545 s132: 8,608 (another distinct one).
+  - L8549 s111: 8,607 -> 8,608 (op 7 a=100) -> 8,609 (op 7 a=13 donor [13,40)), identical to the polished
+    8,609 (R8609), so it counts once.
+  - Polish of 8,609 (R8609, 600 s): same minutes, re-routed (converged 400 s).
+- Round B (`r6/roundB.sh`, queued behind each worker): starts 8,609 (two variants) and the 8,537-line 8,607,
+  donors = every r6 best + 3 newest elite dumps; seeds 201-203, 211-213, 221-223; plus `r6/bigB.sh`: wmax 16
+  polish of the best record (1200 s), then seeds 231-232 from it.

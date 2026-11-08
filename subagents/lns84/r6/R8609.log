@@ -1,0 +1,18 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 600s
+tour 1: 8609 minutes, 163 jumps, budget 600s
+  new overall best 8609 (input) -> r6/R8609_best.txt
+  reroute 1000/10: 163 -> 161 jumps
+  new overall best 8609 (reroute 1000/10) -> r6/R8609_best.txt
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [reroute 1000/10] pass: 2027/2027 windows, 1714791972 nodes, 813708281 tail replays, 399.8s (4289642 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.2s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8609 -> 8609 minutes (161 jumps), 400.5s (converged)
+done: best 8609 minutes after 400s -> r6/R8609_best.txt
+cpu_user=397.122 wall=400.484

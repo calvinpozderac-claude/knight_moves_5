@@ -1,0 +1,36 @@
+17:33:53 polish P8537 start on r6/record_8537.txt (8537) wmax 12
+17:33:53 polish P8545 start on r6/record_8545.txt (8545) wmax 12
+17:33:53 polish P8549 start on r6/record_8549.txt (8549) wmax 12
+17:33:53 polish P8553 start on r6/record_8553.txt (8553) wmax 12
+17:45:07 polish P8553 end: done: best 8604 minutes after 674s -> r6/P8553_best.txt
+17:48:38 polish P8545 end: done: best 8604 minutes after 885s -> r6/P8545_best.txt
+17:48:53 polish P8537 end: done: best 8603 minutes after 900s -> r6/P8537_best.txt
+17:48:54 polish P8549 end: done: best 8607 minutes after 901s -> r6/P8549_best.txt
+17:49:14 polish Q8549 start on r6/P8549_best.txt (8607) wmax 12
+17:49:14 polish Q8537 start on r6/P8537_best.txt (8603) wmax 12
+17:52:01 exact 8553: proven from move 132 of 156
+17:52:01 L8553 s101 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+17:54:14 exact 8545: proven from move 132 of 156
+17:54:14 L8545 s131 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+17:55:02 polish Q8549 end: done: best 8607 minutes after 347s -> r6/Q8549_best.txt
+17:58:25 polish Q8537 end: done: best 8607 minutes after 550s -> r6/Q8537_best.txt
+17:59:13 L8553 s101 end: done it 30000 acc 2440 best 8609 restarts 3
+17:59:13 L8553 s102 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+17:59:47 polish R8609 start on NEW_RECORD_8609.txt (8609) wmax 12
+18:00:03 exact 8549: proven from move 133 of 157
+18:00:03 L8549 s111 start 8607 focus 1 132 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:01:57 exact 8537: proven from move 135 of 157
+18:01:57 L8537 s121 start 8607 focus 1 134 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:02:35 L8545 s131 end: done it 30000 acc 2491 best 8608 restarts 3
+18:02:35 L8545 s132 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:06:28 polish R8609 end: done: best 8609 minutes after 400s -> r6/R8609_best.txt
+18:06:38 L8553 s102 end: done it 30000 acc 2622 best 8608 restarts 1
+18:06:38 L8553 s103 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:09:37 L8549 s111 end: done it 30000 acc 2500 best 8609 restarts 1
+18:09:37 L8549 s112 start 8607 focus 1 132 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:10:54 L8537 s121 end: done it 30000 acc 2583 best 8607 restarts 2
+18:10:54 L8537 s122 start 8607 focus 1 134 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:11:22 L8545 s132 end: done it 30000 acc 2433 best 8608 restarts 1
+18:11:22 L8545 s133 start 8604 focus 1 131 0.85 donors: P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt keep_8605_LDs16.txt keep_8605_PLIs63.txt record_8537.txt record_8545.txt record_8549.txt record_8553.txt record_8605.txt 
+18:13:47 L8553 s103 end: done it 30000 acc 2498 best 8609 restarts 3
+18:13:56 B s201 start 8609 focus 1 131 0.85 donors: L8537_s121_best.txt.elite L8545_s131_best.txt L8545_s132_best.txt L8545_s132_best.txt.elite L8549_s111_best.txt L8553_s101_best.txt L8553_s102_best.txt L8553_s103_best.txt L8553_s103_best.txt.elite P8537_best.txt P8545_best.txt P8549_best.txt P8553_best.txt Q8537_best.txt Q8549_best.txt R8609_best.txt record_8605.txt 

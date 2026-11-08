@@ -338,7 +338,7 @@ int main(int argc, char** argv) {
   init_board();
   for (int i = 0; i < 64; i++) for (int j = 0; j < 64; j++) TYP[i][j] = -1;
   for (int i = 0; i < 64; i++) for (int k = 0; k < NBN[i]; k++) TYP[i][NBQ[i][k]] = NBT[i][k];
-  vector<string> files; double TIME = 60, T0 = 30, T1 = 1; string out = "best_lns.txt"; uint64_t seed = 1;
+  vector<string> files; double TIME = 60, T0 = 30, T1 = 1; string out = "best_lns.txt"; uint64_t seed = 1; string startf;
   long long BUDGET = 200000, ITERS = 0; int PDMAX = 3, RMAX = 6, WIDE = 0; double P9 = 0; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
   for (int a = 1; a < argc; a++) {
     string s = argv[a];
@@ -354,6 +354,7 @@ int main(int argc, char** argv) {
     else if (s == "--t0") T0 = atof(argv[++a]);
     else if (s == "--t1") T1 = atof(argv[++a]);
     else if (s == "--out") out = argv[++a];
+    else if (s == "--start") startf = argv[++a];  // lns84 r6: start tour (others are donors only)
     else if (s == "--seed") seed = atoll(argv[++a]);
     else if (s == "--budget") BUDGET = atoll(argv[++a]);
     else if (s == "--dmax") DMAX = atoi(argv[++a]);
@@ -377,6 +378,12 @@ int main(int argc, char** argv) {
   auto el = [&]() { return std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(); };
   long long itg = 0;
   Elite gbest = recs[0];
+  if (!startf.empty()) {  // lns84 r6: start from this tour even if a donor scores higher
+    std::ifstream in(startf); string l; bool got = false;
+    while (getline(in, l)) if (l.find('(') != string::npos) { long long T; auto X = parse_tour(l, &T); long long T2 = score_full(X);
+      if (T2 > 0) { gbest = {T2, X}; got = true; printf("start %s: %zu moves, %lld minutes\n", startf.c_str(), X.size(), T2); } break; }
+    if (!got) { printf("bad --start\n"); return 1; }
+  }
   auto save = [&](const Elite& e, const char* why) {
     long long T; string s = fmt_tour(e.X, &T);
     FILE* f = fopen(out.c_str(), "w"); fprintf(f, "%lld\n%s\n", T, s.c_str()); fclose(f);
