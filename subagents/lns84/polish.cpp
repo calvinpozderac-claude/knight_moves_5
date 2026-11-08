@@ -53,7 +53,7 @@ static long long validate(const Tour& t, string* why = nullptr) {
     auto bad = [&](const char* m) { if (why) { char b[200]; snprintf(b, 200, "move %zu (%d,%s): %s", k + 1, d, nm(q).c_str(), m); *why = b; } return -1LL; };
     if (q < 0 || q > 63 || TYP[p][q] < 0) return bad("not a neighbour");
     if (d < 0) return bad("negative");
-    if (d > 0 && s.alt[q] == s.alt[p]) return bad("wait does not change the jump");
+    if (d > 0 && s.alt[q] == s.alt[p] && TYP[p][q] != 0) return bad("free sink needs a knight move");  // lns84: free sinks allowed (checker tests necessity)
     apply_move(s, d, q);
     if (!legal_dz(TYP[p][q], s.alt[q] - s.alt[p])) return bad("illegal jump");
     if (q == H8) { if (k + 1 != t.size()) return bad("h8 early"); }
@@ -90,7 +90,7 @@ static Tour parse_line(const string& line, string* why) {
 }
 
 // ---------------------------------------------------------------- skeleton + replay
-struct Seg { int sfrom; vector<int> stretch; int from, q, dz, k; };  // k = index of the key move
+struct Seg { int sfrom; vector<int> stretch; int from, q, dz, k; int fd = 0; };  // fd: free sink amount (lns84)  // k = index of the key move
 struct Info { vector<S> st; vector<int> from, dz; };  // st[k] = state before move k (st[n] = final)
 static Info info_of(const Tour& t) {
   Info I; S s = start_state();
@@ -105,7 +105,8 @@ static vector<Seg> segs_of(const Tour& t, const Info& I, int a) {
   vector<Seg> out; Seg cur; cur.sfrom = a < (int)t.size() ? I.from[a] : -1;
   for (int k = a; k < (int)t.size(); k++) {
     if (t[k].d > 0 || k + 1 == (int)t.size()) {
-      cur.from = I.from[k]; cur.q = t[k].q; cur.dz = I.dz[k]; cur.k = k; out.push_back(cur);
+      cur.from = I.from[k]; cur.q = t[k].q; cur.dz = I.dz[k]; cur.k = k;
+      cur.fd = (t[k].d > 0 && I.st[k].alt[t[k].q] == I.st[k].alt[I.from[k]]) ? t[k].d : 0; out.push_back(cur);
       cur = Seg(); cur.sfrom = k + 1 < (int)t.size() ? I.from[k + 1] : -1;
     } else cur.stretch.push_back(t[k].q);
   }
@@ -169,7 +170,7 @@ static bool replay(S& s, const vector<Seg>& segs, size_t g0, int mode, float PEN
     }
     // the key move, keeping dz (or the other sign if that wait would be negative)
     int p = s.pos, q = sg.q, t = TYP[p][q]; int a = s.alt[p], delta;
-    if (s.alt[q] == a) { if (t != 0) return false; delta = 0; }
+    if (s.alt[q] == a) { if (t != 0) return false; delta = sg.fd; }
     else {
       int diff = s.alt[q] - a; delta = sg.dz - diff;
       if (delta < 0) { if (t == 0) return false; delta = -sg.dz - diff; if (delta < 0) return false; }
@@ -221,9 +222,9 @@ static long long key_minutes_alt(const S& s0, const vector<Seg>& segs) {
   AT alt[64]; memcpy(alt, s0.alt, sizeof alt); long long T = s0.T;
   for (const Seg& sg : segs) {
     int p = sg.from, q = sg.q, t = TYP[p][q]; int a = alt[p], delta;
-    if (alt[q] == a) { if (t != 0) return -1; continue; }
-    int diff = alt[q] - a; delta = sg.dz - diff;
-    if (delta < 0) { if (t == 0) return -1; delta = -sg.dz - diff; if (delta < 0) return -1; }
+    if (alt[q] == a) { if (t != 0) return -1; delta = sg.fd; }
+    else { int diff = alt[q] - a; delta = sg.dz - diff;
+    if (delta < 0) { if (t == 0) return -1; delta = -sg.dz - diff; if (delta < 0) return -1; } }
     if (delta) {
       int O = 63 - p; bool rise = alt[O] != a; int n = 0;
       for (int i = 0; i < 64; i++) if (alt[i] == a && i != O) { alt[i] -= delta; n++; }

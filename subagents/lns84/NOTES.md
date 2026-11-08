@@ -1,6 +1,6 @@
 # lns84: LNS + polisher + exact tail proof on the 8,484 basin
 
-Status: in progress. **Best so far: 8,526 (strict, checker ok=True maxvisits=3 unnecessary=[]), NEW_RECORD_8526.txt.**
+Status: round 2 in progress (resumed 04:52 after a container restart). **Best: 8,600** (`NEW_RECORD_8600.txt`, = data/tours/record_8600.txt), checker ok=True maxvisits=3 unnecessary=[], free waits (42, 36, g6) and (49, 25, f4).
 
 ## Build (all in subagents/lns84/, against current src/eng.h)
 ```
@@ -50,3 +50,66 @@ Within the first second (all w=1 passes are fast):
 the same kind of tail rework as in 8,526) -> 8382 (w=8 at 137) -> 8386 (w=10 at 98) -> **8390** (w=10 at 104),
 still improving when time ran out (700 s). 8,390 checker-ok, 158 moves. Large windows (w=8-10) inside the
 dance paid here, unlike the old basin.
+
+## LNS round 1 (`queue2.sh` -> `run_lns.sh L2 <seed> 25000 1400 <inputs>`) : 8,527 ... 8,600
+Command per seed (`run_lns.sh`):
+```
+nice -n 5 ./lns --tours tmp/start_p84.txt tmp/pol84_pool.txt tmp/start_p37.txt tmp/pol37_pool.txt \
+  tmp/record_8484.txt tmp/record_8337.txt --xover 0 --seed S --t0 40 --budget 400000 --focus 1 137 0.85 \
+  --dmax 8 --pdmax 4 --rmax 8 --wide 8 --skel 0.5 --reroute 0.05 --free 2 --iters 25000 --time 1400 --out tmp/L2_sS_best.txt
+```
+start_p84 = polished 8,526; pol84_pool = 8484 (159 and 157 jumps), 8486; start_p37 = polished 8,390;
+pol37_pool = 8337 (154 jumps), 8338 x2; plus the two original records. Start tour = 8,526. ~58 it/s.
+Neither seed reached its 25k iterations: seed 1 was killed at about it 17.5k (an interruption), seed 2 at
+about it 18k (container restart). So there are no `.elite` dumps and no "done" lines. Trajectories
+(`tmp/L2_s1.log`, `tmp/L2_s2.log`; every listed tour checker-verified by `saver.sh`, `tmp/saver.log`):
+
+| seed | it | score | operator / window | region |
+|---|---|---|---|---|
+| 1 | 3,814 | 8,527 | op 2 (detour), i=20, D=2 | climb |
+| 1 | 5,053 | 8,529 | op 6 (duplicate block), a=130, len 3 | late dance |
+| 1 | 7,814 | 8,530 | op 7 crossover, a=16, donor [16,40), b=35 | climb (donor = 8,337 family) |
+| 1 | 16,269 | **8,595** | op 7 crossover, a=142, donor [143,149), b=146 | dance tail (e-file block) |
+| 1 | 17,270 | **8,596** | op 2, i=115, D=6 | dance (b5/a5/c5 area) |
+| 2 | 960 | 8,555 | op 6, a=140, len 1 | dance tail |
+| 2 | 974 | **8,599** | op 0 (window), i=134, D=7 | dance tail |
+| 2 | 3,890 | **8,600** | op 2, i=18, D=4 | climb |
+
+Free waits: 8,555/8,595/8,596/8,599 have one, on f4 (the f4->h3/h5 hop after a 25-minute sit); 8,600 adds
+(42, 36, g6). All were created by `--free 2` (8,526 is strict).
+
+What changed, 8,526 -> 8,600 (`cmp.py`, difflib over moves):
+- climb: moves 17-24 rewritten (g2 sit replaced by f2/h2/f2 shuffles, f1 sit 4, g5 sit 18 instead of f2 24),
+  move 4 b1 -> e1;
+- merge: moves 40-68 rewritten. The f6/e4/h5/h6/f5/f7 sequence becomes g6 (sit 36, free) -> f6 -> g6 11 ->
+  h4 -> h6 -> h5 12 -> f4 25 (free) -> g3 78 -> g2 -> f4, then g5 88 and f2/f3/g3/f5 shuffles;
+- dance start and middle unchanged; dance tail: e4/e5 instead of e6/e5 at 154-155, and an inserted
+  e6 38 -> e8 36 pair at 160-161, then f7 68.
+So the +74 = merge/climb rework (+4 to +5 directly) that changes group sizes so that the tail
+(e-file block, 140-160) can take two more sits. The pattern is the same as polish's 8,484 -> 8,526.
+
+## Round 2 (04:52-, 4 threads, after a container restart killed everything)
+Code changes (both rebuilt, flags as above):
+- `common.h` (bb): the prefix replay accepts free sinks (target in the knight's group, wait multiple of n).
+  The enumeration itself is still over pinned moves only, so the proof is for strict continuations.
+- `polish.cpp`: free sinks in the input are kept. `validate` accepts a wait on a same-altitude knight move,
+  `Seg.fd` stores the sink, and `replay`/`key_minutes_alt` re-apply it. Window DFS still only generates
+  pinned moves; necessity is left to `tools/check_tour.py` (saver). Before this, polish skipped every tour with a
+  free wait ("wait does not change the jump"), and bb failed to replay 8,600 at move 41.
+Scripts: `threadA.sh` (polish 8600 1800 s, then `pol_loop.sh`: polish every new best once),
+`threadB.sh` (polish 8596 1200 s, continue 8390 1500 s, then LNS seeds 21-27), `threadC.sh` (exact table on
+8600, sets `tmp/focus.txt` to 1..k-1, then LNS seeds 11-19), `threadD.sh` (LNS seeds 12-20).
+`lns_thread.sh TAG ITERS SEEDS...`: per seed, copies its inputs to `tmp/in_<TAG>_s<seed>/` (top 6
+NEW_RECORDs, polish bests, 8390, the 3 newest `.elite` dumps), so each run is reproducible from that folder
+with its seed; 30k iterations, otherwise the round-1 flags. `pol_one.sh`: `--wmax 12 --ext 3 --ext0 4
+--node-limit 3000000 --nrpa-level 2 --nrpa-tails 45,60,90`. Event log: `tmp/threads.log`.
+
+### Round 2 results so far (all checker-verified by saver.sh, `tmp/saver.log`)
+- exact on 8,600 (`tmp/exact_8600.log`, 300 s per k): optimum 8,600 for k = 164 ... **146** (k=146: 124 s,
+  223M nodes); k=144 timed out (536M nodes, nothing better). Focus reset to 1-145.
+- polish 8,600 (PA_8600): w=7 at move 16 -> 8,601, w=6 at move 52 -> **8,602**; converged at 437 s.
+- polish 8,596 (PB_8596): w=1 at 22 -> 8,598, w=6 at 55 -> 8,599, **w=10 at move 72 (dance start) -> 8,603**.
+- polish 8,603 (PA_8603): nothing in 711 s.
+- LNS LD s12, LC s11 (30k each): nothing. LD s14: ends at 8,603 (= input). **LD s16: 8,604** at it 7,192
+  (op 0, i=15, D=4: climb).
+- polish 8,604 (PA_8604): **8,605** (reroute variant, then w=1 at move 25: climb).

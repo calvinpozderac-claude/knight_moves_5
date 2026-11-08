@@ -34,3 +34,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 5 | lns84 | LNS + polisher on the 8,484 basin | **8,596 (verified)** | record, 1 free wait |
 | 5 | fw84 | free-wait pass on 8,484 | 8,484 (no gain) | stopped |
 | 5 | lns84 | LNS on the 8,484 basin (4 cores) | **8,600 (verified)** | record |
+| 5 | lns84 | LNS + polisher loop from 8,600 | **8,605 (verified)** | record |
