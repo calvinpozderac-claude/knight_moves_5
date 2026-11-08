@@ -1,0 +1,23 @@
+start 123 CHTUNDAROIMWKLSOSAILIHNDI
+[   23.7s] kick -> 96 CHTUNDAROIMOKLSPSAILJHNDI
+[   24.1s] step 37 96 -> 123 CHTUNDAROIMWKLSOSAILIHNDI (freed 7, OPT)
+[   63.8s] kick -> 72 CHTUNDAHOIMWKLSOSAILIHNDE
+[   71.9s] step 79 72 -> 123 CHTUNDAROIMWKLSOSAILIHNDI (freed 13, feas)
+[   80.0s] step 80 cur 123 best 123 seen 1
+[  102.4s] kick -> 53 CDTUNDATOIMPKLSOSAILIHNDI
+[  103.5s] step 117 53 -> 123 CHTUNDAROIMWKLSOSAILIHNDI (freed 9, OPT)
+[  120.2s] step 140 cur 123 best 123 seen 1
+[  141.8s] kick -> 56 CHTUNDAXOIMWKLSOSADLIHNDI
+[  149.9s] step 159 56 -> 123 DHTUNCAROIMWKLSOSAILIHNDI (freed 11, feas)
+[  150.5s] step 160 cur 123 best 123 seen 2
+[  175.5s] step 180 cur 123 best 123 seen 2
+[  190.7s] kick -> 59 DHTUNCAROIOWKLSOSAYLCHNDI
+[  190.7s] step 200 cur 59 best 123 seen 2
+[  198.8s] step 201 59 -> 123 DHTUNCAROIMWKLSOSAILIHNDI (freed 12, feas)
+[  209.5s] step 220 cur 123 best 123 seen 2
+[  224.2s] kick -> 27 DHTUNCNROIFWKLSOSAILIHWDK
+[  232.3s] step 247 27 -> 123 DHTUNCAROIMWKLSOSAILIHNDI (freed 11, feas)
+[  235.7s] step 260 cur 123 best 123 seen 2
+[  245.3s] step 280 cur 123 best 123 seen 2
+[  247.7s] kick -> 14 DHUUNCAROIMWKLSJSAMLIHXDI
+RESULT best 123 CHTUNDAROIMWKLSOSAILIHNDI steps 149993 distinct grids 2

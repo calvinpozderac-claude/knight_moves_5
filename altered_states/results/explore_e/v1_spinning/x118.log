@@ -1,0 +1,24 @@
+start 118 KWOHAASIDCCLNAHIORTKMFUOS
+[    7.5s] step 20 cur 118 best 118 seen 1
+[   21.3s] kick -> 71 CWOHAASIDCCLNAHIORTMMFUUS
+[   29.4s] step 34 71 -> 118 KWOHAASIDCCLNAHIORTKMFUOS (freed 12, feas)
+[   32.1s] step 40 cur 118 best 118 seen 1
+[   53.6s] step 60 cur 118 best 118 seen 1
+[   55.5s] kick -> 21 KWOOAASIDJCLNAHIIRTIMFUOS
+[   63.6s] step 65 21 -> 118 KWOHAASIDCCLNAHIORTKFMUOS (freed 12, feas)
+[   95.3s] kick -> 53 KWOHAASIDCCWNAHIORTKSMJOS
+[   95.5s] step 97 53 -> 118 KWOHAASIDCCLNAHIORTKFMSOU (freed 7, OPT)
+[   96.8s] step 100 cur 118 best 118 seen 3
+[  108.9s] step 120 cur 118 best 118 seen 3
+[  129.4s] kick -> 82 KWSHAASIDCTLNAHIORTKHMSOU
+[  129.6s] step 131 82 -> 118 KWOHAASIDCCLNAHIORTKFMSOU (freed 7, OPT)
+[  132.9s] step 140 cur 118 best 118 seen 3
+[  161.0s] kick -> 28 KWOHAASIDCCLNKHIORTKFMEOU
+[  169.0s] step 159 28 -> 77 KWOHAASIDRCLNAKLOSIMISUPP (freed 12, feas)
+[  170.4s] step 160 77 -> 79 RWOHAKAIDRSLNAELOSIMISUPP (freed 8, OPT)
+[  170.4s] step 160 cur 79 best 118 seen 5
+[  175.1s] step 164 79 -> 80 RSOHAKAIDRWLNAEIOSIPCSUMP (freed 8, OPT)
+[  183.1s] step 165 80 -> 87 SWOHAKAIDRRLNAEBESIRWDTVG (freed 12, feas)
+[  230.3s] step 180 cur 87 best 118 seen 7
+[  237.1s] kick -> 24 SWOHAKRIDRRLNAEBOSIRWDTVG
+RESULT best 118 KWOHAASIDCCLNAHIORTKMFUOS steps 104481 distinct grids 7

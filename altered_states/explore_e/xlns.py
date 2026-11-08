@@ -67,17 +67,18 @@ while time.time() - t0 < a.time:
     _, found = score(rows(cur))
     present = list(found)
     # choose a kept subset whose minimal layout leaves minfree..maxfree squares free
-    layout = None
-    for _ in range(30):
-        keep = [s for s in present if rng.random() < a.pkeep]
-        if not keep:
-            continue
-        L = minimal_layout(cur, keep)
-        free = L.count(".")
-        if a.minfree <= free <= a.maxfree:
-            layout = L; break
-    if layout is None:
-        continue
+    keep = [s for s in present if rng.random() < a.pkeep]
+    L = list(minimal_layout(cur, keep) if keep else "." * 25)
+    # pad or trim so that between minfree and maxfree squares are free
+    target = rng.randint(a.minfree, a.maxfree)
+    free_cells = [c for c in range(25) if L[c] == "."]
+    fixed_cells = [c for c in range(25) if L[c] != "."]
+    rng.shuffle(free_cells); rng.shuffle(fixed_cells)
+    while len(free_cells) > target:
+        c = free_cells.pop(); L[c] = cur[c]
+    while len(free_cells) < target and fixed_cells:
+        c = fixed_cells.pop(); L[c] = "."; free_cells.append(c)
+    layout = "".join(L)
     g, bound, st = exact_fill(cur, layout)
     if g is None:
         continue

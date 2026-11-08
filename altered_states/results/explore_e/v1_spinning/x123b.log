@@ -1,0 +1,21 @@
+start 123 LIDAWANIOHSKRLIOTAOFUDHCN
+[   58.6s] step 80 cur 123 best 123 seen 1
+[   64.7s] kick -> 64 LIDAWANIOHSKRLOOTADFUDHVN
+[   64.8s] step 83 64 -> 104 OZDAWANIONSKRLCOTADFUCHOI (freed 7, OPT)
+[   72.1s] step 84 104 -> 120 LDZACANIONSKRLFOTADIUCHHO (freed 10, OPT)
+[   83.3s] step 100 cur 120 best 123 seen 3
+[  102.6s] step 140 cur 120 best 123 seen 3
+[  108.5s] kick -> 59 LDZACANIONSARLFOTADPUCHHO
+[  109.0s] step 147 59 -> 120 LDZACANIONSKRLFOTADIUCHOH (freed 7, OPT)
+[  113.6s] step 180 cur 120 best 123 seen 4
+[  138.1s] step 200 cur 120 best 123 seen 4
+[  139.6s] kick -> 43 LDZUCPNIONSKRLFOTADIUCHOH
+[  147.7s] step 205 43 -> 120 LDZACANIONSKRLFOTADIUCHOH (freed 12, feas)
+[  162.0s] step 220 cur 120 best 123 seen 4
+[  176.6s] step 240 cur 120 best 123 seen 4
+[  179.6s] kick -> 63 LDZACANIONSKRLFSTADIUCNOH
+[  180.6s] step 253 63 -> 120 LDZACANIONSKRLFOTADIUCHOH (freed 8, OPT)
+[  191.0s] step 260 cur 120 best 123 seen 4
+[  196.9s] step 280 cur 120 best 123 seen 4
+[  204.5s] kick -> 10 LDZACAMIONSKNLFOTAZIUCDOH
+RESULT best 123 LIDAWANIOHSKRLIOTAOFUDHCN steps 208694 distinct grids 4
