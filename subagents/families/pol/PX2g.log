@@ -16,3 +16,16 @@ tour 1: 8557 minutes, 159 jumps, budget 600s
   [as is] window w=3 at move 50: 8557 -> 8557 minutes, 151 -> 147 jumps
   [as is] pass: 552/1897 windows, 6524691 nodes, 3303712 tail replays, 1.5s (4226441 nodes/s)
   new overall best 8557 (window) -> pol/PX2g_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] pass: 1845/1845 windows, 2094105939 nodes, 975681598 tail replays, 462.3s (4529705 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.2s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8557 -> 8557 minutes (147 jumps), 464.9s (converged)
+done: best 8557 minutes after 465s -> pol/PX2g_best.txt

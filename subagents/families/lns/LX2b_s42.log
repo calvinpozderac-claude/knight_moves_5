@@ -1,0 +1,8 @@
+lns/in_LX2b_s42/LX2_8595.txt: 161 moves, 8595 minutes (replay 8595)
+lns/in_LX2b_s42/X2f.txt: 168 moves, 8421 minutes (replay 8421)
+lns/in_LX2b_s42/X2g_8556.txt: 159 moves, 8557 minutes (replay 8557)
+lns/in_LX2b_s42/start.txt: 161 moves, 8595 minutes (replay 8595)
+start lns/in_LX2b_s42/start.txt: 161 moves, 8595 minutes
+[26s] it 2000 acc 422 cur 8496 best 8595 temp 32.9 elite 40 gains 339/508/489/302/26/4/381/161/38/266 acc 80/74/114/50/6/4/33/30/3/28
+[53s] it 4000 acc 839 cur 8311 best 8595 temp 27.0 elite 40 gains 778/715/951/470/63/38/557/441/111/608 acc 148/155/245/84/12/10/72/58/6/49
+[79s] it 6000 acc 1231 cur 8556 best 8595 temp 22.2 elite 40 gains 1326/775/1493/554/63/152/836/699/117/836 acc 221/233/356/113/18/14/105/88/10/73

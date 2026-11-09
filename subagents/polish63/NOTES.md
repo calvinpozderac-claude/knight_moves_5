@@ -48,3 +48,19 @@ Donors (both): originals 8,559/8,563, record 8,609, strict 8,607, polish pools o
 
 ## Step 4: polish of the distinct LNS finishes (`q3.sh`, 420 s each, wmax 12)
 Inputs run/C/: 8608_f9373050 (s313), 8607_837c850d (s311), 8607_26cd46ca (s312).
+- 8608_f9373050 -> 8,608 (converged 386 s; re-routed to 160 moves, md5 da656b11, checker ok).
+- 8607_837c850d -> 8,607 (converged 382 s, md5 6bf077d3). 8607_26cd46ca -> 8,607 = strict 8,607 again (51b824a8).
+- Saver: no tour above 8,609 at any point (run/saver.log never written). All jobs stopped 16:15.
+
+## Summary (round 7, polish63)
+- Best: **8,608** (L8563 s313, polished: run/C_8608_f9373050_best.txt), checker ok=True maxvisits=3
+  unnecessary=[]. Nothing above 8,609.
+- Polish: 8,559 -> 8,607 (595 s) and 8,563 -> 8,607 (449 s), both byte-identical to strict_8607 (= lns84's
+  polished 8,549). Gain pattern as in round 6: one dance-tail sit at move 136 (+40), w=8 at 20 (+3), w=10 at 100 (+4).
+- LNS (6 x 30k): from the polished 8,607, 3/3 seeds stay at 8,607; from the original 8,563 (own start),
+  8,607 / 8,607 / 8,608. Distinct finishes: 8,608 x1 (+1 polished re-route), 8,607 x3 (one = strict 8,607).
+- Convergence: yes. The originals' dance tail differs from 8,609's in one place (d2 d1 c1 c3 with waits 0 0 60
+  vs 8,609's d2 c2 c1 d1 c3 with 0 0 80 0); polish's w=1 at move 136 inserts exactly that. After that every
+  finish (polished, LNS, polished LNS) has the last 104-105 squares of 8,609 (the whole dance from b7/b8 on);
+  differences are only in climb/merge (moves 15-60). These two tours are not a new family: they are the
+  8,549/8,609 family with a slightly suboptimal tail and climb.

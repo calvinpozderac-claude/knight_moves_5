@@ -21,3 +21,5 @@
 16:02:08 polish C_8607_837c850d start on run/C/in_8607_837c850d.txt (8607) wmax 12
 16:08:31 polish C_8607_837c850d end: done: best 8607 minutes after 382s -> run/C_8607_837c850d_best.txt best 8607
 16:08:31 polish C_8607_26cd46ca start on run/C/in_8607_26cd46ca.txt (8607) wmax 12
+16:14:27 polish C_8607_26cd46ca end: done: best 8607 minutes after 357s -> run/C_8607_26cd46ca_best.txt best 8607
+16:14:27 q3 done
