@@ -1,0 +1,16 @@
+run/in_L8559_s302/P8559_pool.txt: 154 moves, 8559 minutes (replay 8559)
+run/in_L8559_s302/P8559_pool.txt: 159 moves, 8560 minutes (replay 8560)
+run/in_L8559_s302/P8559_pool.txt: 157 moves, 8560 minutes (replay 8560)
+run/in_L8559_s302/P8563_pool.txt: 154 moves, 8563 minutes (replay 8563)
+run/in_L8559_s302/P8563_pool.txt: 159 moves, 8564 minutes (replay 8564)
+run/in_L8559_s302/P8563_pool.txt: 157 moves, 8564 minutes (replay 8564)
+run/in_L8559_s302/record_8559.txt: 166 moves, 8559 minutes (replay 8559)
+run/in_L8559_s302/record_8563.txt: 166 moves, 8563 minutes (replay 8563)
+run/in_L8559_s302/record_8609.txt: 163 moves, 8609 minutes (replay 8609)
+run/in_L8559_s302/start.txt: 157 moves, 8607 minutes (replay 8607)
+run/in_L8559_s302/strict_8607.txt: 157 moves, 8607 minutes (replay 8607)
+start run/in_L8559_s302/start.txt: 157 moves, 8607 minutes
+[32s] it 2000 acc 214 cur 8603 best 8607 temp 15.0 elite 40 gains 142/242/96/4/12/0/142/392/0/0 acc 33/46/56/12/8/5/15/34/1/4
+[99s] it 6000 acc 570 cur 8599 best 8607 temp 2.1 elite 40 gains 171/252/137/13/12/10/164/432/0/0 acc 111/130/145/44/13/11/40/70/2/4
+[130s] it 8000 acc 750 cur 8496 best 8607 temp 31.3 elite 40 gains 174/360/153/13/13/20/164/438/0/0 acc 140/179/194/61/18/16/52/80/4/6
+[195s] it 12000 acc 1123 cur 8603 best 8607 temp 4.4 elite 40 gains 200/431/271/61/15/23/375/796/1/0 acc 205/273/283/96/25/24/80/119/8/10

@@ -1,0 +1,6 @@
+NRPA level 3, 100 iterations per level, alpha 1.00, 1 threads, 1 seed tours, seed-best 0.00, anchor 30-46, bias 0.00
+[     22s] thread 0 restart 0 (anchor 42): finished 4697 minutes, 119 jumps (best 0, 1000000 rollouts)
+NEW BEST 4697 minutes (119 jumps) -> nr/B_best.txt
+[     43s] thread 0 restart 1 (anchor 45): finished 5823 minutes, 120 jumps (best 4697, 2000000 rollouts)
+NEW BEST 5823 minutes (120 jumps) -> nr/B_best.txt
+[     68s] thread 0 restart 2 (anchor 36): finished 4499 minutes, 135 jumps (best 5823, 3000000 rollouts)

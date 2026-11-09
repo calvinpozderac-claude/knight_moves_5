@@ -1,0 +1,12 @@
+14:53:16 polish PF3_8166 start on in/F3_8166.txt (8166) wmax 12
+14:53:16 polish PF2b_8002 start on in/F2b_8002.txt (8002) wmax 12
+14:53:16 polish PF2_8348 start on in/F2_8348.txt (8348) wmax 12
+15:01:07 polish PF3_8166 end: 8166 done: best 8166 minutes after 471s -> pol/PF3_8166_best.txt
+15:02:28 polish PF2b_8002 end: 8006 done: best 8006 minutes after 552s -> pol/PF2b_8002_best.txt
+15:03:17 polish PF2_8348 end: 8348 done: best 8348 minutes after 601s -> pol/PF2_8348_best.txt
+15:03:31 dlns X2 s2 start 8609 forbid e2,e3,e4,e5,e6 pen 150 from 100
+15:03:31 dlns X1 s1 start 8609 forbid b7,b8 pen 150 from 50
+15:03:31 lns LF3 s3 start 8166 focus 1 140 0.85
+15:13:08 lns LF3 s3 end:  
+15:13:10 LF3 stopped by hand at ~it 34k: 8166, no gain
+15:13:10 dlns X3 s3 start 8609 forbid e7,e8,f6,f7 pen 150 from 120

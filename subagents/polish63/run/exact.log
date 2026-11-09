@@ -1,0 +1,11 @@
+15:06:17 P8559 k=153/157 :: DONE k=153 0.0s nodes=15 tthits=0 EXACT suffix optimum from k: 8607 (prefix T=8403) [sound: exhaustive]
+15:06:17 P8559 k=151/157 :: DONE k=151 0.0s nodes=70 tthits=10 EXACT suffix optimum from k: 8607 (prefix T=8259) [sound: exhaustive]
+15:06:18 P8559 k=149/157 :: DONE k=149 0.0s nodes=415 tthits=66 EXACT suffix optimum from k: 8607 (prefix T=8115) [sound: exhaustive]
+15:06:18 P8559 k=147/157 :: DONE k=147 0.0s nodes=837 tthits=132 EXACT suffix optimum from k: 8607 (prefix T=8022) [sound: exhaustive]
+15:06:18 P8559 k=145/157 :: DONE k=145 0.0s nodes=3005 tthits=432 EXACT suffix optimum from k: 8607 (prefix T=7927) [sound: exhaustive]
+15:06:19 P8559 k=143/157 :: DONE k=143 0.0s nodes=76109 tthits=10737 EXACT suffix optimum from k: 8607 (prefix T=7775) [sound: exhaustive]
+15:06:19 P8559 k=141/157 :: DONE k=141 0.3s nodes=502688 tthits=65199 EXACT suffix optimum from k: 8607 (prefix T=7619) [sound: exhaustive]
+15:06:28 P8559 k=139/157 :: DONE k=139 8.2s nodes=13398886 tthits=1638981 EXACT suffix optimum from k: 8607 (prefix T=7463) [sound: exhaustive]
+15:06:37 P8559 k=137/157 :: DONE k=137 8.3s nodes=13398888 tthits=1638981 EXACT suffix optimum from k: 8607 (prefix T=7463) [sound: exhaustive]
+15:07:12 P8559 k=135/157 :: DONE k=135 35.2s nodes=56725395 tthits=6982834 EXACT suffix optimum from k: 8607 (prefix T=7383) [sound: exhaustive]
+15:08:43 P8559 k=133/157 :: TIMEOUT k=133 after 90.0s nodes=145489920 best=8607

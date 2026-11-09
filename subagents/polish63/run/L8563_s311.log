@@ -1,0 +1,27 @@
+run/in_L8563_s311/P8559_pool.txt: 154 moves, 8559 minutes (replay 8559)
+run/in_L8563_s311/P8559_pool.txt: 159 moves, 8560 minutes (replay 8560)
+run/in_L8563_s311/P8559_pool.txt: 157 moves, 8560 minutes (replay 8560)
+run/in_L8563_s311/P8563_pool.txt: 154 moves, 8563 minutes (replay 8563)
+run/in_L8563_s311/P8563_pool.txt: 159 moves, 8564 minutes (replay 8564)
+run/in_L8563_s311/P8563_pool.txt: 157 moves, 8564 minutes (replay 8564)
+run/in_L8563_s311/record_8559.txt: 166 moves, 8559 minutes (replay 8559)
+run/in_L8563_s311/record_8563.txt: 166 moves, 8563 minutes (replay 8563)
+run/in_L8563_s311/record_8609.txt: 163 moves, 8609 minutes (replay 8609)
+run/in_L8563_s311/start.txt: 166 moves, 8563 minutes (replay 8563)
+run/in_L8563_s311/strict_8607.txt: 157 moves, 8607 minutes (replay 8607)
+start run/in_L8563_s311/start.txt: 166 moves, 8563 minutes
+[2s it 129] NEW BEST 8599 (op 2 i 126 D 5) len 157
+[7s it 448] NEW BEST 8600 (op 7 a 138 c 129 d 148 b 154) len 168
+[49s it 3248] NEW BEST 8603 (op 1 i 138 D 3) len 157
+[50s it 3284] NEW BEST 8604 (op 2 i 28 D 5) len 164
+[89s it 5971] NEW BEST 8606 (op 0 i 19 D 5) len 158
+[89s it 5981] NEW BEST 8607 (op 2 i 16 D 3) len 161
+[180s] it 12000 acc 1184 cur 8594 best 8607 temp 4.4 elite 40 gains 603/390/1107/130/51/14/415/534/0/0 acc 235/253/319/120/23/20/76/106/15/17
+[211s] it 14000 acc 1323 cur 8602 best 8607 temp 1.6 elite 40 gains 612/390/1131/132/51/18/421/545/0/0 acc 258/287/365/134/23/22/83/116/17/18
+[242s] it 16000 acc 1489 cur 8534 best 8607 temp 24.5 elite 40 gains 687/402/1406/192/51/22/553/581/0/0 acc 283/325/418/155/24/23/91/135/17/18
+[273s] it 18000 acc 1708 cur 8596 best 8607 temp 9.1 elite 40 gains 706/404/1584/240/51/26/594/753/0/0 acc 322/358/492/180/30/30/103/157/17/19
+[304s] it 20000 acc 1890 cur 8597 best 8607 temp 3.4 elite 40 gains 717/407/1607/242/65/32/614/799/0/0 acc 363/394/538/193/38/34/118/174/18/20
+[390s] it 26000 acc 2409 cur 8589 best 8607 temp 7.2 elite 40 gains 751/466/2035/250/65/46/746/1000/64/0 acc 472/499/689/239/44/50/145/225/22/24
+done it 30000 acc 2757 best 8607 restarts 2
+elite: 8609 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607
+cpu_user=444.763 wall=449.960

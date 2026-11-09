@@ -1,0 +1,51 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 600s
+tour 1: 8002 minutes, 134 jumps, budget 600s
+  new overall best 8002 (input) -> pol/PF2b_8002_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] window w=5 at move 32: 8002 -> 8005 minutes, 134 -> 139 jumps
+  [as is] pass: 763/1676 windows, 53305890 nodes, 26775070 tail replays, 18.0s (2965630 nodes/s)
+  new overall best 8005 (window) -> pol/PF2b_8002_best.txt
+  reroute 1000/10: 139 -> 139 jumps
+  reroute 1000/0: unchanged
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=0 at move 32: 8005 -> 8006 minutes, 139 -> 144 jumps
+  [as is] pass: 108/1741 windows, 55181 nodes, 26420 tail replays, 0.0s (1869456 nodes/s)
+  new overall best 8006 (window) -> pol/PF2b_8002_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] window w=1 at move 50: 8006 -> 8006 minutes, 144 -> 142 jumps
+  [as is] pass: 239/1806 windows, 181424 nodes, 98840 tail replays, 0.1s (3001610 nodes/s)
+  new overall best 8006 (window) -> pol/PF2b_8002_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] window w=1 at move 37: 8006 -> 8006 minutes, 142 -> 140 jumps
+  [as is] pass: 248/1780 windows, 199880 nodes, 109150 tail replays, 0.1s (3658934 nodes/s)
+  new overall best 8006 (window) -> pol/PF2b_8002_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] window w=2 at move 42: 8006 -> 8006 minutes, 140 -> 138 jumps
+  [as is] pass: 378/1754 windows, 560384 nodes, 278271 tail replays, 0.2s (3609138 nodes/s)
+  new overall best 8006 (window) -> pol/PF2b_8002_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] pass: 1728/1728 windows, 2214661997 nodes, 911830125 tail replays, 532.8s (4157006 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.2s
+  nrpa L2 last 90 (fresh): no gain in 0.2s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8002 -> 8006 minutes (138 jumps), 552.0s (converged)
+done: best 8006 minutes after 552s -> pol/PF2b_8002_best.txt
