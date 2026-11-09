@@ -150,3 +150,11 @@ Results so far (all feasible bests checker ok, unnecessary=[]):
 - Y6 s106 (from 8,813: no sits on a7,a8 from move 55 + no e2-e6 from 100): 8,359 at it 41k (sig d3/d4 d6/d7 c8/d8
   c7/c8 b8/d8 b7/b8 c6/c7 ... a5/b5 e7/e8 f7/f8).
 - LF6d s64 (from the polished 8,813, F6 donors): running.
+- 20:14: my saver died a third time (exit 144, apparently killed by name when f5push stopped). It is now
+  `fam_saver.sh`, threshold 8,830 (f5push's record, `data/tours/record_8830.txt`), and runs as a tool background job.
+- LF6d s64 (150k from the polished 8,813): no gain. **F6 ceiling 8,813**, from 4 plain LNS seeds (8,807 / 8,813 /
+  8,813 / 8,813) and 3 distinct 8,813s.
+- LF7b s72 (from F7 8,522): 8,524. **F7 ceiling ~8,524.**
+- LY6 s81 (plain LNS from Y6's 8,359, Y6 donors only): 8,359 -> 8,784 in 4 min -> 8,792. LY6b s82 (from 8,784) ->
+  **8,805**. It is a d-first variant with the top-left swept a6/b6 -> a8/b8 -> a7/b7 (F6b): f7/h3 d3/d4 d6/d7
+  c8/d8 c6/c7 **a6/b6 a8/b8 a7/b7** c6/c7 c4/c5 c3/c4 ... a5/b5 c5/d5 e7/e8 f8/g8. LY6c s83 started from 8,805.

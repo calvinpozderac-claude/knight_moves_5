@@ -78,3 +78,7 @@
 20:08:46 Y6 stopped by hand at it ~70k (8,359 since it 41k)
 20:08:46 lns LY6 s81 start 8359 focus 1 170 0.85
 20:14:27 saver killed again (exit 144, probably a pkill of saver.sh by name when f5push stopped); restarted as fam_saver.sh, threshold 8,830
+20:14:37 lns LY6b s82 start 8784 focus 1 170 0.85
+20:16:58 lns LF6d s64 end:  done it 150000 acc 20018 best 8813 restarts 14
+20:24:08 lns LY6c s83 start 8805 focus 1 170 0.85
+20:30:33 lns LF7b s72 end: 8524 done it 146895 acc 18964 best 8524 restarts 10
