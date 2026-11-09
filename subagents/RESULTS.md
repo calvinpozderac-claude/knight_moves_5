@@ -38,3 +38,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 6 | lns84 | polish + LNS on AlphaZero tours (8,537-8,553) | **8,609 (verified)** | record |
 | 6 | lns84 | polish of AlphaZero 8,549 (strict) | 8,607 (verified, STRICT) | strict record |
 | 7 | polish63 | polish + LNS on frozen-net A* tours 8,559/8,563 | 8,608 (verified) | converge on the 8,609 dance tail; not a new family |
+| 7 | families | new family F5 (d-file dance) via heur_search + diversity LNS + polish | **8,812 (verified)** | record (+203); strict 8,810 |

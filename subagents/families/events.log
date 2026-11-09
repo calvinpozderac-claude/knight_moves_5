@@ -34,3 +34,15 @@
 16:12:17 polish PL8595 start on in/LX2_8595.txt (8595) wmax 12
 16:12:23 lns LX2b s42 start 8595 focus 1 150 0.85
 16:15:13 lns LX2c s43 start 8595 focus 1 150 0.85
+16:22:29 saver restarted (was not running); NEW_RECORD_8703/8712 written by hand after check_tour ok
+16:22:53 lns LX2 s41 end: 8703 done it 90000 acc 14074 best 8703 restarts 6
+16:25:52 polish PL8595 end: 8595 done: best 8595 minutes after 815s -> pol/PL8595_best.txt
+16:26:09 lns LX2c s43 end:  
+16:26:09 polish P8795 start on in/F5_8795.txt (8795) wmax 12
+16:26:09 lns LX2d s44 start 8795 focus 1 150 0.85
+16:26:11 LX2c (t0 80) stopped by hand at it ~50k: stuck at 8595
+16:26:16 lns LX2e s45 start 8795 focus 1 150 0.85
+16:39:12 polish P8795 end: 8809 done: best 8809 minutes after 783s -> pol/P8795_best.txt
+16:39:22 polish P8810 start on keep/8810_e28e09e8.txt (8810) wmax 12
+16:45:25 polish P8810 end: 8810 done: best 8810 minutes after 364s -> pol/P8810_best.txt
+16:45:32 lns LX2b s42 end: 8810 done it 150000 acc 21531 best 8810 restarts 9
