@@ -23,3 +23,7 @@
 19:52:15 lns F5 s504 end:  done it 60000 acc 8490 best 8829 restarts 7
 19:53:15 polish PF5_s503 end: 8830 done: best 8830 minutes after 600s -> pol/PF5_s503_best.txt
 19:53:16 lns F5 s505 start 8830 focus 1 150 0.85
+19:57:30 exact E8830: proven from move 151 of 173
+19:57:30 lns F5 s506 start 8830 focus 1 150 0.85
+20:10:12 lns F5 s505 end:  done it 60000 acc 8969 best 8830 restarts 4
+20:13:37 lns F5 s506 end:  done it 60000 acc 9000 best 8830 restarts 6

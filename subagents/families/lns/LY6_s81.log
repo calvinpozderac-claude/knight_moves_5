@@ -1,0 +1,25 @@
+lns/in_LY6_s81/Y6_8359.txt: 171 moves, 8359 minutes (replay 8359)
+lns/in_LY6_s81/start.txt: 171 moves, 8359 minutes (replay 8359)
+start lns/in_LY6_s81/start.txt: 171 moves, 8359 minutes
+[1s it 56] NEW BEST 8423 (op 2 i 114 D 4) len 177
+[2s it 105] NEW BEST 8440 (op 0 i 162 D 5) len 175
+[3s it 156] NEW BEST 8536 (op 6 a 150 len 14) len 169
+[3s it 167] NEW BEST 8540 (op 2 i 160 D 4) len 171
+[4s it 244] NEW BEST 8544 (op 2 i 156 D 8) len 169
+[4s it 249] NEW BEST 8554 (op 2 i 124 D 4) len 168
+[4s it 269] NEW BEST 8608 (op 3 i 109 D 2) len 167
+[6s it 364] NEW BEST 8620 (op 2 i 133 D 6) len 169
+[7s it 440] NEW BEST 8623 (op 0 i 119 D 5) len 166
+[10s it 564] NEW BEST 8632 (op 2 i 154 D 6) len 167
+[10s it 575] NEW BEST 8640 (op 1 i 132 D 3) len 169
+[12s it 672] NEW BEST 8750 (op 2 i 120 D 2) len 166
+[20s it 1198] NEW BEST 8768 (op 7 a 124 c 127 d 154 b 149) len 166
+[32s] it 2000 acc 419 cur 8762 best 8768 temp 32.9 elite 40 gains 429/350/1587/146/8/74/454/438/34/174 acc 74/66/115/37/10/9/51/43/3/11
+[32s it 2019] NEW BEST 8770 (op 0 i 132 D 7) len 166
+[78s it 4936] NEW BEST 8773 (op 2 i 87 D 3) len 176
+[79s it 4963] NEW BEST 8776 (op 7 a 13 c 15 d 45 b 42) len 175
+[185s] it 14000 acc 2266 cur 8724 best 8776 temp 10.1 elite 40 gains 1912/1198/3415/743/127/245/1540/849/136/922 acc 433/377/660/222/48/43/194/145/20/124
+[242s it 18730] NEW BEST 8783 (op 7 a 124 c 127 d 150 b 141) len 166
+[246s it 19078] NEW BEST 8784 (op 2 i 107 D 3) len 171
+[283s] it 22000 acc 3287 cur 8773 best 8784 temp 4.6 elite 40 gains 2010/1278/3699/763/161/249/1808/924/174/922 acc 631/565/990/302/78/58/261/197/26/179
+[305s] it 24000 acc 3490 cur 8780 best 8784 temp 3.8 elite 40 gains 2036/1284/3715/771/161/249/1816/950/174/922 acc 678/605/1042/321/83/60/271/207/29/194

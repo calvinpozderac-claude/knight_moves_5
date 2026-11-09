@@ -72,3 +72,8 @@
 19:42:58 lns LF6c s63 end: 8813 done it 150000 acc 20618 best 8813 restarts 14
 19:42:58 ylns Y6 s106 start in/F6_8813.txt (8813) pen 150 rules a7,a8:55:999 e2,e3,e4,e5,e6:100:999 donors in/F6_8813.txt in/F5_8812.txt
 19:43:11 lns LF6d s64 start 8813 focus 1 170 0.85
+19:58:51 lns LF7 s71 end: 8522 done it 150000 acc 18605 best 8522 restarts 10
+19:58:53 lns LF7b s72 start 8522 focus 1 170 0.85
+20:08:44 ylns Y6 s106 end: feas 8359 
+20:08:46 Y6 stopped by hand at it ~70k (8,359 since it 41k)
+20:08:46 lns LY6 s81 start 8359 focus 1 170 0.85

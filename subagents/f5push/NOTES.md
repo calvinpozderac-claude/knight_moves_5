@@ -38,3 +38,25 @@ Goal: a tour above 8,812. 2 heavy threads, nice -n 5. Start 18:30.
 - **19:36 LNS F5 s503 (from 8,829): 8,830 at it 44,674 (op 2 i=18 D=6, climb)**. `NEW_RECORD_8830.txt`, 173 moves,
   check_tour ok=True maxvisits=3 unnecessary=[], STRICT. Same dance signature as 8,829 except c2/c3 and c3/d3
   swapped.
+- LNS F5 s504 (from 8,829, 60k): nothing above 8,829. Polish of 8,830 (PF5_s503, 600 s, wmax 12): reroute only.
+- 19:52-19:57 **Exact tail proof on 8,830** (173 moves): k = 169 ... 153 fast, **k = 151 proven** (50 s, 65M
+  nodes, prefix T 7,257), k = 149 timed out (240 s, 320M nodes, nothing better). Last 23 moves optimal for
+  the prefix. Focus stays 1..150.
+- 19:53 s505 and 19:57 s506 started from 8,830 (60k each).
+- s505, s506 (from 8,830, 60k each, s506 with the 8,830 proof's focus): nothing above 8,830. All jobs and the
+  saver stopped 20:14.
+
+## Summary
+- **Best: 8,830** (`NEW_RECORD_8830.txt`, 173 moves, STRICT; check_tour ok=True maxvisits=3 unnecessary=[]),
+  +18 over 8,812. Path: LNS s501 from 8,812 -> 8,829 (seven steps at it 35-42k, ops in the climb i=15-38 and
+  the dance i=96-128; the bottom-left of the dance was reordered: a3/a5 a5/b5 b3/c3 c3/d3, 84 sits) ->
+  s503 from 8,829 -> 8,830 (op 2 i=18, climb).
+- Tail proofs (bb, strict continuations, 240 s per k, step 2): 8,812 proven from move 151 of 175, the 8,810
+  e28e09e8 from 151 of 175 (same tail, prefix 2 lower), 8,830 from 151 of 173; k = 149 timed out in all three.
+- Seed spread (60k each, focus 1-150 p 0.85, --free 0, F5 donors only): s501 8,812 -> 8,829; s502 8,829 ->
+  8,829; s503 8,829 -> 8,830; s504 8,829 -> 8,829; s505, s506 8,830 -> 8,830. Distinct finishes above 8,812:
+  one 8,829, one 8,830 (plus the intermediate 8,824/8,827/8,828 of s501). Polish (600 s, wmax 12) of 8,829 and
+  8,830: reroute only.
+- Side task, main's 8,595 (F1 variant): polish -> 8,604, LNS 51k -> 8,604. Below F1's 8,609 ceiling.
+- Lesson: one fresh seed from 8,812 found +17 in ~40k iterations, while four seeds from 8,829/8,830 found +1
+  at most; F5 now looks close to its local ceiling at ~8,830.

@@ -31,3 +31,5 @@
 19:52:21 E8830 k=157/173 :: FOUND 8830 (0.0s, 16 nodes) DONE k=157 0.1s nodes=154570 tthits=19978 EXACT suffix optimum from k: 8830 (prefix T=7737) [sound: exhaustive] 
 19:52:24 E8830 k=155/173 :: FOUND 8830 (0.0s, 18 nodes) DONE k=155 2.1s nodes=2921488 tthits=328581 EXACT suffix optimum from k: 8830 (prefix T=7581) [sound: exhaustive] 
 19:52:39 E8830 k=153/173 :: FOUND 8830 (0.0s, 20 nodes) DONE k=153 15.0s nodes=20321272 tthits=2313381 EXACT suffix optimum from k: 8830 (prefix T=7421) [sound: exhaustive] 
+19:53:29 E8830 k=151/173 :: FOUND 8830 (0.0s, 22 nodes) DONE k=151 49.9s nodes=64984221 tthits=7566894 EXACT suffix optimum from k: 8830 (prefix T=7257) [sound: exhaustive] 
+19:57:30 E8830 k=149/173 :: FOUND 8830 (0.0s, 24 nodes) TIMEOUT k=149 after 240.0s nodes=320077824 best=8830 
