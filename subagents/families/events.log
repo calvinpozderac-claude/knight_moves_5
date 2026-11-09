@@ -33,3 +33,4 @@
 16:12:14 dlns X2g s22 end: feas 8557 done it 80000 acc 11282 best 8557 restarts 5
 16:12:17 polish PL8595 start on in/LX2_8595.txt (8595) wmax 12
 16:12:23 lns LX2b s42 start 8595 focus 1 150 0.85
+16:15:13 lns LX2c s43 start 8595 focus 1 150 0.85
