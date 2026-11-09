@@ -40,3 +40,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 7 | polish63 | polish + LNS on frozen-net A* tours 8,559/8,563 | 8,608 (verified) | converge on the 8,609 dance tail; not a new family |
 | 7 | families | new family F5 (d-file dance) via heur_search + diversity LNS + polish | **8,812 (verified)** | record (+203); strict 8,810 |
 | 8 | f5push | tail proof + focused LNS on F5 | **8,829 (verified)** | record |
+| 8 | f5push | focused LNS on F5 | **8,830 (verified)** | record (+1) |

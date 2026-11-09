@@ -5,3 +5,7 @@ tour 1: 8829 minutes, 168 jumps, budget 600s
   reroute 1000/0 failed
   reroute 0/0: 168 -> 166 jumps
   new overall best 8829 (reroute 0/0) -> pol/PF5_s501_best.txt
+  reroute 5/1 failed
+  [reroute 0/0] pass: 2080/2092 windows, 1835112988 nodes, 884789044 tail replays, 600.5s (3055879 nodes/s)
+tour 1 done: 8829 -> 8829 minutes (166 jumps), 600.5s (time up)
+done: best 8829 minutes after 601s -> pol/PF5_s501_best.txt

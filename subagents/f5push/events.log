@@ -12,3 +12,12 @@
 19:04:47 lns F5 s502 start 8829 focus 1 150 0.85
 19:06:47 lns F5 s501 end: 8829 done it 60000 acc 8310 best 8829 restarts 3
 19:07:27 polish PF5_s501 start on NEW_RECORD_8829.txt (8829) wmax 12
+19:17:28 polish PF5_s501 end: 8829 done: best 8829 minutes after 601s -> pol/PF5_s501_best.txt
+19:17:28 lns F5 s503 start 8829 focus 1 150 0.85
+19:27:40 lns F5 s502 end:  done it 60000 acc 8639 best 8829 restarts 4
+19:27:40 lns F5 s504 start 8829 focus 1 150 0.85
+19:36:35 NEW_RECORD_8830 from /home/user/knight_moves_5/subagents/f5push/lns/F5_s503_best.txt
+19:42:35 lns F5 s503 end: 8830 done it 60000 acc 8870 best 8830 restarts 4
+19:43:15 polish PF5_s503 start on NEW_RECORD_8830.txt (8830) wmax 12
+19:47 qA stopped after s504 (s506 moved to qC.sh: wait for s504, exact proof on 8,830, focus from it, then s506)
+19:52:15 lns F5 s504 end:  done it 60000 acc 8490 best 8829 restarts 7

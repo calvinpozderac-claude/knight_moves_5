@@ -139,3 +139,14 @@ Results so far (all feasible bests checker ok, unnecessary=[]):
   f8/g8 (e-file early, no d-file).
 - Plain LNS on F6 (`--free 0`, donors only F6 tours): LF6 s61 8,658 -> 8,691 -> **8,804** (it 88k); LF6b s62 (from
   8,691) -> 8,800. Both keep the d-first signature. LF6c s63 started from 8,804.
+- **LF6b s62: 8,813 (new record, STRICT, checker ok, unnecessary=[]) at it 110k**; `NEW_RECORD_8813.txt` (written by
+  hand: my saver had died again; pid 3155 that looked like it was f5push's saver. Now the saver runs as a tool
+  background job). LF6c s63 also 8,813 (a distinct tour), and polishing 8,813 gives a third distinct 8,813
+  (reroute). Copies in `keep/F6_8813_*.txt`. F6 sig: f7/h3 d3/d4 d6/d7 c8/d8 c6/c7 a7/b7 a8/b8 a6/b6 c5/c6 c4/c5
+  c3/c4 b3/c3 b3/b4 a4/b4 a3/a4 a2/b2 b2/c2 a2/a5 a5/b5 c5/d5 e7/e8 f8/g8.
+- LF7 s71 (plain LNS on Y4's 8,083, F7 donors only): 8,083 -> 8,477 -> 8,521 (it 110k). Sig drifts to "bottom-left
+  first": c8/d8 d3/d4 c3/c4 b3/c3 b3/b4 a4/b4 a3/a4 a2/a3 a2/b2 b2/c2 c4/c5 b5/c6 a5/b5 c5/c6 c7/c8 b7/b8 a7/a8 a6/b6
+  c5/c6 e2/e3 e7/e8 f8/g8 (the top-left is swept last).
+- Y6 s106 (from 8,813: no sits on a7,a8 from move 55 + no e2-e6 from 100): 8,359 at it 41k (sig d3/d4 d6/d7 c8/d8
+  c7/c8 b8/d8 b7/b8 c6/c7 ... a5/b5 e7/e8 f7/f8).
+- LF6d s64 (from the polished 8,813, F6 donors): running.

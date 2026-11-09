@@ -33,3 +33,8 @@ Goal: a tour above 8,812. 2 heavy threads, nice -n 5. Start 18:30.
   Its dance changed in the left-bottom part: sig ... a4/b4 a2/a3 a2/b2 b2/b3 **a3/a5 a5/b5 b3/c3 c3/d3** c2/c3
   d3/d4 **d4/d5** d6/d7 e7/e8 f8/g8 (84 sits, was 82); the merge also changed (g3 120 instead of h1 120).
   Saver wrote 8,824 / 8,827 / 8,828 / 8,829 on the way. Polish of 8,829 started 19:07 (600 s, wmax 12).
+- Polish of 8,829 (PF5_s501, 600 s, wmax 12): reroute only, 8,829. LNS F5 s502 (from 8,829, 60k): nothing
+  above 8,829.
+- **19:36 LNS F5 s503 (from 8,829): 8,830 at it 44,674 (op 2 i=18 D=6, climb)**. `NEW_RECORD_8830.txt`, 173 moves,
+  check_tour ok=True maxvisits=3 unnecessary=[], STRICT. Same dance signature as 8,829 except c2/c3 and c3/d3
+  swapped.
