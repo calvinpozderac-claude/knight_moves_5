@@ -21,3 +21,5 @@
 19:43:15 polish PF5_s503 start on NEW_RECORD_8830.txt (8830) wmax 12
 19:47 qA stopped after s504 (s506 moved to qC.sh: wait for s504, exact proof on 8,830, focus from it, then s506)
 19:52:15 lns F5 s504 end:  done it 60000 acc 8490 best 8829 restarts 7
+19:53:15 polish PF5_s503 end: 8830 done: best 8830 minutes after 600s -> pol/PF5_s503_best.txt
+19:53:16 lns F5 s505 start 8830 focus 1 150 0.85
