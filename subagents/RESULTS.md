@@ -41,3 +41,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 7 | families | new family F5 (d-file dance) via heur_search + diversity LNS + polish | **8,812 (verified)** | record (+203); strict 8,810 |
 | 8 | f5push | tail proof + focused LNS on F5 | **8,829 (verified)** | record |
 | 8 | f5push | focused LNS on F5 | **8,830 (verified)** | record (+1) |
+| 8 | families | penalty runs on F5 blocks: new families F6 (8,813), F6b (8,811), F7 (8,524) | 8,813 (verified, strict) | below 8,830 |

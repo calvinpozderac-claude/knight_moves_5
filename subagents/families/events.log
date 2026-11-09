@@ -82,3 +82,7 @@
 20:16:58 lns LF6d s64 end:  done it 150000 acc 20018 best 8813 restarts 14
 20:24:08 lns LY6c s83 start 8805 focus 1 170 0.85
 20:30:33 lns LF7b s72 end: 8524 done it 146895 acc 18964 best 8524 restarts 10
+20:38:35 lns LY6 s81 end: 8794 done it 150000 acc 20926 best 8794 restarts 7
+20:39:37 lns LY6b s82 end: 8811 done it 126674 acc 17795 best 8811 restarts 11
+20:48:19 lns LY6c s83 end: 8813 done it 121735 acc 16826 best 8813 restarts 11
+20:48:44 round 8 jobs all done; fam_saver stopped

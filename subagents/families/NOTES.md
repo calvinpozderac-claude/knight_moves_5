@@ -158,3 +158,30 @@ Results so far (all feasible bests checker ok, unnecessary=[]):
 - LY6 s81 (plain LNS from Y6's 8,359, Y6 donors only): 8,359 -> 8,784 in 4 min -> 8,792. LY6b s82 (from 8,784) ->
   **8,805**. It is a d-first variant with the top-left swept a6/b6 -> a8/b8 -> a7/b7 (F6b): f7/h3 d3/d4 d6/d7
   c8/d8 c6/c7 **a6/b6 a8/b8 a7/b7** c6/c7 c4/c5 c3/c4 ... a5/b5 c5/d5 e7/e8 f8/g8. LY6c s83 started from 8,805.
+- LY6 s81 ended 8,794, LY6b s82 8,811; **LY6c s83 (from 8,805) reached 8,813 with exactly F6's signature**
+  (a7/b7 a8/b8 a6/b6 again). That is a fourth distinct 8,813 (`keep/F6_8813_ea8b90b3.txt`), reached from the Y6 start
+  (no a7/a8 sits under penalty), so F6 hits the same ceiling from two independent starts. All jobs stopped 20:48.
+
+## Round 8 summary: families table (raw = first penalised-search tour; LNS = plain LNS `--free 0`, same-family donors)
+| family | signature (sitting blocks) | found by | raw | polished | LNS best | distinct finishes at best |
+|---|---|---|---|---|---|---|
+| F5 (round 7) | f7/h3 c8/d8 c6/c7 a7/b7 a8/b8 a6/b6 ... d3/d4 a5/d5 a5/b5 d6/d7 e7/e8 f8/g8 (d-file last) | X2f (no e2-e6) | 8,421 | 8,421 | 8,812 here; f5push 8,830 | - |
+| **F6 d-first (new)** | f7/h3 **d3/d4 d6/d7** c8/d8 c6/c7 a7/b7 a8/b8 a6/b6 c5/c6 c4/c5 c3/c4 b3/c3 b3/b4 a4/b4 a3/a4 a2/b2 b2/c2 a2/a5 a5/b5 c5/d5 e7/e8 f8/g8 | Y1 (no d3-d7, e2-e6 after 100) | 8,658 | 8,813 (of 8,813) | **8,813** (LF6 8,807; LF6b/LF6c 8,813; LF6d 8,813; LY6c 8,813) | 4 (+ 1 polish reroute) |
+| F6b (variant) | ... c8/d8 c6/c7 **a6/b6 a8/b8 a7/b7** c6/c7 ... | Y6 (no a7,a8 + no e2-e6) -> LY6 | 8,359 | - | 8,811 (it then drifts back to F6 at 8,813) | 1 |
+| F7 bottom-left first (new) | f7/h3 c8/d8 d3/d4 c3/c4 b3/c3 b3/b4 a4/b4 a3/a4 a2/a3 a2/b2 b2/c2 c4/c5 b5/c6 a5/b5 c5/c6 c7/c8 b7/b8 a7/a8 a6/b6 c5/c6 e2/e3 e7/e8 f8/g8 | Y4 (no d3-d7 after 60, no e2-e6) | 8,083 | - | 8,524 (2 seeds: 8,522, 8,524) | 1 |
+| Y2 variant | d4/e4 c3/d3 d4/d6 d6/d7 c8/d8 ... (d-first) | Y2 (+ no c8/d8/b7/b8 first block) | 8,433 | - | - (folded into F6) | - |
+| F1v main 8,595 | F1 + extra b2/b3 a3/a4 block | main | 8,595 | 8,604 (f5push) | - | - |
+| X1, X3f, F1, F2, F2b, F3 | see round 7 table | | | | 8,429 / 8,281 / 8,609 / 8,348 / 8,006 / 8,166 | |
+
+**Conclusions**
+- Best of the round is **8,813** (F6, STRICT, `NEW_RECORD_8813.txt`). That beat 8,812 when it was found, but it is
+  below f5push's 8,830.
+- The a-d-file sitter families (F5, F6, F6b) all reach about 8,810-8,830 under plain LNS. F6 is a different block
+  order but has the same sitter set as F5, and its ceiling, 8,813, is 17 below F5's 8,830. F7 (no d-file; top-left
+  swept last) tops out at about 8,524.
+- Penalty designs that pay: banning the record's tail file (e-file for F1 -> F5; d-file tail for F5 -> F6). Banning
+  a start block (b7/b8, X1), the end block (X3f), every d-file sit (Y4/F7) or a7/a8 (Y6) gives 300-500 lower raw
+  tours. Y6's raw 8,359 still climbed to 8,811-8,813 under plain LNS, though, because LNS without the penalty
+  restores the a7/a8 sits.
+- Next: penalise the a-d sitter set as a whole (e.g. force a sitter on the e/f side of 2-3 pairs) to leave the
+  a-d family; or use a sitting-sequence similarity penalty against F5/F6 rather than square bans.
