@@ -46,3 +46,6 @@
 16:39:22 polish P8810 start on keep/8810_e28e09e8.txt (8810) wmax 12
 16:45:25 polish P8810 end: 8810 done: best 8810 minutes after 364s -> pol/P8810_best.txt
 16:45:32 lns LX2b s42 end: 8810 done it 150000 acc 21531 best 8810 restarts 9
+16:58:54 lns LX2e s45 end: 8812 done it 150000 acc 21121 best 8812 restarts 10
+16:59:01 lns LX2d s44 end: 8810 done it 150000 acc 21576 best 8810 restarts 10
+16:59:51 all jobs done; saver stopped

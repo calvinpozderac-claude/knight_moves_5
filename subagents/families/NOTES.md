@@ -1,13 +1,13 @@
 # families: new families of Knight Moves 5 tours (Round 7)
 
-**Result: 8,810 (`NEW_RECORD_8810.txt`), +201 over 8,609, STRICT (no free waits); check_tour ok=True,
-maxvisits=3, unnecessary=[].** Three distinct 8,810 finishes (md5 3cbb5def, e28e09e8, bbbdc365; `keep/`), all in
-the new family F5 below. Found by diversity-forced LNS (penalising the e-file tail of 8,609) followed by plain LNS.
+**Result: 8,812 (`NEW_RECORD_8812.txt`, LX2e s45 at the end of its 150k iterations), +203 over 8,609, STRICT
+(no free waits); check_tour ok=True, maxvisits=3, unnecessary=[].** Also three distinct 8,810 finishes (md5
+3cbb5def, e28e09e8, bbbdc365; `keep/`). All are in the new family F5 below. Found by diversity-forced LNS (penalising the e-file tail of 8,609) followed by plain LNS.
 
 ## Families table (raw = first tour of the family; polished = after polish; LNS = best after LNS)
 | family | signature (sitting blocks, `sig.py`) | raw | polished | LNS best |
 |---|---|---|---|---|
-| **F5 (new, d-file)** | f7/h3 **c8/d8 c6/c7 a7/b7 a8/b8 a6/b6** c5/c6 c4/c5 b4/c4 a4/b4 a3/a4 a2/a3 a2/b2 b2/b3 b3/c3 c2/c3 **d3/d4 a5/d5 a5/b5 d6/d7** e7/e8 f8/g8 | 8,421 (X2f) | 8,421 | **8,810** (dlns 8,557 -> lns 8,595 -> 8,703 / 8,810 x3; polish of 8,795 -> 8,809, of 8,810 -> 8,810) |
+| **F5 (new, d-file)** | f7/h3 **c8/d8 c6/c7 a7/b7 a8/b8 a6/b6** c5/c6 c4/c5 b4/c4 a4/b4 a3/a4 a2/a3 a2/b2 b2/b3 b3/c3 c2/c3 **d3/d4 a5/d5 a5/b5 d6/d7** e7/e8 f8/g8 | 8,421 (X2f) | 8,421 | **8,812** (dlns 8,557 -> lns 8,595 -> 8,703 / 8,810 x3 / 8,812; polish of 8,795 -> 8,809, of 8,810 -> 8,810) |
 | F1 (AlphaZero/A*, before this round) | b7/b8 a7/a8 a6/b6 c6/c7 c8/d8 c4/c5 a5/b5 b2/b3 a2/a3 a4/b4 .. e2/e3 e4/e5/e6 e7/e8 f7/f6 | 8,553 | 8,607 | 8,609 (lns84 r6) |
 | X1 (new: no b7/b8 block) | f5/h4 a6/h3 a7/a8 a6/b6 c6/c7 a7/d8 c8/d8 ... e3/e4 **g1/g2** e2/e3 ... f6/f7 f8 | 8,371 | 8,429 | 8,429 (dlns X1b 80k) |
 | X3f (new: no e7/e8/f6/f7 end) | ... a4/b4 c4/e5 e3/e4 e2/e3 c2/d2 c1/e4 e5/e6 | 8,281 | 8,281 | 8,281 |
@@ -114,3 +114,5 @@ Runs (all from 8,609, donors 8,609 / 8,563 / strict 8,607, t0 40, otherwise lns8
 - Saver scripts can die silently: check that they are alive.
 - Next: exact tail proof (bb) on 8,810; more forced variants of F5 (e.g. forbid its d6/d7 or c8/d8 block) to
   find the next family; climb/merge crossovers between F5 tours and F1's climb.
+- 16:59: LX2e s45 ended at **8,812** (STRICT, checker ok; NEW_RECORD_8812.txt, keep/). LX2d s44: 8,810. All jobs and the
+  saver stopped 17:00.
