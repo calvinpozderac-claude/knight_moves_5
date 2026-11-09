@@ -23,7 +23,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_8559.txt` | **8,559** | Best-first (A*) search from a1 guided by the frozen value network of a 2048-simulation self-play run (no training; open list capped at 128M positions, the lowest predictions dropped): 10 min in (8,555 at 8 min) |
+| `data/tours/record_8563.txt` | **8,563** | Same frozen-network A* run as 8,559, 11 min in |
+| `data/tours/record_8559.txt` | 8,559 | Best-first (A*) search from a1 guided by the frozen value network of a 2048-simulation self-play run (no training; open list capped at 128M positions, the lowest predictions dropped): 10 min in (8,555 at 8 min) |
 | `data/tours/record_8553.txt` | 8,553 | Same 1024-simulation run as 8,537, 6 h 28 min in, as a finish found inside a search tree |
 | `data/tours/record_8549.txt` | 8,549 | Same 1024-simulation run as 8,537, 5 h 07 min in, as a finish found inside a search tree |
 | `data/tours/record_8545.txt` | 8,545 | Same 1024-simulation run as 8,537, 3 h 07 min in, as a played self-play game |
