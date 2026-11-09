@@ -77,3 +77,4 @@
 20:08:44 ylns Y6 s106 end: feas 8359 
 20:08:46 Y6 stopped by hand at it ~70k (8,359 since it 41k)
 20:08:46 lns LY6 s81 start 8359 focus 1 170 0.85
+20:14:27 saver killed again (exit 144, probably a pkill of saver.sh by name when f5push stopped); restarted as fam_saver.sh, threshold 8,830
