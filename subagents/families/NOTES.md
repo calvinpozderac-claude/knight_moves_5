@@ -44,7 +44,16 @@ record, more than polish + LNS adds (50-120). Killed after ~1 min.
 | F3 8,166 | 8,166 (converged 471 s) |
 These were already locally optimal (prior's NRPA + free-wait pass); polish gives nothing.
 
-## Step 4 (running): diversity-forced LNS from 8,609 and LNS on F3
+## Step 4: diversity-forced LNS from 8,609 and LNS on F3
+**Pitfall found (15:28, flagged by the orchestrator):** lns_r6/dlns with `--free 2` (the lns84 default) can generate
+free sinks (wait on a same-altitude knight jump) without checking necessity. Under the e-file penalty, X3 found
+tails where the two dance groups merge into ONE group (n = 41, h8 included) and the knight keeps "sitting" with
+free sinks: 8,635 -> 8,649 internally, but `check_tour.py` rejects every such wait (unnecessary=[133..160]); X2's
+8,478 had the same defect at moves 152-156. The saver never wrote them (it requires unnecessary=[]); the files
+were moved to `x/bad/`. It is not a bug in the penalty code but a hole the penalty pushed the search into: the
+lns objective does not test necessity of free sinks. Fix: `dlns.sh` now runs with `--free 0` (free waits already
+in the input tours, e.g. 8,609's (48, 25, g6), are kept; no new ones are generated), and every reported tour is
+re-checked with check_tour. X2/X3 were restarted as X2f/X3f.
 - X1: dlns, forbid sits on b7,b8 from move 50 (the dance start block), pen 150, 100k it.
 - X2: dlns, forbid sits on e2..e6 from move 100 (the e-file tail), pen 150, 100k it.
 - LF3: lns_r6 on F3 8,166 (never LNS'd before), focus 1-140 p 0.85, 60k it.

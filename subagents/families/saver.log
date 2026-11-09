@@ -6,3 +6,5 @@
 15:27:55 subagents/families/x/X3_s3_best.txt.feas_best.txt 8643 moves=161 ok=True T=8643 ok maxvisits=3 maxwait=136 unnecessary=[135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160]
 15:28:26 subagents/families/x/X3_s3_best.txt 8649 moves=161 ok=True T=8649 ok maxvisits=3 maxwait=128 unnecessary=[137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160]
 15:28:28 subagents/families/x/X3_s3_best.txt.feas_best.txt 8649 moves=161 ok=True T=8649 ok maxvisits=3 maxwait=128 unnecessary=[137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160]
+15:28:58 subagents/families/x/X3_s3_best.txt 8649 moves=161 ok=True T=8649 ok maxvisits=3 maxwait=128 unnecessary=[137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160]
+15:28:59 subagents/families/x/X3_s3_best.txt.feas_best.txt 8649 moves=161 ok=True T=8649 ok maxvisits=3 maxwait=128 unnecessary=[137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160]

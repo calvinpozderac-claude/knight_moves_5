@@ -36,3 +36,15 @@ Donors (both): originals 8,559/8,563, record 8,609, strict 8,607, polish pools o
   8,603/8,604/8,606 (tail op 1, climb ops) -> **8,607** at it 5,981, then nothing. Checker ok, 161 moves,
   md5 837c850d: a re-route of strict 8,607 (two extra zero-wait hops h2/h3 and h4/g4, g5 instead of f4 for one
   92-min sit); last 104 moves identical to strict 8,607 / 8,609.
+- L8559 s302 (from 8,607): nothing (8,607).
+- L8563 s312 (from 8,563): climbs via tail ops (8,579-8,600) and climb ops to 8,604, then **8,607** at it 28,645
+  (op 7 tail crossover a=130). md5 26cd46ca, 163 moves, checker ok; last 104 squares = strict 8,607's.
+- L8559 s303 (from 8,607): nothing (8,607). So 0 of 3 seeds from the polished start moved (round 6's L8549
+  seeds on this exact start reached 8,609 twice with more donors: 8,605 family incl. the (48,25,g6) free wait).
+- L8563 s313 (from 8,563): 8,592 ... 8,604 (tail crossovers), 8,607 (op 7 climb crossover a=11), **8,608** at
+  it 20,718 (op 2 i=151 D=8). md5 f9373050, 162 moves, checker ok=True maxvisits=3 unnecessary=[]. Not one of
+  lns84's r6 tours. Differs from 8,609 only in the climb (moves 15-58: f3/f5 shuffles, g4 sit instead of g6,
+  no g2/f4 pair); its last 104 moves are identical to 8,609's.
+
+## Step 4: polish of the distinct LNS finishes (`q3.sh`, 420 s each, wmax 12)
+Inputs run/C/: 8608_f9373050 (s313), 8607_837c850d (s311), 8607_26cd46ca (s312).

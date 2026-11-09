@@ -1,0 +1,19 @@
+lns/in_LX2_s41/PX2f_best.txt: 158 moves, 8421 minutes (replay 8421)
+lns/in_LX2_s41/X2f.txt: 168 moves, 8421 minutes (replay 8421)
+lns/in_LX2_s41/X2g_8556.txt: 159 moves, 8557 minutes (replay 8557)
+lns/in_LX2_s41/start.txt: 159 moves, 8557 minutes (replay 8557)
+start lns/in_LX2_s41/start.txt: 159 moves, 8557 minutes
+[26s] it 2000 acc 449 cur 8481 best 8557 temp 28.8 elite 40 gains 466/200/1195/88/38/84/211/320/0/288 acc 76/84/143/33/11/6/37/28/5/26
+[54s] it 4000 acc 811 cur 8428 best 8557 temp 20.8 elite 40 gains 678/264/1473/360/131/102/453/450/0/590 acc 137/139/249/82/19/12/66/47/8/52
+[133s it 10296] NEW BEST 8565 (op 7 a 120 c 124 d 141 b 135) len 160
+[134s it 10435] NEW BEST 8566 (op 2 i 22 D 5) len 160
+[143s it 11105] NEW BEST 8568 (op 2 i 24 D 3) len 156
+[156s] it 12000 acc 2112 cur 8552 best 8568 temp 5.6 elite 40 gains 1022/381/1912/479/203/150/537/534/0/662 acc 430/409/625/200/52/33/128/93/20/122
+[162s it 12445] NEW BEST 8572 (op 7 a 103 c 96 d 123 b 128) len 160
+[209s] it 16000 acc 2700 cur 8568 best 8572 temp 2.9 elite 40 gains 1054/389/1962/495/207/158/550/587/0/662 acc 548/535/784/270/60/37/165/118/23/160
+[235s] it 18000 acc 2978 cur 8567 best 8572 temp 2.1 elite 40 gains 1062/395/1987/500/207/158/551/587/0/662 acc 607/593/860/299/64/39/177/126/25/188
+[282s it 21393] NEW BEST 8590 (op 7 a 118 c 120 d 138 b 136) len 162
+[283s it 21500] NEW BEST 8594 (op 2 i 111 D 7) len 162
+[290s] it 22000 acc 3491 cur 8594 best 8594 temp 1.1 elite 40 gains 1071/399/2003/500/207/158/555/609/0/662 acc 698/695/1012/359/80/43/198/149/30/227
+[317s] it 24000 acc 3878 cur 8533 best 8594 temp 31.3 elite 40 gains 1361/1066/2493/730/207/159/895/912/0/700 acc 767/782/1118/394/90/52/232/173/31/239
+[393s] it 30000 acc 4912 cur 8532 best 8594 temp 11.7 elite 40 gains 1712/1509/3517/1015/253/209/1304/1130/0/962 acc 977/983/1419/479/111/65/317/225/40/296

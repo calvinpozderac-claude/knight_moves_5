@@ -1,0 +1,23 @@
+run/in_L8563_s313/P8559_pool.txt: 154 moves, 8559 minutes (replay 8559)
+run/in_L8563_s313/P8559_pool.txt: 159 moves, 8560 minutes (replay 8560)
+run/in_L8563_s313/P8559_pool.txt: 157 moves, 8560 minutes (replay 8560)
+run/in_L8563_s313/P8563_pool.txt: 154 moves, 8563 minutes (replay 8563)
+run/in_L8563_s313/P8563_pool.txt: 159 moves, 8564 minutes (replay 8564)
+run/in_L8563_s313/P8563_pool.txt: 157 moves, 8564 minutes (replay 8564)
+run/in_L8563_s313/record_8559.txt: 166 moves, 8559 minutes (replay 8559)
+run/in_L8563_s313/record_8563.txt: 166 moves, 8563 minutes (replay 8563)
+run/in_L8563_s313/record_8609.txt: 163 moves, 8609 minutes (replay 8609)
+run/in_L8563_s313/start.txt: 166 moves, 8563 minutes (replay 8563)
+run/in_L8563_s313/strict_8607.txt: 157 moves, 8607 minutes (replay 8607)
+start run/in_L8563_s313/start.txt: 166 moves, 8563 minutes
+[12s it 761] NEW BEST 8592 (op 7 a 137 c 133 d 138 b 140) len 164
+[92s] it 6000 acc 573 cur 8591 best 8592 temp 2.1 elite 40 gains 80/343/620/239/2/80/225/379/0/0 acc 107/119/174/56/6/12/32/56/6/5
+[103s it 6780] NEW BEST 8604 (op 7 a 129 c 128 d 156 b 157) len 160
+[105s it 6889] NEW BEST 8607 (op 7 a 11 c 11 d 31 b 37) len 165
+[183s] it 12000 acc 1160 cur 8483 best 8607 temp 4.4 elite 40 gains 280/372/1218/357/2/84/327/794/37/0 acc 221/218/372/114/19/19/68/107/11/11
+[312s it 20718] NEW BEST 8608 (op 2 i 151 D 8) len 162
+[332s] it 22000 acc 1946 cur 8607 best 8608 temp 1.3 elite 40 gains 615/490/1780/495/2/88/401/1080/38/0 acc 409/392/586/188/36/26/106/169/14/20
+[395s] it 26000 acc 2296 cur 8598 best 8608 temp 7.2 elite 40 gains 911/600/2270/529/6/106/503/1229/40/0 acc 465/468/694/218/45/33/136/197/18/22
+done it 30000 acc 2544 best 8608 restarts 2
+elite: 8609 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608
+cpu_user=451.485 wall=456.017

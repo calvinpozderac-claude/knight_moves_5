@@ -10,3 +10,22 @@
 15:13:08 lns LF3 s3 end:  
 15:13:10 LF3 stopped by hand at ~it 34k: 8166, no gain
 15:13:10 dlns X3 s3 start 8609 forbid e7,e8,f6,f7 pen 150 from 120
+15:29:13 dlns X2 s2 end: feas 8478 
+15:29:13 dlns X3 s3 end: feas 8649 
+15:29:15 X2/X3 (free 2) killed: their tails merge the two groups into one (n=41) and sit with free sinks; check_tour rejects those waits as unnecessary (X3 8,635-8,649 and X2 8,478 all rejected; moved to x/bad/). dlns.sh now uses --free 0 by default.
+15:29:15 dlns X3f s31 start 8609 forbid e7,e8,f6,f7 pen 150 from 120
+15:29:15 dlns X2f s21 start 8609 forbid e2,e3,e4,e5,e6 pen 150 from 100
+15:29:43 dlns X1 s1 end: feas 8371 done it 100000 acc 11222 best 8371 restarts 28
+15:29:51 polish PX1 start on in/X1_8371.txt (8371) wmax 12
+15:39:51 polish PX1 end: 8429 done: best 8429 minutes after 600s -> pol/PX1_best.txt
+15:39:54 dlns X1b s12 start 8429 forbid b7,b8 pen 150 from 50
+15:51:08 dlns X3f s31 end: feas 8281 done it 120000 acc 14609 best 8281 restarts 13
+15:53:43 dlns X1b s12 end: feas 8429 done it 80000 acc 10239 best 8429 restarts 7
+15:54:58 dlns X2f s21 end: feas 8421 done it 120000 acc 16259 best 8421 restarts 10
+15:55:11 polish PX3f start on in/X3f.txt (8281) wmax 12
+15:55:11 polish PX2f start on in/X2f.txt (8421) wmax 12
+15:55:24 dlns X2g s22 start 8421 forbid e2,e3,e4,e5,e6 pen 150 from 100
+16:02:00 polish PX3f end: 8281 done: best 8281 minutes after 409s -> pol/PX3f_best.txt
+16:02:33 polish PX2f end: 8421 done: best 8421 minutes after 443s -> pol/PX2f_best.txt
+16:03:00 polish PX2g start on in/X2g_8556.txt (8557) wmax 12
+16:03:00 lns LX2 s41 start 8557 focus 1 150 0.85
