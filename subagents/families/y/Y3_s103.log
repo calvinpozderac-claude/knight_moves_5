@@ -1,0 +1,108 @@
+rule mask 0008080808080000 moves [100,999)
+rule mask 0000101010101000 moves [100,999)
+in/PX1_8429.txt: 155 moves, 8429 minutes (replay 8429)
+in/X1_8371.txt: 166 moves, 8371 minutes (replay 8371)
+in/F5_8812.txt: 175 moves, 8812 minutes (replay 8812)
+start in/PX1_8429.txt: 155 moves, 8429 minutes
+  eff 6485 forbidden sits 4
+[0s it 16] NEW BEST 7085 (op 3 i 123 D 2) len 139
+  eff 6551 forbidden sits 3
+[1s it 62] NEW BEST 7001 (op 0 i 143 D 1) len 153
+  eff 6595 forbidden sits 4
+[2s it 213] NEW BEST 7195 (op 8 i 148 D 1) len 159
+  eff 6644 forbidden sits 4
+[3s it 259] NEW BEST 7244 (op 0 i 94 D 2) len 165
+  eff 6752 forbidden sits 3
+[4s it 306] NEW BEST 7202 (op 7 a 138 c 135 d 137 b 139) len 152
+  eff 6753 forbidden sits 3
+[5s it 356] NEW BEST 7203 (op 6 a 3 len 14) len 165
+  eff 6980 forbidden sits 1
+[5s it 388] NEW BEST 7130 (op 3 i 155 D 1) len 167
+  eff 6984 forbidden sits 1
+[5s it 406] NEW BEST 7134 (op 2 i 128 D 5) len 167
+  eff 7060 forbidden sits 1
+[5s it 412] NEW BEST 7210 (op 2 i 160 D 8) len 169
+  eff 7205 forbidden sits 1
+[6s it 432] NEW BEST 7355 (op 4 a 96 len 3) len 158
+  eff 7259 forbidden sits 1
+[6s it 443] NEW BEST 7409 (op 1 i 29 D 3) len 159
+  eff 7275 forbidden sits 1
+[6s it 464] NEW BEST 7425 (op 7 a 105 c 98 d 126 b 133) len 157
+  eff 7291 forbidden sits 1
+[9s it 756] NEW BEST 7441 (op 8 i 134 D 2) len 148
+  eff 7297 forbidden sits 2
+[23s it 1837] NEW BEST 7597 (op 2 i 91 D 3) len 150
+  eff 7360 forbidden sits 1
+[36s it 2929] NEW BEST 7510 (op 2 i 135 D 8) len 161
+  eff 7402 forbidden sits 1
+[36s it 2989] NEW BEST 7552 (op 3 i 138 D 2) len 162
+  eff 7406 forbidden sits 1
+[37s it 3044] NEW BEST 7556 (op 7 a 114 c 100 d 120 b 128) len 166
+  eff 7410 forbidden sits 1
+[38s it 3085] NEW BEST 7560 (op 7 a 157 c 169 d 172 b 159) len 166
+  eff 7414 forbidden sits 1
+[38s it 3113] NEW BEST 7564 (op 3 i 76 D 2) len 162
+  [it 3681] feasible best 7281
+  [it 3716] feasible best 7351
+[50s] it 4000 acc 779 cur 7476 best 7564 temp 24.5 elite 40 gains 438/510/793/572/192/0/208/692/383/0 acc 155/154/230/75/20/10/40/50/9/36
+  eff 7433 forbidden sits 1
+[71s it 5727] NEW BEST 7583 (op 2 i 149 D 7) len 159
+  eff 7439 forbidden sits 1
+[72s it 5770] NEW BEST 7589 (op 4 a 144 len 1) len 155
+  eff 7445 forbidden sits 1
+[76s it 6166] NEW BEST 7595 (op 1 i 108 D 3) len 163
+  eff 7454 forbidden sits 1
+[80s it 6517] NEW BEST 7604 (op 2 i 139 D 4) len 156
+  eff 7461 forbidden sits 1
+[81s it 6543] NEW BEST 7611 (op 1 i 146 D 2) len 158
+  eff 7465 forbidden sits 1
+[81s it 6574] NEW BEST 7615 (op 0 i 151 D 4) len 160
+  eff 7468 forbidden sits 1
+[84s it 6779] NEW BEST 7618 (op 7 a 141 c 148 d 159 b 148) len 151
+[98s] it 8000 acc 1346 cur 7541 best 7618 temp 15.0 elite 40 gains 510/730/1251/577/330/0/368/934/383/0 acc 263/269/380/139/37/16/74/80/17/71
+  eff 7469 forbidden sits 1
+[105s it 8540] NEW BEST 7619 (op 7 a 118 c 109 d 125 b 128) len 160
+  eff 7471 forbidden sits 1
+[114s it 9323] NEW BEST 7621 (op 1 i 57 D 2) len 164
+[144s] it 12000 acc 1898 cur 7617 best 7621 temp 9.1 elite 40 gains 569/753/1359/578/335/0/398/1071/393/0 acc 370/382/537/183/50/22/107/107/28/112
+[168s] it 14000 acc 2166 cur 7616 best 7621 temp 7.2 elite 40 gains 577/766/1385/590/335/0/406/1099/397/0 acc 427/432/614/206/56/23/119/128/29/132
+[237s] it 20000 acc 2925 cur 7614 best 7621 temp 3.4 elite 40 gains 612/783/1448/604/335/14/420/1145/397/0 acc 578/591/818/271/75/30/156/170/40/196
+  eff 7499 forbidden sits 1
+[259s it 21886] NEW BEST 7649 (op 0 i 125 D 6) len 158
+  eff 7501 forbidden sits 1
+[259s it 21910] NEW BEST 7651 (op 2 i 21 D 7) len 158
+[260s] it 22000 acc 3136 cur 7651 best 7651 temp 2.7 elite 40 gains 657/783/1462/616/335/14/424/1157/397/0 acc 622/637/867/296/79/33/166/182/41/213
+[284s] it 24000 acc 3386 cur 7649 best 7651 temp 2.1 elite 40 gains 661/783/1468/616/335/14/428/1167/397/0 acc 663/686/937/318/84/35/182/203/44/234
+  eff 7503 forbidden sits 1
+[287s it 24200] NEW BEST 7653 (op 0 i 32 D 5) len 160
+  eff 7510 forbidden sits 1
+[297s it 25086] NEW BEST 7660 (op 1 i 129 D 3) len 160
+[309s] it 26000 acc 3601 cur 7657 best 7660 temp 1.6 elite 40 gains 666/793/1477/620/335/16/429/1168/397/0 acc 708/731/997/336/89/38/193/216/48/245
+  eff 7511 forbidden sits 1
+[311s it 26204] NEW BEST 7661 (op 2 i 18 D 4) len 159
+  eff 7567 forbidden sits 1
+[333s it 28165] NEW BEST 7717 (op 0 i 137 D 2) len 156
+  eff 7568 forbidden sits 1
+[335s it 28422] NEW BEST 7718 (op 2 i 16 D 6) len 165
+  eff 7570 forbidden sits 1
+[343s it 29061] NEW BEST 7720 (op 6 a 76 len 12) len 169
+  eff 7571 forbidden sits 1
+[352s it 29879] NEW BEST 7721 (op 1 i 83 D 3) len 163
+  eff 7623 forbidden sits 1
+[395s it 33608] NEW BEST 7773 (op 7 a 56 c 55 d 80 b 86) len 153
+  eff 7624 forbidden sits 1
+[395s it 33611] NEW BEST 7774 (op 2 i 18 D 4) len 158
+  eff 7626 forbidden sits 1
+[400s it 34117] NEW BEST 7776 (op 6 a 148 len 5) len 162
+  [it 34880] feasible best 7435
+[422s] it 36000 acc 4702 cur 7739 best 7776 temp 19.1 elite 40 gains 1187/910/2360/851/404/40/1032/1533/399/0 acc 906/983/1320/418/113/52/268/278/58/306
+[445s] it 38000 acc 4916 cur 7770 best 7776 temp 15.0 elite 40 gains 1201/969/2410/888/439/40/1092/1575/399/0 acc 950/1020/1394/429/116/55/282/293/59/318
+  eff 7630 forbidden sits 1
+[481s it 41316] NEW BEST 7780 (op 7 a 159 c 171 d 174 b 161) len 166
+[507s] it 44000 acc 5607 cur 7778 best 7780 temp 7.2 elite 40 gains 1253/1128/2533/894/501/43/1150/1705/403/0 acc 1092/1169/1573/476/130/68/328/349/67/355
+  eff 7631 forbidden sits 1
+[527s it 45877] NEW BEST 7781 (op 2 i 14 D 7) len 162
+[549s] it 48000 acc 6011 cur 7777 best 7781 temp 4.4 elite 40 gains 1263/1146/2546/900/501/43/1158/1726/403/0 acc 1166/1262/1680/514/140/75/354/380/70/370
+[568s] it 50000 acc 6242 cur 7779 best 7781 temp 3.4 elite 40 gains 1267/1150/2553/900/501/43/1166/1744/403/0 acc 1209/1306/1752/527/144/78/373/401/72/380
+[589s] it 52000 acc 6421 cur 7780 best 7781 temp 2.7 elite 40 gains 1268/1154/2565/904/501/43/1166/1746/403/0 acc 1238/1348/1796/546/147/80/383/421/73/389
+[611s] it 54000 acc 6600 cur 7777 best 7781 temp 2.1 elite 40 gains 1270/1154/2566/904/501/43/1166/1753/403/0 acc 1288/1377/1837/562/152/82/396/440/73/393

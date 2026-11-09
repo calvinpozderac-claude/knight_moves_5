@@ -1,0 +1,6 @@
+lns/in_LF6c_s63/F6_8658.txt: 169 moves, 8658 minutes (replay 8658)
+lns/in_LF6c_s63/F6_8804.txt: 162 moves, 8804 minutes (replay 8804)
+lns/in_LF6c_s63/LF6b_s62_best.txt: 176 moves, 8800 minutes (replay 8800)
+lns/in_LF6c_s63/start.txt: 162 moves, 8804 minutes (replay 8804)
+start lns/in_LF6c_s63/start.txt: 162 moves, 8804 minutes
+[26s] it 2000 acc 414 cur 8747 best 8804 temp 32.9 elite 40 gains 288/396/797/189/102/111/344/603/1/204 acc 91/61/117/31/10/12/39/33/3/17

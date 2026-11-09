@@ -49,3 +49,17 @@
 16:58:54 lns LX2e s45 end: 8812 done it 150000 acc 21121 best 8812 restarts 10
 16:59:01 lns LX2d s44 end: 8810 done it 150000 acc 21576 best 8810 restarts 10
 16:59:51 all jobs done; saver stopped
+18:31:41 ylns Y2 s102 start in/F5_8812.txt (8812) pen 150 rules c8,d8,b7,b8:55:100 d3,d4,d5,d6,d7:100:999 e2,e3,e4,e5,e6:100:999 donors in/F5_8812.txt in/F1_8609.txt in/PX1_8429.txt
+18:31:41 ylns Y3 s103 start in/PX1_8429.txt (8429) pen 150 rules d3,d4,d5,d6,d7:100:999 e2,e3,e4,e5,e6:100:999 donors in/PX1_8429.txt in/X1_8371.txt in/F5_8812.txt
+18:31:41 ylns Y1 s101 start in/F5_8812.txt (8812) pen 150 rules d3,d4,d5,d6,d7:100:999 e2,e3,e4,e5,e6:100:999 donors in/F5_8812.txt in/F1_8609.txt
+18:42:16 ylns Y3 s103 end: feas 7435 
+18:42:17 Y3 stopped by hand at it ~55k: X1 start collapses under TAIL (feasible 7,435, eff 7,781)
+18:42:17 ylns Y4 s104 start in/F5_8812.txt (8812) pen 150 rules d3,d4,d5,d6,d7:60:999 e2,e3,e4,e5,e6:100:999 donors in/F5_8812.txt in/F1_8609.txt
+18:52:10 ylns Y2 s102 end: feas 8433 
+18:52:10 Y2 stopped by hand at it ~105k (8,433 since it 18k)
+18:52:10 lns LF6 s61 start 8658 focus 1 160 0.85
+18:57:09 ylns Y1 s101 end: feas 8658 done it 120000 acc 13806 best 8658 restarts 13
+19:01:42 lns LF6b s62 start 8691 focus 1 160 0.85
+19:08:32 ylns Y4 s104 end: feas 8083 done it 120000 acc 14833 best 8083 restarts 19
+19:11:19 Y4 had ended at 120k (no kill needed): no d3-d7 sits after 60 and no e2-e6 after 100 -> 8,083 (feasible)
+19:11:19 lns LF6c s63 start 8804 focus 1 160 0.85

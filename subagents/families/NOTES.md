@@ -116,3 +116,26 @@ Runs (all from 8,609, donors 8,609 / 8,563 / strict 8,607, t0 40, otherwise lns8
   find the next family; climb/merge crossovers between F5 tours and F1's climb.
 - 16:59: LX2e s45 ended at **8,812** (STRICT, checker ok; NEW_RECORD_8812.txt, keep/). LX2d s44: 8,810. All jobs and the
   saver stopped 17:00.
+
+# Round 8: penalise F5's own blocks (start 18:30, after a container restart; 3 threads)
+Record at start: 8,812 (`data/tours/record_8812.txt`, F5). f5push handles F5's tail proof and focused LNS.
+- `bin/dlns` now takes several rules: `--rule "sq,sq,...:FROM:TO"` (a sit of >= 40 minutes leaving one of the
+  squares at a move index in [FROM, TO) costs `--pen`). `ylns.sh TAG SEED ITERS START PEN "RULES" DONORS...`
+  runs it with `--free 0`; logs and outputs in `y/`. Saver threshold raised to 8,812 and it now also watches
+  `y/` and the `*feas_best.txt` files (started with setsid).
+- main's `record_8595.txt` (F1 variant): sig f5/h4 b8/h3 b7/b8 a7/a8 a6/b6 c6/c7 c8/d8 c6/c7 c4/c5 a5/b5 b2/b3
+  a2/a3 **b2/b3 a3/a4** a4/b4 c4/e3 e2/e3 c1/e4 e4/e5 e5/e6 e7/e8 e7/f7 f6 (F1 with an extra b2/b3 a3/a4 block).
+Runs (pen 150, 120k it, TAIL = no sits on d3-d7 or e2-e6 from move 100):
+- Y1 s101: from 8,812, TAIL.
+- Y2 s102: from 8,812, TAIL + no sits on c8,d8,b7,b8 in moves 55-99 (neither F5's nor F1's first block).
+- Y3 s103: from X1 8,429 (a7/a8-first dance), TAIL.
+Results so far (all feasible bests checker ok, unnecessary=[]):
+- Y1 (TAIL from 8,812): **8,658** at it 23k (no gain after): new family **F6 "d-first"**: f7/h3 **d3/d4 d5/d7 d6/d7**
+  c8/d8 c6/c7 a7/b7 a8/b8 a6/b6 c5/c6 c4/c5 b4/c4 a4/b4 a3/a4 a2/b2 b3/c3 c2/c3 a5/b3 a5/b5 e7/e8 f8/g8: the d-file
+  block moves from the end of F5's dance to its start (before the c8/d8 sweep).
+- Y2 (TAIL + no c8/d8/b7/b8 first block): 8,433, also d-first (d4/e4 c3/d3 d4/d6 d6/d7 then c8/d8 after move 100). Stopped.
+- Y3 (TAIL from X1 8,429): collapses (feasible 7,435). Stopped.
+- Y4 (no d3-d7 sits from move 60, no e2-e6 from 100): 8,083, family "F7": c8/d8 c7/e3 e2/e3 a5/b5 c5/c6 ... e7/e8
+  f8/g8 (e-file early, no d-file).
+- Plain LNS on F6 (`--free 0`, donors only F6 tours): LF6 s61 8,658 -> 8,691 -> **8,804** (it 88k); LF6b s62 (from
+  8,691) -> 8,800. Both keep the d-first signature. LF6c s63 started from 8,804.

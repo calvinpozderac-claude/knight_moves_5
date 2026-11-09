@@ -1,0 +1,14 @@
+18:31:36 polish P8595 start on in/r8595.txt (8595) wmax 12
+18:38:18 exact E8812: proven from move 151 of 175
+18:41:36 polish P8595 end: 8604 done: best 8604 minutes after 601s -> pol/P8595_best.txt
+18:44:14 lns F5 s501 start 8812 focus 1 150 0.85
+18:49:46 exact E8810: proven from move 151 of 175
+18:49:46 lns S8595 s601 start 8604 focus 1 135 0.85
+18:59:01 NEW_RECORD_8824 from /home/user/knight_moves_5/subagents/f5push/lns/F5_s501_best.txt
+18:59:32 NEW_RECORD_8827 from /home/user/knight_moves_5/subagents/f5push/lns/F5_s501_best.txt
+19:00:02 NEW_RECORD_8828 from /home/user/knight_moves_5/subagents/f5push/lns/F5_s501_best.txt
+19:00:33 NEW_RECORD_8829 from /home/user/knight_moves_5/subagents/f5push/lns/F5_s501_best.txt
+19:04:46 lns S8595 s601 end:  done it 51095 acc 5335 best 8604 restarts 7
+19:04:47 lns F5 s502 start 8829 focus 1 150 0.85
+19:06:47 lns F5 s501 end: 8829 done it 60000 acc 8310 best 8829 restarts 3
+19:07:27 polish PF5_s501 start on NEW_RECORD_8829.txt (8829) wmax 12

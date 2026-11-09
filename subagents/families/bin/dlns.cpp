@@ -335,12 +335,16 @@ static void dbg_fail(const vector<M>& X) {
 struct Elite { long long T; vector<M> X; };
 
 
-// ---- families: diversity penalty. A sit (wait >= SITMIN) leaving a square in FMASK at move index >= FFROM costs PEN.
-static uint64_t FMASK = 0; static int SITMIN = 40, FFROM = 0; static double PEN = 0;
+// ---- families: diversity penalty. A sit (wait >= SITMIN) leaving a square of a rule's mask at move index in
+// [from, to) costs PEN. --forbid/--ffrom make rule 0 (to = inf); --rule "a1,b2:FROM:TO" adds more rules.
+struct Rule { uint64_t m; int lo, hi; };
+static vector<Rule> RULES; static uint64_t FMASK = 0; static int SITMIN = 40, FFROM = 0; static double PEN = 0;
+static uint64_t parse_sqs(const string& v) { uint64_t m = 0; for (size_t k = 0; k + 1 < v.size(); k += 3) m |= 1ULL << ((v[k] - 'a') + 8 * (v[k + 1] - '1')); return m; }
 static int fcount(const vector<M>& X) {
-  if (!FMASK) return 0;
+  if (RULES.empty()) return 0;
   S s = start_state(); int c = 0;
-  for (size_t i = 0; i < X.size(); i++) { int p = s.pos; long long T0 = s.T; if (!stepM(s, X[i])) return 999; if ((int)i >= FFROM && s.T - T0 >= SITMIN && (FMASK >> p & 1)) c++; }
+  for (size_t i = 0; i < X.size(); i++) { int p = s.pos; long long T0 = s.T; if (!stepM(s, X[i])) return 999;
+    if (s.T - T0 >= SITMIN) for (auto& r : RULES) if ((int)i >= r.lo && (int)i < r.hi && (r.m >> p & 1)) c++; }
   return c;
 }
 static inline double EFF(long long T, const vector<M>& X) { return (double)T - PEN * fcount(X); }
@@ -369,12 +373,16 @@ int main(int argc, char** argv) {
     else if (s == "--budget") BUDGET = atoll(argv[++a]);
     else if (s == "--dmax") DMAX = atoi(argv[++a]);
     else if (s == "--xover") XOVER = atoi(argv[++a]);
-    else if (s == "--forbid") { string v = argv[++a]; for (size_t k = 0; k + 1 < v.size(); k += 3) FMASK |= 1ULL << ((v[k] - 'a') + 8 * (v[k + 1] - '1')); }
+    else if (s == "--forbid") FMASK = parse_sqs(argv[++a]);
+    else if (s == "--rule") { string v = argv[++a]; size_t c1 = v.find(':'), c2 = v.find(':', c1 + 1);
+      RULES.push_back({parse_sqs(v.substr(0, c1)), atoi(v.substr(c1 + 1, c2 - c1 - 1).c_str()), atoi(v.substr(c2 + 1).c_str())}); }
     else if (s == "--pen") PEN = atof(argv[++a]);
     else if (s == "--sitmin") SITMIN = atoi(argv[++a]);
     else if (s == "--ffrom") FFROM = atoi(argv[++a]);
     else if (s == "--focus") { FLO = atoi(argv[++a]); FHI = atoi(argv[++a]); FOCP = atof(argv[++a]); }
   }
+  if (FMASK) RULES.push_back({FMASK, FFROM, 1 << 20});
+  for (auto& r : RULES) printf("rule mask %016llx moves [%d,%d)\n", (unsigned long long)r.m, r.lo, r.hi);
   rng.seed(seed);
   vector<Elite> recs;
   for (auto& f : files) {
