@@ -23,7 +23,12 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_8595.txt` | **8,595** | Self-play-style search with the same frozen network, all games sharing one search tree from a1 (2048 simulations per move, games that end restart from the best queued alternative move or from a1, least recently visited nodes pruned when memory fills): 2 h 35 min in, as a finish found inside the tree (8,579 at 2 h 32 min) |
+| `data/tours/record_8830.txt` | **8,830** | Branch `claude/subagents`, round 8 (`subagents/f5push/`): LNS focused on moves 1-150 of the 8,812 family, one fresh seed found 8,829 in about 40k iterations, then 8,830 from 8,829. Exhaustive search proves its last 23 moves optimal for its prefix |
+| `data/tours/record_8829.txt` | 8,829 | Same round-8 LNS run as 8,830 (seed 501, from 8,812) |
+| `data/tours/record_8812.txt` | 8,812 | Branch `claude/subagents`, round 7 (`subagents/families/`): **a new tour family (F5)**. LNS with a penalty on the 8,609 tour's e-file sits rebuilt the dance on the d-file (8,421), then plain LNS on the new tour alone took it to 8,812 in about 40 min (strict 8,810 in `strict_8810.txt`) |
+| `data/tours/record_8609.txt` | 8,609 | Branch `claude/subagents`, round 6 (`subagents/lns84/`): polish + LNS on the self-play tours 8,537-8,553 |
+| `data/tours/record_8605.txt` | 8,605 | Branch `claude/subagents`, round 5: LNS + polisher loop on the 8,484 basin (8,596 and 8,600 on the way: `record_8596.txt`, `record_8600.txt`) |
+| `data/tours/record_8595.txt` | 8,595 | Self-play-style search with the same frozen network, all games sharing one search tree from a1 (2048 simulations per move, games that end restart from the best queued alternative move or from a1, least recently visited nodes pruned when memory fills): 2 h 35 min in, as a finish found inside the tree (8,579 at 2 h 32 min) |
 | `data/tours/record_8563.txt` | 8,563 | Same frozen-network A* run as 8,559, 11 min in |
 | `data/tours/record_8559.txt` | 8,559 | Best-first (A*) search from a1 guided by the frozen value network of a 2048-simulation self-play run (no training; open list capped at 128M positions, the lowest predictions dropped): 10 min in (8,555 at 8 min) |
 | `data/tours/record_8553.txt` | 8,553 | Same 1024-simulation run as 8,537, 6 h 28 min in, as a finish found inside a search tree |
@@ -31,6 +36,7 @@ agent: C++ tree search plus a small neural network trained by self-play.
 | `data/tours/record_8545.txt` | 8,545 | Same 1024-simulation run as 8,537, 3 h 07 min in, as a played self-play game |
 | `data/tours/record_8537.txt` | 8,537 | Continuation of the 8,484 run's final network with 1024 simulations per move (8x more) and a fresh replay buffer: 2 h 12 min in |
 | `data/tours/record_8484.txt` | 8,484 | Same AlphaZero-style run as 8,337, 3 h 23 min in |
+| `data/tours/record_8348.txt` | 8,348 | Branch `claude/subagents`, rounds 1-4 (`subagents/SUMMARY.md`): LNS of the 8,123 climb and merge, a free-wait search and learned-prior search; records 8,130-8,338 on the way (`record_8130.txt` ... `record_8338.txt`) |
 | `data/tours/record_8337.txt` | 8,337 | AlphaZero-style self-play (MCTS with max backup; policy target from the search's values only, with no factor from the network's prior), seeded only with heuristic-search tours, never the records: 3 h into a run, as a finish found inside a search tree |
 | `data/tours/record_8123.txt` | 8,123 | NN-guided A* (`nnastar/`), full run: 25 min generation, 31 min training (early-stopped), then found within 2 minutes of searching from a1 |
 | `data/tours/record_8002.txt` | 8,002 | NN-guided A* (`nnastar/`, see below) from a1: found about 4 minutes into the first (smoke-test) search, after 1.5 minutes of data generation and 2 minutes of training |
