@@ -1,0 +1,45 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 600s
+tour 1: 8421 minutes, 168 jumps, budget 600s
+  new overall best 8421 (input) -> pol/PX2f_best.txt
+  reroute 1000/10: 168 -> 166 jumps
+  new overall best 8421 (reroute 1000/10) -> pol/PX2f_best.txt
+  reroute 1000/0: unchanged
+  reroute 0/0: 166 -> 166 jumps
+  reroute 5/1: unchanged
+  [reroute 1000/10] window w=1 at move 49: 8421 -> 8421 minutes, 166 -> 164 jumps
+  [reroute 1000/10] pass: 284/2092 windows, 222051 nodes, 125158 tail replays, 0.1s (3366301 nodes/s)
+  new overall best 8421 (window) -> pol/PX2f_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: 164 -> 164 jumps
+  reroute 5/1: unchanged
+  [as is] window w=2 at move 57: 8421 -> 8421 minutes, 164 -> 162 jumps
+  [as is] pass: 435/2066 windows, 568352 nodes, 303427 tail replays, 0.1s (4291890 nodes/s)
+  new overall best 8421 (window) -> pol/PX2f_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] window w=2 at move 22: 8421 -> 8421 minutes, 162 -> 160 jumps
+  [as is] pass: 464/2040 windows, 1549507 nodes, 893581 tail replays, 0.3s (4443744 nodes/s)
+  new overall best 8421 (window) -> pol/PX2f_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] window w=4 at move 39: 8421 -> 8421 minutes, 160 -> 158 jumps
+  [as is] pass: 756/2014 windows, 38587962 nodes, 19185423 tail replays, 7.6s (5050914 nodes/s)
+  new overall best 8421 (window) -> pol/PX2f_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] pass: 1988/1988 windows, 2073588812 nodes, 974807493 tail replays, 433.7s (4780670 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.1s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8421 -> 8421 minutes (158 jumps), 442.7s (converged)
+done: best 8421 minutes after 443s -> pol/PX2f_best.txt

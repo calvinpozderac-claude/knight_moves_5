@@ -1,0 +1,95 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 900s
+tour 1: 8545 minutes, 166 jumps, budget 900s
+  new overall best 8545 (input) -> r6/P8545_best.txt
+  reroute 1000/10: 166 -> 162 jumps
+  new overall best 8545 (reroute 1000/10) -> r6/P8545_best.txt
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [reroute 1000/10] window w=0 at move 22: 8545 -> 8546 minutes, 162 -> 165 jumps
+  [reroute 1000/10] pass: 141/2040 windows, 136751 nodes, 82476 tail replays, 0.1s (2255273 nodes/s)
+  new overall best 8546 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=2 at move 62: 8546 -> 8546 minutes, 165 -> 163 jumps
+  [as is] pass: 433/2079 windows, 391096 nodes, 227644 tail replays, 0.1s (3031337 nodes/s)
+  new overall best 8546 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=2 at move 43: 8546 -> 8546 minutes, 163 -> 161 jumps
+  [as is] pass: 446/2053 windows, 796693 nodes, 467467 tail replays, 0.3s (2716746 nodes/s)
+  new overall best 8546 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=2 at move 4: 8546 -> 8546 minutes, 161 -> 159 jumps
+  [as is] pass: 479/2027 windows, 1135399 nodes, 664209 tail replays, 0.4s (2728823 nodes/s)
+  new overall best 8546 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=1 at move 134: 8546 -> 8588 minutes, 159 -> 160 jumps
+  [as is] pass: 185/2001 windows, 156227 nodes, 93501 tail replays, 0.1s (2444394 nodes/s)
+  new overall best 8588 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=3 at move 19: 8588 -> 8588 minutes, 160 -> 158 jumps
+  [as is] pass: 619/2014 windows, 6078710 nodes, 3446390 tail replays, 1.9s (3259686 nodes/s)
+  new overall best 8588 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=4 at move 103: 8588 -> 8592 minutes, 158 -> 158 jumps
+  [as is] pass: 682/1988 windows, 7826391 nodes, 4386238 tail replays, 1.9s (4111574 nodes/s)
+  new overall best 8592 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=5 at move 42: 8592 -> 8592 minutes, 158 -> 156 jumps
+  [as is] pass: 897/1988 windows, 93049912 nodes, 48716241 tail replays, 23.1s (4022379 nodes/s)
+  new overall best 8592 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=10 at move 127: 8592 -> 8596 minutes, 156 -> 156 jumps
+  [as is] pass: 1545/1962 windows, 896123887 nodes, 445877041 tail replays, 210.3s (4260822 nodes/s)
+  new overall best 8596 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=8 at move 131: 8596 -> 8600 minutes, 156 -> 156 jumps
+  [as is] pass: 1246/1962 windows, 428060265 nodes, 221507227 tail replays, 95.2s (4497656 nodes/s)
+  new overall best 8600 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=10 at move 99: 8600 -> 8604 minutes, 156 -> 156 jumps
+  [as is] pass: 1573/1962 windows, 821067491 nodes, 410683126 tail replays, 171.7s (4781566 nodes/s)
+  new overall best 8604 (window) -> r6/P8545_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] pass: 1962/1962 windows, 1727824430 nodes, 810913253 tail replays, 379.3s (4555819 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.1s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.1s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8545 -> 8604 minutes (156 jumps), 885.0s (converged)
+done: best 8604 minutes after 885s -> r6/P8545_best.txt
+cpu_user=874.621 wall=884.975

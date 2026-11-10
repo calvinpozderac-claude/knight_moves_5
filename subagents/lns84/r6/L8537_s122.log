@@ -1,0 +1,25 @@
+r6/in_L8537_s122/P8537_best.txt: 157 moves, 8603 minutes (replay 8603)
+r6/in_L8537_s122/P8545_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_L8537_s122/P8549_best.txt: 157 moves, 8607 minutes (replay 8607)
+r6/in_L8537_s122/P8553_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_L8537_s122/keep_8605_LDs16.txt: 165 moves, 8605 minutes (replay 8605)
+r6/in_L8537_s122/keep_8605_PLIs63.txt: 159 moves, 8605 minutes (replay 8605)
+r6/in_L8537_s122/record_8537.txt: 164 moves, 8537 minutes (replay 8537)
+r6/in_L8537_s122/record_8545.txt: 166 moves, 8545 minutes (replay 8545)
+r6/in_L8537_s122/record_8549.txt: 162 moves, 8549 minutes (replay 8549)
+r6/in_L8537_s122/record_8553.txt: 170 moves, 8553 minutes (replay 8553)
+r6/in_L8537_s122/record_8605.txt: 161 moves, 8605 minutes (replay 8605)
+r6/in_L8537_s122/start.txt: 157 moves, 8607 minutes (replay 8607)
+start r6/in_L8537_s122/start.txt: 157 moves, 8607 minutes
+[33s] it 2000 acc 231 cur 8472 best 8607 temp 15.0 elite 18 gains 15/47/110/0/70/0/102/159/1/0 acc 47/45/65/21/2/6/24/16/3/2
+[64s] it 4000 acc 459 cur 8464 best 8607 temp 5.6 elite 20 gains 26/48/142/0/70/0/116/221/1/0 acc 98/92/127/36/13/10/45/30/4/4
+[92s] it 6000 acc 612 cur 8588 best 8607 temp 2.1 elite 40 gains 122/48/144/1/70/0/122/274/1/0 acc 133/127/168/51/16/11/51/44/6/5
+[122s] it 8000 acc 753 cur 8595 best 8607 temp 31.3 elite 40 gains 133/135/148/1/70/0/128/333/1/0 acc 170/165/203/60/16/11/60/56/7/5
+[205s] it 14000 acc 1244 cur 8605 best 8607 temp 1.6 elite 40 gains 172/145/205/48/78/25/300/613/1/0 acc 246/299/329/107/28/21/93/102/11/8
+[326s] it 22000 acc 1827 cur 8603 best 8607 temp 1.3 elite 40 gains 311/153/293/93/106/33/526/1125/1/0 acc 366/422/495/154/42/30/137/155/14/12
+[354s] it 24000 acc 2005 cur 8533 best 8607 temp 19.1 elite 40 gains 363/178/393/99/114/37/754/1311/1/0 acc 400/449/548/179/47/32/150/165/18/17
+[409s] it 28000 acc 2338 cur 8594 best 8607 temp 2.7 elite 40 gains 376/186/409/103/114/37/766/1606/1/0 acc 461/534/633/208/53/34/170/198/20/27
+[437s] it 30000 acc 2484 cur 8597 best 8607 temp 40.0 elite 40 gains 384/188/411/103/114/37/774/1620/2/0 acc 488/572/676/223/54/35/180/207/22/27
+done it 30000 acc 2484 best 8607 restarts 3
+elite: 8607 8607 8607 8607 8607 8607 8607 8607 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8606 8605 8605 8605 8605
+cpu_user=430.196 wall=436.530

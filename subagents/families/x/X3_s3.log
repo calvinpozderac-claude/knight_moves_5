@@ -1,0 +1,194 @@
+in/F1_8609.txt: 163 moves, 8609 minutes (replay 8609)
+in/F1_8563.txt: 166 moves, 8563 minutes (replay 8563)
+in/F1_s8607.txt: 157 moves, 8607 minutes (replay 8607)
+start in/F1_8609.txt: 163 moves, 8609 minutes
+  eff 7573 forbidden sits 6
+[0s it 3] NEW BEST 8473 (op 2 i 107 D 6) len 161
+  eff 7728 forbidden sits 4
+[0s it 8] NEW BEST 8328 (op 3 i 76 D 2) len 154
+  eff 7764 forbidden sits 2
+[0s it 12] NEW BEST 8064 (op 6 a 128 len 18) len 151
+  eff 7838 forbidden sits 1
+[2s it 72] NEW BEST 7988 (op 1 i 151 D 2) len 155
+  eff 7883 forbidden sits 1
+[3s it 143] NEW BEST 8033 (op 2 i 105 D 4) len 153
+  eff 7885 forbidden sits 1
+[5s it 271] NEW BEST 8035 (op 2 i 22 D 5) len 151
+  eff 7965 forbidden sits 1
+[5s it 274] NEW BEST 8115 (op 7 a 133 c 137 d 153 b 147) len 153
+  [it 1094] feasible best 8026
+  eff 8026 forbidden sits 0
+[20s it 1094] NEW BEST 8026 (op 2 i 161 D 3) len 164
+  [it 1856] feasible best 8030
+  eff 8030 forbidden sits 0
+[31s it 1856] NEW BEST 8030 (op 1 i 129 D 3) len 150
+[33s] it 2000 acc 258 cur 8022 best 8030 temp 29.8 elite 40 gains 26/259/390/308/0/0/221/227/18/0 acc 48/55/69/36/5/2/12/23/4/4
+  [it 3490] feasible best 8034
+  eff 8034 forbidden sits 0
+[57s it 3490] NEW BEST 8034 (op 7 a 137 c 130 d 145 b 151) len 162
+  [it 3493] feasible best 8035
+  eff 8035 forbidden sits 0
+[57s it 3493] NEW BEST 8035 (op 0 i 16 D 4) len 165
+  [it 3844] feasible best 8038
+  eff 8038 forbidden sits 0
+[62s it 3844] NEW BEST 8038 (op 2 i 77 D 5) len 154
+  [it 4508] feasible best 8172
+  eff 8172 forbidden sits 0
+[73s it 4508] NEW BEST 8172 (op 1 i 137 D 3) len 155
+  [it 4515] feasible best 8176
+  eff 8176 forbidden sits 0
+[73s it 4515] NEW BEST 8176 (op 2 i 140 D 8) len 155
+  [it 4625] feasible best 8177
+  eff 8177 forbidden sits 0
+[75s it 4625] NEW BEST 8177 (op 2 i 142 D 2) len 160
+  [it 4812] feasible best 8188
+  eff 8188 forbidden sits 0
+[77s it 4812] NEW BEST 8188 (op 6 a 132 len 2) len 153
+  [it 4869] feasible best 8192
+  eff 8192 forbidden sits 0
+[78s it 4869] NEW BEST 8192 (op 7 a 56 c 62 d 86 b 82) len 155
+  [it 4899] feasible best 8196
+  eff 8196 forbidden sits 0
+[78s it 4899] NEW BEST 8196 (op 1 i 137 D 3) len 157
+  [it 5116] feasible best 8198
+  eff 8198 forbidden sits 0
+[81s it 5116] NEW BEST 8198 (op 0 i 137 D 4) len 154
+  [it 5117] feasible best 8199
+  eff 8199 forbidden sits 0
+[81s it 5117] NEW BEST 8199 (op 2 i 143 D 9) len 154
+[95s] it 6000 acc 733 cur 8131 best 8199 temp 16.5 elite 40 gains 147/794/673/513/0/0/281/693/18/0 acc 136/181/193/82/13/11/35/67/9/6
+  [it 7688] feasible best 8206
+  eff 8206 forbidden sits 0
+[122s it 7688] NEW BEST 8206 (op 0 i 139 D 7) len 156
+  [it 7755] feasible best 8221
+  eff 8221 forbidden sits 0
+[124s it 7755] NEW BEST 8221 (op 2 i 91 D 6) len 157
+  [it 7994] feasible best 8399
+  eff 8399 forbidden sits 0
+[127s it 7994] NEW BEST 8399 (op 1 i 91 D 3) len 156
+  [it 8163] feasible best 8403
+  eff 8403 forbidden sits 0
+[130s it 8163] NEW BEST 8403 (op 2 i 137 D 9) len 156
+  [it 8268] feasible best 8404
+  eff 8404 forbidden sits 0
+[131s it 8268] NEW BEST 8404 (op 7 a 109 c 111 d 129 b 127) len 156
+  [it 8326] feasible best 8405
+  eff 8405 forbidden sits 0
+[132s it 8326] NEW BEST 8405 (op 2 i 13 D 5) len 155
+  [it 9077] feasible best 8415
+  eff 8415 forbidden sits 0
+[143s it 9077] NEW BEST 8415 (op 1 i 99 D 1) len 160
+  [it 9560] feasible best 8417
+  eff 8417 forbidden sits 0
+[151s it 9560] NEW BEST 8417 (op 2 i 15 D 5) len 153
+  [it 9590] feasible best 8419
+  eff 8419 forbidden sits 0
+[151s it 9590] NEW BEST 8419 (op 2 i 14 D 5) len 159
+[158s] it 10000 acc 1173 cur 8417 best 8419 temp 9.1 elite 40 gains 190/1039/744/523/0/1/287/797/18/0 acc 214/278/319/134/22/17/63/106/12/8
+  [it 10261] feasible best 8422
+  eff 8422 forbidden sits 0
+[162s it 10261] NEW BEST 8422 (op 3 i 61 D 2) len 157
+  [it 11092] feasible best 8424
+  eff 8424 forbidden sits 0
+[174s it 11092] NEW BEST 8424 (op 2 i 65 D 5) len 159
+  [it 11100] feasible best 8429
+  eff 8429 forbidden sits 0
+[174s it 11100] NEW BEST 8429 (op 2 i 23 D 4) len 162
+  [it 11155] feasible best 8431
+  eff 8431 forbidden sits 0
+[175s it 11155] NEW BEST 8431 (op 2 i 146 D 7) len 161
+[187s] it 12000 acc 1395 cur 8413 best 8431 temp 6.8 elite 40 gains 227/1044/797/528/1/2/291/817/18/0 acc 248/335/393/155/25/19/76/124/12/8
+  [it 12503] feasible best 8439
+  eff 8439 forbidden sits 0
+[194s it 12503] NEW BEST 8439 (op 1 i 100 D 3) len 153
+  [it 12529] feasible best 8440
+  eff 8440 forbidden sits 0
+[195s it 12529] NEW BEST 8440 (op 2 i 149 D 8) len 157
+[218s] it 14000 acc 1625 cur 8433 best 8440 temp 5.1 elite 40 gains 234/1098/858/528/1/2/337/854/18/0 acc 291/373/464/183/27/21/97/142/13/14
+  [it 14104] feasible best 8441
+  eff 8441 forbidden sits 0
+[219s it 14104] NEW BEST 8441 (op 2 i 114 D 4) len 160
+  [it 14587] feasible best 8447
+  eff 8447 forbidden sits 0
+[227s it 14587] NEW BEST 8447 (op 7 a 20 c 16 d 46 b 50) len 159
+[248s] it 16000 acc 1846 cur 8440 best 8447 temp 3.8 elite 40 gains 239/1099/874/533/2/3/343/880/18/0 acc 338/412/516/205/31/25/111/167/15/26
+[371s] it 24000 acc 2697 cur 8445 best 8447 temp 1.2 elite 40 gains 254/1122/902/535/2/4/351/924/19/0 acc 520/578/760/291/40/35/152/239/21/61
+  [it 24010] feasible best 8448
+  eff 8448 forbidden sits 0
+[372s it 24010] NEW BEST 8448 (op 2 i 26 D 4) len 159
+  [it 24287] feasible best 8449
+  eff 8449 forbidden sits 0
+[376s it 24287] NEW BEST 8449 (op 1 i 97 D 2) len 159
+[403s] it 26000 acc 2944 cur 8410 best 8449 temp 34.5 elite 40 gains 284/1158/994/693/2/4/391/934/19/0 acc 573/632/816/324/47/37/171/254/22/68
+[433s] it 28000 acc 3247 cur 8413 best 8449 temp 25.7 elite 40 gains 552/1550/1333/726/2/6/510/1158/19/0 acc 631/705/896/348/51/40/199/278/25/74
+[465s] it 30000 acc 3573 cur 8172 best 8449 temp 19.1 elite 40 gains 784/1705/1790/807/41/7/629/1252/78/0 acc 695/770/985/382/56/42/225/296/33/89
+[497s] it 32000 acc 3832 cur 8419 best 8449 temp 14.2 elite 40 gains 859/1747/1850/815/41/8/631/1347/78/0 acc 740/829/1068/405/57/48/239/310/37/99
+  [it 35926] feasible best 8488
+  eff 8488 forbidden sits 0
+[558s it 35926] NEW BEST 8488 (op 4 a 155 len 2) len 167
+  [it 35987] feasible best 8489
+  eff 8489 forbidden sits 0
+[559s it 35987] NEW BEST 8489 (op 1 i 153 D 1) len 161
+[559s] it 36000 acc 4358 cur 8488 best 8489 temp 7.9 elite 40 gains 885/1792/1970/835/115/10/637/1378/78/0 acc 845/927/1239/459/66/53/277/332/42/118
+  [it 36026] feasible best 8497
+  eff 8497 forbidden sits 0
+[559s it 36026] NEW BEST 8497 (op 7 a 101 c 110 d 136 b 123) len 159
+  [it 36462] feasible best 8498
+  eff 8498 forbidden sits 0
+[565s it 36462] NEW BEST 8498 (op 2 i 23 D 3) len 155
+  [it 36523] feasible best 8499
+  eff 8499 forbidden sits 0
+[566s it 36523] NEW BEST 8499 (op 1 i 147 D 3) len 155
+  [it 37862] feasible best 8502
+  eff 8502 forbidden sits 0
+[585s it 37862] NEW BEST 8502 (op 2 i 24 D 5) len 165
+  [it 37870] feasible best 8503
+  eff 8503 forbidden sits 0
+[586s it 37870] NEW BEST 8503 (op 2 i 154 D 9) len 165
+  [it 37932] feasible best 8504
+  eff 8504 forbidden sits 0
+[586s it 37932] NEW BEST 8504 (op 6 a 146 len 9) len 166
+[587s] it 38000 acc 4574 cur 8503 best 8504 temp 5.9 elite 40 gains 899/1796/1995/836/115/11/675/1405/78/0 acc 898/966/1305/473/69/58/289/345/43/128
+  [it 39174] feasible best 8552
+  eff 8552 forbidden sits 0
+[605s it 39174] NEW BEST 8552 (op 2 i 98 D 3) len 163
+  [it 39181] feasible best 8553
+  eff 8553 forbidden sits 0
+[605s it 39181] NEW BEST 8553 (op 2 i 17 D 6) len 162
+[647s] it 42000 acc 5027 cur 8550 best 8553 temp 3.3 elite 40 gains 906/1802/2061/838/117/14/686/1439/79/0 acc 979/1052/1429/516/77/65/314/380/51/164
+[676s] it 44000 acc 5232 cur 8550 best 8553 temp 2.4 elite 40 gains 909/1805/2071/840/117/14/689/1451/79/0 acc 1015/1094/1479/536/81/65/326/402/53/181
+[706s] it 46000 acc 5463 cur 8549 best 8553 temp 1.8 elite 40 gains 916/1816/2078/840/118/15/690/1451/79/0 acc 1054/1155/1543/560/87/66/338/412/55/193
+  [it 51200] feasible best 8554
+  eff 8554 forbidden sits 0
+[785s it 51200] NEW BEST 8554 (op 2 i 94 D 2) len 144
+  [it 51239] feasible best 8558
+  eff 8558 forbidden sits 0
+[785s it 51239] NEW BEST 8558 (op 2 i 16 D 6) len 150
+  [it 51292] feasible best 8595
+  eff 8595 forbidden sits 0
+[786s it 51292] NEW BEST 8595 (op 1 i 144 D 1) len 154
+  [it 53175] feasible best 8631
+  eff 8631 forbidden sits 0
+[818s it 53175] NEW BEST 8631 (op 0 i 122 D 1) len 151
+  [it 53202] feasible best 8634
+  eff 8634 forbidden sits 0
+[819s it 53202] NEW BEST 8634 (op 4 a 72 len 3) len 154
+  [it 53208] feasible best 8635
+  eff 8635 forbidden sits 0
+[819s it 53208] NEW BEST 8635 (op 2 i 18 D 2) len 161
+  [it 53355] feasible best 8640
+  eff 8640 forbidden sits 0
+[821s it 53355] NEW BEST 8640 (op 1 i 145 D 3) len 156
+  [it 55028] feasible best 8641
+  eff 8641 forbidden sits 0
+[847s it 55028] NEW BEST 8641 (op 1 i 139 D 3) len 155
+[862s] it 56000 acc 6731 cur 8636 best 8641 temp 16.5 elite 40 gains 2047/2684/3643/1099/186/19/1270/1900/102/0 acc 1299/1419/1895/692/111/80/428/471/63/273
+  [it 56315] feasible best 8643
+  eff 8643 forbidden sits 0
+[867s it 56315] NEW BEST 8643 (op 2 i 152 D 2) len 161
+  [it 57763] feasible best 8645
+  eff 8645 forbidden sits 0
+[890s it 57763] NEW BEST 8645 (op 2 i 128 D 5) len 157
+  [it 57764] feasible best 8649
+  eff 8649 forbidden sits 0
+[890s it 57764] NEW BEST 8649 (op 2 i 21 D 5) len 161

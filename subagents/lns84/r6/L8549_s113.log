@@ -1,0 +1,23 @@
+r6/in_L8549_s113/P8537_best.txt: 157 moves, 8603 minutes (replay 8603)
+r6/in_L8549_s113/P8545_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_L8549_s113/P8549_best.txt: 157 moves, 8607 minutes (replay 8607)
+r6/in_L8549_s113/P8553_best.txt: 156 moves, 8604 minutes (replay 8604)
+r6/in_L8549_s113/keep_8605_LDs16.txt: 165 moves, 8605 minutes (replay 8605)
+r6/in_L8549_s113/keep_8605_PLIs63.txt: 159 moves, 8605 minutes (replay 8605)
+r6/in_L8549_s113/record_8537.txt: 164 moves, 8537 minutes (replay 8537)
+r6/in_L8549_s113/record_8545.txt: 166 moves, 8545 minutes (replay 8545)
+r6/in_L8549_s113/record_8549.txt: 162 moves, 8549 minutes (replay 8549)
+r6/in_L8549_s113/record_8553.txt: 170 moves, 8553 minutes (replay 8553)
+r6/in_L8549_s113/record_8605.txt: 161 moves, 8605 minutes (replay 8605)
+r6/in_L8549_s113/start.txt: 157 moves, 8607 minutes (replay 8607)
+start r6/in_L8549_s113/start.txt: 157 moves, 8607 minutes
+[99s it 6846] NEW BEST 8608 (op 0 i 20 D 5) len 164
+[100s it 6949] NEW BEST 8609 (op 7 a 19 c 17 d 47 b 48) len 165
+[117s] it 8000 acc 664 cur 8457 best 8609 temp 31.3 elite 40 gains 70/65/141/74/4/12/152/540/0/0 acc 113/160/183/64/12/13/41/64/10/4
+[205s] it 14000 acc 1139 cur 8601 best 8609 temp 1.6 elite 40 gains 158/75/196/78/5/20/187/1116/0/0 acc 201/258/318/107/20/22/76/111/15/11
+[293s] it 20000 acc 1644 cur 8593 best 8609 temp 3.4 elite 40 gains 175/226/244/146/15/65/209/1463/0/0 acc 278/372/458/161/37/33/109/161/19/16
+[354s] it 24000 acc 1977 cur 8550 best 8609 temp 19.1 elite 40 gains 183/237/256/229/19/75/233/1571/0/0 acc 344/453/552/194/42/39/128/188/19/18
+[448s] it 30000 acc 2439 cur 8604 best 8609 temp 40.0 elite 40 gains 192/264/342/238/19/75/268/1710/0/0 acc 435/575/658/247/48/46/159/228/24/19
+done it 30000 acc 2439 best 8609 restarts 3
+elite: 8609 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608 8608
+cpu_user=442.368 wall=448.429

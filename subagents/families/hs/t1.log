@@ -1,0 +1,17 @@
+heuristic search (time + estimated time to h8): 3 threads, BFS seed 300000 positions, 90s, open cap 3000000/thread, tau 1.00
+[      1s] BFS depth 1: 4 positions (best finished -1)
+[      1s] BFS depth 2: 33 positions (best finished -1)
+[      1s] BFS depth 3: 243 positions (best finished -1)
+[      1s] BFS depth 4: 1906 positions (best finished -1)
+[      1s] BFS depth 5: 13440 positions (best finished -1)
+[      1s] BFS depth 6: 97897 positions (best finished -1)
+[      1s] BFS depth 7: 685669 positions (best finished -1)
+[      2s] frontier scored: 685669 positions, best score 98, median 0
+[      2s] NEW BEST 166 minutes (40 moves)
+[      2s] NEW BEST 169 minutes (43 moves)
+[      2s] NEW BEST 216 minutes (54 moves)
+[      2s] NEW BEST 239 minutes (47 moves)
+[      8s] NEW BEST 301 minutes (67 moves)
+[     32s] 99.6k exp/s | open 7.9M | nodes 33.6M | finishes 701772 (rejected 0) | best 301 | gc 0 prune 39
+[     62s] 114.3k exp/s | open 7.7M | nodes 69.9M | finishes 1512181 (rejected 0) | best 301 | gc 0 prune 94
+done after 90s: 9212776 expansions, best 301 (hs/t1_best.txt)

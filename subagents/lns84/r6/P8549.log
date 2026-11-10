@@ -1,0 +1,62 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 900s
+tour 1: 8549 minutes, 162 jumps, budget 900s
+  new overall best 8549 (input) -> r6/P8549_best.txt
+  reroute 1000/10: 162 -> 154 jumps
+  new overall best 8549 (reroute 1000/10) -> r6/P8549_best.txt
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [reroute 1000/10] window w=0 at move 19: 8549 -> 8550 minutes, 154 -> 157 jumps
+  [reroute 1000/10] pass: 136/1936 windows, 144536 nodes, 86445 tail replays, 0.1s (2478166 nodes/s)
+  new overall best 8550 (window) -> r6/P8549_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=1 at move 132: 8550 -> 8592 minutes, 157 -> 158 jumps
+  [as is] pass: 183/1975 windows, 153517 nodes, 92254 tail replays, 0.1s (2439994 nodes/s)
+  new overall best 8592 (window) -> r6/P8549_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=2 at move 17: 8592 -> 8592 minutes, 158 -> 156 jumps
+  [as is] pass: 457/1988 windows, 1150442 nodes, 676776 tail replays, 0.3s (3337943 nodes/s)
+  new overall best 8592 (window) -> r6/P8549_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=8 at move 20: 8592 -> 8595 minutes, 156 -> 159 jumps
+  [as is] pass: 1357/1962 windows, 599524382 nodes, 305850406 tail replays, 142.1s (4218835 nodes/s)
+  new overall best 8595 (window) -> r6/P8549_best.txt
+  reroute 1000/10: 159 -> 157 jumps
+  new overall best 8595 (reroute 1000/10) -> r6/P8549_best.txt
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [reroute 1000/10] window w=10 at move 128: 8595 -> 8599 minutes, 157 -> 157 jumps
+  [reroute 1000/10] pass: 1555/1975 windows, 826649112 nodes, 424657136 tail replays, 194.9s (4240516 nodes/s)
+  new overall best 8599 (window) -> r6/P8549_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=8 at move 132: 8599 -> 8603 minutes, 157 -> 157 jumps
+  [as is] pass: 1254/1975 windows, 428824211 nodes, 226926051 tail replays, 93.3s (4594688 nodes/s)
+  new overall best 8603 (window) -> r6/P8549_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] window w=10 at move 60: 8603 -> 8607 minutes, 157 -> 157 jumps
+  [as is] pass: 1623/1975 windows, 815814442 nodes, 412898346 tail replays, 175.9s (4636628 nodes/s)
+  new overall best 8607 (window) -> r6/P8549_best.txt
+  reroute 1000/10: unchanged
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1: unchanged
+  [as is] pass: 1869/1975 windows, 1340234389 nodes, 647728503 tail replays, 294.0s (4559009 nodes/s)
+tour 1 done: 8549 -> 8607 minutes (157 jumps), 900.8s (time up)
+done: best 8607 minutes after 901s -> r6/P8549_best.txt
+cpu_user=892.211 wall=900.789

@@ -1,0 +1,88 @@
+14:53:16 polish PF3_8166 start on in/F3_8166.txt (8166) wmax 12
+14:53:16 polish PF2b_8002 start on in/F2b_8002.txt (8002) wmax 12
+14:53:16 polish PF2_8348 start on in/F2_8348.txt (8348) wmax 12
+15:01:07 polish PF3_8166 end: 8166 done: best 8166 minutes after 471s -> pol/PF3_8166_best.txt
+15:02:28 polish PF2b_8002 end: 8006 done: best 8006 minutes after 552s -> pol/PF2b_8002_best.txt
+15:03:17 polish PF2_8348 end: 8348 done: best 8348 minutes after 601s -> pol/PF2_8348_best.txt
+15:03:31 dlns X2 s2 start 8609 forbid e2,e3,e4,e5,e6 pen 150 from 100
+15:03:31 dlns X1 s1 start 8609 forbid b7,b8 pen 150 from 50
+15:03:31 lns LF3 s3 start 8166 focus 1 140 0.85
+15:13:08 lns LF3 s3 end:  
+15:13:10 LF3 stopped by hand at ~it 34k: 8166, no gain
+15:13:10 dlns X3 s3 start 8609 forbid e7,e8,f6,f7 pen 150 from 120
+15:29:13 dlns X2 s2 end: feas 8478 
+15:29:13 dlns X3 s3 end: feas 8649 
+15:29:15 X2/X3 (free 2) killed: their tails merge the two groups into one (n=41) and sit with free sinks; check_tour rejects those waits as unnecessary (X3 8,635-8,649 and X2 8,478 all rejected; moved to x/bad/). dlns.sh now uses --free 0 by default.
+15:29:15 dlns X3f s31 start 8609 forbid e7,e8,f6,f7 pen 150 from 120
+15:29:15 dlns X2f s21 start 8609 forbid e2,e3,e4,e5,e6 pen 150 from 100
+15:29:43 dlns X1 s1 end: feas 8371 done it 100000 acc 11222 best 8371 restarts 28
+15:29:51 polish PX1 start on in/X1_8371.txt (8371) wmax 12
+15:39:51 polish PX1 end: 8429 done: best 8429 minutes after 600s -> pol/PX1_best.txt
+15:39:54 dlns X1b s12 start 8429 forbid b7,b8 pen 150 from 50
+15:51:08 dlns X3f s31 end: feas 8281 done it 120000 acc 14609 best 8281 restarts 13
+15:53:43 dlns X1b s12 end: feas 8429 done it 80000 acc 10239 best 8429 restarts 7
+15:54:58 dlns X2f s21 end: feas 8421 done it 120000 acc 16259 best 8421 restarts 10
+15:55:11 polish PX3f start on in/X3f.txt (8281) wmax 12
+15:55:11 polish PX2f start on in/X2f.txt (8421) wmax 12
+15:55:24 dlns X2g s22 start 8421 forbid e2,e3,e4,e5,e6 pen 150 from 100
+16:02:00 polish PX3f end: 8281 done: best 8281 minutes after 409s -> pol/PX3f_best.txt
+16:02:33 polish PX2f end: 8421 done: best 8421 minutes after 443s -> pol/PX2f_best.txt
+16:03:00 polish PX2g start on in/X2g_8556.txt (8557) wmax 12
+16:03:00 lns LX2 s41 start 8557 focus 1 150 0.85
+16:10:45 polish PX2g end: 8557 done: best 8557 minutes after 465s -> pol/PX2g_best.txt
+16:12:14 dlns X2g s22 end: feas 8557 done it 80000 acc 11282 best 8557 restarts 5
+16:12:17 polish PL8595 start on in/LX2_8595.txt (8595) wmax 12
+16:12:23 lns LX2b s42 start 8595 focus 1 150 0.85
+16:15:13 lns LX2c s43 start 8595 focus 1 150 0.85
+16:22:29 saver restarted (was not running); NEW_RECORD_8703/8712 written by hand after check_tour ok
+16:22:53 lns LX2 s41 end: 8703 done it 90000 acc 14074 best 8703 restarts 6
+16:25:52 polish PL8595 end: 8595 done: best 8595 minutes after 815s -> pol/PL8595_best.txt
+16:26:09 lns LX2c s43 end:  
+16:26:09 polish P8795 start on in/F5_8795.txt (8795) wmax 12
+16:26:09 lns LX2d s44 start 8795 focus 1 150 0.85
+16:26:11 LX2c (t0 80) stopped by hand at it ~50k: stuck at 8595
+16:26:16 lns LX2e s45 start 8795 focus 1 150 0.85
+16:39:12 polish P8795 end: 8809 done: best 8809 minutes after 783s -> pol/P8795_best.txt
+16:39:22 polish P8810 start on keep/8810_e28e09e8.txt (8810) wmax 12
+16:45:25 polish P8810 end: 8810 done: best 8810 minutes after 364s -> pol/P8810_best.txt
+16:45:32 lns LX2b s42 end: 8810 done it 150000 acc 21531 best 8810 restarts 9
+16:58:54 lns LX2e s45 end: 8812 done it 150000 acc 21121 best 8812 restarts 10
+16:59:01 lns LX2d s44 end: 8810 done it 150000 acc 21576 best 8810 restarts 10
+16:59:51 all jobs done; saver stopped
+18:31:41 ylns Y2 s102 start in/F5_8812.txt (8812) pen 150 rules c8,d8,b7,b8:55:100 d3,d4,d5,d6,d7:100:999 e2,e3,e4,e5,e6:100:999 donors in/F5_8812.txt in/F1_8609.txt in/PX1_8429.txt
+18:31:41 ylns Y3 s103 start in/PX1_8429.txt (8429) pen 150 rules d3,d4,d5,d6,d7:100:999 e2,e3,e4,e5,e6:100:999 donors in/PX1_8429.txt in/X1_8371.txt in/F5_8812.txt
+18:31:41 ylns Y1 s101 start in/F5_8812.txt (8812) pen 150 rules d3,d4,d5,d6,d7:100:999 e2,e3,e4,e5,e6:100:999 donors in/F5_8812.txt in/F1_8609.txt
+18:42:16 ylns Y3 s103 end: feas 7435 
+18:42:17 Y3 stopped by hand at it ~55k: X1 start collapses under TAIL (feasible 7,435, eff 7,781)
+18:42:17 ylns Y4 s104 start in/F5_8812.txt (8812) pen 150 rules d3,d4,d5,d6,d7:60:999 e2,e3,e4,e5,e6:100:999 donors in/F5_8812.txt in/F1_8609.txt
+18:52:10 ylns Y2 s102 end: feas 8433 
+18:52:10 Y2 stopped by hand at it ~105k (8,433 since it 18k)
+18:52:10 lns LF6 s61 start 8658 focus 1 160 0.85
+18:57:09 ylns Y1 s101 end: feas 8658 done it 120000 acc 13806 best 8658 restarts 13
+19:01:42 lns LF6b s62 start 8691 focus 1 160 0.85
+19:08:32 ylns Y4 s104 end: feas 8083 done it 120000 acc 14833 best 8083 restarts 19
+19:11:19 Y4 had ended at 120k (no kill needed): no d3-d7 sits after 60 and no e2-e6 after 100 -> 8,083 (feasible)
+19:11:19 lns LF6c s63 start 8804 focus 1 160 0.85
+19:24:25 lns LF6 s61 end: 8807 done it 150000 acc 20196 best 8807 restarts 14
+19:24:32 lns LF7 s71 start 8083 focus 1 160 0.85
+19:33:22 lns LF6b s62 end: 8813 done it 150000 acc 20485 best 8813 restarts 11
+19:34:37 my saver had died again (pid 3155 is f5push's saver); NEW_RECORD_8813 written by hand after check_tour; saver restarted as a tool background job
+19:34:47 polish P8813 start on in/F6_8813.txt (8813) wmax 12
+19:42:06 polish P8813 end: 8813 done: best 8813 minutes after 439s -> pol/P8813_best.txt
+19:42:58 lns LF6c s63 end: 8813 done it 150000 acc 20618 best 8813 restarts 14
+19:42:58 ylns Y6 s106 start in/F6_8813.txt (8813) pen 150 rules a7,a8:55:999 e2,e3,e4,e5,e6:100:999 donors in/F6_8813.txt in/F5_8812.txt
+19:43:11 lns LF6d s64 start 8813 focus 1 170 0.85
+19:58:51 lns LF7 s71 end: 8522 done it 150000 acc 18605 best 8522 restarts 10
+19:58:53 lns LF7b s72 start 8522 focus 1 170 0.85
+20:08:44 ylns Y6 s106 end: feas 8359 
+20:08:46 Y6 stopped by hand at it ~70k (8,359 since it 41k)
+20:08:46 lns LY6 s81 start 8359 focus 1 170 0.85
+20:14:27 saver killed again (exit 144, probably a pkill of saver.sh by name when f5push stopped); restarted as fam_saver.sh, threshold 8,830
+20:14:37 lns LY6b s82 start 8784 focus 1 170 0.85
+20:16:58 lns LF6d s64 end:  done it 150000 acc 20018 best 8813 restarts 14
+20:24:08 lns LY6c s83 start 8805 focus 1 170 0.85
+20:30:33 lns LF7b s72 end: 8524 done it 146895 acc 18964 best 8524 restarts 10
+20:38:35 lns LY6 s81 end: 8794 done it 150000 acc 20926 best 8794 restarts 7
+20:39:37 lns LY6b s82 end: 8811 done it 126674 acc 17795 best 8811 restarts 11
+20:48:19 lns LY6c s83 end: 8813 done it 121735 acc 16826 best 8813 restarts 11
+20:48:44 round 8 jobs all done; fam_saver stopped

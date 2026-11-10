@@ -1,0 +1,11 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 600s
+tour 1: 8830 minutes, 173 jumps, budget 600s
+  new overall best 8830 (input) -> pol/PF5_s503_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0: 173 -> 163 jumps
+  new overall best 8830 (reroute 0/0) -> pol/PF5_s503_best.txt
+  reroute 5/1 failed
+  [reroute 0/0] pass: 1955/2053 windows, 1526658391 nodes, 732617802 tail replays, 600.2s (2543770 nodes/s)
+tour 1 done: 8830 -> 8830 minutes (163 jumps), 600.2s (time up)
+done: best 8830 minutes after 600s -> pol/PF5_s503_best.txt

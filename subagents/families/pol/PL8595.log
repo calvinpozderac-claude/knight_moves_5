@@ -1,0 +1,18 @@
+1 tours to polish (0 skipped); threads 1, wmax 12, ext 4/3, node limit 3000000, nrpa level 2, time 900s
+tour 1: 8595 minutes, 161 jumps, budget 900s
+  new overall best 8595 (input) -> pol/PL8595_best.txt
+  reroute 1000/10: 161 -> 155 jumps
+  new overall best 8595 (reroute 1000/10) -> pol/PL8595_best.txt
+  reroute 1000/0: unchanged
+  reroute 0/0: 155 -> 155 jumps
+  reroute 5/1: unchanged
+  [reroute 1000/10] pass: 1949/1949 windows, 1946902741 nodes, 919607123 tail replays, 405.1s (4806130 nodes/s)
+  [reroute 0/0] pass: 1949/1949 windows, 1914500455 nodes, 905765075 tail replays, 409.0s (4681163 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.2s
+  nrpa L2 last 60 (warm): no gain in 0.2s
+  nrpa L2 last 90 (fresh): no gain in 0.2s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 8595 -> 8595 minutes (155 jumps), 815.0s (converged)
+done: best 8595 minutes after 815s -> pol/PL8595_best.txt
