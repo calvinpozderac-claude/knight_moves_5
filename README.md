@@ -23,7 +23,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_8830.txt` | **8,830** | Branch `claude/subagents`, round 8 (`subagents/f5push/`): LNS focused on moves 1-150 of the 8,812 family, one fresh seed found 8,829 in about 40k iterations, then 8,830 from 8,829. Exhaustive search proves its last 23 moves optimal for its prefix |
+| `data/tours/record_8842.txt` | **8,842** | Family search on the merged results (automated search over tour families): a penalty on the 8,830 tour's c3/c4/d3 dance sits made LNS rebuild the tour with the d3/d4 block at the start of the dance and a new merge (h3/h4 instead of f7/h3), raw 8,246; plain LNS on that tour alone gave 8,832 in 9 min, then a further LNS seed 8,842, 18 min into the run (8,831 and 8,832 from LNS seeds on the 8,830 family on the way) |
+| `data/tours/record_8830.txt` | 8,830 | Branch `claude/subagents`, round 8 (`subagents/f5push/`): LNS focused on moves 1-150 of the 8,812 family, one fresh seed found 8,829 in about 40k iterations, then 8,830 from 8,829. Exhaustive search proves its last 23 moves optimal for its prefix |
 | `data/tours/record_8829.txt` | 8,829 | Same round-8 LNS run as 8,830 (seed 501, from 8,812) |
 | `data/tours/record_8812.txt` | 8,812 | Branch `claude/subagents`, round 7 (`subagents/families/`): **a new tour family (F5)**. LNS with a penalty on the 8,609 tour's e-file sits rebuilt the dance on the d-file (8,421), then plain LNS on the new tour alone took it to 8,812 in about 40 min (strict 8,810 in `strict_8810.txt`) |
 | `data/tours/record_8609.txt` | 8,609 | Branch `claude/subagents`, round 6 (`subagents/lns84/`): polish + LNS on the self-play tours 8,537-8,553 |
