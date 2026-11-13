@@ -7,3 +7,4 @@ lns/in_L_s921/r9275.txt: 181 moves, 9275 minutes (replay 9275)
 lns/in_L_s921/start.txt: 175 moves, 9275 minutes (replay 9275)
 start lns/in_L_s921/start.txt: 175 moves, 9275 minutes
 [125s] it 12000 acc 1495 cur 9265 best 9275 temp 2.1 elite 40 gains 522/788/1074/347/183/36/282/693/4/756 acc 273/305/465/127/24/14/87/105/7/88
+[147s] it 14000 acc 1658 cur 9273 best 9275 temp 1.3 elite 40 gains 529/793/1078/347/183/36/282/715/4/756 acc 310/344/515/136/26/19/88/115/10/95
