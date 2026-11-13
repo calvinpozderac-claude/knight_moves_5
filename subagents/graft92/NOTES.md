@@ -28,3 +28,15 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5, `--free 0`. Start 23:16 (20
 - queue1 (after G1): YA = graft penalty from 9,275 (no sits >= 20 min on f3,g3,e3,e4 in moves 60-95, i.e. keep
   them for the dance; no b6,c6,d5,d6 sits from move 96, i.e. 9,080's sitter swap), pen 150, donors 9,080 + 9,275
   family; then plain LNS on its feasible best. YG = group reward gw 100 over gmax 37; then plain LNS.
+- G1 stopped after 6 min (24k it, no gain over 9,275) to free the core for the splices below.
+- **Splice scan** (bin/graft `XODETAIL`: per prefix length k, best of prefix + DFS(2) + resync anywhere in the
+  donor, prefixes 9,275 / 9,271 / 9,268 x every tour in data/tours): with k in 50-115 only two donors give
+  > 8,900, both at k = 93 (end of the new merge, groups 37/27):
+  - **H1 = 9,275 merge + 8,946 dance: 9,266** (strict, checker ok) `in/H1_9266.txt`; sig f3/f7 g6/h3 d3/d4 c3/c4
+    b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c5/c6 c5/d5 c6/c7 c7/c8 c8/d8 a8/b8 a7/b7 d6/d7 e7/e8 f8/g8 (close to 9,268's).
+  - **H2 = 9,275 merge + 8,900 dance: 9,212** (strict) `in/H2_9212.txt`; sig f3/f7 g6/h3 d3/d4 c5/d5 c6/c7 c4/c5
+    c3/c4 b2/b3 a2/a3 a4/b4 b5/b6 a5/a6 a7/b7 a8/b8 c7/c8 c8/d8 d6/d7 e7/e8 f8/g8 (new: 8,900's order on the new
+    merge; dance_pot2 9,662 = 9,275's).
+  - 9,275 merge + 9,080 dance: 7,354 (k = 93; the dance runs out of f3/g3/e3 visits). F5/F6/8,842/8,887 dances:
+    < 5,800.
+- LH2 s931 (plain LNS from H2, donors H2 + 8,900, 25 min, 143k it): **no gain at all, 9,212**.

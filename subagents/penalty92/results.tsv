@@ -1,2 +1,9 @@
 A_M_f3f7	in/record_9275.txt	f3,f7:40:90	NA					no feasible
 A_M_g6h3	in/record_9275.txt	g6,h3:40:90	NA					no feasible
+A_S_d6d7	in/record_9275.txt	d6,d7:80:999	8766	2	2	8869	7/2	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 d7/d8 a7/b7 a8/b8 d3/d4 c3/d3 c3/c4 c4/c5 c5/d5 e7/e8 f8/g8
+A_S_c3d3	in/record_9275.txt	c3,d3:80:999	8817	2	4	9267	3/0	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c5/d5 c3/c4 d3/d4 d6/d7 e7/e8 f8/g8
+A_E_c4c5	in/record_9275.txt	c4,c5:149:999	9209	0	0	skip		known record_9275
+A_L_c6c7	in/record_9275.txt	c6,c7:80:131	9197	4	0	9263	4/0	final P92_A_L_c6c7: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c8/d8 c6/c7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+A_S_c3d3_L2	lns:keep/A_S_c3d3_9267.txt		9267			9275	0/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+A_S_c3d3_L1b	lns:y/A_S_c3d3_best.txt.feas_best.txt		8817			9275	0/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+A_U_b6c6d4d5	in/record_9275.txt	b6,c6,d4,d5:80:999	NA					no feasible

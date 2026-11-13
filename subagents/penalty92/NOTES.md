@@ -23,3 +23,12 @@ Goal: a tour above 9,275 from a new family. 2 heavy threads (2 workers), nice -n
 ## Notes
 - dlns with `--iters` huge freezes the temperature at t0 (schedule is it/ITERS); the worker runs time-based (no --iters).
 - The merge sits are hard to remove: a 25 s dlns with f3,f7 banned in moves 40-90 (pen 500) found no feasible tour.
+- 23:23 merge bans (f3,f7 or g6,h3 in moves 40-90, pen 500, 120 s): no feasible tour at all. Single-square merge
+  bans (A_M_f7, A_M_h3) queued.
+- Same-sitter order variants fall back to 9,275: A_S_c3d3 (raw 8,817, c3/d3 block replaced by e6/f6 late) -> plain
+  LNS 9,267 (order c5/d5 c3/c4 d3/d4, sitters unchanged), and two more seeds from it / from its raw tour both end
+  at **9,275 with 9,275's exact signature** (two tours distinct from the record, md5 23904b34, b8a997d6). A_E_c4c5's
+  raw tour already had 9,275's signature (skipped). A_L_c6c7 (c6/c7 c8/d8 after the a8/b8 a7/b7 sweep): raw 9,197
+  -> 9,263. So 9,275 is a strong attractor for its sitter set; the queue was reordered at 23:50 toward sitter-moving
+  rules (the user's successful rule shapes: b6,c6,d4,d5 (-> 9,080), c6,c7,c8 (-> 8,887), c3,c4,d3 (-> 8,842),
+  a5-a8,b5,c4 (-> 8,900), b6,b7,c8 (-> 8,946), as U_ rules) and block+opposites (O_).

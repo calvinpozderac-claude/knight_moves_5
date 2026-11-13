@@ -1,0 +1,9 @@
+lns/in_L_s921/P9268.txt: 175 moves, 9268 minutes (replay 9268)
+lns/in_L_s921/P9271.txt: 175 moves, 9271 minutes (replay 9271)
+lns/in_L_s921/P9275.txt: 175 moves, 9275 minutes (replay 9275)
+lns/in_L_s921/r9268.txt: 179 moves, 9268 minutes (replay 9268)
+lns/in_L_s921/r9271.txt: 177 moves, 9271 minutes (replay 9271)
+lns/in_L_s921/r9275.txt: 181 moves, 9275 minutes (replay 9275)
+lns/in_L_s921/start.txt: 175 moves, 9275 minutes (replay 9275)
+start lns/in_L_s921/start.txt: 175 moves, 9275 minutes
+[125s] it 12000 acc 1495 cur 9265 best 9275 temp 2.1 elite 40 gains 522/788/1074/347/183/36/282/693/4/756 acc 273/305/465/127/24/14/87/105/7/88

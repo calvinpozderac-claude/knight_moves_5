@@ -12,3 +12,17 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5. Start 23:17 (2026-11-13).
 
 ## Log
 - 23:20 polish P9275 (720 s, wmax 12) started; saver running.
+- Polish (wmax 12, ext 3/4, node limit 3M, nrpa L2 tails 45/60/90): **no gains**.
+  - 9,275: converged at 358 s, 9,275 (reroute to 175 jumps, checker ok). 
+  - 9,271: 600 s (time up), 9,271 (reroute to 175 jumps).
+  - 9,268: converged at 377 s, 9,268 (reroute to 175 jumps).
+  These LNS tours are already polish-optimal (single tail sit insertions etc. do not help).
+- 23:39 exact tail proofs (bb, strict, step 2): 9,275 polished (240 s/k), then 9,271, 9,268 (150 s/k).
+- Exact tail proofs (bb `--nobound --alpha 0`, strict continuations, step 2; indices on the polished 175-jump tours):
+  - 9,275 (pol/P9275_best): k = 171 ... 157 fast, k = 155 42.7 s, **k = 153 proven** (92 s, 167M nodes, prefix T
+    7,672); k = 151 timed out (240 s, 431M nodes, nothing better). Focus 1..152.
+  - 9,271 (pol/P9271_best): **k = 151 proven**, k = 149 timed out (150 s).
+  - 9,268 (pol/P9268_best): **k = 151 proven**, k = 149 timed out (150 s).
+- 23:55 LNS queue (`seedq.sh 60000 1 152 921 922 923 924`): start = pol/P9275_best (175 jumps; the proof's
+  indexing) or any higher tour found, donors `don/` = the three raw tours + their polished reroutes (+ new bests),
+  focus 1..152 p 0.85, `--free 0`; every new best polished 600 s and fed back to `don/`.

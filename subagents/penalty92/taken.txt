@@ -2,3 +2,11 @@ dl|A_M_f3f7|in/record_9275.txt|500|f3,f7:40:90
 dl|A_M_g6h3|in/record_9275.txt|500|g6,h3:40:90
 dl|A_S_d6d7|in/record_9275.txt|150|d6,d7:80:999
 dl|A_S_c3d3|in/record_9275.txt|150|c3,d3:80:999
+dl|A_L_c6c7|in/record_9275.txt|150|c6,c7:80:131
+dl|A_E_c4c5|in/record_9275.txt|150|c4,c5:149:999
+lns|A_S_c3d3_L2|keep/A_S_c3d3_9267.txt|7302|600|
+lns|A_S_c3d3_L1b|y/A_S_c3d3_best.txt.feas_best.txt|7311|480|
+lns|A_L_c6c7_L2|keep/A_L_c6c7_9263.txt|7402|600|
+dl|A_S_d4d5|in/record_9275.txt|150|d4,d5:80:999
+dl|A_U_b6c6d4d5|in/record_9275.txt|150|b6,c6,d4,d5:80:999
+dl|A_U_c6c7c8|in/record_9275.txt|150|c6,c7,c8:80:999

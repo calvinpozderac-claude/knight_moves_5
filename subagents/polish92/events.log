@@ -1,3 +1,11 @@
 23:17:05 polish P9275 start on in/record_9275.txt (9275) wmax 12 time 720
 23:23:03 polish P9275 end: 9275 done: best 9275 minutes after 358s -> pol/P9275_best.txt
 23:23:12 polish P9271 start on in/record_9271.txt (9271) wmax 12 time 600
+23:33:12 polish P9271 end: 9271 done: best 9271 minutes after 600s -> pol/P9271_best.txt
+23:33:12 polish P9268 start on in/record_9268.txt (9268) wmax 12 time 600
+23:39:29 polish P9268 end: 9268 done: best 9268 minutes after 377s -> pol/P9268_best.txt
+23:45:49 exact E9275: proven from move 153 of 175
+23:50:34 exact E9271: proven from move 151 of 175
+23:55:17 exact E9268: proven from move 151 of 175
+23:55:17 q1 done
+23:55:18 lns L s921 start 9275 focus 1 152 0.85

@@ -6,3 +6,21 @@
 23:23:19 [w2] dl A_S_c3d3 base in/record_9275.txt pen 150 rules ['c3,d3:80:999']
 23:25:17 [w1] dl A_S_d6d7: raw 8766 dist 2/2 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d3/d4 d4/d5 e7/e8 f8/g8; lns 420s
 23:25:19 [w2] dl A_S_c3d3: raw 8817 dist 2/4 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 e6/f6 f8/g8; lns 420s
+23:32:17 [w1] dl A_S_d6d7: lns -> 8869 dist 7/2 (new)
+23:32:17 [w1] dl A_L_c6c7 base in/record_9275.txt pen 150 rules ['c6,c7:80:131']
+23:32:19 [w2] dl A_S_c3d3: lns -> 9267 dist 3/0 (new)
+23:32:19 [w2] dl A_E_c4c5 base in/record_9275.txt pen 150 rules ['c4,c5:149:999']
+23:34:17 [w1] dl A_L_c6c7: raw 9197 dist 4/0 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c8/d8 c6/c7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+23:34:19 [w2] dl A_E_c4c5: raw 9209 known record_9275
+23:34:19 [w2] lns A_S_c3d3_L2 start keep/A_S_c3d3_9267.txt (9267) seed 7302 t 600
+23:41:17 [w1] dl A_L_c6c7: lns -> 9263 dist 4/0 (P92_A_L_c6c7)
+23:41:17 [w1] lns A_S_c3d3_L1b start y/A_S_c3d3_best.txt.feas_best.txt (8817) seed 7311 t 480
+23:44:19 [w2] lns A_S_c3d3_L2 -> 9275 dist 0/0
+23:44:19 [w2] lns A_L_c6c7_L2 start keep/A_L_c6c7_9263.txt (9263) seed 7402 t 600
+23:49:17 [w1] lns A_S_c3d3_L1b -> 9275 dist 0/0
+23:49:17 [w1] dl A_S_d4d5 base in/record_9275.txt pen 150 rules ['d4,d5:80:999']
+23:51:17 [w1] dl A_S_d4d5: raw 8857 dist 4/4 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d6/d7 c3/c4 c3/d3 e4/e5 e7/e8 f8/g8; lns 420s
+23:54:19 [w2] ERROR lns|A_L_c6c7_L2|keep/A_L_c6c7_9263.txt|7402|600|: FileNotFoundError(2, 'No such file or directory')
+23:54:19 [w2] dl A_U_b6c6d4d5 base in/record_9275.txt pen 150 rules ['b6,c6,d4,d5:80:999']
+23:56:19 [w2] dl A_U_b6c6d4d5: no feasible
+23:56:19 [w2] dl A_U_c6c7c8 base in/record_9275.txt pen 150 rules ['c6,c7,c8:80:999']

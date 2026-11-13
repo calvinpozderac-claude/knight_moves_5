@@ -8,3 +8,11 @@ tour 1: 9271 minutes, 177 jumps, budget 600s
   [as is] window w=2 at move 87: 9271 -> 9271 minutes, 177 -> 175 jumps
   [as is] pass: 444/2235 windows, 289421 nodes, 182065 tail replays, 0.1s (2875440 nodes/s)
   new overall best 9271 (window) -> pol/P9271_best.txt
+  reroute 1000/10: 175 -> 175 jumps
+  reroute 1000/0: unchanged
+  reroute 0/0: unchanged
+  reroute 5/1: unchanged
+  [as is] pass: 2209/2209 windows, 1637068358 nodes, 798788212 tail replays, 354.0s (4624271 nodes/s)
+  [reroute 1000/10] pass: 1864/2209 windows, 1104737880 nodes, 563174886 tail replays, 246.3s (4484863 nodes/s)
+tour 1 done: 9271 -> 9271 minutes (175 jumps), 600.4s (time up)
+done: best 9271 minutes after 600s -> pol/P9271_best.txt

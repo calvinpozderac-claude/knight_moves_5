@@ -1,0 +1,40 @@
+rule mask 0000000808000000 moves [80,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 8657 forbidden sits 3
+[0s it 11] NEW BEST 9107 (op 1 i 160 D 1) len 179
+  [it 216] feasible best 8692
+  eff 8692 forbidden sits 0
+[2s it 216] NEW BEST 8692 (op 1 i 156 D 1) len 172
+  [it 241] feasible best 8696
+  eff 8696 forbidden sits 0
+[3s it 241] NEW BEST 8696 (op 0 i 94 D 4) len 172
+  [it 287] feasible best 8700
+  eff 8700 forbidden sits 0
+[3s it 287] NEW BEST 8700 (op 7 a 123 c 123 d 153 b 151) len 174
+  [it 886] feasible best 8708
+  eff 8708 forbidden sits 0
+[10s it 886] NEW BEST 8708 (op 7 a 93 c 91 d 105 b 105) len 176
+  [it 1598] feasible best 8753
+  eff 8753 forbidden sits 0
+[17s it 1598] NEW BEST 8753 (op 3 i 153 D 2) len 178
+  [it 2117] feasible best 8755
+  eff 8755 forbidden sits 0
+[23s it 2117] NEW BEST 8755 (op 1 i 35 D 3) len 172
+  [it 2773] feasible best 8757
+  eff 8757 forbidden sits 0
+[30s it 2773] NEW BEST 8757 (op 0 i 146 D 8) len 176
+[42s] it 4000 acc 442 cur 8703 best 8757 temp 9.7 elite 40 gains 175/316/603/220/13/4/44/377/4/116 acc 85/88/120/38/14/9/24/41/4/19
+[84s] it 8000 acc 937 cur 8582 best 8757 temp 2.0 elite 40 gains 274/355/759/312/17/44/132/417/4/358 acc 170/186/266/80/22/13/59/68/11/62
+  [it 8628] feasible best 8849
+  eff 8849 forbidden sits 0
+[91s it 8628] NEW BEST 8849 (op 0 i 162 D 3) len 178
+  [it 8786] feasible best 8853
+  eff 8853 forbidden sits 0
+[92s it 8786] NEW BEST 8853 (op 2 i 101 D 3) len 170
+[107s] it 10000 acc 1181 cur 8845 best 8853 temp 4.8 elite 40 gains 799/397/825/360/53/80/220/471/4/506 acc 221/224/338/108/27/17/76/81/13/76
+  [it 10025] feasible best 8857
+  eff 8857 forbidden sits 0
+[108s it 10025] NEW BEST 8857 (op 7 a 100 c 108 d 134 b 122) len 174
+done it 11129 acc 1288 best 8857 restarts 0
+elite: 9275 9267 9107 9103 9103 9103 9103 9103 9103 9103 9103 9103 9103 9095 9095 9095 8953 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857 8857

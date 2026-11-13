@@ -1,0 +1,41 @@
+rule mask 0000000404000000 moves [149,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 8459 forbidden sits 4
+[0s it 5] NEW BEST 9059 (op 1 i 119 D 2) len 179
+  eff 8583 forbidden sits 2
+[0s it 6] NEW BEST 8883 (op 0 i 148 D 7) len 177
+  [it 9] feasible best 8817
+  eff 8817 forbidden sits 0
+[0s it 9] NEW BEST 8817 (op 0 i 86 D 5) len 171
+  [it 17] feasible best 8985
+  eff 8985 forbidden sits 0
+[0s it 17] NEW BEST 8985 (op 3 i 146 D 1) len 175
+  [it 84] feasible best 9185
+  eff 9185 forbidden sits 0
+[1s it 84] NEW BEST 9185 (op 1 i 107 D 3) len 171
+  [it 105] feasible best 9189
+  eff 9189 forbidden sits 0
+[1s it 105] NEW BEST 9189 (op 0 i 128 D 5) len 171
+  [it 130] feasible best 9193
+  eff 9193 forbidden sits 0
+[2s it 130] NEW BEST 9193 (op 1 i 102 D 3) len 175
+  [it 142] feasible best 9197
+  eff 9197 forbidden sits 0
+[2s it 142] NEW BEST 9197 (op 2 i 129 D 4) len 175
+  [it 152] feasible best 9201
+  eff 9201 forbidden sits 0
+[2s it 152] NEW BEST 9201 (op 0 i 104 D 4) len 175
+  [it 207] feasible best 9205
+  eff 9205 forbidden sits 0
+[2s it 207] NEW BEST 9205 (op 6 a 83 len 5) len 171
+[21s] it 2000 acc 254 cur 9205 best 9205 temp 3.0 elite 40 gains 370/359/204/176/0/0/132/18/0/288 acc 45/53/71/16/7/4/20/12/1/25
+  [it 2014] feasible best 9207
+  eff 9207 forbidden sits 0
+[22s it 2014] NEW BEST 9207 (op 0 i 55 D 4) len 173
+  [it 2823] feasible best 9209
+  eff 9209 forbidden sits 0
+[30s it 2823] NEW BEST 9209 (op 7 a 22 c 24 d 45 b 41) len 173
+[43s] it 4000 acc 477 cur 9203 best 9209 temp 8.5 elite 40 gains 532/411/293/212/36/0/216/174/4/396 acc 87/88/141/31/11/4/40/32/3/40
+done it 11561 acc 1211 best 9209 restarts 0
+elite: 9275 9209 9209 9209 9209 9209 9209 9209 9209 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207 9207

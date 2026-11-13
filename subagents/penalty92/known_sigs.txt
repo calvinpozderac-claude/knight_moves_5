@@ -9,3 +9,7 @@ record_9271|f3/f7 g6/h3 a2/b2 a3/b3 a4/a5 a6/b6 b4/b5 c3/c4 d3/d4 c5/d5 c5/c6 c6
 record_9275|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
 P92_A_S_d6d7|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d3/d4 d4/d5 e7/e8 f8/g8
 P92_A_S_c3d3|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 e6/f6 f8/g8
+P92_A_S_d6d7_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 d7/d8 a7/b7 a8/b8 d3/d4 c3/d3 c3/c4 c4/c5 c5/d5 e7/e8 f8/g8
+P92_A_S_c3d3_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c5/d5 c3/c4 d3/d4 d6/d7 e7/e8 f8/g8
+P92_A_L_c6c7|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c8/d8 c6/c7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+P92_A_S_d4d5|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d6/d7 c3/c4 c3/d3 e4/e5 e7/e8 f8/g8

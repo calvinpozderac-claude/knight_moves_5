@@ -1,0 +1,28 @@
+rule mask 0000060808000000 moves [80,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 7765 forbidden sits 9
+[0s it 11] NEW BEST 9115 (op 7 a 151 c 149 d 161 b 165) len 181
+  eff 7935 forbidden sits 7
+[0s it 14] NEW BEST 8985 (op 0 i 161 D 3) len 179
+  eff 8015 forbidden sits 5
+[0s it 29] NEW BEST 8765 (op 2 i 126 D 6) len 179
+  eff 8021 forbidden sits 5
+[4s it 526] NEW BEST 8771 (op 7 a 68 c 70 d 98 b 96) len 175
+  eff 8024 forbidden sits 3
+[5s it 604] NEW BEST 8474 (op 1 i 156 D 2) len 173
+  eff 8031 forbidden sits 6
+[5s it 628] NEW BEST 8931 (op 1 i 120 D 1) len 177
+[19s] it 2000 acc 226 cur 8931 best 8931 temp 3.9 elite 40 gains 340/372/332/88/0/0/38/211/0/76 acc 42/40/75/18/2/3/11/31/0/4
+  eff 8049 forbidden sits 4
+[40s it 3985] NEW BEST 8649 (op 7 a 120 c 124 d 144 b 136) len 175
+[40s] it 4000 acc 447 cur 8649 best 8649 temp 11.7 elite 40 gains 348/434/500/176/0/0/76/490/0/76 acc 94/89/135/36/6/3/25/48/2/9
+  eff 8053 forbidden sits 4
+[41s it 4061] NEW BEST 8653 (op 7 a 94 c 97 d 122 b 117) len 173
+  eff 8055 forbidden sits 4
+[41s it 4143] NEW BEST 8655 (op 2 i 38 D 3) len 177
+  eff 8131 forbidden sits 4
+[58s it 5865] NEW BEST 8731 (op 5 a 152 len 3) len 170
+[60s] it 6000 acc 647 cur 8731 best 8731 temp 1.0 elite 40 gains 348/436/557/176/4/76/80/509/0/76 acc 124/137/198/51/8/6/34/60/4/25
+done it 11782 acc 1230 best 8731 restarts 0
+elite: 9275 9275 9275 9275 9115 8985 8985 8981 8981 8981 8980 8980 8977 8977 8977 8975 8974 8974 8974 8973 8973 8971 8970 8970 8969 8963 8963 8941 8939 8931 8931 8931 8931 8931 8931 8931 8931 8931 8931 8931
