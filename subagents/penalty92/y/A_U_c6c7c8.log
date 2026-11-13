@@ -77,3 +77,9 @@ start in/record_9275.txt: 181 moves, 9275 minutes
   [it 7542] feasible best 8513
   eff 8513 forbidden sits 0
 [84s it 7542] NEW BEST 8513 (op 2 i 104 D 3) len 177
+  [it 7832] feasible best 8517
+  eff 8517 forbidden sits 0
+[88s it 7832] NEW BEST 8517 (op 2 i 87 D 7) len 165
+  [it 7945] feasible best 8525
+  eff 8525 forbidden sits 0
+[89s it 7945] NEW BEST 8525 (op 2 i 136 D 3) len 173
