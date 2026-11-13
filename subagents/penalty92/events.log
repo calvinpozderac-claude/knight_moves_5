@@ -1,0 +1,8 @@
+23:21:17 [w1] dl A_M_f3f7 base in/record_9275.txt pen 500 rules ['f3,f7:40:90']
+23:21:19 [w2] dl A_M_g6h3 base in/record_9275.txt pen 500 rules ['g6,h3:40:90']
+23:23:17 [w1] dl A_M_f3f7: no feasible
+23:23:17 [w1] dl A_S_d6d7 base in/record_9275.txt pen 150 rules ['d6,d7:80:999']
+23:23:19 [w2] dl A_M_g6h3: no feasible
+23:23:19 [w2] dl A_S_c3d3 base in/record_9275.txt pen 150 rules ['c3,d3:80:999']
+23:25:17 [w1] dl A_S_d6d7: raw 8766 dist 2/2 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d3/d4 d4/d5 e7/e8 f8/g8; lns 420s
+23:25:19 [w2] dl A_S_c3d3: raw 8817 dist 2/4 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 e6/f6 f8/g8; lns 420s

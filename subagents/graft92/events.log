@@ -1,0 +1,3 @@
+23:18:14 lns G1 s901 start 9275 focus 40 100 0.5 donors in/record_9080.txt in/record_8946.txt in/record_8900.txt in/record_9271.txt in/record_9268.txt
+23:23:52 lns G1 s901 end:  
+23:26:29 lns LH2 s931 start 9212 focus 1 180 0.0 donors in/H2_9212.txt in/record_8900.txt

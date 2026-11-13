@@ -1,0 +1,20 @@
+rule mask 0000400000800000 moves [40,90)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 8628 forbidden sits 1
+[32s it 2973] NEW BEST 9128 (op 0 i 66 D 6) len 171
+  eff 8630 forbidden sits 1
+[47s it 4325] NEW BEST 9130 (op 2 i 45 D 8) len 179
+  eff 8632 forbidden sits 1
+[47s it 4336] NEW BEST 9132 (op 2 i 66 D 2) len 177
+  eff 8634 forbidden sits 1
+[51s it 4624] NEW BEST 9134 (op 7 a 92 c 98 d 120 b 114) len 175
+  eff 8642 forbidden sits 1
+[51s it 4645] NEW BEST 9142 (op 7 a 134 c 140 d 167 b 155) len 175
+[65s] it 6000 acc 784 cur 9122 best 9142 temp 20.7 elite 40 gains 829/262/734/82/42/82/136/552/102/216 acc 149/134/260/59/12/14/41/64/4/47
+  eff 8644 forbidden sits 1
+[75s it 6878] NEW BEST 9144 (op 1 i 88 D 2) len 173
+[87s] it 8000 acc 1001 cur 9142 best 9144 temp 1.5 elite 40 gains 841/322/758/171/42/82/176/642/102/216 acc 187/182/314/76/17/16/53/83/5/68
+[108s] it 10000 acc 1335 cur 9104 best 9144 temp 4.4 elite 40 gains 882/613/1170/259/82/94/302/782/102/288 acc 249/244/416/105/29/19/74/104/7/88
+done it 11089 acc 1460 best 9144 restarts 0
+elite: 9275 9267 9267 9267 9247 9247 9207 9203 9203 9203 9198 9195 9195 9195 9195 9193 9193 9187 9187 9185 9185 9181 9181 9179 9179 9177 9177 9175 9173 9169 9144 9144 9144 9144 9144 9144 9144 9144 9144 9144

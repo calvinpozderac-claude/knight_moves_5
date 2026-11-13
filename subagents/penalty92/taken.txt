@@ -1,0 +1,4 @@
+dl|A_M_f3f7|in/record_9275.txt|500|f3,f7:40:90
+dl|A_M_g6h3|in/record_9275.txt|500|g6,h3:40:90
+dl|A_S_d6d7|in/record_9275.txt|150|d6,d7:80:999
+dl|A_S_c3d3|in/record_9275.txt|150|c3,d3:80:999

@@ -1,0 +1,55 @@
+rule mask 0008080000000000 moves [80,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 8442 forbidden sits 3
+[3s it 291] NEW BEST 8892 (op 1 i 162 D 1) len 173
+  eff 8443 forbidden sits 3
+[3s it 336] NEW BEST 8893 (op 5 a 156 len 7) len 173
+  eff 8447 forbidden sits 3
+[3s it 349] NEW BEST 8897 (op 7 a 93 c 91 d 121 b 119) len 173
+  eff 8503 forbidden sits 2
+[5s it 502] NEW BEST 8803 (op 1 i 158 D 2) len 173
+  eff 8507 forbidden sits 2
+[5s it 524] NEW BEST 8807 (op 1 i 91 D 3) len 175
+  eff 8509 forbidden sits 2
+[7s it 747] NEW BEST 8809 (op 5 a 134 len 2) len 173
+  eff 8591 forbidden sits 2
+[11s it 1108] NEW BEST 8891 (op 7 a 137 c 129 d 158 b 166) len 175
+  eff 8599 forbidden sits 2
+[11s it 1119] NEW BEST 8899 (op 2 i 131 D 6) len 175
+  eff 8603 forbidden sits 2
+[12s it 1158] NEW BEST 8903 (op 2 i 92 D 5) len 173
+  [it 1265] feasible best 8653
+  eff 8653 forbidden sits 0
+[13s it 1265] NEW BEST 8653 (op 1 i 83 D 2) len 172
+  [it 1296] feasible best 8702
+  eff 8702 forbidden sits 0
+[14s it 1296] NEW BEST 8702 (op 1 i 132 D 2) len 171
+  [it 1376] feasible best 8706
+  eff 8706 forbidden sits 0
+[15s it 1376] NEW BEST 8706 (op 0 i 134 D 8) len 169
+  [it 1555] feasible best 8741
+  eff 8741 forbidden sits 0
+[17s it 1555] NEW BEST 8741 (op 2 i 140 D 3) len 169
+  [it 1573] feasible best 8745
+  eff 8745 forbidden sits 0
+[17s it 1573] NEW BEST 8745 (op 0 i 149 D 4) len 167
+  [it 1668] feasible best 8753
+  eff 8753 forbidden sits 0
+[18s it 1668] NEW BEST 8753 (op 7 a 109 c 105 d 111 b 111) len 175
+  [it 1673] feasible best 8760
+  eff 8760 forbidden sits 0
+[18s it 1673] NEW BEST 8760 (op 3 i 137 D 1) len 177
+  [it 1856] feasible best 8764
+  eff 8764 forbidden sits 0
+[20s it 1856] NEW BEST 8764 (op 3 i 127 D 1) len 175
+[22s] it 2000 acc 266 cur 8764 best 8764 temp 2.8 elite 40 gains 51/477/196/249/8/13/84/124/0/144 acc 38/41/83/24/8/8/23/19/4/18
+  [it 2667] feasible best 8766
+  eff 8766 forbidden sits 0
+[30s it 2667] NEW BEST 8766 (op 2 i 137 D 4) len 175
+[45s] it 4000 acc 573 cur 8739 best 8766 temp 6.4 elite 40 gains 152/679/560/313/8/25/207/154/0/184 acc 96/103/172/53/16/13/42/42/6/30
+[67s] it 6000 acc 819 cur 8756 best 8766 temp 17.3 elite 40 gains 244/689/872/342/57/174/207/196/0/264 acc 142/141/252/76/24/21/55/58/6/44
+[89s] it 8000 acc 1042 cur 8766 best 8766 temp 1.2 elite 40 gains 317/751/911/353/57/180/211/250/0/264 acc 195/187/321/96/27/27/63/67/7/52
+[110s] it 10000 acc 1339 cur 8755 best 8766 temp 3.3 elite 40 gains 409/818/1639/405/63/192/258/331/0/424 acc 244/245/414/130/34/33/78/88/7/66
+done it 10877 acc 1422 best 8766 restarts 0
+elite: 9275 9271 9271 9271 9267 9259 9201 8957 8953 8953 8953 8953 8953 8953 8953 8953 8949 8949 8949 8949 8949 8949 8949 8949 8945 8945 8945 8945 8903 8899 8899 8899 8899 8897 8897 8897 8897 8897 8897 8897

@@ -1,0 +1,49 @@
+rule mask 00000000000c0000 moves [80,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 8507 forbidden sits 4
+[1s it 53] NEW BEST 9107 (op 3 i 157 D 1) len 181
+  eff 8639 forbidden sits 2
+[1s it 76] NEW BEST 8939 (op 1 i 158 D 2) len 179
+  [it 761] feasible best 8703
+  eff 8703 forbidden sits 0
+[8s it 761] NEW BEST 8703 (op 3 i 153 D 1) len 173
+  [it 786] feasible best 8707
+  eff 8707 forbidden sits 0
+[9s it 786] NEW BEST 8707 (op 3 i 134 D 2) len 177
+  [it 813] feasible best 8711
+  eff 8711 forbidden sits 0
+[9s it 813] NEW BEST 8711 (op 0 i 105 D 4) len 179
+  [it 834] feasible best 8751
+  eff 8751 forbidden sits 0
+[9s it 834] NEW BEST 8751 (op 5 a 162 len 6) len 177
+  [it 869] feasible best 8754
+  eff 8754 forbidden sits 0
+[9s it 869] NEW BEST 8754 (op 7 a 15 c 15 d 40 b 39) len 180
+  [it 1017] feasible best 8755
+  eff 8755 forbidden sits 0
+[11s it 1017] NEW BEST 8755 (op 2 i 146 D 8) len 176
+  [it 1034] feasible best 8771
+  eff 8771 forbidden sits 0
+[11s it 1034] NEW BEST 8771 (op 7 a 112 c 114 d 142 b 136) len 176
+  [it 1153] feasible best 8773
+  eff 8773 forbidden sits 0
+[12s it 1153] NEW BEST 8773 (op 2 i 97 D 2) len 174
+  [it 1317] feasible best 8784
+  eff 8784 forbidden sits 0
+[15s it 1317] NEW BEST 8784 (op 4 a 170 len 1) len 175
+  [it 1366] feasible best 8788
+  eff 8788 forbidden sits 0
+[15s it 1366] NEW BEST 8788 (op 7 a 129 c 125 d 145 b 149) len 179
+  [it 1393] feasible best 8808
+  eff 8808 forbidden sits 0
+[15s it 1393] NEW BEST 8808 (op 7 a 95 c 95 d 122 b 118) len 177
+  [it 1396] feasible best 8816
+  eff 8816 forbidden sits 0
+[16s it 1396] NEW BEST 8816 (op 2 i 89 D 9) len 179
+  [it 5007] feasible best 8817
+  eff 8817 forbidden sits 0
+[57s it 5007] NEW BEST 8817 (op 3 i 59 D 2) len 179
+[71s] it 6000 acc 695 cur 8725 best 8817 temp 10.1 elite 40 gains 304/305/656/374/109/85/156/403/115/432 acc 120/120/203/68/13/13/46/64/6/42
+done it 10167 acc 1095 best 8817 restarts 0
+elite: 9275 9275 9107 8939 8939 8935 8935 8927 8927 8925 8925 8920 8920 8920 8920 8920 8916 8869 8865 8863 8862 8858 8854 8817 8817 8817 8817 8817 8817 8817 8817 8817 8816 8816 8816 8816 8816 8816 8816 8816

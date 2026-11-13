@@ -1,0 +1,23 @@
+lns/in_A_S_d6d7_L1/start.txt: 175 moves, 8766 minutes (replay 8766)
+start lns/in_A_S_d6d7_L1/start.txt: 175 moves, 8766 minutes
+[25s it 1966] NEW BEST 8768 (op 2 i 33 D 2) len 177
+[26s it 2012] NEW BEST 8776 (op 0 i 97 D 5) len 173
+[26s it 2068] NEW BEST 8778 (op 2 i 144 D 9) len 175
+[49s it 4066] NEW BEST 8808 (op 2 i 145 D 7) len 176
+[49s it 4081] NEW BEST 8812 (op 5 a 134 len 3) len 176
+[49s it 4094] NEW BEST 8815 (op 2 i 34 D 9) len 179
+[53s it 4390] NEW BEST 8817 (op 5 a 85 len 12) len 173
+[57s it 4775] NEW BEST 8820 (op 2 i 151 D 4) len 176
+[57s it 4785] NEW BEST 8821 (op 7 a 12 c 12 d 38 b 39) len 173
+[57s it 4844] NEW BEST 8823 (op 0 i 107 D 4) len 179
+[58s it 4855] NEW BEST 8825 (op 1 i 133 D 3) len 177
+[58s it 4864] NEW BEST 8827 (op 7 a 30 c 28 d 53 b 53) len 177
+[65s it 5557] NEW BEST 8829 (op 3 i 154 D 2) len 181
+[66s it 5623] NEW BEST 8831 (op 2 i 151 D 5) len 181
+[67s it 5719] NEW BEST 8835 (op 7 a 100 c 98 d 114 b 108) len 175
+[70s] it 6000 acc 823 cur 8833 best 8835 temp 3.4 elite 40 gains 405/236/646/76/4/14/356/279/82/400 acc 176/148/249/63/19/12/51/67/6/32
+[76s it 6555] NEW BEST 8837 (op 1 i 159 D 3) len 177
+[77s it 6625] NEW BEST 8839 (op 0 i 147 D 8) len 181
+[93s] it 8000 acc 1015 cur 8837 best 8839 temp 1.5 elite 40 gains 415/246/663/76/4/14/360/290/82/400 acc 212/181/309/78/23/17/58/86/7/44
+[136s] it 12000 acc 1570 cur 8797 best 8839 temp 13.5 elite 40 gains 939/614/1295/410/98/54/708/535/86/560 acc 309/285/477/121/38/25/93/133/13/76
+[138s it 12194] NEW BEST 8844 (op 3 i 147 D 2) len 183

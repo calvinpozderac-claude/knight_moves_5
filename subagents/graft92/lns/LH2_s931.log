@@ -1,0 +1,5 @@
+lns/in_LH2_s931/H2_9212.txt: 181 moves, 9212 minutes (replay 9212)
+lns/in_LH2_s931/record_8900.txt: 179 moves, 8900 minutes (replay 8900)
+lns/in_LH2_s931/start.txt: 181 moves, 9212 minutes (replay 9212)
+start lns/in_LH2_s931/start.txt: 181 moves, 9212 minutes
+[22s] it 2000 acc 383 cur 9107 best 9212 temp 38.1 elite 29 gains 371/370/1233/152/136/0/289/506/36/468 acc 63/58/112/26/9/8/39/43/1/24
