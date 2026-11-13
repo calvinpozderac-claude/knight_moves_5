@@ -26,3 +26,4 @@ start lns/in_A_S_d6d7_L1/start.txt: 175 moves, 8766 minutes
 [155s it 13640] NEW BEST 8851 (op 0 i 149 D 2) len 176
 [155s it 13714] NEW BEST 8855 (op 6 a 95 len 2) len 182
 [156s it 13777] NEW BEST 8859 (op 7 a 103 c 99 d 118 b 120) len 180
+[159s] it 14000 acc 1833 cur 8839 best 8859 temp 6.1 elite 40 gains 959/620/1399/446/106/58/764/571/86/560 acc 365/331/559/152/46/30/109/145/14/82
