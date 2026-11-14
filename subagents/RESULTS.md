@@ -45,3 +45,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 9 | polish92 / graft92 | polish + LNS on 9,279 (second merge class) | **9,282 (verified)** | record; found independently by two agents |
 | 9 | fw93 | sound free-wait pass (fnrpa) on the 9,282 family | **9,286 (verified)** | record |
 | 9 | fw93 | free-wait pass on 73 tours 9,267-9,282 | 9,286 (74 distinct ties; fixed point) | gain = one free sink at a block change: sink x (n_prev - n_next) |
+| 9 | sfl | sound free-wait LNS (necessity-checked free sinks inside the search) | **9,290 (verified)** | record |
