@@ -76,3 +76,22 @@ Merge bans (f3/f7, g6/h3, both, in moves 40-90) give no feasible tour within 120
 `in/record_9279.txt` (second merge class: f7/h3, d3/g6 early). Distances are now vs 9,279; saver threshold 9,279.
 New rule type F_ = flip trial: ban one sitter or a small set of sitters for the dance (move 92 on 9,279, 80 on
 9,275) so the opposite point sits instead. Prefix D_ = base 9,279.
+
+## Rule table, 9,279 base (D_) and flip trials (07:05-07:52; dist vs 9,279)
+| rule | squares:FROM:TO | raw | dist | LNS 420 s | dist after | family after LNS |
+|---|---|---|---|---|---|---|
+| D_F_c8d8 | c8,d8:92:999 | 8,830 | 3/2 | 9,123 | 6/0 | 9,279 sitters, new order |
+| D_F_a8b8b7 | a8,b8,b7:92:999 | 8,453 | 3/3 | 9,128 | 6/0 | 9,279 sitters, new order |
+| D_F_d8 | d8:92:999 | 8,901 | 5/1 | 9,096 | 8/0 | 9,279 sitters |
+| D_F_c6c7 | c6,c7:92:999 | 8,840 | 1/2 | 9,277 | 0/0 | 9,279's own signature |
+| A_F_d8 (9,275) | d8:80:999 | 8,999 | 11/2 | 9,176; +600 s 9,244 | 12/1 | 9,275 sitters, new order |
+| D_F_c7 | c7:92:999 | 8,868 | 4/1 | 9,213 | 0/0 | 9,279's |
+| D_F_d6d7 | d6,d7:92:999 | 8,764 | 1/2 | 9,277 | 0/0 | 9,279's |
+| D_U_b6c6d4d5 | b6,c6,d4,d5:92:999 (300 s) | 8,181 | 11/4 | 9,201 (still rising) | 5/0 | 9,279 sitters, order a4/a5 ... b5/c5 b4/b5 c4/c5 b4/c4; 600 s continuation queued |
+| D_F_c4c5 | c4,c5:92:999 | 8,893 | 1/2 | 9,213 | 0/0 | 9,279's |
+Flip trials behave like the bans: plain LNS flips every sitter back within minutes (sitter difference 0 in all 9).
+Two 9,277 finishes on 9,279's own signature (D_F_c6c7, D_F_d6d7) but nothing above 9,279.
+
+07:50: record is now 9,282 (polish92 and graft92, one signature: 9,275's merge f3/f7 g6/h3 + 9,279's dance
+c3/d3 b2/b3 ...). Bases E_ = polish92's 9,282 (`in/P_9282.txt`), G_ = graft92's (`in/G_9282.txt`), each the other's
+donor in dlns (`dl` field 7 = donors). Saver threshold 9,282; distances vs 9,282.

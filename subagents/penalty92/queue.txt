@@ -1,4 +1,7 @@
-lns|D_U_b6c6d4d5_L2|keep/D_U_b6c6d4d5_9201.txt|9502|600|
+dl|E_F_c3|in/P_9282.txt|150|c3:91:999||in/G_9282.txt
+dl|E_O_c4c5|in/P_9282.txt|150|c4,c5,f5,f4:91:999||in/G_9282.txt
+dl|E_F_a8b8b7|in/P_9282.txt|150|a8,b8,b7:91:999||in/G_9282.txt
+dl|E_F_d4d5|in/P_9282.txt|150|d4,d5:91:999||in/G_9282.txt
 dl|A_F_a8b8b7|in/record_9275.txt|150|a8,b8,b7:80:999
 dl|D_F_d7|in/record_9279.txt|150|d7:92:999
 dl|D_F_a7b7|in/record_9279.txt|150|a7,b7:92:999

@@ -42,3 +42,10 @@
    f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 07:40:11 lns R79x8946 s976 start 9263 focus 1 180 0.0 donors in/S79_8946_k90.txt in/record_8946.txt in/record_9279.txt
 07:45:12 saver threshold 9282; donor in/P9282.txt (polish92's 177-move 9282)
+07:48:11 lns R79x8946 s976 end:  done it 43593 acc 7853 best 9263 restarts 12
+07:48:11 lns R79x9275 s975 start 9272 focus 1 180 0.0 donors in/S79_9275_k70.txt in/record_9275.txt in/record_9279.txt
+07:56:11 lns R79x9275 s975 end:  done it 44723 acc 8003 best 9272 restarts 6
+07:56:11 queue7 done
+07:56:20 lns L82f s981 start 9282 focus 40 110 0.5 donors in/X9282.txt in/P9282.txt in/record_9279.txt in/record_9275.txt
+08:16:20 lns L82f s981 end:  done it 101284 acc 15114 best 9282 restarts 12
+08:16:20 queue8 done

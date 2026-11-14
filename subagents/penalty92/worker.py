@@ -4,7 +4,7 @@ import sys, os, time, fcntl, subprocess, zlib, shutil
 import fam
 D = os.path.dirname(os.path.abspath(__file__)); os.chdir(D)
 WID = sys.argv[1]; STOP = time.time() + float(sys.argv[2])
-REF = 'in/record_9279.txt'
+REF = 'in/P_9282.txt'
 DLT = int(os.environ.get('DLT', 120)); LT = int(os.environ.get('LT', 420))
 COMMON = ['--xover', '0', '--t0', '40', '--budget', '400000', '--dmax', '8', '--pdmax', '4', '--rmax', '8',
           '--wide', '8', '--skel', '0.5', '--reroute', '0.05', '--free', '0']
@@ -55,7 +55,8 @@ while time.time() < STOP:
             base, pen, rules = f[2], f[3], f[4].split(';'); dlt = int(f[5]) if len(f) > 5 and f[5] else DLT
             log(f'dl {name} base {base} pen {pen} rules {rules}')
             ra = []; [ra.extend(['--rule', r]) for r in rules]
-            run(['bin/dlns', '--tours', base, '--start', base, '--seed', str(seed)] + COMMON + ['--time', str(dlt), '--pen', pen] + ra + ['--out', f'y/{name}_best.txt'], f'y/{name}.log', dlt + 60)
+            dd_ = [x for x in f[6].split(';') if x] if len(f) > 6 else []
+            run(['bin/dlns', '--tours', base] + dd_ + ['--start', base, '--seed', str(seed)] + COMMON + ['--time', str(dlt), '--pen', pen] + ra + ['--out', f'y/{name}_best.txt'], f'y/{name}.log', dlt + 60)
             fe = f'y/{name}_best.txt.feas_best.txt'
             if not os.path.exists(fe):
                 fb = f'y/{name}_best.txt'

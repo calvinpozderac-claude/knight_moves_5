@@ -8,3 +8,16 @@ tour 1: 9282 minutes, 177 jumps, budget 600s
   [as is] window w=2 at move 86: 9282 -> 9282 minutes, 177 -> 175 jumps
   [as is] pass: 445/2235 windows, 248790 nodes, 153358 tail replays, 0.1s (3683251 nodes/s)
   new overall best 9282 (window) -> pol/PM_s932_best.txt
+  reroute 1000/10 failed
+  reroute 1000/0 failed
+  reroute 0/0 failed
+  reroute 5/1 failed
+  [as is] pass: 2209/2209 windows, 1695429971 nodes, 768848810 tail replays, 339.5s (4993268 nodes/s)
+  nrpa L2 last 45 (fresh): no gain in 0.1s
+  nrpa L2 last 45 (warm): no gain in 0.1s
+  nrpa L2 last 60 (fresh): no gain in 0.2s
+  nrpa L2 last 60 (warm): no gain in 0.1s
+  nrpa L2 last 90 (fresh): no gain in 0.1s
+  nrpa L2 last 90 (warm): no gain in 0.2s
+tour 1 done: 9282 -> 9282 minutes (175 jumps), 340.3s (converged)
+done: best 9282 minutes after 340s -> pol/PM_s932_best.txt

@@ -33,3 +33,9 @@ A_F_d8	in/record_9275.txt	d8:80:999	8999	11	2	9176	12/1	final new: f3/f7 g6/h3 a
 D_F_c7	in/record_9279.txt	c7:92:999	8868	4	1	9213	0/0	final record_9279: f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 D_F_d6d7	in/record_9279.txt	d6,d7:92:999	8764	1	2	9277	0/0	final record_9279: f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 D_U_b6c6d4d5	in/record_9279.txt	b6,c6,d4,d5:92:999	8181	11	4	9201	5/0	final new: f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/a5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 b5/c5 b4/b5 c4/c5 b4/c4 d4/d5 d6/d7 e7/e8 f8/g8
+A_F_d8_L2	lns:keep/A_F_d8_9176.txt		9176			9244	12/1	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+D_F_c4c5	in/record_9279.txt	c4,c5:92:999	8893	1	2	9213	0/0	final record_9279: f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+D_U_b6c6d4d5_L2	lns:keep/D_U_b6c6d4d5_9201.txt		9201			9207	6/1	f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/a5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 b5/c5 b4/c4 d4/d5 d6/d7 e7/e8 f8/g8
+E_U_b6c6d4d5P	in/P_9282.txt	b6,c6,d4,d5:91:999	8790	5	4	9204	4/0	final new: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c8/d8 c6/c7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_F_c4c5	in/P_9282.txt	c4,c5:91:999	8896	1	2	9282	0/0	final P_9282: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+G_U_b6c6d4d5	in/G_9282.txt	b6,c6,d4,d5:93:999	8458	9	2	9148	10/0	final new: f3/f7 g6/h3 c3/d3 c4/d4 c5/d5 a5/b5 a4/b4 b2/b3 a2/a3 a4/a5 a6/b6 c6/c7 a7/b7 a8/b8 c8/d8 d6/d7 e7/e8 f8/g8

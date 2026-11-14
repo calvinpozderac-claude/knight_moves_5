@@ -76,3 +76,21 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5, `--free 0`. Start 23:16 (20
   (= 9,279's dance after 9,275's merge). No LNS needed: a direct splice.
 - Reverse: 9,279 prefix + 9,275 dance 9,272 (k 51-90), + H3 9,261 (k 64-91), + 8,946 9,263 (k 89-91), + 9,080
   7,351 (k 89). queue7: plain LNS on 9,282 (20 min, donors 9,282/9,279/9,275), then 8-min repairs of those four.
+- L82 s971 (plain LNS from 9,282, 20 min, 112k it, donors 9,282/9,279/9,275): **no gain, 9,282**.
+- Repairs of 9,279-prefix splices (8 min each, donors splice + dance donor + 9,279): x9,080 k89 7,351 -> **9,166**
+  (new sig f7/h3 g4/g6 c3/d3 c4/d4 b3/b4 b4/c4 b2/b3 a2/b2 a3/a4 a5/a6 b5/b6 c5/d5 c6/c7 c8/d8 b7/b8 a7/a8 c8/d6
+  d6/d7 e7/e8 f8/g8, below 9,200); xH3 k80 9,261 -> 9,279 (reverts to 9,279 itself); x8,946 k90 9,263 and x9,275
+  k70 9,272: no gain at all.
+- polish92 independently found a different 9,282 (177 moves, same signature; `data/tours/record_9282.txt`, here
+  `in/P9282.txt`). Saver threshold raised to 9,282 (07:45).
+- `bin/graft2` = graft with XODETAIL saving every pair (not only recs[0] x b). 9,268 and 9,271 prefixes + 9,279
+  resync also give exactly 9,282 (9,268: k 51-93; 9,271: k 85-90), and X9282 x P9282 crossovers give 9,282: the
+  "f3/f7 g6/h3 merge + 9,279 dance" junction is saturated.
+- queue8: L82f s981 = junction-focused LNS on X9282 (focus 40-110 p 0.5, donors both 9,282s + 9,279 + 9,275), 20 min.
+- L82f s981 (08:16): **no gain, 9,282**; its elite is 40 distinct-move 9,282 variants (a plateau). Nothing above
+  9,282 from this agent. Saver stopped at the end (no jobs left). Time used this round: 07:03-08:17.
+
+## Summary
+- Best: **9,282** (`NEW_RECORD_9282.txt`, 179 moves, checker ok) = 9,275's merge + 9,279's dance, a direct splice
+  (no repair needed). H3 family ceiling 9,264 (4 seeds). Repaired splices gave new families 9,091 (x8,830),
+  9,089 (x8,813), 9,222 (x8,946 k102), 9,166 (9,279 merge x 9,080), none near the record.

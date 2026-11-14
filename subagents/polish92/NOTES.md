@@ -70,3 +70,6 @@ ceiling of its sitter set (penalty92 found the same attractor).
   first, then b2/b3 a2/a3 ...). So the two merge classes combine: the 9,275 donors supplied the early merge.
 - 07:42 coordinator saved 9,282 as data/tours/record_9282.txt. Added graft92's distinct 9,282 (179 moves, same
   signature as mine) as `don2/graft9282.txt`; saver restarted with THR=9282. s932 ended 9,282 (60k); polish PM_s932 (600 s) running.
+- PM_s932 polish: converged 340 s, **9,282, no gain** (reroute to 175 jumps). 07:45 s933 (60k) started from the best don2 tour (graft92's 9,282 on the tie).
+- s933 (60k from graft92's 9,282): **9,282, nothing**. 07:57 q6 s934 started.
+- s934 (60k, wide donor set incl. the 9,275-line tours): **9,282, nothing**. 08:08 s935 (dance-only focus 40..154) started; bb proof on 9,282 queued after it.

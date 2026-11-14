@@ -1,0 +1,19 @@
+lns/in_E_F_a7b7_L1/start.txt: 175 moves, 8849 minutes (replay 8849)
+start lns/in_E_F_a7b7_L1/start.txt: 175 moves, 8849 minutes
+[0s it 11] NEW BEST 8850 (op 2 i 140 D 4) len 178
+[0s it 31] NEW BEST 9026 (op 2 i 140 D 3) len 176
+[0s it 51] NEW BEST 9030 (op 1 i 137 D 3) len 176
+[0s it 53] NEW BEST 9135 (op 2 i 132 D 3) len 176
+[1s it 92] NEW BEST 9264 (op 2 i 132 D 3) len 179
+[21s] it 2000 acc 387 cur 9250 best 9264 temp 19.3 elite 40 gains 351/277/1115/254/72/66/155/272/36/504 acc 79/59/123/35/6/6/26/24/3/26
+[22s it 2166] NEW BEST 9268 (op 5 a 109 len 5) len 179
+[35s it 3271] NEW BEST 9272 (op 7 a 110 c 116 d 127 b 119) len 175
+[41s it 3854] NEW BEST 9274 (op 7 a 136 c 136 d 153 b 149) len 175
+[42s it 3958] NEW BEST 9278 (op 7 a 93 c 97 d 111 b 101) len 177
+[43s it 4048] NEW BEST 9280 (op 3 i 61 D 2) len 179
+[65s] it 6000 acc 787 cur 9270 best 9280 temp 4.1 elite 40 gains 451/394/1339/362/120/70/169/423/72/540 acc 148/126/256/62/16/12/47/61/5/54
+[71s it 6593] NEW BEST 9282 (op 0 i 140 D 4) len 179
+[126s] it 12000 acc 1440 cur 9206 best 9282 temp 18.9 elite 40 gains 803/489/2036/491/128/106/245/621/140/936 acc 290/239/445/117/30/19/83/111/10/96
+[189s] it 18000 acc 2008 cur 9280 best 9282 temp 2.1 elite 40 gains 962/666/2300/593/164/114/269/830/152/1080 acc 392/344/640/152/42/23/114/157/17/127
+[209s] it 20000 acc 2134 cur 9282 best 9282 temp 1.0 elite 40 gains 966/668/2302/593/164/114/269/830/152/1080 acc 415/372/678/161/45/23/115/169/17/139
+[229s] it 22000 acc 2477 cur 9272 best 9282 temp 20.4 elite 40 gains 1210/838/2868/829/236/186/531/1288/188/1476 acc 470/435/767/188/54/36/145/199/21/162

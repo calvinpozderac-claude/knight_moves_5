@@ -37,3 +37,10 @@ moves=177 ok=True T=9279 ok maxvisits=3 maxwait=140 unnecessary=[]
 07:39:57 lns M s932 end: 9282 done it 60000 acc 7368 best 9282 restarts 5
 moves=177 ok=True T=9282 ok maxvisits=3 maxwait=140 unnecessary=[]
 07:39:57 polish PM_s932 start on lns/M_s932_best.txt (9282) wmax 12 time 600
+07:45:38 polish PM_s932 end: 9282 done: best 9282 minutes after 340s -> pol/PM_s932_best.txt
+07:45:38 lns M s933 start 9282 focus 1 154 0.85
+07:56:52 lns M s933 end:  done it 60000 acc 6574 best 9282 restarts 4
+07:56:52 q5 done
+07:57:00 lns M s934 start 9282 focus 1 154 0.85
+08:08:13 lns M s934 end:  done it 60000 acc 7285 best 9282 restarts 4
+08:08:13 lns M s935 start 9282 focus 40 154 0.85

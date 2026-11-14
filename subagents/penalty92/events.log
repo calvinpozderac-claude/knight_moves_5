@@ -100,3 +100,23 @@
 07:42:51 [w2] dl D_U_b6c6d4d5: lns -> 9201 dist 5/0 (new)
 07:42:51 [w2] dl D_F_c4c5 base in/record_9279.txt pen 150 rules ['c4,c5:92:999']
 07:44:51 [w2] dl D_F_c4c5: raw 8893 dist 1/2 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+07:50 record now 9,282 (polish92 + graft92, same sig: 9,275 merge + 9,279 dance); bases E_=P_9282, G_=G_9282 (each other's donor); REF 9282; saver threshold 9282 (restarted)
+07:49:50 [w1] lns A_F_d8_L2 -> 9244 dist 12/1
+07:49:50 [w1] worker exit
+07:51:51 [w2] dl D_F_c4c5: lns -> 9213 dist 0/0 (record_9279)
+07:51:51 [w2] worker exit
+07:51:58 [w1] lns D_U_b6c6d4d5_L2 start keep/D_U_b6c6d4d5_9201.txt (9201) seed 9502 t 600
+07:51:59 [w2] dl E_U_b6c6d4d5 base in/P_9282.txt pen 150 rules ['b6,c6,d4,d5:91:999']
+07:56:59 [w2] dl E_U_b6c6d4d5P: no feasible; using the partially penalised best 8790
+07:56:59 [w2] dl E_U_b6c6d4d5P: raw 8790 dist 5/4 new sig f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a7/a8 b7/b8 c8/d8 c7/c8 c6/c7 c4/c5 e4/e5 d6/d7 e7/e8 f8/g8; lns 420s
+08:01:58 [w1] lns D_U_b6c6d4d5_L2 -> 9207 dist 6/1
+08:01:58 [w1] dl E_F_c4c5 base in/P_9282.txt pen 150 rules ['c4,c5:91:999']
+08:03:58 [w1] dl E_F_c4c5: raw 8896 dist 1/2 new sig f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+08:03:59 [w2] dl E_U_b6c6d4d5P: lns -> 9204 dist 4/0 (new)
+08:03:59 [w2] dl G_U_b6c6d4d5 base in/G_9282.txt pen 150 rules ['b6,c6,d4,d5:93:999']
+08:08:59 [w2] dl G_U_b6c6d4d5: raw 8458 dist 9/2 new sig f3/f7 g6/h3 c3/d3 d4/d5 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a5/a6 b5/c7 c7/c8 c8/d8 b8/c7 a8/b8 a6/a8 a7/b7 b5/c5 c4/c5 d6/d7 e7/e8 f8/g8; lns 420s
+08:10:58 [w1] dl E_F_c4c5: lns -> 9282 dist 0/0 (P_9282)
+08:10:58 [w1] dl E_F_a7b7 base in/P_9282.txt pen 150 rules ['a7,b7:91:999']
+08:12:58 [w1] dl E_F_a7b7: raw 8849 dist 1/2 new sig f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+08:15:59 [w2] dl G_U_b6c6d4d5: lns -> 9148 dist 10/0 (new)
+08:15:59 [w2] dl E_U_c6c7c8 base in/P_9282.txt pen 150 rules ['c6,c7,c8:91:999']
