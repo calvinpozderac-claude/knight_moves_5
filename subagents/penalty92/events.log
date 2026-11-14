@@ -120,3 +120,4 @@
 08:12:58 [w1] dl E_F_a7b7: raw 8849 dist 1/2 new sig f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
 08:15:59 [w2] dl G_U_b6c6d4d5: lns -> 9148 dist 10/0 (new)
 08:15:59 [w2] dl E_U_c6c7c8 base in/P_9282.txt pen 150 rules ['c6,c7,c8:91:999']
+08:17:24 [w3] lns R9166_L1 start in/R9166.txt (9166) seed 9601 t 840
