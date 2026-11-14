@@ -34,3 +34,18 @@
   9,270 -> 9,274, 9,268 -> 9,269 (13), 9,267 -> 9,271 (6), 9,269: nothing. No tour above 9,286.
 - p5 (`fw_queue.sh tmp/q5.txt`, shared queue, up to 4 workers): the 59 improved non-9,282 tours (`in3/`) x 8 rngs
   (301-308, 15 s, anchors 35+), then 8 more rngs on each 9,286 (4 with anchors 120+ = dance only, 4 with 35-120 = merge).
+- (Bug, my own: the watcher that was to add workers 2-3 matched its own command line in `pgrep -f`, so p5 ran on
+  2 workers until 13:33, then 4.)
+- **p5 results (576 runs, all done by 13:52):** the 13 distinct 9,286s x 8 more rngs (dance-only anchors 120+ and
+  merge anchors 35-120): 104/104 -> 9,286, ~6,700 finishes at 9,286, none higher. The 59 improved lower tours x 8
+  rngs: each stays at its sweep score, except 9,267-line tours lifted to 9,279 (i9271 from 9,267 / i9275 from 9,271:
+  9,279 on most rngs, i9271_077a452c 4/8, c783cf9a 0/8): they rejoin the 9,275 + 4 line. Nothing above 9,286.
+- Distinct checker-ok finishes in all pools: 74 x 9,286, 27 x 9,285, 5 x 9,284, 39 x 9,283 (each above 9,282 has a
+  NEW_RECORD_<m>.txt for the first one found; the rest are in tmp/*/fw_pool_*.txt).
+
+## Conclusion
+- Best **9,286**, checker ok=True, maxvisits=3, unnecessary=[] (`NEW_RECORD_9286.txt` = data/tours/record_9286.txt).
+- The free-wait gain on this line is a single local move: the sit after the b7 -> c5 block transition moved onto
+  b7 (group 17 instead of 16), +4 on every tour with that transition. Everything else is rigid: 0 spread over
+  ~470 fnrpa runs (rngs 1-8, 101-112, 119-122, 201-206, 301-308). More needs new dance block orders with in-group
+  transitions (gain = sink x (n_prev - n_next)), i.e. a penalty/graft-style dance rebuild with free moves on.
