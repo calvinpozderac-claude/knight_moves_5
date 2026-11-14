@@ -119,3 +119,25 @@ Since plain LNS put every moved sitter back, `dl` jobs now take a keep stage (fi
 a second dlns with the same rules at a small penalty (40 per banned sit, 600 s) climbs inside the new sitter set
 unless restoring a sit gains more than 40; then plain LNS 420 s from that. Rows `<rule>_K` in results.tsv.
 Queue: flips of single blocks/sitters of 9,282 (E_K_*) and a few on the splice families (R*_K_*).
+
+| rule (keep pen) | squares:FROM:TO | raw | keep stage (dist; feasible) | plain LNS after | dist after |
+|---|---|---|---|---|---|
+| E_K_c8d8 (40) | c8,d8:91:999 | 8,897 | 9,261 (8/0; 8,893) | 9,268 | 8/1 (9,268's signature) |
+| E_K_c6c7 (40) | c6,c7:91:999 | 8,845 | 9,258 (5/0; 8,845) | 9,270 | 4/0 |
+| E_K_d6d7 (40) | d6,d7:91:999 | 8,742 | **9,282** (0/0: banned sits restored even at pen 40) | 9,282 (tie, md5 39760016) | 0/0 |
+| R9091_K_c6c7c8 (40) | c6,c7,c8:93:999 (300 s) | 8,269 | 8,977 (12/0) | 9,009 | 8/0 |
+| E_K_c3d3 | c3,d3:91:999 | 9,216, 9,282's signature: skipped | | | |
+| E_K_d8 | d8:91:999 | none (partial best has a known signature) | | | |
+| R9222_K_c4c5d4 (120) | c4,c5,d4:93:999 (300 s) | 8,578 | 8,754 (10/2; 8,578) | 9,136 | 12/0 |
+| E_K_a8b8b7 (120) | a8,b8,b7:91:999 | 8,443 | 8,894 (2/2; 8,443) | 9,280 | 0/0 |
+| E_K_d4d5 (120) | d4,d5:91:999 | 8,990 | 9,122 (1/2; 8,992; 1 banned sit left, d4/e4 block) | 9,282 (tie, md5 d27dc4ad) | 0/0 |
+| R9089_K_d6d7 (120) | d6,d7:83:999 | 8,661 | 8,790 (11/2; 8,790) | 9,182 | 9/0 |
+Pen 40 is too weak (a restored sitter is worth more than 40 per sit); at pen 120 the moved sitters stay but the kept
+tours are 160-530 below 9,282, and plain LNS afterwards restores the sitters every time. Distinct 9,282 ties found
+here: b19142a0, cd42bdb9, d27dc4ad, 39760016 (plus 9,280 and two 9,277s).
+
+## 11:58- (2 threads, ~75 min): decaying keep penalty
+`chain.sh TAG START RULE PEN:SECS ...` runs dlns stages, each from the previous stage's best, with the penalty
+decaying 120 (1,200 s) -> 80 -> 50 -> 25 (600 s each), no plain LNS at the end. Chains: KD45 (E_K_d4d5's kept 9,122,
+d4,d5 banned) and KR22 (R9222_K_c4c5d4's kept 8,754, c4,c5,d4 banned). The rest of the KEEP queue (E_K_e7e8,
+E_K_b6c6d4d5, R9166_K_c4d4, E_K_c4c5, E_K_a2b2, E_K_c7, E_K_a6b6, E_K_c6c7c8) did not fit in the 2 threads.

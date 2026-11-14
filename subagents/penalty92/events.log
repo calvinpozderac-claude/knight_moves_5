@@ -171,3 +171,17 @@
 09:10:08 [w6] worker exit
 09:13:09 [w7] dl R9089_K_d6d7: lns -> 9182 dist 9/0 (new)
 09:13:09 [w7] worker exit
+11:58:43 [chain KD45] stage 1 pen 120 1200s from y/E_K_d4d5_K_best.txt (9122)
+11:58:43 [chain KR22] stage 1 pen 120 1200s from y/R9222_K_c4c5d4_K_best.txt (8754)
+12:18:43 [chain KD45] stage 1 -> best 9164 (banned sits 0) feasible 9164; 31 f3/f7 g6/h3 d3/d4 d4/d5 c3/d3 b3/c3 b2/b3 a2/b2 a2/a3 a3/a4 a4/b4 b4/c4 c4/c5 b5/c5 a5/b5 a5/a6 a6/b6 c6/c7 c8/d8 b7/b8 a7/a8 d6/d7 e7/e8 f8/g8
+12:18:43 [chain KD45] stage 2 pen 80 600s from y/KD45_c1_best.txt (9164)
+12:18:43 [chain KR22] stage 1 -> best 8763 (banned sits 1) feasible 8519; 43 f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c3/d3 d4/d5 d6/d7 b7/d5 a7/b7 a8/b8 c8/d8 e7/e8 f8/g8
+12:18:43 [chain KR22] stage 2 pen 80 600s from y/KR22_c1_best.txt (8763)
+12:28:43 [chain KD45] stage 2 -> best 9170 (banned sits 0) feasible 9170; 32 f3/f7 g6/h3 d3/d4 c5/d5 c4/c5 c3/c4 b3/c3 b2/b3 a2/b2 a2/a3 a3/a4 a4/b4 b4/b5 a5/b5 a5/a6 a6/b6 c6/c7 c8/d8 b7/b8 a7/a8 d6/d7 e7/e8 f8/g8
+12:28:43 [chain KD45] stage 3 pen 50 600s from y/KD45_c2_best.txt (9170)
+12:28:44 [chain KR22] stage 2 -> best 8763 (banned sits ) feasible ; 43 f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c3/d3 d4/d5 d6/d7 b7/d5 a7/b7 a8/b8 c8/d8 e7/e8 f8/g8
+12:28:44 [chain KR22] stage 3 pen 50 600s from y/KR22_c2_best.txt (8763)
+12:38:43 [chain KD45] stage 3 -> best 9170 (banned sits ) feasible 9170; 32 f3/f7 g6/h3 d3/d4 c5/d5 c4/c5 c3/c4 b3/c3 b2/b3 a2/b2 a2/a3 a3/a4 a4/b4 b4/b5 a5/b5 a5/a6 a6/b6 c6/c7 c8/d8 b7/b8 a7/a8 d6/d7 e7/e8 f8/g8
+12:38:44 [chain KD45] stage 4 pen 25 600s from y/KD45_c3_best.txt (9170)
+12:38:44 [chain KR22] stage 3 -> best 9148 (banned sits 8) feasible ; 48 f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d6/d7 d4/d5 a7/b7 a8/b8 c8/d8 e7/e8 f8/g8
+12:38:44 [chain KR22] stage 4 pen 25 600s from y/KR22_c3_best.txt (9148)

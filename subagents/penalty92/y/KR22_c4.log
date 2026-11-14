@@ -1,0 +1,6 @@
+rule mask 000000040c000000 moves [93,999)
+y/KR22_c3_best.txt: 179 moves, 9148 minutes (replay 9148)
+start y/KR22_c3_best.txt: 179 moves, 9148 minutes
+[19s] it 2000 acc 351 cur 8941 best 9148 temp 25.2 elite 40 gains 789/269/851/246/64/72/228/620/36/252 acc 68/49/99/29/6/7/30/42/4/17
+[59s] it 6000 acc 843 cur 9132 best 9148 temp 9.3 elite 40 gains 1103/611/1362/341/64/80/357/1019/72/576 acc 159/127/245/61/16/17/64/89/10/55
+[81s] it 8000 acc 1038 cur 9148 best 9148 temp 5.5 elite 40 gains 1162/633/1409/383/64/84/361/1065/72/576 acc 203/152/314/76/18/18/73/103/12/69

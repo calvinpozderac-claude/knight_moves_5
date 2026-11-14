@@ -1,0 +1,11 @@
+rule mask 0000000808000000 moves [91,999)
+y/KD45_c3_best.txt: 167 moves, 9170 minutes (replay 9170)
+start y/KD45_c3_best.txt: 167 moves, 9170 minutes
+  [it 3] feasible best 9170
+  [it 7591] feasible best 9171
+  eff 9171 forbidden sits 0
+[78s it 7591] NEW BEST 9171 (op 0 i 122 D 3) len 168
+[82s] it 8000 acc 906 cur 9166 best 9171 temp 5.4 elite 40 gains 1047/795/1980/371/366/60/590/771/0/324 acc 165/125/276/71/20/24/78/97/7/43
+  [it 8006] feasible best 9174
+  eff 9174 forbidden sits 0
+[82s it 8006] NEW BEST 9174 (op 1 i 98 D 3) len 167

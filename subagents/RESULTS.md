@@ -43,3 +43,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 8 | f5push | focused LNS on F5 | **8,830 (verified)** | record (+1) |
 | 8 | families | penalty runs on F5 blocks: new families F6 (8,813), F6b (8,811), F7 (8,524) | 8,813 (verified, strict) | below 8,830 |
 | 9 | polish92 / graft92 | polish + LNS on 9,279 (second merge class) | **9,282 (verified)** | record; found independently by two agents |
+| 9 | fw93 | sound free-wait pass (fnrpa) on the 9,282 family | **9,286 (verified)** | record |

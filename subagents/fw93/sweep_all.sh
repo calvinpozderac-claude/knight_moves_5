@@ -1,0 +1,7 @@
+#!/bin/bash
+# run sweep93.py (3 rounds) over every input; run from subagents/fw93
+for f in $(cat tmp/top.txt tmp/t75.txt); do
+  h=$(basename $f .txt)
+  timeout 900 nice -n 5 python3 sweep93.py $f tmp/sw/$h 3 > tmp/sw/$h.log 2>&1
+  echo "$h: $(grep -h '^round' tmp/sw/$h.log | tr '\n' ' ')" >> tmp/sw/summary.txt
+done
