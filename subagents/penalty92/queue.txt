@@ -1,3 +1,5 @@
+lns|R9166_L1|in/R9166.txt|9601|840|
+lns|R9222_L1|in/R9222.txt|9602|720|
 dl|E_F_c3|in/P_9282.txt|150|c3:91:999||in/G_9282.txt
 dl|E_O_c4c5|in/P_9282.txt|150|c4,c5,f5,f4:91:999||in/G_9282.txt
 dl|E_F_a8b8b7|in/P_9282.txt|150|a8,b8,b7:91:999||in/G_9282.txt
