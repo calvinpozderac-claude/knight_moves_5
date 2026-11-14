@@ -1,0 +1,61 @@
+lns/in_A_U_b6b7c8_C_L1/start.txt: 179 moves, 8485 minutes (replay 8485)
+start lns/in_A_U_b6b7c8_C_L1/start.txt: 179 moves, 8485 minutes
+[1s it 35] NEW BEST 8542 (op 0 i 136 D 4) len 177
+[2s it 142] NEW BEST 8544 (op 2 i 126 D 8) len 176
+[3s it 164] NEW BEST 8728 (op 2 i 114 D 3) len 174
+[4s it 301] NEW BEST 8732 (op 0 i 151 D 8) len 172
+[5s it 393] NEW BEST 8775 (op 5 a 164 len 1) len 173
+[7s it 473] NEW BEST 8783 (op 2 i 162 D 6) len 176
+[7s it 475] NEW BEST 8791 (op 2 i 134 D 9) len 176
+[7s it 477] NEW BEST 8795 (op 6 a 84 len 10) len 178
+[7s it 492] NEW BEST 8799 (op 2 i 140 D 6) len 180
+[10s it 721] NEW BEST 8802 (op 1 i 154 D 2) len 171
+[10s it 731] NEW BEST 8806 (op 1 i 107 D 3) len 173
+[10s it 767] NEW BEST 8809 (op 2 i 168 D 9) len 173
+[10s it 779] NEW BEST 8810 (op 3 i 129 D 1) len 173
+[14s it 1057] NEW BEST 8843 (op 5 a 144 len 19) len 171
+[14s it 1064] NEW BEST 8881 (op 2 i 151 D 6) len 172
+[15s it 1079] NEW BEST 8885 (op 6 a 87 len 4) len 174
+[15s it 1093] NEW BEST 8889 (op 5 a 151 len 8) len 174
+[15s it 1101] NEW BEST 8909 (op 0 i 145 D 6) len 172
+[17s it 1285] NEW BEST 8977 (op 5 a 158 len 3) len 179
+[18s it 1330] NEW BEST 8993 (op 2 i 154 D 6) len 179
+[19s it 1357] NEW BEST 8997 (op 5 a 111 len 11) len 177
+[20s it 1420] NEW BEST 9005 (op 2 i 95 D 6) len 171
+[27s] it 2000 acc 352 cur 8997 best 9005 temp 15.4 elite 40 gains 293/257/593/249/51/262/142/103/77/144 acc 73/61/91/34/7/11/34/23/4/14
+[29s it 2131] NEW BEST 9009 (op 0 i 138 D 3) len 179
+[30s it 2223] NEW BEST 9013 (op 4 a 146 len 1) len 167
+[33s it 2437] NEW BEST 9017 (op 0 i 109 D 3) len 175
+[33s it 2451] NEW BEST 9021 (op 2 i 150 D 6) len 175
+[52s] it 4000 acc 640 cur 9009 best 9021 temp 6.4 elite 40 gains 331/292/701/332/63/262/154/149/77/180 acc 115/126/183/62/14/17/49/36/4/34
+[66s it 5197] NEW BEST 9023 (op 2 i 153 D 7) len 177
+[76s it 6012] NEW BEST 9025 (op 2 i 100 D 5) len 171
+[81s it 6386] NEW BEST 9027 (op 1 i 57 D 3) len 171
+[126s] it 10000 acc 1376 cur 8994 best 9027 temp 19.3 elite 40 gains 558/482/1171/428/135/450/307/255/113/540 acc 272/269/400/117/26/28/93/67/12/92
+[134s it 10527] NEW BEST 9029 (op 7 a 84 c 82 d 106 b 108) len 169
+[150s it 11756] NEW BEST 9031 (op 0 i 134 D 5) len 177
+[154s it 12076] NEW BEST 9033 (op 3 i 94 D 2) len 179
+[179s] it 14000 acc 1867 cur 9033 best 9033 temp 3.0 elite 40 gains 618/586/1283/497/135/450/424/340/157/540 acc 364/374/548/158/33/34/120/99/18/119
+[194s it 15260] NEW BEST 9037 (op 2 i 157 D 9) len 177
+[198s it 15585] NEW BEST 9039 (op 2 i 37 D 3) len 181
+[217s it 17119] NEW BEST 9040 (op 3 i 101 D 2) len 172
+[218s it 17177] NEW BEST 9042 (op 7 a 97 c 98 d 114 b 111) len 178
+[232s it 18168] NEW BEST 9063 (op 4 a 141 len 13) len 167
+[236s it 18504] NEW BEST 9067 (op 1 i 118 D 3) len 167
+[240s it 18804] NEW BEST 9069 (op 7 a 112 c 118 d 134 b 120) len 169
+[240s it 18815] NEW BEST 9135 (op 2 i 75 D 7) len 171
+[258s] it 20000 acc 2598 cur 9128 best 9135 temp 7.5 elite 40 gains 983/950/1873/653/283/548/746/577/157/864 acc 488/507/777/213/45/48/184/151/21/164
+[272s it 21004] NEW BEST 9138 (op 0 i 90 D 3) len 171
+[276s it 21388] NEW BEST 9140 (op 6 a 122 len 3) len 173
+[278s it 21507] NEW BEST 9144 (op 3 i 99 D 1) len 173
+[284s] it 22000 acc 2818 cur 9140 best 9144 temp 3.0 elite 40 gains 995/958/1902/665/283/552/758/583/157/864 acc 546/550/835/234/49/52/191/161/21/179
+[297s it 23042] NEW BEST 9146 (op 7 a 150 c 143 d 154 b 161) len 182
+[298s it 23071] NEW BEST 9147 (op 1 i 37 D 2) len 175
+[298s it 23090] NEW BEST 9151 (op 2 i 125 D 4) len 173
+[302s it 23335] NEW BEST 9155 (op 6 a 94 len 5) len 173
+[302s it 23383] NEW BEST 9167 (op 5 a 122 len 21) len 179
+[306s it 23620] NEW BEST 9169 (op 4 a 11 len 1) len 177
+[310s] it 24000 acc 2974 cur 9167 best 9169 temp 1.2 elite 40 gains 1007/959/1906/665/285/564/770/594/161/864 acc 580/583/875/249/52/55/198/169/22/191
+[363s] it 28000 acc 3544 cur 9121 best 9169 temp 7.3 elite 40 gains 1508/1254/2718/947/384/564/1154/781/161/1224 acc 702/664/1056/292/63/63/241/208/23/232
+done it 32186 acc 3964 best 9169 restarts 0
+elite: 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9169 9167 9167 9167 9167 9167 9167 9167 9167 9167 9167 9167

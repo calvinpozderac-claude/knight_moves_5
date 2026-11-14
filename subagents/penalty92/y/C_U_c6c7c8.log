@@ -1,0 +1,33 @@
+rule mask 0404040000000000 moves [80,999)
+in/H3_best.txt: 179 moves, 9264 minutes (replay 9264)
+start in/H3_best.txt: 179 moves, 9264 minutes
+  eff 7962 forbidden sits 7
+[4s it 179] NEW BEST 9012 (op 1 i 143 D 1) len 173
+  eff 8123 forbidden sits 3
+[6s it 321] NEW BEST 8573 (op 3 i 146 D 1) len 169
+  eff 8191 forbidden sits 3
+[9s it 385] NEW BEST 8641 (op 2 i 123 D 4) len 169
+  eff 8231 forbidden sits 3
+[10s it 446] NEW BEST 8681 (op 1 i 119 D 2) len 172
+  eff 8235 forbidden sits 3
+[10s it 456] NEW BEST 8685 (op 1 i 91 D 3) len 174
+  eff 8284 forbidden sits 3
+[11s it 492] NEW BEST 8734 (op 2 i 121 D 7) len 171
+  eff 8292 forbidden sits 3
+[13s it 568] NEW BEST 8742 (op 1 i 127 D 3) len 175
+  eff 8296 forbidden sits 3
+[13s it 575] NEW BEST 8746 (op 1 i 133 D 3) len 175
+  eff 8304 forbidden sits 3
+[14s it 625] NEW BEST 8754 (op 5 a 130 len 5) len 181
+  eff 8360 forbidden sits 3
+[14s it 659] NEW BEST 8810 (op 6 a 123 len 6) len 174
+  eff 8368 forbidden sits 3
+[15s it 725] NEW BEST 8818 (op 2 i 96 D 7) len 168
+  eff 8387 forbidden sits 2
+[19s it 908] NEW BEST 8687 (op 7 a 148 c 147 d 162 b 164) len 169
+  eff 8461 forbidden sits 2
+[23s it 1041] NEW BEST 8761 (op 7 a 72 c 74 d 103 b 97) len 175
+[42s] it 2000 acc 272 cur 8816 best 8761 temp 9.3 elite 40 gains 167/275/368/253/6/8/136/187/54/260 acc 50/47/76/23/6/4/10/22/6/28
+[119s] it 6000 acc 731 cur 8689 best 8761 temp 1.1 elite 40 gains 182/392/473/402/44/35/204/493/54/298 acc 135/144/213/58/16/13/29/59/6/58
+done it 6080 acc 739 best 8761 restarts 0
+elite: 9264 9262 9018 9018 9012 9012 9012 9012 9012 9012 8891 8852 8848 8820 8818 8818 8818 8818 8816 8814 8814 8814 8814 8814 8814 8814 8814 8814 8814 8814 8814 8812 8810 8810 8810 8810 8810 8808 8808 8808

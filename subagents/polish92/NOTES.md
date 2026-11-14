@@ -28,3 +28,12 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5. Start 23:17 (2026-11-13).
   focus 1..152 p 0.85, `--free 0`; every new best polished 600 s and fed back to `don/`.
 - s921 (from P9275, 60k, 10.3 min; ~5.8k it/min): **9,275, nothing**; elite all 9,275.
 - Queued q3.sh after q2: 150k-iteration LNS from P9271 (s925) and P9268 (s926), focus 1..150 (their proofs), same donors.
+- s922, s923 (from P9275, 60k each): **9,275, nothing** (elite all 9,275). s924 reached 20k (9,275) when the
+  container restarted (~00:29 container clock); log kept as `lns/L_s924_killed.log`.
+- 00:31 restart: saver restarted; donors + penalty92's two distinct 9,275s (`don/pen9275_b8a997d6.txt` = its
+  A_S_c3d3_L1b, 177 moves; `don/pen9275_23904b34.txt` = A_S_c3d3_L2, 179 moves; both checker ok).
+  q4.sh: s924 rerun (60k, P9275, focus 1..152), s927 (60k from pen b8a997d6, focus 1..154), s925 (150k from P9271,
+  focus 1..150), s926 (120k from P9268, focus 1..150).
+- 00:42 CPU contended (4/4 cores busy, ~3.5k it/min): s925 cut to 80k, s926 to 60k (same-length in-place edit of q4.sh).
+- s924 rerun (60k from P9275, with the penalty92 donors): **9,275, nothing**.
+- s927 (60k from penalty92's 9,275 b8a997d6, focus 1..154): **9,275, nothing**. 01:03 s925 (80k from P9271) started.

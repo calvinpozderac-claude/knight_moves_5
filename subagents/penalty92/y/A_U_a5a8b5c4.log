@@ -4,7 +4,7 @@ start in/record_9275.txt: 181 moves, 9275 minutes
   eff 6631 forbidden sits 16
 [0s it 31] NEW BEST 9031 (op 1 i 116 D 2) len 179
   eff 6749 forbidden sits 14
-[1s it 156] NEW BEST 8849 (op 2 i 133 D 2) len 175
+[2s it 156] NEW BEST 8849 (op 2 i 133 D 2) len 175
   eff 6754 forbidden sits 13
 [2s it 186] NEW BEST 8704 (op 2 i 155 D 5) len 174
   eff 6758 forbidden sits 13
@@ -14,41 +14,77 @@ start in/record_9275.txt: 181 moves, 9275 minutes
   eff 6869 forbidden sits 8
 [2s it 208] NEW BEST 8069 (op 7 a 136 c 148 d 169 b 162) len 169
   eff 6873 forbidden sits 8
-[2s it 235] NEW BEST 8073 (op 3 i 135 D 2) len 167
+[3s it 235] NEW BEST 8073 (op 3 i 135 D 2) len 167
   eff 7020 forbidden sits 5
 [3s it 295] NEW BEST 7770 (op 2 i 111 D 8) len 162
   eff 7086 forbidden sits 6
 [3s it 296] NEW BEST 7986 (op 2 i 95 D 4) len 164
   eff 7093 forbidden sits 4
-[3s it 305] NEW BEST 7693 (op 5 a 128 len 15) len 166
+[4s it 305] NEW BEST 7693 (op 5 a 128 len 15) len 166
   eff 7098 forbidden sits 4
-[3s it 313] NEW BEST 7698 (op 1 i 134 D 2) len 166
+[4s it 313] NEW BEST 7698 (op 1 i 134 D 2) len 166
   eff 7152 forbidden sits 4
-[3s it 314] NEW BEST 7752 (op 0 i 135 D 7) len 167
-  eff 7155 forbidden sits 6
-[4s it 437] NEW BEST 8055 (op 0 i 136 D 8) len 166
-  eff 7159 forbidden sits 6
-[6s it 668] NEW BEST 8059 (op 2 i 152 D 7) len 164
-  eff 7185 forbidden sits 5
-[7s it 754] NEW BEST 7935 (op 2 i 109 D 4) len 165
-  eff 7196 forbidden sits 4
-[7s it 764] NEW BEST 7796 (op 2 i 136 D 8) len 165
-  eff 7204 forbidden sits 4
-[7s it 773] NEW BEST 7804 (op 3 i 97 D 2) len 165
-  eff 7206 forbidden sits 4
-[7s it 786] NEW BEST 7806 (op 0 i 57 D 5) len 167
-  eff 7300 forbidden sits 4
-[11s it 1161] NEW BEST 7900 (op 2 i 127 D 2) len 162
-  eff 7302 forbidden sits 4
-[11s it 1217] NEW BEST 7902 (op 2 i 56 D 4) len 170
-  eff 7306 forbidden sits 5
-[13s it 1409] NEW BEST 8056 (op 3 i 118 D 2) len 159
-  eff 7310 forbidden sits 4
-[15s it 1578] NEW BEST 7910 (op 0 i 125 D 8) len 162
-  eff 7356 forbidden sits 4
-[15s it 1586] NEW BEST 7956 (op 0 i 74 D 3) len 163
-  eff 7358 forbidden sits 4
-[16s it 1629] NEW BEST 7958 (op 2 i 140 D 9) len 165
-[19s] it 2000 acc 347 cur 7903 best 7958 temp 18.4 elite 40 gains 607/574/1072/96/44/27/265/223/100/272 acc 72/58/98/29/11/5/21/22/3/28
-[41s] it 4000 acc 614 cur 7751 best 7958 temp 7.6 elite 40 gains 622/649/1140/107/84/31/319/307/100/314 acc 132/104/179/52/15/12/27/36/6/51
-[61s] it 6000 acc 867 cur 7750 best 7958 temp 3.3 elite 40 gains 630/668/1144/109/84/31/323/309/100/314 acc 178/164/258/73/19/13/35/45/6/76
+[4s it 314] NEW BEST 7752 (op 0 i 135 D 7) len 167
+  eff 7174 forbidden sits 5
+[4s it 375] NEW BEST 7924 (op 6 a 105 len 6) len 161
+  eff 7178 forbidden sits 5
+[4s it 381] NEW BEST 7928 (op 0 i 139 D 3) len 161
+  eff 7206 forbidden sits 5
+[6s it 533] NEW BEST 7956 (op 0 i 118 D 3) len 156
+  eff 7230 forbidden sits 4
+[6s it 536] NEW BEST 7830 (op 1 i 99 D 2) len 154
+  eff 7234 forbidden sits 4
+[7s it 545] NEW BEST 7834 (op 1 i 91 D 3) len 156
+  eff 7236 forbidden sits 4
+[7s it 564] NEW BEST 7836 (op 7 a 44 c 45 d 75 b 70) len 154
+  eff 7288 forbidden sits 5
+[7s it 609] NEW BEST 8038 (op 7 a 67 c 75 d 91 b 76) len 162
+  eff 7292 forbidden sits 5
+[8s it 622] NEW BEST 8042 (op 7 a 76 c 83 d 106 b 99) len 164
+  eff 7318 forbidden sits 4
+[8s it 665] NEW BEST 7918 (op 0 i 108 D 2) len 166
+  eff 7347 forbidden sits 3
+[9s it 720] NEW BEST 7797 (op 1 i 156 D 1) len 168
+  eff 7353 forbidden sits 5
+[11s it 842] NEW BEST 8103 (op 3 i 109 D 2) len 167
+  eff 7383 forbidden sits 6
+[12s it 911] NEW BEST 8283 (op 2 i 142 D 3) len 171
+  eff 7404 forbidden sits 7
+[13s it 1005] NEW BEST 8454 (op 7 a 107 c 108 d 131 b 119) len 166
+  eff 7406 forbidden sits 7
+[14s it 1040] NEW BEST 8456 (op 7 a 18 c 18 d 25 b 22) len 173
+  eff 7410 forbidden sits 7
+[14s it 1063] NEW BEST 8460 (op 3 i 141 D 1) len 169
+  eff 7440 forbidden sits 6
+[25s it 1847] NEW BEST 8340 (op 3 i 118 D 2) len 170
+  eff 7444 forbidden sits 6
+[25s it 1894] NEW BEST 8344 (op 6 a 140 len 1) len 168
+  eff 7445 forbidden sits 5
+[28s it 2059] NEW BEST 8195 (op 2 i 138 D 7) len 169
+  eff 7448 forbidden sits 6
+[29s it 2160] NEW BEST 8348 (op 1 i 134 D 2) len 166
+  eff 7450 forbidden sits 6
+[29s it 2206] NEW BEST 8350 (op 7 a 6 c 4 d 32 b 29) len 167
+  eff 7458 forbidden sits 6
+[30s it 2237] NEW BEST 8358 (op 1 i 93 D 3) len 169
+  eff 7460 forbidden sits 6
+[30s it 2256] NEW BEST 8360 (op 2 i 91 D 2) len 164
+  eff 7462 forbidden sits 6
+[31s it 2307] NEW BEST 8362 (op 7 a 18 c 20 d 29 b 26) len 167
+  eff 7464 forbidden sits 6
+[51s it 3595] NEW BEST 8364 (op 5 a 95 len 1) len 166
+  eff 7466 forbidden sits 6
+[52s it 3674] NEW BEST 8366 (op 0 i 22 D 4) len 169
+[56s] it 4000 acc 506 cur 8360 best 8366 temp 4.0 elite 40 gains 519/527/979/288/9/31/446/248/0/306 acc 102/88/165/34/10/11/31/46/4/15
+  eff 7507 forbidden sits 6
+[57s it 4067] NEW BEST 8407 (op 2 i 121 D 9) len 165
+  eff 7511 forbidden sits 6
+[60s it 4297] NEW BEST 8411 (op 7 a 82 c 87 d 104 b 99) len 165
+  eff 7513 forbidden sits 6
+[74s it 5192] NEW BEST 8413 (op 3 i 23 D 2) len 170
+[85s] it 6000 acc 654 cur 8409 best 8413 temp 1.2 elite 40 gains 519/527/1026/290/9/31/446/252/0/306 acc 129/112/223/46/13/11/39/52/5/24
+[239s] it 16000 acc 1930 cur 8395 best 8413 temp 3.5 elite 40 gains 1090/885/1991/689/114/125/1055/345/0/698 acc 377/367/611/167/43/27/113/99/17/109
+[270s] it 18000 acc 2075 cur 8256 best 8413 temp 40.0 elite 40 gains 1104/885/2007/689/114/125/1055/357/0/698 acc 414/395/656/182/45/27/114/113/17/112
+[303s] it 20000 acc 2394 cur 8321 best 8413 temp 10.2 elite 40 gains 1203/1361/2364/771/180/125/1272/685/0/856 acc 471/449/747/213/53/30/137/148/19/127
+done it 22641 acc 2625 best 8413 restarts 1
+elite: 9275 9255 9031 8867 8867 8865 8864 8864 8861 8861 8857 8857 8849 8708 8708 8708 8704 8484 8460 8460 8456 8456 8456 8456 8456 8455 8455 8455 8455 8455 8455 8455 8455 8455 8455 8455 8455 8455 8455 8455

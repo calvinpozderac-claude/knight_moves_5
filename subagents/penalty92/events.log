@@ -44,3 +44,31 @@
 00:28:14 [w1] dl A_O_d6d7: lns -> 8959 dist 4/1 (new)
 00:28:14 [w1] dl A_U_a5a8b5c4 base in/record_9275.txt pen 150 rules ['a5,a6,a7,a8,b5,c4:80:999']
 00:29:31 [w2] lns A_U_b6b7c8_L2 start keep/A_U_b6b7c8_9178.txt (9178) seed 8802 t 600
+00:31 container restart: workers/saver restarted; lost A_U_a5a8b5c4 and A_U_b6b7c8_L2 (requeued)
+00:30:54 [w1] lns A_U_b6b7c8_L2 start keep/A_U_b6b7c8_9178.txt (9178) seed 8802 t 600
+00:30:55 [w2] dl A_U_a5a8b5c4 base in/record_9275.txt pen 150 rules ['a5,a6,a7,a8,b5,c4:80:999']
+00:36:55 [w2] dl A_U_a5a8b5c4: no feasible
+00:36:55 [w2] dl C_U_c6c7c8 base in/H3_best.txt pen 150 rules ['c6,c7,c8:80:999']
+00:38:55 [w2] dl C_U_c6c7c8: no feasible
+00:38:55 [w2] lns A_U_b6b7c8_L1b start y/A_U_b6b7c8_best.txt.feas_best.txt (8358) seed 8811 t 480
+00:40:54 [w1] lns A_U_b6b7c8_L2 -> 9184 dist 7/0
+00:40:54 [w1] dl B_U_b6c6d4d5 base in/record_9271.txt pen 150 rules ['b6,c6,d4,d5:80:999']
+00:46:54 [w1] dl B_U_b6c6d4d5: no feasible
+00:46:54 [w1] lns A_M_g6h3_P1 start keep/A_M_g6h3_pbest_9144.txt (9144) seed 9101 t 420
+00:46:55 [w2] lns A_U_b6b7c8_L1b -> 9242 dist 6/0
+00:46:55 [w2] lns A_U_a5a8b5c4_P1 start keep/A_U_a5a8b5c4_pbest_8413.txt (8413) seed 9102 t 420
+00:53:54 [w1] lns A_M_g6h3_P1 -> 9209 dist 0/0
+00:53:54 [w1] lns C_U_c6c7c8_P1 start keep/C_U_c6c7c8_pbest_8761.txt (8761) seed 9103 t 420
+00:53:55 [w2] lns A_U_a5a8b5c4_P1 -> 9233 dist 7/0
+00:53:55 [w2] dl A_U_a2a3b2b3 base in/record_9275.txt pen 150 rules ['a2,b2,a3,b3:80:999']
+00:59:55 [w2] dl A_U_a2a3b2b3: raw 8385 dist 3/4 new sig f3/f7 g6/h3 c3/d3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+01:00:54 [w1] lns C_U_c6c7c8_P1 -> 9244 dist 12/0
+01:00:54 [w1] dl A_G_nog6 base keep/A_M_g6h3_pbest_9144.txt pen 500 rules ['g6:40:95']
+01:06:55 [w2] dl A_U_a2a3b2b3: lns -> 9211 dist 10/0 (new)
+01:06:55 [w2] dl A_U_b6b7c8_C base y/A_U_b6b7c8_best.txt.feas_best.txt pen 150 rules ['b6,b7,c8:80:999']
+01:10:54 [w1] dl A_G_nog6: raw 9144 dist 1/1 new sig f3/f7 a2/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+01:16:55 [w2] dl A_U_b6b7c8_C: raw 8485 dist 8/3 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 b5/c5 a5/a6 c6/c7 a7/a8 a8/b8 a7/d8 d6/d7 c5/d5 c3/c4 d3/d4 e7/e8 f8/g8; lns 420s
+01:17:54 [w1] dl A_G_nog6: lns -> 9207 dist 0/0 (record_9275)
+01:17:54 [w1] worker exit
+01:23:55 [w2] dl A_U_b6b7c8_C: lns -> 9169 dist 9/1 (new)
+01:23:55 [w2] worker exit

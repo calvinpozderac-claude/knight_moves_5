@@ -1,0 +1,91 @@
+rule mask 0000000000030300 moves [80,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 7531 forbidden sits 10
+[0s it 7] NEW BEST 9031 (op 2 i 93 D 7) len 179
+  eff 7591 forbidden sits 8
+[0s it 14] NEW BEST 8791 (op 1 i 97 D 1) len 175
+  eff 7906 forbidden sits 6
+[7s it 379] NEW BEST 8806 (op 1 i 99 D 1) len 175
+  eff 7914 forbidden sits 6
+[7s it 388] NEW BEST 8814 (op 6 a 130 len 3) len 175
+  eff 7918 forbidden sits 6
+[7s it 393] NEW BEST 8818 (op 0 i 110 D 5) len 175
+  eff 7966 forbidden sits 4
+[8s it 431] NEW BEST 8566 (op 1 i 95 D 1) len 175
+  [it 1155] feasible best 7875
+  [it 1177] feasible best 7887
+  [it 1195] feasible best 7891
+  [it 1271] feasible best 7903
+  [it 1330] feasible best 8067
+  eff 8067 forbidden sits 0
+[22s it 1330] NEW BEST 8067 (op 3 i 139 D 1) len 162
+  [it 1337] feasible best 8083
+  eff 8083 forbidden sits 0
+[22s it 1337] NEW BEST 8083 (op 1 i 126 D 3) len 164
+  [it 1352] feasible best 8085
+  eff 8085 forbidden sits 0
+[23s it 1352] NEW BEST 8085 (op 0 i 59 D 2) len 162
+  [it 1400] feasible best 8089
+  eff 8089 forbidden sits 0
+[23s it 1400] NEW BEST 8089 (op 2 i 137 D 7) len 166
+  [it 1445] feasible best 8093
+  eff 8093 forbidden sits 0
+[24s it 1445] NEW BEST 8093 (op 2 i 118 D 3) len 164
+  [it 1587] feasible best 8096
+  eff 8096 forbidden sits 0
+[27s it 1587] NEW BEST 8096 (op 3 i 128 D 2) len 169
+  [it 1612] feasible best 8100
+  eff 8100 forbidden sits 0
+[27s it 1612] NEW BEST 8100 (op 1 i 147 D 3) len 171
+  [it 1622] feasible best 8104
+  eff 8104 forbidden sits 0
+[28s it 1622] NEW BEST 8104 (op 1 i 134 D 3) len 173
+  [it 1667] feasible best 8108
+  eff 8108 forbidden sits 0
+[29s it 1667] NEW BEST 8108 (op 1 i 30 D 3) len 167
+  [it 1852] feasible best 8120
+  eff 8120 forbidden sits 0
+[32s it 1852] NEW BEST 8120 (op 2 i 142 D 5) len 174
+  [it 1956] feasible best 8121
+  eff 8121 forbidden sits 0
+[34s it 1956] NEW BEST 8121 (op 3 i 62 D 1) len 174
+  [it 2015] feasible best 8129
+  eff 8129 forbidden sits 0
+[35s it 2015] NEW BEST 8129 (op 0 i 127 D 6) len 170
+  [it 2080] feasible best 8133
+  eff 8133 forbidden sits 0
+[36s it 2080] NEW BEST 8133 (op 2 i 141 D 8) len 166
+  [it 2502] feasible best 8134
+  eff 8134 forbidden sits 0
+[44s it 2502] NEW BEST 8134 (op 0 i 27 D 3) len 177
+  [it 2646] feasible best 8199
+  eff 8199 forbidden sits 0
+[47s it 2646] NEW BEST 8199 (op 7 a 62 c 70 d 90 b 80) len 172
+  [it 3950] feasible best 8201
+  eff 8201 forbidden sits 0
+[67s it 3950] NEW BEST 8201 (op 7 a 141 c 151 d 162 b 148) len 172
+  [it 5081] feasible best 8203
+  eff 8203 forbidden sits 0
+[87s it 5081] NEW BEST 8203 (op 0 i 37 D 4) len 174
+[145s] it 8000 acc 1017 cur 8100 best 8203 temp 4.2 elite 40 gains 568/895/1155/290/78/64/304/489/0/40 acc 215/190/307/83/23/12/70/57/5/55
+[182s] it 10000 acc 1260 cur 8116 best 8203 temp 36.5 elite 40 gains 599/934/1172/290/78/64/315/524/0/78 acc 260/238/377/101/31/17/84/69/6/77
+  [it 13177] feasible best 8331
+  eff 8331 forbidden sits 0
+[236s it 13177] NEW BEST 8331 (op 0 i 89 D 3) len 170
+  [it 13288] feasible best 8371
+  eff 8371 forbidden sits 0
+[239s it 13288] NEW BEST 8371 (op 7 a 137 c 135 d 160 b 159) len 169
+  [it 13671] feasible best 8375
+  eff 8375 forbidden sits 0
+[245s it 13671] NEW BEST 8375 (op 0 i 149 D 2) len 171
+  [it 13780] feasible best 8383
+  eff 8383 forbidden sits 0
+[246s it 13780] NEW BEST 8383 (op 2 i 111 D 8) len 175
+  [it 14756] feasible best 8385
+  eff 8385 forbidden sits 0
+[264s it 14756] NEW BEST 8385 (op 1 i 39 D 2) len 173
+[315s] it 18000 acc 2184 cur 8379 best 8385 temp 6.2 elite 40 gains 1264/1328/1847/463/82/106/808/921/127/496 acc 439/416/657/169/45/26/147/147/17/121
+[348s] it 20000 acc 2341 cur 8381 best 8385 temp 1.6 elite 40 gains 1268/1328/1852/468/82/106/808/944/127/496 acc 471/438/717/185/47/27/154/153/19/130
+done it 20702 acc 2394 best 8385 restarts 1
+elite: 9275 9031 9031 8818 8818 8818 8814 8814 8806 8791 8787 8787 8787 8771 8771 8769 8769 8763 8566 8566 8566 8566 8566 8566 8566 8566 8566 8566 8562 8558 8558 8558 8558 8558 8554 8554 8554 8550 8542 8493

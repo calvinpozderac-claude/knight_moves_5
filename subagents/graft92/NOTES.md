@@ -49,3 +49,14 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5, `--free 0`. Start 23:16 (20
   a4/b4 a5/b5 a6/b6 **b7/b8 a7/b7 a8/b8 a7/c7 c6/c7 c5/d5 c6/c7 c8/d8** d6/d7 e7/e8 f8/g8 ("H3 family").
 - 00:19 queue4 (YG) cancelled before it started; queue5 = two more plain-LNS seeds on the H3 family (donors: LH3
   best + LH3 elite).
+
+## Restart (00:30, 2026-11-14, after container restart)
+- LH3 s951 had reached **9,264** before the restart (checker ok; `keep/LH3_9264.txt`, `in/LH3best.txt`); sig now
+  f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 b5/b6 a5/a6 a7/b7 a8/b8 c6/c7 c5/d5 c6/c7 c8/d8 d6/d7 e7/e8 f8/g8.
+  No elite file survived; H3 donors = in/LH3best.txt (9,264) + in/LH3_9242.txt.
+- Saver restarted. queue5b = H3 seed 952 (20 min, from 9,264). queue6 = repaired splices (7 min each) then H3 seeds
+  953, 954 (20 min each, chained).
+- Splice scan redone (`sp/`, XODETAIL=1, all k): 9,275 prefix + donor dance at k ~ 93: 8,946 k93 9,266 (H1),
+  9,080 k93 7,354 (H3), 8,830 k93 3,947, 8,842 k94 3,008; 8,887 and 8,813 (F6) have no resync for k 79-106, so
+  use 8,887 k107 (4,084) and 8,813 k101 (4,083); also 8,946 k102 (8,373) as a second 8,946 splice.
+  Splice inputs `in/S_<donor>_k<k>.txt`.

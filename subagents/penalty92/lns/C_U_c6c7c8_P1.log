@@ -1,0 +1,30 @@
+lns/in_C_U_c6c7c8_P1/start.txt: 175 moves, 8761 minutes (replay 8761)
+start lns/in_C_U_c6c7c8_P1/start.txt: 175 moves, 8761 minutes
+[0s it 2] NEW BEST 8854 (op 0 i 46 D 2) len 177
+[1s it 80] NEW BEST 8967 (op 2 i 161 D 5) len 178
+[2s it 148] NEW BEST 8971 (op 2 i 155 D 4) len 178
+[7s it 427] NEW BEST 9107 (op 0 i 150 D 5) len 178
+[11s it 673] NEW BEST 9154 (op 2 i 118 D 3) len 176
+[12s it 728] NEW BEST 9164 (op 6 a 114 len 3) len 178
+[12s it 747] NEW BEST 9168 (op 2 i 120 D 7) len 176
+[13s it 811] NEW BEST 9171 (op 3 i 117 D 1) len 177
+[13s it 838] NEW BEST 9179 (op 7 a 80 c 83 d 113 b 104) len 175
+[13s it 849] NEW BEST 9180 (op 7 a 35 c 33 d 37 b 35) len 174
+[136s] it 8000 acc 985 cur 9140 best 9180 temp 13.6 elite 40 gains 725/397/1116/335/100/44/694/357/72/398 acc 192/173/292/80/23/14/67/75/9/60
+[143s it 8424] NEW BEST 9199 (op 7 a 70 c 73 d 94 b 87) len 173
+[143s it 8449] NEW BEST 9207 (op 7 a 109 c 110 d 129 b 128) len 175
+[144s it 8468] NEW BEST 9211 (op 2 i 155 D 6) len 177
+[144s it 8469] NEW BEST 9212 (op 3 i 36 D 2) len 176
+[145s it 8580] NEW BEST 9215 (op 2 i 109 D 6) len 179
+[150s it 8824] NEW BEST 9216 (op 1 i 119 D 3) len 178
+[169s it 9904] NEW BEST 9223 (op 2 i 134 D 8) len 180
+[169s it 9907] NEW BEST 9235 (op 0 i 150 D 3) len 180
+[170s it 9943] NEW BEST 9239 (op 3 i 130 D 2) len 182
+[170s it 9956] NEW BEST 9240 (op 2 i 33 D 6) len 179
+[171s it 9993] NEW BEST 9242 (op 0 i 56 D 1) len 173
+[177s it 10382] NEW BEST 9244 (op 1 i 62 D 3) len 179
+[201s] it 12000 acc 1301 cur 9242 best 9244 temp 1.4 elite 40 gains 763/421/1164/350/104/44/735/446/72/434 acc 247/250/378/101/27/16/82/110/11/79
+[265s] it 16000 acc 1811 cur 9163 best 9244 temp 5.8 elite 40 gains 927/551/1629/443/140/120/1013/799/72/794 acc 332/328/542/143/38/22/117/158/16/115
+[359s] it 22000 acc 2489 cur 9230 best 9244 temp 8.7 elite 40 gains 1236/764/2260/671/220/156/1193/1013/148/1046 acc 473/458/745/185/45/30/161/201/26/165
+done it 26105 acc 2804 best 9244 restarts 1
+elite: 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244 9244

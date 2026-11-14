@@ -15,3 +15,14 @@
 00:15:38 lns L s923 start 9275 focus 1 152 0.85
 00:25:26 lns L s923 end:  done it 60000 acc 6968 best 9275 restarts 5
 00:25:26 lns L s924 start 9275 focus 1 152 0.85
+00:30:55 q4 start (restart after container reboot; donors + penalty92 9,275s b8a997d6, 23904b34)
+00:30:55 lns L s924 start 9275 focus 1 152 0.85
+00:47:08 lns L s924 end:  done it 60000 acc 6876 best 9275 restarts 4
+00:47:08 lns L s927 start 9275 focus 1 154 0.85
+01:02:58 lns L s927 end:  done it 60000 acc 6621 best 9275 restarts 3
+01:02:58 lns L s925 start 9271 focus 1 150 0.85
+01:21:34 lns L s925 end:  done it 80000 acc 9107 best 9271 restarts 6
+01:21:34 lns L s926 start 9268 focus 1 150 0.85
+01:36:25 lns L s926 end: 9275 done it 60000 acc 7038 best 9275 restarts 6
+moves=177 ok=True T=9275 ok maxvisits=3 maxwait=148 unnecessary=[]
+01:36:26 q4 done

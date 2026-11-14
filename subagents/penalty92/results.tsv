@@ -14,3 +14,14 @@ A_U_c3c4d3	in/record_9275.txt	c3,c4,d3:80:999	8331	4	3	9273	0/0	final record_927
 A_X_c4c5	in/record_9275.txt	c4,c5:0:999	8885	2	2	9231	1/0	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 c4/c5 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
 A_O_d6d7	in/record_9275.txt	d6,d7,e3,e2:80:999	8785	1	2	8959	4/1	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c7/d7 d7/d8 c8/d8 a8/b8 a7/b7 c5/c6 c4/c5 c3/d3 d4/d5 e7/e8 f8/g8
 A_U_b6b7c8	in/record_9275.txt	b6,b7,c8:80:999	8358	13	4	9178(killed at 294s)		
+A_U_a5a8b5c4	in/record_9275.txt	a5,a6,a7,a8,b5,c4:80:999	NA					no feasible
+C_U_c6c7c8	in/H3_best.txt	c6,c7,c8:80:999	NA					no feasible
+A_U_b6b7c8_L2	lns:keep/A_U_b6b7c8_9178.txt		9178			9184	7/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 a7/b7 a8/b8 c8/d8 d6/d7 d3/d4 c3/c4 c5/d5 d7/e7 e7/e8 f8/g8
+B_U_b6c6d4d5	in/record_9271.txt	b6,c6,d4,d5:80:999	NA					no feasible
+A_U_b6b7c8_L1b	lns:y/A_U_b6b7c8_best.txt.feas_best.txt		8358			9242	6/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+A_M_g6h3_P1	lns:keep/A_M_g6h3_pbest_9144.txt		9144			9209	0/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+A_U_a5a8b5c4_P1	lns:keep/A_U_a5a8b5c4_pbest_8413.txt		8413			9233	7/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 b5/b6 c6/c7 c8/d8 b7/b8 a7/a8 a6/b6 a5/a6 b5/c5 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+C_U_c6c7c8_P1	lns:keep/C_U_c6c7c8_pbest_8761.txt		8761			9244	12/0	f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/c6 a7/a8 b7/b8 c8/d8 c6/c7 c5/d5 c6/c7 c8/d6 d6/d7 e7/e8 f8/g8
+A_U_a2a3b2b3	in/record_9275.txt	a2,b2,a3,b3:80:999	8385	3	4	9211	10/0	final new: f3/f7 g6/h3 c3/d3 c4/d4 b3/b4 a2/b2 a3/a4 a5/a6 b5/b6 c5/d5 c6/c7 c8/d8 a8/b8 a7/b7 b5/d6 d6/d7 e7/e8 f8/g8
+A_G_nog6	keep/A_M_g6h3_pbest_9144.txt	g6:40:95	9144	1	1	9207	0/0	final record_9275: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+A_U_b6b7c8_C	y/A_U_b6b7c8_best.txt.feas_best.txt	b6,b7,c8:80:999	8485	8	3	9169	9/1	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c5/c6 c3/c4 d3/d4 c5/d5 c6/c7 c7/c8 a7/b7 a8/b8 c8/d6 d6/d7 e7/e8 f8/g8

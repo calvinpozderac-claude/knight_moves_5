@@ -58,7 +58,11 @@ while time.time() < STOP:
             run(['bin/dlns', '--tours', base, '--start', base, '--seed', str(seed)] + COMMON + ['--time', str(dlt), '--pen', pen] + ra + ['--out', f'y/{name}_best.txt'], f'y/{name}.log', dlt + 60)
             fe = f'y/{name}_best.txt.feas_best.txt'
             if not os.path.exists(fe):
-                row(name, base, f[4], 'NA', '', '', '', '', 'no feasible'); log(f'dl {name}: no feasible'); continue
+                fb = f'y/{name}_best.txt'
+                if not os.path.exists(fb) or score(fb) is None or known(fam.sig_of(fb)):
+                    row(name, base, f[4], 'NA', '', '', '', '', 'no feasible'); log(f'dl {name}: no feasible'); continue
+                fe = f'y/{name}_pbest.txt'; shutil.copy(fb, fe); name = name + 'P'
+                log(f'dl {name}: no feasible; using the partially penalised best {score(fe)}')
             raw = score(fe); sig = fam.sig_of(fe); dd, sd = dist(fe); kn = known(sig)
             if kn:
                 row(name, base, f[4], raw, dd, sd, 'skip', '', f'known {kn}'); log(f'dl {name}: raw {raw} known {kn}'); continue

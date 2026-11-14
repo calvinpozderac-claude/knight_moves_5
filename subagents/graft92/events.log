@@ -6,3 +6,27 @@
 00:11:29 lns LH1 s941 end: 9268 done it 124484 acc 14190 best 9268 restarts 15
 00:11:29 queue2 done
 00:11:35 lns LH3 s951 start 7354 focus 1 180 0.0 donors in/H3_7354.txt in/record_9080.txt in/record_9275.txt
+00:31:12 restart after container restart; saver restarted; LH3 s951 had reached 9264 (checker ok), sig:    f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 b5/b6 a5/a6 a7/b7 a8/b8 c6/c7 c5/d5 c6/c7 c8/d8 d6/d7 e7/e8 f8/g8
+00:31:12 lns LH3b s952 start 9264 focus 1 180 0.0 donors in/LH3best.txt in/LH3_9242.txt
+00:51:12 lns LH3b s952 end:  done it 76804 acc 11229 best 9264 restarts 12
+00:51:12 queue5b seed1 done
+00:51:18 lns R8830 s960 start 3947 focus 1 180 0.0 donors in/S_8830_k93.txt in/record_8830.txt in/record_9275.txt
+00:58:18 lns R8830 s960 end: 9091 done it 24413 acc 4332 best 9091 restarts 4
+   f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 a5/b5 a5/a6 a6/b6 c6/c7 c7/c8 c5/c6 c5/d5 b5/d6 d6/d7 e7/e8 c8/d8 a8/b8 a7/b7 g8
+00:58:19 lns R8813 s963 start 4083 focus 1 180 0.0 donors in/S_8813_k101.txt in/record_8813.txt in/record_9275.txt
+01:05:19 lns R8813 s963 end: 9089 done it 28952 acc 5363 best 9089 restarts 7
+   f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 b5/b6 a5/b5 a5/a6 a6/b6 a8/b8 a7/b7 e7/e8 d6/d7 d3/d4 c3/c4 c5/d5 c6/c7 b6/c6 c7/c8 c8/d8 g8
+01:05:19 lns R8887 s967 start 4084 focus 1 180 0.0 donors in/S_8887_k107.txt in/record_8887.txt in/record_9275.txt
+01:12:19 lns R8887 s967 end: 9275 done it 29707 acc 5332 best 9275 restarts 4
+   f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+01:12:19 lns R8842 s962 start 3008 focus 1 180 0.0 donors in/S_8842_k94.txt in/record_8842.txt in/record_9275.txt
+01:19:19 lns R8842 s962 end: 9038 done it 32070 acc 5639 best 9038 restarts 3
+   f3/f7 g6/h3 c3/d3 a3/b3 a2/a3 b2/b3 a2/b2 b2/b3 a2/a3 a4/a5 a4/b4 a5/a6 b4/b5 c4/d4 d4/d5 c4/c5 b5/b6 a6/b6 c6/c7 c7/c8 c5/c6 c7/c8 c8/d8 e7/e8 d6/d7 b7/b8 a8/b8 a7/b7 a7/a8 g8
+01:19:19 lns R8946 s966 start 8373 focus 1 180 0.0 donors in/S_8946_k102.txt in/record_8946.txt in/record_9275.txt
+01:26:19 lns R8946 s966 end: 9222 done it 31035 acc 5606 best 9222 restarts 3
+   f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 a5/a6 b6/c6 c6/c7 c8/d8 c6/c7 c4/c5 c3/d3 c4/d4 d3/d4 c5/d5 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+01:26:19 lns LH3c s953 start 9264 focus 1 180 0.0 donors in/LH3best2.txt in/LH3best.txt in/LH3_9242.txt
+01:46:19 lns LH3c s953 end:  done it 83475 acc 11935 best 9264 restarts 11
+01:46:19 lns LH3d s954 start 9264 focus 1 180 0.0 donors in/LH3best3.txt in/LH3best.txt in/LH3_9242.txt
+02:06:19 lns LH3d s954 end:  done it 91556 acc 13280 best 9264 restarts 17
+02:06:19 queue6 done

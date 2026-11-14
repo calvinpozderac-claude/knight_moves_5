@@ -22,3 +22,9 @@ P92_A_X_c4c5_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 c4/c5 a5/b5 a6/b6 c6/c7 c8/d8 a8/b
 P92_A_U_b6b7c8|f3/f7 g6/h3 a2/a3 a3/a4 a4/b4 b2/b3 a2/b2 b2/b3 b4/b5 a5/b5 c6/c7 a7/a8 a8/b8 a7/d8 b8/c5 c5/d5 c3/c4 d3/d4 d6/d7 e7/e8 f8/g8
 P92_A_O_d6d7|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 e7/e8 f8/g8
 P92_A_O_d6d7_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c7/d7 d7/d8 c8/d8 a8/b8 a7/b7 c5/c6 c4/c5 c3/d3 d4/d5 e7/e8 f8/g8
+graft92_H3_9264|f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 b5/b6 a5/a6 a7/b7 a8/b8 c6/c7 c5/d5 c6/c7 c8/d8 d6/d7 e7/e8 f8/g8
+P92_A_U_a2a3b2b3|f3/f7 g6/h3 c3/d3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+P92_A_U_a2a3b2b3_L1|f3/f7 g6/h3 c3/d3 c4/d4 b3/b4 a2/b2 a3/a4 a5/a6 b5/b6 c5/d5 c6/c7 c8/d8 a8/b8 a7/b7 b5/d6 d6/d7 e7/e8 f8/g8
+P92_A_G_nog6|f3/f7 a2/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
+P92_A_U_b6b7c8_C|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 b5/c5 a5/a6 c6/c7 a7/a8 a8/b8 a7/d8 d6/d7 c5/d5 c3/c4 d3/d4 e7/e8 f8/g8
+P92_A_U_b6b7c8_C_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c5/c6 c3/c4 d3/d4 c5/d5 c6/c7 c7/c8 a7/b7 a8/b8 c8/d6 d6/d7 e7/e8 f8/g8

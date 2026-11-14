@@ -17,3 +17,14 @@ dl|A_U_b6b7c8|in/record_9275.txt|150|b6,b7,c8:80:999
 dl|A_O_d6d7|in/record_9275.txt|150|d6,d7,e3,e2:80:999
 dl|A_U_a5a8b5c4|in/record_9275.txt|150|a5,a6,a7,a8,b5,c4:80:999|360
 lns|A_U_b6b7c8_L2|keep/A_U_b6b7c8_9178.txt|8802|600|
+lns|A_U_b6b7c8_L2|keep/A_U_b6b7c8_9178.txt|8802|600|
+dl|A_U_a5a8b5c4|in/record_9275.txt|150|a5,a6,a7,a8,b5,c4:80:999|360
+dl|C_U_c6c7c8|in/H3_best.txt|150|c6,c7,c8:80:999
+lns|A_U_b6b7c8_L1b|y/A_U_b6b7c8_best.txt.feas_best.txt|8811|480|
+dl|B_U_b6c6d4d5|in/record_9271.txt|150|b6,c6,d4,d5:80:999|360
+lns|A_M_g6h3_P1|keep/A_M_g6h3_pbest_9144.txt|9101|420|
+lns|A_U_a5a8b5c4_P1|keep/A_U_a5a8b5c4_pbest_8413.txt|9102|420|
+lns|C_U_c6c7c8_P1|keep/C_U_c6c7c8_pbest_8761.txt|9103|420|
+dl|A_U_a2a3b2b3|in/record_9275.txt|150|a2,b2,a3,b3:80:999|360
+dl|A_G_nog6|keep/A_M_g6h3_pbest_9144.txt|500|g6:40:95|600
+dl|A_U_b6b7c8_C|y/A_U_b6b7c8_best.txt.feas_best.txt|150|b6,b7,c8:80:999|600
