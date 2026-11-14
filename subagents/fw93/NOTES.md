@@ -20,3 +20,7 @@
   (68, c5),(0, c4). 9,282 -> 9,286 (13 tours, 13 distinct 9,286s in `in2/`), 9,280 -> 9,284, 9,279 -> 9,283,
   9,275 -> 9,279. Rounds 2-3: nothing more on any tour (the b7->c5 hop is the dance's only in-group zero-wait hop;
   the merge's in-group hops give no legal improving insertion).
+- **fnrpa pass p2 on the 32 original inputs** (`tmp/jobs_orig.txt`, 8 rngs each (1-8), 15 s, warm 10, level 2, free
+  sinks 1-4, anchors 35..end, `tmp/p2/fw_summary.txt`): every run ends at exactly input + 4 (the same b7->c5 sink).
+- **fnrpa pass p3 on the 13 distinct 9,286s** (`in2/`, rngs 101-108, 20 s each, same settings): **104/104 runs -> 9,286**,
+  ~6,000 finishes, none above 9,286. Zero rng spread: 9,286 is a fixed point of the warm free-sink pass.

@@ -185,3 +185,7 @@
 12:38:44 [chain KD45] stage 4 pen 25 600s from y/KD45_c3_best.txt (9170)
 12:38:44 [chain KR22] stage 3 -> best 9148 (banned sits 8) feasible ; 48 f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d6/d7 d4/d5 a7/b7 a8/b8 c8/d8 e7/e8 f8/g8
 12:38:44 [chain KR22] stage 4 pen 25 600s from y/KR22_c3_best.txt (9148)
+12:48:44 [chain KD45] stage 4 -> best 9178 (banned sits 0) feasible 9178; 29 f3/f7 g6/h3 d3/d4 c5/d5 c4/c5 c3/c4 b3/c3 b2/b3 a2/b2 a2/a3 a3/a4 a4/b4 b4/b5 a5/b5 a5/a6 a6/b6 b6/c6 c6/c7 c7/c8 c8/d8 a8/b8 a7/b7 d6/d7 e7/e8 f8/g8
+12:48:44 [chain KD45] done
+12:48:44 [chain KR22] stage 4 -> best 9148 (banned sits ) feasible ; 48 f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d6/d7 d4/d5 a7/b7 a8/b8 c8/d8 e7/e8 f8/g8
+12:48:44 [chain KR22] done

@@ -141,3 +141,35 @@ here: b19142a0, cd42bdb9, d27dc4ad, 39760016 (plus 9,280 and two 9,277s).
 decaying 120 (1,200 s) -> 80 -> 50 -> 25 (600 s each), no plain LNS at the end. Chains: KD45 (E_K_d4d5's kept 9,122,
 d4,d5 banned) and KR22 (R9222_K_c4c5d4's kept 8,754, c4,c5,d4 banned). The rest of the KEEP queue (E_K_e7e8,
 E_K_b6c6d4d5, R9166_K_c4d4, E_K_c4c5, E_K_a2b2, E_K_c7, E_K_a6b6, E_K_c6c7c8) did not fit in the 2 threads.
+Results (stage: best / banned sits / sitter difference vs 9,282):
+| chain | start | pen 120, 1,200 s | pen 80 | pen 50 | pen 25 |
+|---|---|---|---|---|---|
+| KD45 (d4,d5 from move 91) | 9,122 (1 banned sit, d4/e4) | 9,164 / 0 / 0 | 9,170 / 0 / 0 | 9,170 | **9,178** / 0 / 0 |
+| KR22 (c4,c5,d4 from move 93) | 8,754 (c4, c5 not sitting) | 8,763 / 1 / c4,c5 missing (feasible 8,519) | 8,763 | 9,148 / 8 / 0 | 9,148 / 0 |
+KD45 kept the sitter set and moved the d4/d5 block before move 91 (dance starts d3/d4 c5/d5 c4/c5 ...): a reordering
+at 9,178. KR22 held the c4/c5-free set at pen 120 and 80 but did not climb (8,763); at pen 50 it put the c4/c5 sits
+back (9,148). The decaying penalty ends on 9,282's sitter set in both chains, with no new family.
+
+12:40: the record is 9,286 (fw93, free waits on the 9,282 sitter set); saver threshold raised to 9,286. All jobs and
+the saver stopped 12:50. No tour above 9,282 / 9,286 was found here (no NEW_RECORD file).
+
+# Summary and recommendations (penalty92, round 9)
+- About 75 rule trials (bans of single blocks, pairs and multi-block U_ shapes; block + opposites; whole-tour
+  bans; order trials; merge bans; flip trials) from 9,275, 9,271, 9,279, 9,282 and graft92's splices, each with plain LNS,
+  and later with a KEEP stage and a decaying penalty.
+- Best: 9,282, four distinct ties (md5 b19142a0, cd42bdb9, d27dc4ad, 39760016; `keep/`, `lns/`), all with
+  9,282's exact signature. Best tour with a new order but the same sitter set: 9,277 (on 9,279's own signature), 9,273, 9,270,
+  9,267, 9,263, 9,244. Best tour holding a new sitter set: 9,169 (A_U_b6b7c8_C, one sitter moved); kept sets score
+  8,519-9,136 even at penalty 120.
+- No new family survived plain LNS: every rebuilt tour that climbed above about 9,200 had put back the record's sitter
+  set (sitter difference 0). Restoring one moved sitter is worth more than 40 per sit, and kept sets stay 150-750 below.
+  Merge bans (f3/f7, g6/h3 in moves 40-90) give no feasible tour; multi-block bans of 4 or more squares need 300-360 s of dlns
+  or the partially penalised best.
+- The a-d sitter set with the f3/f7 g6/h3 merge looks like a deep attractor. The 9,279 line (d3/g6 f7/h3 merge) and the
+  splices R9089-R9222 share it.
+- Recommendations: (1) change the merge rather than the dance: the 9,080 -> 9,268 jump came from early sits. Forcing a
+  merge with an *extra* early sit (reward rather than ban, e.g. a bonus for sits on e/f/g squares in moves 40-90)
+  needs a dlns change: dlns can only penalise. (2) A sitter-set similarity penalty, i.e. pay for every sit on 9,282's
+  sitter set rather than banning a few squares, so LNS cannot just restore them one at a time. (3) Longer keep runs
+  (an hour or more) on the one set that held at pen 120 with a real gain (KR22, c4/c5-free) are unlikely to pay: it did not
+  climb in 1,800 s.
