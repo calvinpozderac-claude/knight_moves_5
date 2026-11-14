@@ -1,0 +1,8 @@
+lns/in_D_F_c4c5_L1/start.txt: 176 moves, 8893 minutes (replay 8893)
+start lns/in_D_F_c4c5_L1/start.txt: 176 moves, 8893 minutes
+[1s it 131] NEW BEST 9026 (op 2 i 152 D 7) len 175
+[2s it 162] NEW BEST 9139 (op 2 i 152 D 4) len 176
+[3s it 217] NEW BEST 9181 (op 2 i 151 D 2) len 177
+[3s it 270] NEW BEST 9189 (op 1 i 104 D 2) len 177
+[5s it 375] NEW BEST 9193 (op 2 i 148 D 6) len 175
+[12s it 859] NEW BEST 9194 (op 7 a 121 c 131 d 141 b 127) len 166
