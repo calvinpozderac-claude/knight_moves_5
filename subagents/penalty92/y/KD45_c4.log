@@ -9,3 +9,6 @@ start y/KD45_c3_best.txt: 167 moves, 9170 minutes
   [it 8006] feasible best 9174
   eff 9174 forbidden sits 0
 [82s it 8006] NEW BEST 9174 (op 1 i 98 D 3) len 167
+  [it 8625] feasible best 9178
+  eff 9178 forbidden sits 0
+[88s it 8625] NEW BEST 9178 (op 7 a 102 c 103 d 129 b 126) len 167
