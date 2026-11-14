@@ -1,0 +1,24 @@
+in/r9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/r9288.txt: 181 moves, 9288 minutes (replay 9288)
+../../data/tours/record_9286.txt: 177 moves, 9286 minutes (replay 9286)
+in/ties/t9286_0bfba284.txt: 177 moves, 9286 minutes (replay 9286)
+start in/r9290.txt: 178 moves, 9290 minutes
+xover 9290 x 9290: best 9290
+xover 9290 x 9288: best 9290
+xover 9290 x 9286: best 9290
+xover 9290 x 9286: best 9290
+xover 9288 x 9290: best 9290
+xover 9288 x 9288: best 9288
+xover 9288 x 9286: best 9288
+xover 9288 x 9286: best 9288
+xover 9286 x 9290: best 9290
+xover 9286 x 9288: best 9286
+xover 9286 x 9286: best 9286
+xover 9286 x 9286: best 9286
+xover 9286 x 9290: best 9290
+xover 9286 x 9288: best 9286
+xover 9286 x 9286: best 9286
+xover 9286 x 9286: best 9286
+start 9290: 3 free sinks, exact necessity ok (bad move 0)
+done it 200 acc 15 best 9290 restarts 0
+elite: 9290 9290 9290 9290 9290 9288 9288 9288 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9282 9278 9278 9278

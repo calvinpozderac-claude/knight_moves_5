@@ -1,0 +1,12 @@
+in/r9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/r9288.txt: 181 moves, 9288 minutes (replay 9288)
+start in/r9290.txt: 178 moves, 9290 minutes
+start 9290: 3 free sinks, exact necessity ok (bad move 0)
+[30s] it 2000 acc 260 cur 9216 best 9290 temp 19.1 elite 26 gains 200/176/455/306/0/0/292/396/0/398 acc 51/48/62/20/4/3/35/19/3/15
+   nec calls 1415363 fail 1407508 unk 0 probes 9108441 | fsp calls 504 hits 36 gain 55 | dumped 170
+[61s] it 4000 acc 447 cur 9218 best 9290 temp 9.1 elite 34 gains 204/178/620/381/0/0/332/567/36/470 acc 83/78/120/39/9/5/45/41/4/23
+   nec calls 2720960 fail 2705311 unk 0 probes 16959670 | fsp calls 1001 hits 57 gain 94 | dumped 315
+[294s] it 18000 acc 1435 cur 9290 best 9290 temp 2.1 elite 40 gains 616/657/1398/656/36/78/732/1035/36/620 acc 254/288/400/135/20/19/115/131/15/58
+   nec calls 14112458 fail 14044177 unk 0 probes 90790002 | fsp calls 4211 hits 229 gain 385 | dumped 400
+[324s] it 20000 acc 1526 cur 9288 best 9290 temp 40.0 elite 40 gains 620/658/1408/656/36/78/732/1043/36/620 acc 273/313/421/143/23/20/119/140/16/58
+   nec calls 15513009 fail 15437184 unk 0 probes 99234022 | fsp calls 4702 hits 245 gain 407 | dumped 400

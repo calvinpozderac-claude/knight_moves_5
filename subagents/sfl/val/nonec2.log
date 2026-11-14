@@ -1,0 +1,10 @@
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+start ../../data/tours/record_9282.txt: 177 moves, 9282 minutes
+start 9282: 0 free sinks, exact necessity ok (bad move 0)
+[6s it 429] NEW BEST 9286 (op 7 a 110 c 110 d 117 b 111) len 177
+[25s] it 2000 acc 132 cur 9274 best 9286 temp 25.6 elite 40 gains 82/111/309/113/0/0/0/89/0/324 acc 20/20/44/10/1/4/5/17/2/9
+   nec calls 1 fail 0 unk 0 probes 1 | fsp calls 0 hits 0 gain 0 | dumped 71
+[49s] it 4000 acc 252 cur 9271 best 9286 temp 19.4 elite 40 gains 127/234/482/162/0/0/0/356/0/576 acc 37/44/75/24/2/4/10/36/3/17
+   nec calls 1 fail 0 unk 0 probes 1 | fsp calls 0 hits 0 gain 0 | dumped 154
+done it 7543 acc 480 best 9286 restarts 0
+elite: 9286 9286 9286 9286 9286 9286 9285 9285 9285 9285 9284 9284 9284 9284 9284 9284 9284 9284 9284 9283 9283 9283 9283 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9281 9281 9281 9281 9280 9280 9280

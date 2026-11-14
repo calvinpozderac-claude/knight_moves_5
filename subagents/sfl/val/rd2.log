@@ -1,0 +1,7 @@
+../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+start ../../data/tours/record_9279.txt: 177 moves, 9279 minutes
+start 9279: 0 free sinks, exact necessity ok (bad move 0)
+[13s it 1154] NEW BEST 9281 (op 7 a 129 c 128 d 148 b 149) len 179
+[17s it 1583] NEW BEST 9283 (op 1 i 152 D 3) len 181
+done it 2633 acc 194 best 9283 restarts 0
+elite: 9283 9283 9282 9282 9281 9281 9281 9281 9281 9281 9281 9281 9281 9281 9281 9281 9281 9281 9281 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9279 9279 9279 9279 9279 9278 9278 9277 9277

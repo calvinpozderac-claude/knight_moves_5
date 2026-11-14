@@ -1,0 +1,25 @@
+in/ties/t9286_f3576b90.txt: 179 moves, 9286 minutes (replay 9286)
+../../data/tours/record_9286.txt: 177 moves, 9286 minutes (replay 9286)
+start in/ties/t9286_f3576b90.txt: 179 moves, 9286 minutes
+start 9286: 2 free sinks, exact necessity ok (bad move 0)
+[35s] it 2000 acc 233 cur 9209 best 9286 temp 19.1 elite 40 gains 180/75/80/68/72/0/77/162/0/360 acc 39/48/52/21/5/2/13/29/2/22
+   nec calls 1807176 fail 1801170 unk 0 probes 10550529 | fsp calls 417 hits 3 gain 3 | dumped 174
+[73s] it 4000 acc 468 cur 9210 best 9286 temp 9.1 elite 40 gains 216/158/194/144/73/0/77/246/0/468 acc 73/103/109/44/14/3/24/50/2/46
+   nec calls 3955363 fail 3941996 unk 0 probes 23563434 | fsp calls 880 hits 14 gain 25 | dumped 375
+[109s] it 6000 acc 691 cur 9218 best 9286 temp 4.4 elite 40 gains 216/159/199/157/73/0/77/272/0/468 acc 106/163/172/68/16/3/30/63/5/65
+   nec calls 5719206 fail 5698626 unk 0 probes 35001233 | fsp calls 1314 hits 22 gain 33 | dumped 400
+[148s] it 8000 acc 834 cur 9283 best 9286 temp 2.1 elite 40 gains 216/160/203/157/73/0/77/349/0/468 acc 133/194/214/80/16/3/38/82/5/69
+   nec calls 8084548 fail 8057298 unk 0 probes 49089809 | fsp calls 1707 hits 27 gain 38 | dumped 400
+[221s] it 12000 acc 1203 cur 9100 best 9286 temp 19.1 elite 40 gains 216/294/502/297/73/0/293/479/0/720 acc 190/267/313/123/22/6/62/117/8/95
+   nec calls 11700625 fail 11660469 unk 0 probes 70801311 | fsp calls 2474 hits 44 gain 61 | dumped 400
+[349s it 19070] NEW BEST 9288 (op 2 i 35 D 9) len 179
+[401s] it 22000 acc 2043 cur 9280 best 9288 temp 19.1 elite 40 gains 442/493/643/593/73/0/333/1128/0/972 acc 344/483/506/211/25/14/105/184/19/152
+   nec calls 21467283 fail 21389548 unk 0 probes 140202832 | fsp calls 4449 hits 88 gain 125 | dumped 400
+[441s] it 24000 acc 2192 cur 9282 best 9288 temp 9.1 elite 40 gains 486/566/679/600/73/0/369/1188/0/1224 acc 366/521/545/222/25/18/114/200/20/161
+   nec calls 23814367 fail 23729047 unk 0 probes 157261552 | fsp calls 4777 hits 97 gain 140 | dumped 400
+[480s] it 26000 acc 2324 cur 9274 best 9288 temp 4.4 elite 40 gains 486/571/688/601/73/0/405/1196/0/1260 acc 389/557/582/233/27/20/115/208/21/172
+   nec calls 25782808 fail 25689476 unk 0 probes 172417674 | fsp calls 5151 hits 102 gain 147 | dumped 400
+[554s] it 30000 acc 2542 cur 9288 best 9288 temp 40.0 elite 40 gains 492/574/688/601/73/0/409/1222/0/1260 acc 432/611/634/249/29/22/123/228/25/189
+   nec calls 29785204 fail 29676019 unk 0 probes 201023436 | fsp calls 5854 hits 118 gain 174 | dumped 400
+[591s] it 32000 acc 2725 cur 9282 best 9288 temp 19.1 elite 40 gains 567/788/949/637/73/0/589/1456/36/1620 acc 457/650/669/260/29/27/147/256/27/203
+   nec calls 31561971 fail 31445257 unk 0 probes 213697412 | fsp calls 6182 hits 126 gain 188 | dumped 400

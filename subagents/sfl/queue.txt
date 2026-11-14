@@ -1,0 +1,9 @@
+./run.sh F4 504 in/r9290.txt 40000 1 177 0.5 60 4 in/r9288.txt
+./run.sh C1 301 in/s9282/s9282_38b89088.txt 40000 95 177 0.85 40 4 ../../data/tours/record_9286.txt
+./run.sh C2 302 in/s9282/s9282_42fdee9d.txt 40000 35 100 0.85 40 4 ../../data/tours/record_9286.txt
+./run.sh C3 303 in/s9282/s9282_4ab94234.txt 40000 95 177 0.85 40 4 ../../data/tours/record_9286.txt
+./run.sh C4 304 in/s9282/s9282_7b730ce4.txt 40000 35 100 0.85 40 4 ../../data/tours/record_9286.txt
+./run.sh C5 305 in/s9282/s9282_ac4ffae0.txt 40000 95 177 0.85 40 4 ../../data/tours/record_9286.txt
+./run.sh C6 306 in/s9282/s9282_ad0bc414.txt 40000 35 100 0.85 40 4 ../../data/tours/record_9286.txt
+./run.sh D1 105 ../../data/tours/record_9286.txt 40000 95 177 0.85 80 6 in/ties/t9286_6a5881e0.txt in/ties/t9286_0bfba284.txt in/ties/t9286_95c94e2a.txt
+./run.sh D2 106 ../../data/tours/record_9286.txt 40000 35 177 0.85 80 6 in/ties/t9286_6a5881e0.txt in/ties/t9286_0bfba284.txt in/ties/t9286_95c94e2a.txt
