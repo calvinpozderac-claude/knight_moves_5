@@ -30,3 +30,14 @@
 01:46:19 lns LH3d s954 start 9264 focus 1 180 0.0 donors in/LH3best3.txt in/LH3best.txt in/LH3_9242.txt
 02:06:19 lns LH3d s954 end:  done it 91556 acc 13280 best 9264 restarts 17
 02:06:19 queue6 done
+07:03:38 resumed (2nd restart); target 9279; saver threshold 9279. queue6 had finished: H3 seeds 953/954 no gain (9264); splice repairs R8830 9091, R8813 9089, R8887 9275 (=9275 copy?), R8842 9038, R8946k102 9222
+07:03:56 NEW_RECORD_9282 (crossover 9275/H3 prefix x 9279 resync, graft --xover 1, checker ok)
+07:04:11 lns L82 s971 start 9282 focus 1 180 0.0 donors in/X9282.txt in/record_9279.txt in/record_9275.txt
+07:24:11 lns L82 s971 end:  done it 112391 acc 15210 best 9282 restarts 11
+07:24:11 lns R79x9080 s970 start 7351 focus 1 180 0.0 donors in/S79_9080_k89.txt in/record_9080.txt in/record_9279.txt
+07:32:11 lns R79x9080 s970 end: 9166 done it 41703 acc 7352 best 9166 restarts 4
+   f7/h3 g4/g6 c3/d3 c4/d4 b3/b4 b4/c4 b2/b3 a2/b2 a3/a4 a5/a6 b5/b6 c5/d5 c6/c7 c8/d8 b7/b8 a7/a8 c8/d6 d6/d7 e7/e8 f8/g8
+07:32:11 lns R79x9264 s974 start 9261 focus 1 180 0.0 donors in/S79_9264_k80.txt in/LH3best.txt in/record_9279.txt
+07:40:11 lns R79x9264 s974 end: 9279 done it 39802 acc 7137 best 9279 restarts 15
+   f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+07:40:11 lns R79x8946 s976 start 9263 focus 1 180 0.0 donors in/S79_8946_k90.txt in/record_8946.txt in/record_9279.txt

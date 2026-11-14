@@ -28,3 +28,17 @@ P92_A_U_a2a3b2b3_L1|f3/f7 g6/h3 c3/d3 c4/d4 b3/b4 a2/b2 a3/a4 a5/a6 b5/b6 c5/d5 
 P92_A_G_nog6|f3/f7 a2/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8
 P92_A_U_b6b7c8_C|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 b5/c5 a5/a6 c6/c7 a7/a8 a8/b8 a7/d8 d6/d7 c5/d5 c3/c4 d3/d4 e7/e8 f8/g8
 P92_A_U_b6b7c8_C_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c5/c6 c3/c4 d3/d4 c5/d5 c6/c7 c7/c8 a7/b7 a8/b8 c8/d6 d6/d7 e7/e8 f8/g8
+record_9279|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+P92_D_F_c8d8|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 a7/a8 b7/b8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+P92_D_F_a8b8b7|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 a7/d8 c8/d8 a7/c5 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+P92_D_F_c8d8_L1|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a7/a8 b7/b8 d6/d7 c4/d4 c5/d5 d7/e7 e7/e8 f8/g8
+P92_D_F_a8b8b7_L1|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 a7/b7 a8/b8 c8/d8 d6/d7 c4/d4 c5/d5 d7/e7 e7/e8 f8/g8
+P92_D_F_d8|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c7/c8 a7/a8 b7/b8 c5/c6 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8 c8
+P92_D_F_c6c7|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+P92_D_F_d8_L1|f7/h3 d3/g6 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c5/c6 c7/c8 c8/d8 d6/d7 a8/b8 a7/b7 c5/d5 e7/e8 f8/g8
+P92_A_F_d8|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c7/c8 a7/b7 a8/b8 c5/c6 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 d6/d7 e7/e8 f8/g8
+P92_D_F_c7|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c8 c8/d8 a8/b8 a7/b7 c5/c6 c4/c5 c5/c6 c4/d4 d4/d5 d6/d7 e7/e8 f8/g8
+P92_A_F_d8_L1|f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+P92_D_F_d6d7|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 e7/e8 f8/g8
+P92_D_U_b6c6d4d5|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 b2/b3 a2/a3 a2/b2 a3/a4 a4/b4 a5/b5 a6/c7 c7/c8 c8/d8 b7/b8 a7/a8 a6/c5 c4/c5 d6/d7 c7/e7 e7/e8 f8/g8
+P92_D_U_b6c6d4d5_L1|f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/a5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 b5/c5 b4/b5 c4/c5 b4/c4 d4/d5 d6/d7 e7/e8 f8/g8

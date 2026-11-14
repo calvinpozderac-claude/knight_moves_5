@@ -1,0 +1,50 @@
+lns/in_D_U_b6c6d4d5_L1/start.txt: 163 moves, 8181 minutes (replay 8181)
+start lns/in_D_U_b6c6d4d5_L1/start.txt: 163 moves, 8181 minutes
+[0s it 20] NEW BEST 8279 (op 2 i 159 D 5) len 175
+[0s it 24] NEW BEST 8315 (op 0 i 151 D 4) len 174
+[0s it 34] NEW BEST 8453 (op 3 i 137 D 2) len 171
+[1s it 69] NEW BEST 8768 (op 2 i 142 D 6) len 173
+[1s it 77] NEW BEST 8867 (op 0 i 138 D 7) len 171
+[2s it 105] NEW BEST 8871 (op 2 i 110 D 8) len 175
+[3s it 177] NEW BEST 8879 (op 3 i 143 D 2) len 171
+[3s it 195] NEW BEST 8952 (op 7 a 127 c 127 d 148 b 150) len 171
+[3s it 201] NEW BEST 8955 (op 2 i 148 D 2) len 172
+[3s it 206] NEW BEST 8959 (op 7 a 109 c 108 d 116 b 117) len 172
+[5s it 326] NEW BEST 8963 (op 0 i 126 D 5) len 168
+[5s it 338] NEW BEST 8979 (op 0 i 161 D 8) len 172
+[5s it 347] NEW BEST 8980 (op 0 i 29 D 4) len 173
+[7s it 493] NEW BEST 8984 (op 2 i 21 D 6) len 170
+[7s it 498] NEW BEST 8988 (op 0 i 132 D 2) len 172
+[8s it 506] NEW BEST 8992 (op 3 i 89 D 2) len 172
+[8s it 532] NEW BEST 9012 (op 2 i 160 D 8) len 172
+[12s it 794] NEW BEST 9016 (op 2 i 161 D 6) len 175
+[12s it 795] NEW BEST 9032 (op 2 i 171 D 4) len 177
+[12s it 814] NEW BEST 9036 (op 0 i 101 D 5) len 181
+[13s it 910] NEW BEST 9037 (op 2 i 21 D 5) len 174
+[15s it 996] NEW BEST 9041 (op 3 i 170 D 2) len 174
+[23s it 1582] NEW BEST 9042 (op 6 a 92 len 5) len 169
+[30s it 1988] NEW BEST 9044 (op 6 a 142 len 16) len 163
+[35s it 2450] NEW BEST 9050 (op 5 a 91 len 6) len 173
+[35s it 2465] NEW BEST 9053 (op 2 i 124 D 4) len 176
+[63s it 4785] NEW BEST 9065 (op 7 a 159 c 160 d 172 b 167) len 172
+[99s] it 8000 acc 1045 cur 9056 best 9065 temp 1.2 elite 40 gains 686/288/965/205/0/14/352/591/144/322 acc 214/198/324/85/21/14/61/71/7/50
+[169s] it 14000 acc 1864 cur 9014 best 9065 temp 4.3 elite 40 gains 903/502/1671/391/78/94/530/910/180/562 acc 365/350/597/158/34/29/118/117/18/78
+[252s it 21283] NEW BEST 9091 (op 7 a 47 c 44 d 71 b 70) len 172
+[252s it 21297] NEW BEST 9095 (op 1 i 106 D 3) len 172
+[252s it 21311] NEW BEST 9099 (op 2 i 146 D 3) len 172
+[281s] it 24000 acc 3057 cur 9090 best 9099 temp 3.4 elite 40 gains 1428/834/2531/614/122/178/1006/1392/184/922 acc 629/583/949/259/60/44/180/188/24/141
+[302s it 25896] NEW BEST 9111 (op 2 i 128 D 6) len 180
+[303s it 26046] NEW BEST 9171 (op 1 i 126 D 3) len 173
+[315s it 27167] NEW BEST 9173 (op 2 i 20 D 4) len 175
+[371s it 32328] NEW BEST 9174 (op 7 a 30 c 25 d 33 b 33) len 174
+[374s it 32586] NEW BEST 9177 (op 2 i 144 D 7) len 177
+[375s it 32697] NEW BEST 9181 (op 6 a 90 len 8) len 175
+[379s it 33058] NEW BEST 9184 (op 0 i 149 D 6) len 174
+[384s it 33562] NEW BEST 9185 (op 1 i 26 D 3) len 181
+[387s it 33998] NEW BEST 9187 (op 7 a 10 c 12 d 34 b 31) len 171
+[387s] it 34000 acc 4266 cur 9187 best 9187 temp 3.2 elite 40 gains 2072/1215/3417/1054/178/202/1507/1703/277/1390 acc 877/802/1317/358/84/60/259/259/33/217
+[408s] it 36000 acc 4457 cur 9181 best 9187 temp 1.5 elite 40 gains 2072/1219/3429/1058/178/202/1507/1715/277/1390 acc 920/833/1379/366/86/60/268/275/34/236
+[418s it 36960] NEW BEST 9199 (op 4 a 122 len 10) len 179
+[420s it 37131] NEW BEST 9201 (op 2 i 146 D 5) len 177
+done it 37139 acc 4548 best 9201 restarts 1
+elite: 9201 9199 9199 9199 9199 9199 9199 9199 9199 9199 9199 9199 9197 9197 9197 9197 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187 9187

@@ -1,0 +1,8 @@
+../../in/X9282.txt: 179 moves, 9282 minutes (replay 9282)
+../../in/H2_9212.txt: 181 moves, 9212 minutes (replay 9212)
+xover 9282 x 9282: best 9282
+xover 9282 x 9212: best 9282
+xover 9212 x 9282: best 9282
+xover 9212 x 9212: best 9212
+done it 1 acc 0 best 9282 restarts 0
+elite: 9282 9282 9212 9212

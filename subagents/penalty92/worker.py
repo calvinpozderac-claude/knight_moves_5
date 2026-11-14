@@ -4,7 +4,7 @@ import sys, os, time, fcntl, subprocess, zlib, shutil
 import fam
 D = os.path.dirname(os.path.abspath(__file__)); os.chdir(D)
 WID = sys.argv[1]; STOP = time.time() + float(sys.argv[2])
-REF = 'in/record_9275.txt'
+REF = 'in/record_9279.txt'
 DLT = int(os.environ.get('DLT', 120)); LT = int(os.environ.get('LT', 420))
 COMMON = ['--xover', '0', '--t0', '40', '--budget', '400000', '--dmax', '8', '--pdmax', '4', '--rmax', '8',
           '--wide', '8', '--skel', '0.5', '--reroute', '0.05', '--free', '0']

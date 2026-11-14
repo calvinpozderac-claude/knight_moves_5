@@ -33,3 +33,14 @@
 23:51:14 E9268 k=153/175 :: FOUND 9268 (0.0s, 22 nodes) DONE k=153 26.8s nodes=52426000 tthits=6351402 EXACT suffix optimum from k: 9268 (prefix T=7706) [sound: exhaustive] 
 23:52:47 E9268 k=151/175 :: FOUND 9268 (0.0s, 24 nodes) DONE k=151 92.8s nodes=176084446 tthits=21602925 EXACT suffix optimum from k: 9268 (prefix T=7542) [sound: exhaustive] 
 23:55:17 E9268 k=149/175 :: FOUND 9268 (0.0s, 26 nodes) TIMEOUT k=149 after 150.0s nodes=282918912 best=9268 
+07:09:34 E9279 k=173/177 :: FOUND 9279 (0.0s, 4 nodes) DONE k=173 0.0s nodes=11 tthits=0 EXACT suffix optimum from k: 9279 (prefix T=9021) [sound: exhaustive] 
+07:09:34 E9279 k=171/177 :: FOUND 9279 (0.0s, 6 nodes) DONE k=171 0.0s nodes=83 tthits=6 EXACT suffix optimum from k: 9279 (prefix T=8877) [sound: exhaustive] 
+07:09:35 E9279 k=169/177 :: FOUND 9279 (0.0s, 8 nodes) DONE k=169 0.0s nodes=288 tthits=40 EXACT suffix optimum from k: 9279 (prefix T=8733) [sound: exhaustive] 
+07:09:35 E9279 k=167/177 :: FOUND 9279 (0.0s, 10 nodes) DONE k=167 0.0s nodes=722 tthits=100 EXACT suffix optimum from k: 9279 (prefix T=8585) [sound: exhaustive] 
+07:09:36 E9279 k=165/177 :: FOUND 9279 (0.0s, 12 nodes) DONE k=165 0.0s nodes=4428 tthits=567 EXACT suffix optimum from k: 9279 (prefix T=8433) [sound: exhaustive] 
+07:09:36 E9279 k=163/177 :: FOUND 9279 (0.0s, 14 nodes) DONE k=163 0.0s nodes=15596 tthits=2161 EXACT suffix optimum from k: 9279 (prefix T=8281) [sound: exhaustive] 
+07:09:37 E9279 k=161/177 :: FOUND 9279 (0.0s, 16 nodes) DONE k=161 0.0s nodes=31198 tthits=4319 EXACT suffix optimum from k: 9279 (prefix T=8164) [sound: exhaustive] 
+07:09:38 E9279 k=159/177 :: FOUND 9279 (0.0s, 18 nodes) DONE k=159 0.7s nodes=1074524 tthits=130815 EXACT suffix optimum from k: 9279 (prefix T=8004) [sound: exhaustive] 
+07:09:50 E9279 k=157/177 :: FOUND 9279 (0.0s, 20 nodes) DONE k=157 11.3s nodes=19488950 tthits=2257438 EXACT suffix optimum from k: 9279 (prefix T=7844) [sound: exhaustive] 
+07:12:01 E9279 k=155/177 :: FOUND 9279 (0.0s, 22 nodes) DONE k=155 131.3s nodes=230973499 tthits=28540003 EXACT suffix optimum from k: 9279 (prefix T=7676) [sound: exhaustive] 
+07:16:02 E9279 k=153/177 :: FOUND 9279 (0.0s, 24 nodes) TIMEOUT k=153 after 240.0s nodes=421986304 best=9279 

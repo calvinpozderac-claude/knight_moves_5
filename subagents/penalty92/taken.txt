@@ -28,3 +28,13 @@ lns|C_U_c6c7c8_P1|keep/C_U_c6c7c8_pbest_8761.txt|9103|420|
 dl|A_U_a2a3b2b3|in/record_9275.txt|150|a2,b2,a3,b3:80:999|360
 dl|A_G_nog6|keep/A_M_g6h3_pbest_9144.txt|500|g6:40:95|600
 dl|A_U_b6b7c8_C|y/A_U_b6b7c8_best.txt.feas_best.txt|150|b6,b7,c8:80:999|600
+dl|D_F_c8d8|in/record_9279.txt|150|c8,d8:92:999
+dl|D_F_a8b8b7|in/record_9279.txt|150|a8,b8,b7:92:999
+dl|D_F_d8|in/record_9279.txt|150|d8:92:999
+dl|D_F_c6c7|in/record_9279.txt|150|c6,c7:92:999
+dl|A_F_d8|in/record_9275.txt|150|d8:80:999
+dl|D_F_c7|in/record_9279.txt|150|c7:92:999
+dl|D_F_d6d7|in/record_9279.txt|150|d6,d7:92:999
+dl|D_U_b6c6d4d5|in/record_9279.txt|150|b6,c6,d4,d5:92:999|300
+lns|A_F_d8_L2|keep/A_F_d8_9176.txt|9402|600|
+dl|D_F_c4c5|in/record_9279.txt|150|c4,c5:92:999

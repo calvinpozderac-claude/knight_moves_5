@@ -55,3 +55,24 @@ Goal: a tour above 9,275 from a new family. 2 heavy threads (2 workers), nice -n
 | A_X_c4c5 | c4,c5:0:999 (pen 300) | 8,885 | 2/2 | 9,231 | 1/0 | same sitters |
 | A_O_d6d7 | d6,d7,e3,e2:80:999 | 8,785 | 1/2 | 8,959 | 4/1 | new, low |
 | A_U_b6b7c8 | b6,b7,c8:80:999 | 8,358 | 13/4 | 9,178 (killed at 294 s) | | new (see above) |
+| A_U_a5a8b5c4 | a5,a6,a7,a8,b5,c4:80:999 (360 s) | none; partial best 8,413 (6 banned sits left) | 18 (sits) | 9,233 | 7/0 | same sitters |
+| C_U_c6c7c8 (H3 base) | c6,c7,c8:80:999 | none; partial best 8,761 | | 9,244 | 12/0 | same sitters, H3-like order |
+| A_M_g6h3 partial | g6,h3:40:90 | partial best 9,144 (g6 merge sit dropped, a2 sits instead) | 1/1 | 9,209 | 0/0 | 9,275's (g6 restored) |
+| A_G_nog6 | g6:40:95 from that 9,144 (600 s dlns, pen 500) | 9,144 (no gain) | 1/1 | 9,207 | 0/0 | 9,275's |
+| A_U_b6b7c8 seeds | from 9,178 / from raw 8,358 | | | 9,184 / 9,242 | 7/0, 6/0 | same sitters |
+| A_U_b6b7c8_C | b6,b7,c8:80:999 continued 600 s from raw 8,358 | 8,485 | 8/3 | 9,169 | 9/1 | new (1 sitter moved), low |
+| B_U_b6c6d4d5 (9,271 base) | b6,c6,d4,d5:80:999 (360 s) | none | | | | |
+| A_U_a2a3b2b3 | a2,b2,a3,b3:80:999 (360 s) | 8,385 | 3/4 | 9,211 | 10/0 | same sitters, new order |
+
+Worker change 00:45: when dlns finds no fully feasible tour, the partially penalised best (fewer banned sits) is used
+as the raw tour (name suffix P), as the user's 8,900 came from a wrecked 7,227.
+
+**Summary of the 9,275 sweep (to 01:24):** 20 rules, 15 rebuilt tours. Every rebuilt tour whose plain LNS went above
+9,200 had put back 9,275's exact sitter set (sitter difference 0): 9,275 x3 (two distinct from the record), 9,273,
+9,267, 9,263, 9,244, 9,242, 9,233, 9,231, 9,211, 9,209 x2. Tours that kept a moved sitter stalled at 8,869-9,169.
+Merge bans (f3/f7, g6/h3, both, in moves 40-90) give no feasible tour within 120-600 s.
+
+# Resumed 07:03 (after a usage limit + container restart): target 9,279
+`in/record_9279.txt` (second merge class: f7/h3, d3/g6 early). Distances are now vs 9,279; saver threshold 9,279.
+New rule type F_ = flip trial: ban one sitter or a small set of sitters for the dance (move 92 on 9,279, 80 on
+9,275) so the opposite point sits instead. Prefix D_ = base 9,279.

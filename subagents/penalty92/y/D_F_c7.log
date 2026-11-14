@@ -1,0 +1,23 @@
+rule mask 0004000000000000 moves [92,999)
+in/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+start in/record_9279.txt: 177 moves, 9279 minutes
+[44s] it 4000 acc 497 cur 9196 best 9279 temp 6.8 elite 27 gains 375/100/344/234/36/4/156/382/38/252 acc 99/87/145/41/11/8/32/47/5/22
+  [it 6449] feasible best 8807
+  [it 6862] feasible best 8810
+  [it 7058] feasible best 8819
+  [it 7552] feasible best 8822
+  [it 7583] feasible best 8824
+  [it 7585] feasible best 8825
+  [it 7707] feasible best 8861
+  eff 8861 forbidden sits 0
+[86s it 7707] NEW BEST 8861 (op 3 i 140 D 2) len 166
+  [it 7802] feasible best 8864
+  eff 8864 forbidden sits 0
+[87s it 7802] NEW BEST 8864 (op 1 i 25 D 3) len 171
+  [it 7844] feasible best 8868
+  eff 8868 forbidden sits 0
+[88s it 7844] NEW BEST 8868 (op 1 i 112 D 3) len 173
+[89s] it 8000 acc 925 cur 8868 best 8868 temp 1.1 elite 40 gains 515/201/562/280/44/4/365/722/38/468 acc 189/175/262/73/17/12/62/78/9/48
+[114s] it 10000 acc 1169 cur 8844 best 8868 temp 2.1 elite 40 gains 697/277/822/325/44/4/598/767/42/506 acc 242/219/333/101/21/19/83/84/12/55
+done it 10490 acc 1211 best 8868 restarts 0
+elite: 9279 9279 9279 9279 9274 9266 9266 9213 9209 9208 9208 9207 9207 9206 9206 9206 9206 9204 9202 9202 9200 9200 9198 9198 9197 9197 9197 9196 9196 9192 9191 9191 9191 9190 9188 9185 9182 9182 9182 9181

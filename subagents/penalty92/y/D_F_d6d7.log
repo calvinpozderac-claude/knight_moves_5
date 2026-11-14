@@ -1,0 +1,42 @@
+rule mask 0008080000000000 moves [92,999)
+in/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+start in/record_9279.txt: 177 moves, 9279 minutes
+  eff 8408 forbidden sits 5
+[0s it 19] NEW BEST 9158 (op 1 i 154 D 2) len 176
+  eff 8552 forbidden sits 3
+[1s it 63] NEW BEST 9002 (op 8 i 164 D 3) len 176
+  eff 8654 forbidden sits 2
+[5s it 369] NEW BEST 8954 (op 1 i 155 D 3) len 172
+  eff 8658 forbidden sits 2
+[5s it 406] NEW BEST 8958 (op 2 i 150 D 6) len 176
+  eff 8726 forbidden sits 1
+[6s it 455] NEW BEST 8876 (op 1 i 164 D 1) len 176
+  eff 8728 forbidden sits 1
+[8s it 654] NEW BEST 8878 (op 7 a 89 c 89 d 106 b 104) len 174
+  eff 8730 forbidden sits 1
+[10s it 833] NEW BEST 8880 (op 2 i 118 D 4) len 174
+  eff 8732 forbidden sits 1
+[13s it 1021] NEW BEST 8882 (op 7 a 100 c 97 d 109 b 110) len 174
+  [it 1588] feasible best 8745
+  eff 8745 forbidden sits 0
+[18s it 1588] NEW BEST 8745 (op 1 i 164 D 1) len 174
+  [it 1786] feasible best 8749
+  eff 8749 forbidden sits 0
+[21s it 1786] NEW BEST 8749 (op 0 i 110 D 6) len 170
+  [it 2191] feasible best 8753
+  eff 8753 forbidden sits 0
+[25s it 2191] NEW BEST 8753 (op 7 a 116 c 110 d 135 b 135) len 174
+  [it 2196] feasible best 8757
+  eff 8757 forbidden sits 0
+[25s it 2196] NEW BEST 8757 (op 7 a 106 c 103 d 131 b 132) len 174
+  [it 2287] feasible best 8759
+  eff 8759 forbidden sits 0
+[26s it 2287] NEW BEST 8759 (op 7 a 34 c 36 d 52 b 48) len 174
+  [it 2383] feasible best 8764
+  eff 8764 forbidden sits 0
+[27s it 2383] NEW BEST 8764 (op 7 a 22 c 22 d 42 b 41) len 173
+[46s] it 4000 acc 395 cur 8890 best 8764 temp 5.7 elite 40 gains 130/386/298/137/41/0/80/245/184/110 acc 88/81/104/34/9/7/19/42/6/5
+[69s] it 6000 acc 613 cur 8816 best 8764 temp 12.7 elite 40 gains 269/426/462/217/45/248/116/430/188/110 acc 127/120/174/54/14/9/34/62/9/10
+[92s] it 8000 acc 801 cur 8531 best 8764 temp 33.0 elite 40 gains 286/483/471/222/47/248/158/452/188/150 acc 172/155/230/65/20/11/41/76/10/21
+done it 10456 acc 1074 best 8764 restarts 0
+elite: 9279 9158 9158 9154 9002 8994 8994 8994 8994 8989 8989 8989 8989 8989 8989 8989 8989 8989 8989 8989 8985 8985 8985 8985 8985 8985 8985 8985 8985 8985 8977 8977 8977 8958 8954 8954 8954 8954 8954 8954

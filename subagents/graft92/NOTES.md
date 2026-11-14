@@ -60,3 +60,19 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5, `--free 0`. Start 23:16 (20
   9,080 k93 7,354 (H3), 8,830 k93 3,947, 8,842 k94 3,008; 8,887 and 8,813 (F6) have no resync for k 79-106, so
   use 8,887 k107 (4,084) and 8,813 k101 (4,083); also 8,946 k102 (8,373) as a second 8,946 splice.
   Splice inputs `in/S_<donor>_k<k>.txt`.
+- Results of queue5b/queue6 (ran 00:31-02:06): H3 seeds 952, 953, 954 (20 min each, H3-only donors): **no gain,
+  9,264 is the H3 ceiling** (elites full of 9,264/9,262 variants). Repaired splices (7 min each, donors splice +
+  dance donor + 9,275): 8,830 k93 3,947 -> 9,091 (new sig, F5 ending ...c8/d8 a8/b8 a7/b7 g8); 8,813 k101 -> 9,089
+  (new sig, a-file first then d3/d4 c3/c4 late); 8,887 k107 -> 9,275 (reverts to 9,275 itself); 8,842 k94 -> 9,038;
+  8,946 k102 -> 9,222 (sig f3/f7 g6/h3 a2/b2..a6/b6 a5/a6 b6/c6 c6/c7 c8/d8 c6/c7 c4/c5 c3/d3 c4/d4 d3/d4 c5/d5
+  a7/b7 a8/b8 d6/d7 e7/e8 f8/g8). None above 9,264.
+
+## 9,279 round (07:03, after a 2nd stop; target 9,279 = data/tours/record_9279.txt, merge d3/g6 + f7/h3)
+- Saver threshold now 9,279 (`THR`).
+- Crossover scan (`sp/xo_*_9279.log`, graft --xover 1, XODETAIL=1): **9,275 prefix (k = 53..94, any cut inside
+  9,275's merge) + DFS + resync into 9,279's dance = 9,282** (checker ok=True, maxvisits=3, unnecessary=[]):
+  **`NEW_RECORD_9282.txt`**, also `keep/X_9282.txt`, `in/X9282.txt`. H3's prefix gives the same 9,282.
+  Sig: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+  (= 9,279's dance after 9,275's merge). No LNS needed: a direct splice.
+- Reverse: 9,279 prefix + 9,275 dance 9,272 (k 51-90), + H3 9,261 (k 64-91), + 8,946 9,263 (k 89-91), + 9,080
+  7,351 (k 89). queue7: plain LNS on 9,282 (20 min, donors 9,282/9,279/9,275), then 8-min repairs of those four.

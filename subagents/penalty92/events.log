@@ -72,3 +72,30 @@
 01:17:54 [w1] worker exit
 01:23:55 [w2] dl A_U_b6b7c8_C: lns -> 9169 dist 9/1 (new)
 01:23:55 [w2] worker exit
+07:05 resumed after usage limit + restart; target 9,279 (base D_); flip trials F_ added; saver threshold 9279; REF 9279
+07:03:49 [w1] dl D_F_c8d8 base in/record_9279.txt pen 150 rules ['c8,d8:92:999']
+07:03:51 [w2] dl D_F_a8b8b7 base in/record_9279.txt pen 150 rules ['a8,b8,b7:92:999']
+07:05:50 [w1] dl D_F_c8d8: raw 8830 dist 3/2 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 a7/a8 b7/b8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+07:05:51 [w2] dl D_F_a8b8b7: raw 8453 dist 3/3 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 a7/d8 c8/d8 a7/c5 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+07:12:50 [w1] dl D_F_c8d8: lns -> 9123 dist 6/0 (new)
+07:12:50 [w1] dl D_F_d8 base in/record_9279.txt pen 150 rules ['d8:92:999']
+07:12:51 [w2] dl D_F_a8b8b7: lns -> 9128 dist 6/0 (new)
+07:12:51 [w2] dl D_F_c6c7 base in/record_9279.txt pen 150 rules ['c6,c7:92:999']
+07:14:50 [w1] dl D_F_d8: raw 8901 dist 5/1 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c7/c8 a7/a8 b7/b8 c5/c6 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8 c8; lns 420s
+07:14:51 [w2] dl D_F_c6c7: raw 8840 dist 1/2 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+07:21:50 [w1] dl D_F_d8: lns -> 9096 dist 8/0 (new)
+07:21:50 [w1] dl A_F_d8 base in/record_9275.txt pen 150 rules ['d8:80:999']
+07:21:51 [w2] dl D_F_c6c7: lns -> 9277 dist 0/0 (record_9279)
+07:21:51 [w2] dl D_F_c7 base in/record_9279.txt pen 150 rules ['c7:92:999']
+07:23:50 [w1] dl A_F_d8: raw 8999 dist 11/2 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c7/c8 a7/b7 a8/b8 c5/c6 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+07:23:51 [w2] dl D_F_c7: raw 8868 dist 4/1 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c8 c8/d8 a8/b8 a7/b7 c5/c6 c4/c5 c5/c6 c4/d4 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+07:30:50 [w1] dl A_F_d8: lns -> 9176 dist 12/1 (new)
+07:30:50 [w1] dl D_F_d6d7 base in/record_9279.txt pen 150 rules ['d6,d7:92:999']
+07:30:51 [w2] dl D_F_c7: lns -> 9213 dist 0/0 (record_9279)
+07:30:51 [w2] dl D_U_b6c6d4d5 base in/record_9279.txt pen 150 rules ['b6,c6,d4,d5:92:999']
+07:32:50 [w1] dl D_F_d6d7: raw 8764 dist 1/2 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 e7/e8 f8/g8; lns 420s
+07:35:51 [w2] dl D_U_b6c6d4d5: raw 8181 dist 11/4 new sig f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 b2/b3 a2/a3 a2/b2 a3/a4 a4/b4 a5/b5 a6/c7 c7/c8 c8/d8 b7/b8 a7/a8 a6/c5 c4/c5 d6/d7 c7/e7 e7/e8 f8/g8; lns 420s
+07:39:50 [w1] dl D_F_d6d7: lns -> 9277 dist 0/0 (record_9279)
+07:39:50 [w1] lns A_F_d8_L2 start keep/A_F_d8_9176.txt (9176) seed 9402 t 600
+07:42:51 [w2] dl D_U_b6c6d4d5: lns -> 9201 dist 5/0 (new)
+07:42:51 [w2] dl D_F_c4c5 base in/record_9279.txt pen 150 rules ['c4,c5:92:999']
