@@ -68,3 +68,5 @@ ceiling of its sitter set (penalty92 found the same attractor).
   unnecessary=[], strict_check STRICT. Signature: **f3/f7 g6/h3** c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8
   a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8 = 9,275's merge class (f3/f7 g6/h3) grafted onto 9,279's dance (c3/d3
   first, then b2/b3 a2/a3 ...). So the two merge classes combine: the 9,275 donors supplied the early merge.
+- 07:42 coordinator saved 9,282 as data/tours/record_9282.txt. Added graft92's distinct 9,282 (179 moves, same
+  signature as mine) as `don2/graft9282.txt`; saver restarted with THR=9282. s932 ended 9,282 (60k); polish PM_s932 (600 s) running.

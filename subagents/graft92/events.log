@@ -41,3 +41,4 @@
 07:40:11 lns R79x9264 s974 end: 9279 done it 39802 acc 7137 best 9279 restarts 15
    f7/h3 d3/g6 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 07:40:11 lns R79x8946 s976 start 9263 focus 1 180 0.0 donors in/S79_8946_k90.txt in/record_8946.txt in/record_9279.txt
+07:45:12 saver threshold 9282; donor in/P9282.txt (polish92's 177-move 9282)
