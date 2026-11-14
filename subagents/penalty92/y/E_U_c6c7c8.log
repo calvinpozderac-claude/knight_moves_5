@@ -73,3 +73,9 @@ start in/P_9282.txt: 177 moves, 9282 minutes
   [it 5666] feasible best 8586
   eff 8586 forbidden sits 0
 [60s it 5666] NEW BEST 8586 (op 2 i 151 D 2) len 177
+  [it 6398] feasible best 8588
+  eff 8588 forbidden sits 0
+[68s it 6398] NEW BEST 8588 (op 7 a 103 c 99 d 120 b 116) len 173
+  [it 6897] feasible best 8590
+  eff 8590 forbidden sits 0
+[73s it 6897] NEW BEST 8590 (op 2 i 35 D 4) len 177
