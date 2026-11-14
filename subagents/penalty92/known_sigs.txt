@@ -50,3 +50,4 @@ P92_E_U_b6c6d4d5P_L1|f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7
 P92_G_U_b6c6d4d5|f3/f7 g6/h3 c3/d3 d4/d5 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a5/a6 b5/c7 c7/c8 c8/d8 b8/c7 a8/b8 a6/a8 a7/b7 b5/c5 c4/c5 d6/d7 e7/e8 f8/g8
 P92_E_F_a7b7|f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 P92_G_U_b6c6d4d5_L1|f3/f7 g6/h3 c3/d3 c4/d4 c5/d5 a5/b5 a4/b4 b2/b3 a2/a3 a4/a5 a6/b6 c6/c7 a7/b7 a8/b8 c8/d8 d6/d7 e7/e8 f8/g8
+P92_E_U_c6c7c8|f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a7/a8 b7/b8 c4/c5 c4/d4 d4/d5 c5/d8 d6/d7 d8/e8 e7/e8 f8/g8

@@ -44,3 +44,6 @@ moves=177 ok=True T=9282 ok maxvisits=3 maxwait=140 unnecessary=[]
 07:57:00 lns M s934 start 9282 focus 1 154 0.85
 08:08:13 lns M s934 end:  done it 60000 acc 7285 best 9282 restarts 4
 08:08:13 lns M s935 start 9282 focus 40 154 0.85
+08:19:22 lns M s935 end:  done it 60000 acc 6735 best 9282 restarts 6
+08:19:22 q6 done
+08:23:11 exact E9282: proven from move 157 of 177

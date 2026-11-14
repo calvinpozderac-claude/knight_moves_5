@@ -44,3 +44,13 @@
 07:09:50 E9279 k=157/177 :: FOUND 9279 (0.0s, 20 nodes) DONE k=157 11.3s nodes=19488950 tthits=2257438 EXACT suffix optimum from k: 9279 (prefix T=7844) [sound: exhaustive] 
 07:12:01 E9279 k=155/177 :: FOUND 9279 (0.0s, 22 nodes) DONE k=155 131.3s nodes=230973499 tthits=28540003 EXACT suffix optimum from k: 9279 (prefix T=7676) [sound: exhaustive] 
 07:16:02 E9279 k=153/177 :: FOUND 9279 (0.0s, 24 nodes) TIMEOUT k=153 after 240.0s nodes=421986304 best=9279 
+08:19:24 E9282 k=173/177 :: FOUND 9282 (0.0s, 4 nodes) DONE k=173 0.0s nodes=11 tthits=0 EXACT suffix optimum from k: 9282 (prefix T=9024) [sound: exhaustive] 
+08:19:24 E9282 k=171/177 :: FOUND 9282 (0.0s, 6 nodes) DONE k=171 0.0s nodes=83 tthits=6 EXACT suffix optimum from k: 9282 (prefix T=8880) [sound: exhaustive] 
+08:19:25 E9282 k=169/177 :: FOUND 9282 (0.0s, 8 nodes) DONE k=169 0.0s nodes=288 tthits=40 EXACT suffix optimum from k: 9282 (prefix T=8736) [sound: exhaustive] 
+08:19:25 E9282 k=167/177 :: FOUND 9282 (0.0s, 10 nodes) DONE k=167 0.0s nodes=722 tthits=100 EXACT suffix optimum from k: 9282 (prefix T=8588) [sound: exhaustive] 
+08:19:25 E9282 k=165/177 :: FOUND 9282 (0.0s, 12 nodes) DONE k=165 0.0s nodes=4428 tthits=567 EXACT suffix optimum from k: 9282 (prefix T=8436) [sound: exhaustive] 
+08:19:26 E9282 k=163/177 :: FOUND 9282 (0.0s, 14 nodes) DONE k=163 0.0s nodes=15591 tthits=2158 EXACT suffix optimum from k: 9282 (prefix T=8284) [sound: exhaustive] 
+08:19:26 E9282 k=161/177 :: FOUND 9282 (0.0s, 16 nodes) DONE k=161 0.1s nodes=31190 tthits=4316 EXACT suffix optimum from k: 9282 (prefix T=8167) [sound: exhaustive] 
+08:19:27 E9282 k=159/177 :: FOUND 9282 (0.0s, 18 nodes) DONE k=159 0.8s nodes=1204610 tthits=150137 EXACT suffix optimum from k: 9282 (prefix T=8007) [sound: exhaustive] 
+08:20:11 E9282 k=157/177 :: FOUND 9282 (0.0s, 20 nodes) DONE k=157 42.9s nodes=75592268 tthits=9080924 EXACT suffix optimum from k: 9282 (prefix T=7847) [sound: exhaustive] 
+08:23:11 E9282 k=155/177 :: FOUND 9282 (0.0s, 22 nodes) TIMEOUT k=155 after 180.0s nodes=292880384 best=9282 

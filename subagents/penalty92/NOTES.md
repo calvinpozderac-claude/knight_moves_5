@@ -95,3 +95,14 @@ Two 9,277 finishes on 9,279's own signature (D_F_c6c7, D_F_d6d7) but nothing abo
 07:50: record is now 9,282 (polish92 and graft92, one signature: 9,275's merge f3/f7 g6/h3 + 9,279's dance
 c3/d3 b2/b3 ...). Bases E_ = polish92's 9,282 (`in/P_9282.txt`), G_ = graft92's (`in/G_9282.txt`), each the other's
 donor in dlns (`dl` field 7 = donors). Saver threshold 9,282; distances vs 9,282.
+
+## 9,282 bases (07:52-)
+| rule | squares:FROM:TO | raw | dist (vs 9,282) | LNS 420 s | dist after | family after LNS |
+|---|---|---|---|---|---|---|
+| D_U_b6c6d4d5 +600 s | from its 9,201 | | | 9,207 | 6/1 | |
+| E_U_b6c6d4d5 | b6,c6,d4,d5:91:999 (300 s, donor G) | none; partial best 8,790 | 5/4 | 9,204 | 4/0 | 9,282 sitters |
+| E_F_c4c5 | c4,c5:91:999 | 8,896 | 1/2 | **9,282** | 0/0 | 9,282's own signature: a third distinct 9,282 (md5 b19142a0, `keep/E_F_c4c5_9282.txt`, checker ok), a tie |
+| G_U_b6c6d4d5 | b6,c6,d4,d5:93:999 (300 s) | 8,458 | 9/2 | 9,148 | 10/0 | 9,282 sitters |
+08:17: graft92's core is free (3 threads). Its repaired splices R9166 (9,279 merge x 9,080 dance) and R9222 (x 8,946)
+have **9,282's dance sitter set** (R9166 differs only in the merge: g4 for f3), so they are reorderings, not
+sitter-set changes; given one plain-LNS seed each (840 s / 720 s) on the third thread and worker 1.

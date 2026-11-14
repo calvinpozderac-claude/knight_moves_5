@@ -73,3 +73,20 @@ ceiling of its sitter set (penalty92 found the same attractor).
 - PM_s932 polish: converged 340 s, **9,282, no gain** (reroute to 175 jumps). 07:45 s933 (60k) started from the best don2 tour (graft92's 9,282 on the tie).
 - s933 (60k from graft92's 9,282): **9,282, nothing**. 07:57 q6 s934 started.
 - s934 (60k, wide donor set incl. the 9,275-line tours): **9,282, nothing**. 08:08 s935 (dance-only focus 40..154) started; bb proof on 9,282 queued after it.
+- s935 (60k, dance-only focus 40..154): **9,282, nothing**.
+- Exact tail proof on 9,282 (M_s932, 177 moves, 180 s/k): **k = 157 proven** (43 s, 76M nodes, prefix T 7,847);
+  k = 155 timed out (180 s, 293M nodes, nothing better). (9,279's k = 155 took 131 s, so 155 may need > 180 s here.)
+- 08:24 all jobs and the saver stopped.
+
+## Summary (Round 9 + 9b)
+- **Best: 9,282** (`NEW_RECORD_9282.txt`, copy `keep/M_s932_9282.txt`; 177 moves, check_tour ok=True maxvisits=3
+  unnecessary=[], STRICT; saved by the coordinator as data/tours/record_9282.txt). Found by focused LNS s932 from
+  9,279 (op 7 at moves ~21-57): it takes 9,275's merge (f3/f7 g6/h3) and keeps 9,279's dance. graft92 reached a
+  different 9,282 (179 moves) with the same signature.
+- Polish (wmax 12, 340-600 s): 0 gain on 9,275 / 9,271 / 9,268 / 9,279 / 9,282 (all converged or reroute only).
+  The single-tail-sit gains of earlier rounds do not appear on these LNS tours.
+- Tail proofs (bb strict): 9,275 k = 153/175; 9,271, 9,268 k = 151/175; 9,279 k = 155/177; 9,282 k = 157/177.
+- LNS seed spread (60k unless noted, `--free 0`, same-family donors):
+  9,275 line: s921-s924 9,275 x4, s927 9,275, s925 (80k, P9271) 9,271, s926 (P9268) 9,275 (distinct tour).
+  9,279 line: s931 9,279; **s932 9,279 -> 9,282**; s933 (from graft92's 9,282) 9,282; s934 9,282; s935 9,282.
+  Distinct finishes: 9,271, 9,275, 9,279, 9,282 (counting identical scores once): 1 gain in 5 seeds from 9,279, none above 9,282.

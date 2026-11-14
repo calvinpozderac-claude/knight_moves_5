@@ -121,3 +121,6 @@
 08:15:59 [w2] dl G_U_b6c6d4d5: lns -> 9148 dist 10/0 (new)
 08:15:59 [w2] dl E_U_c6c7c8 base in/P_9282.txt pen 150 rules ['c6,c7,c8:91:999']
 08:17:24 [w3] lns R9166_L1 start in/R9166.txt (9166) seed 9601 t 840
+08:19:58 [w1] dl E_F_a7b7: lns -> 9282 dist 0/0 (P_9282)
+08:19:58 [w1] lns R9222_L1 start in/R9222.txt (9222) seed 9602 t 720
+08:20:59 [w2] dl E_U_c6c7c8: raw 8604 dist 7/3 new sig f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a7/a8 b7/b8 c4/c5 c4/d4 d4/d5 c5/d8 d6/d7 d8/e8 e7/e8 f8/g8; lns 420s

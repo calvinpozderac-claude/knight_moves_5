@@ -1,0 +1,36 @@
+lns/in_E_U_c6c7c8_L1/start.txt: 171 moves, 8604 minutes (replay 8604)
+start lns/in_E_U_c6c7c8_L1/start.txt: 171 moves, 8604 minutes
+[1s it 102] NEW BEST 8634 (op 0 i 144 D 6) len 175
+[2s it 218] NEW BEST 8673 (op 0 i 136 D 6) len 176
+[3s it 282] NEW BEST 8764 (op 6 a 162 len 5) len 175
+[3s it 304] NEW BEST 8772 (op 2 i 159 D 3) len 175
+[4s it 354] NEW BEST 8780 (op 0 i 162 D 7) len 175
+[4s it 386] NEW BEST 8793 (op 3 i 119 D 1) len 177
+[5s it 505] NEW BEST 8798 (op 1 i 98 D 3) len 176
+[6s it 512] NEW BEST 8799 (op 3 i 36 D 1) len 175
+[6s it 531] NEW BEST 8810 (op 2 i 162 D 6) len 173
+[14s it 1309] NEW BEST 8811 (op 1 i 158 D 1) len 174
+[15s it 1362] NEW BEST 8831 (op 2 i 143 D 8) len 178
+[15s it 1389] NEW BEST 8843 (op 3 i 131 D 2) len 174
+[24s it 2194] NEW BEST 8845 (op 0 i 148 D 6) len 168
+[24s it 2223] NEW BEST 8852 (op 0 i 157 D 8) len 172
+[25s it 2259] NEW BEST 8857 (op 2 i 93 D 9) len 170
+[25s it 2262] NEW BEST 8859 (op 7 a 31 c 29 d 40 b 40) len 172
+[25s it 2274] NEW BEST 8862 (op 6 a 163 len 2) len 172
+[25s it 2275] NEW BEST 8920 (op 2 i 140 D 5) len 172
+[25s it 2311] NEW BEST 8924 (op 1 i 126 D 2) len 172
+[26s it 2379] NEW BEST 8925 (op 1 i 125 D 3) len 170
+[35s it 3121] NEW BEST 8938 (op 7 a 86 c 94 d 111 b 103) len 170
+[35s it 3123] NEW BEST 8942 (op 2 i 117 D 5) len 170
+[36s it 3189] NEW BEST 9001 (op 6 a 113 len 3) len 170
+[36s it 3200] NEW BEST 9005 (op 2 i 163 D 6) len 170
+[36s it 3262] NEW BEST 9010 (op 7 a 139 c 135 d 161 b 163) len 170
+[36s it 3268] NEW BEST 9018 (op 3 i 103 D 2) len 170
+[37s it 3326] NEW BEST 9034 (op 2 i 153 D 9) len 173
+[40s it 3601] NEW BEST 9056 (op 4 a 164 len 1) len 175
+[68s] it 6000 acc 917 cur 9054 best 9056 temp 3.7 elite 40 gains 660/411/822/311/72/129/481/365/4/306 acc 185/173/259/81/19/24/68/57/3/48
+[69s it 6119] NEW BEST 9094 (op 7 a 136 c 140 d 162 b 158) len 171
+[70s it 6141] NEW BEST 9098 (op 1 i 155 D 3) len 173
+[70s it 6151] NEW BEST 9102 (op 2 i 108 D 4) len 173
+[85s it 7414] NEW BEST 9104 (op 0 i 37 D 5) len 173
+[145s] it 12000 acc 1652 cur 9048 best 9104 temp 10.0 elite 40 gains 939/560/1673/470/184/165/636/778/4/666 acc 321/316/471/146/34/31/112/109/11/101
