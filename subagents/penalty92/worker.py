@@ -69,6 +69,17 @@ while time.time() < STOP:
                 row(name, base, f[4], raw, dd, sd, 'skip', '', f'known {kn}'); log(f'dl {name}: raw {raw} known {kn}'); continue
             addknown(f'P92_{name}', sig)
             log(f'dl {name}: raw {raw} dist {dd}/{sd} new sig {sig}; lns {LT}s')
+            kp = f[7] if len(f) > 7 and f[7] else None
+            if kp:  # keep stage: same rules, small penalty, so the moved sitters stay unless the gain is large
+                kt = int(f[8]) if len(f) > 8 and f[8] else 600
+                run(['bin/dlns', '--tours', fe, '--start', fe, '--seed', str(seed + 3)] + COMMON + ['--time', str(kt), '--pen', kp] + ra + ['--out', f'y/{name}_K_best.txt'], f'y/{name}_K.log', kt + 60)
+                kf = f'y/{name}_K_best.txt'
+                if os.path.exists(kf):
+                    kd, ks = dist(kf)
+                    kfe = kf + '.feas_best.txt'; kfs = score(kfe) if os.path.exists(kfe) else None
+                    row(name + '_K', base, f[4] + f' pen {kp}', raw, dd, sd, score(kf), f'{kd}/{ks}', f'keep stage; feasible best {kfs}: {fam.sig_of(kf)}')
+                    log(f'dl {name}: keep stage -> {score(kf)} dist {kd}/{ks} (feasible {kfs})')
+                    fe = kf
             out = lns(name + '_L1', fe, [], seed + 7, LT)
             sc = score(out); sig2 = fam.sig_of(out); d2, s2 = dist(out); kn2 = known(sig2)
             if not kn2: addknown(f'P92_{name}_L1', sig2)

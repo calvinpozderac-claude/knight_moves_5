@@ -34,3 +34,6 @@ start lns/in_E_U_c6c7c8_L1/start.txt: 171 moves, 8604 minutes
 [70s it 6151] NEW BEST 9102 (op 2 i 108 D 4) len 173
 [85s it 7414] NEW BEST 9104 (op 0 i 37 D 5) len 173
 [145s] it 12000 acc 1652 cur 9048 best 9104 temp 10.0 elite 40 gains 939/560/1673/470/184/165/636/778/4/666 acc 321/316/471/146/34/31/112/109/11/101
+[184s it 15054] NEW BEST 9108 (op 7 a 144 c 146 d 163 b 162) len 175
+[222s it 18096] NEW BEST 9112 (op 7 a 86 c 92 d 121 b 115) len 171
+[244s] it 20000 acc 2562 cur 9064 best 9112 temp 12.2 elite 40 gains 1135/871/2422/644/225/277/926/976/8/1026 acc 475/486/749/227/50/55/173/159/17/171
