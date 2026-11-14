@@ -3,3 +3,6 @@
 23:26:29 lns LH2 s931 start 9212 focus 1 180 0.0 donors in/H2_9212.txt in/record_8900.txt
 23:51:29 lns LH2 s931 end:  done it 142792 acc 14226 best 9212 restarts 16
 23:51:29 lns LH1 s941 start 9266 focus 1 180 0.0 donors in/H1_9266.txt in/record_8946.txt
+00:11:29 lns LH1 s941 end: 9268 done it 124484 acc 14190 best 9268 restarts 15
+00:11:29 queue2 done
+00:11:35 lns LH3 s951 start 7354 focus 1 180 0.0 donors in/H3_7354.txt in/record_9080.txt in/record_9275.txt

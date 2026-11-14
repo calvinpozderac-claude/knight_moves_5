@@ -24,3 +24,23 @@
 23:54:19 [w2] dl A_U_b6c6d4d5 base in/record_9275.txt pen 150 rules ['b6,c6,d4,d5:80:999']
 23:56:19 [w2] dl A_U_b6c6d4d5: no feasible
 23:56:19 [w2] dl A_U_c6c7c8 base in/record_9275.txt pen 150 rules ['c6,c7,c8:80:999']
+23:58:17 [w1] dl A_S_d4d5: lns -> 9209 dist 0/0 (record_9275)
+23:58:17 [w1] dl A_O_c6c7 base in/record_9275.txt pen 150 rules ['c6,c7,f3,f2:80:999']
+23:58:19 [w2] dl A_U_c6c7c8: raw 8525 dist 7/3 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c4/c5 c3/c4 c4/c5 c3/d3 d3/d4 d4/d5 c5/d8 d6/d7 d8/e8 e7/e8 f8/g8; lns 420s
+00:00:17 [w1] dl A_O_c6c7: raw 8838 dist 1/2 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 d6/d7 e7/e8 f8/g8; lns 420s
+00:05:19 [w2] dl A_U_c6c7c8: lns -> 8979 dist 12/3 (new)
+00:05:19 [w2] dl A_U_c3c4d3 base in/record_9275.txt pen 150 rules ['c3,c4,d3:80:999']
+00:07:17 [w1] dl A_O_c6c7: lns -> 9275 dist 0/0 (record_9275)
+00:07:17 [w1] dl A_X_c4c5 base in/record_9275.txt pen 300 rules ['c4,c5:0:999']
+00:07:19 [w2] dl A_U_c3c4d3: raw 8331 dist 4/3 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 a7/a8 c5/d5 d4/d5 d6/d7 c5/d6 d7/e7 e7/e8 f8/g8; lns 420s
+00:09:17 [w1] dl A_X_c4c5: raw 8885 dist 2/2 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 d4/d5 c3/d3 d6/d7 e7/e8 f8/g8; lns 420s
+00:14:19 [w2] dl A_U_c3c4d3: lns -> 9273 dist 0/0 (record_9275)
+00:14:19 [w2] dl A_U_b6b7c8 base in/record_9275.txt pen 150 rules ['b6,b7,c8:80:999']
+00:16:17 [w1] dl A_X_c4c5: lns -> 9231 dist 1/0 (new)
+00:16:17 [w1] worker exit
+00:16:19 [w2] dl A_U_b6b7c8: raw 8358 dist 13/4 new sig f3/f7 g6/h3 a2/a3 a3/a4 a4/b4 b2/b3 a2/b2 b2/b3 b4/b5 a5/b5 c6/c7 a7/a8 a8/b8 a7/d8 b8/c5 c5/d5 c3/c4 d3/d4 d6/d7 e7/e8 f8/g8; lns 420s
+00:19:14 [w1] dl A_O_d6d7 base in/record_9275.txt pen 150 rules ['d6,d7,e3,e2:80:999']
+00:21:14 [w1] dl A_O_d6d7: raw 8785 dist 1/2 new sig f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 c3/d3 d4/d5 e7/e8 f8/g8; lns 420s
+00:28:14 [w1] dl A_O_d6d7: lns -> 8959 dist 4/1 (new)
+00:28:14 [w1] dl A_U_a5a8b5c4 base in/record_9275.txt pen 150 rules ['a5,a6,a7,a8,b5,c4:80:999']
+00:29:31 [w2] lns A_U_b6b7c8_L2 start keep/A_U_b6b7c8_9178.txt (9178) seed 8802 t 600

@@ -26,3 +26,5 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5. Start 23:17 (2026-11-13).
 - 23:55 LNS queue (`seedq.sh 60000 1 152 921 922 923 924`): start = pol/P9275_best (175 jumps; the proof's
   indexing) or any higher tour found, donors `don/` = the three raw tours + their polished reroutes (+ new bests),
   focus 1..152 p 0.85, `--free 0`; every new best polished 600 s and fed back to `don/`.
+- s921 (from P9275, 60k, 10.3 min; ~5.8k it/min): **9,275, nothing**; elite all 9,275.
+- Queued q3.sh after q2: 150k-iteration LNS from P9271 (s925) and P9268 (s926), focus 1..150 (their proofs), same donors.

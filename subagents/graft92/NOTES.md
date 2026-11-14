@@ -40,3 +40,12 @@ Goal: a tour above 9,275. 1 heavy thread, nice -n 5, `--free 0`. Start 23:16 (20
   - 9,275 merge + 9,080 dance: 7,354 (k = 93; the dance runs out of f3/g3/e3 visits). F5/F6/8,842/8,887 dances:
     < 5,800.
 - LH2 s931 (plain LNS from H2, donors H2 + 8,900, 25 min, 143k it): **no gain at all, 9,212**.
+- LH1 s941 (plain LNS from H1, donors H1 + 8,946, 20 min): 9,266 -> 9,268, and the signature drifts back to
+  9,268's (a7/b7 a8/b8 c8/d6): H1 is just a variant of the 9,268 family.
+- Splices of 9,275's merge with penalty92's 9,1xx-9,267 tours (same merge already): nothing new.
+- **LH3 s951 (00:11, plain LNS repair of the 7,354 splice = 9,275 merge + 9,080 dance, donors splice + 9,080 +
+  9,275): 7,354 -> 8,812 in 7 s -> 9,105 (50 s) -> 9,230 (96 s) -> 9,253 (6 min).** It does NOT keep 9,080's
+  e/f sitters; it rebuilds an a-d dance in a new order: f3/f7 g6/h3 d3/d4 c3/c4 a3/b3 b2/b3 a2/a3 a2/b2 a3/a4
+  a4/b4 a5/b5 a6/b6 **b7/b8 a7/b7 a8/b8 a7/c7 c6/c7 c5/d5 c6/c7 c8/d8** d6/d7 e7/e8 f8/g8 ("H3 family").
+- 00:19 queue4 (YG) cancelled before it started; queue5 = two more plain-LNS seeds on the H3 family (donors: LH3
+  best + LH3 elite).

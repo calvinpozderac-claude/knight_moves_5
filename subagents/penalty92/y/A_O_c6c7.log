@@ -1,0 +1,30 @@
+rule mask 0004040000202000 moves [80,999)
+in/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+start in/record_9275.txt: 181 moves, 9275 minutes
+  eff 8391 forbidden sits 4
+[1s it 127] NEW BEST 8991 (op 3 i 118 D 1) len 173
+  [it 179] feasible best 8609
+  eff 8609 forbidden sits 0
+[2s it 179] NEW BEST 8609 (op 1 i 117 D 3) len 169
+  [it 209] feasible best 8613
+  eff 8613 forbidden sits 0
+[3s it 209] NEW BEST 8613 (op 0 i 91 D 7) len 167
+  [it 211] feasible best 8758
+  eff 8758 forbidden sits 0
+[3s it 211] NEW BEST 8758 (op 0 i 164 D 4) len 169
+  [it 276] feasible best 8762
+  eff 8762 forbidden sits 0
+[3s it 276] NEW BEST 8762 (op 1 i 96 D 2) len 171
+  [it 292] feasible best 8770
+  eff 8770 forbidden sits 0
+[3s it 292] NEW BEST 8770 (op 7 a 123 c 133 d 159 b 147) len 169
+  [it 1372] feasible best 8836
+  eff 8836 forbidden sits 0
+[15s it 1372] NEW BEST 8836 (op 7 a 61 c 63 d 90 b 72) len 179
+  [it 1468] feasible best 8838
+  eff 8838 forbidden sits 0
+[16s it 1468] NEW BEST 8838 (op 7 a 31 c 33 d 39 b 33) len 177
+[22s] it 2000 acc 231 cur 8833 best 8838 temp 2.8 elite 40 gains 335/382/113/238/0/36/8/223/8/38 acc 55/30/63/20/4/5/15/24/1/14
+[106s] it 10000 acc 1098 cur 8750 best 8838 temp 5.8 elite 40 gains 494/570/476/565/81/124/96/768/8/418 acc 199/213/306/96/34/16/54/101/11/68
+done it 11406 acc 1237 best 8838 restarts 0
+elite: 9275 9275 9275 9267 9267 9267 9267 8991 8991 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8838 8836 8836 8836 8836 8836 8836

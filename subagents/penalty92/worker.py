@@ -42,6 +42,7 @@ def lns(name, start, donors, seed, t, focus=None):
     for x in donors: shutil.copy(x, d)
     cmd = ['bin/lns_r6', '--tours'] + [f'{d}/{x}' for x in sorted(os.listdir(d))] + ['--start', f'{d}/start.txt', '--seed', str(seed)] + COMMON + ['--time', str(t), '--out', f'lns/{name}_best.txt']
     if focus: cmd += ['--focus'] + focus.split(',')
+    shutil.copy(start, f'lns/{name}_best.txt')
     run(cmd, f'lns/{name}.log', t + 60)
     return f'lns/{name}_best.txt'
 while time.time() < STOP:
@@ -51,10 +52,10 @@ while time.time() < STOP:
     seed = zlib.crc32(name.encode()) % 100000 + 1
     try:
         if typ == 'dl':   # dl|NAME|BASE|PEN|rule;rule
-            base, pen, rules = f[2], f[3], f[4].split(';')
+            base, pen, rules = f[2], f[3], f[4].split(';'); dlt = int(f[5]) if len(f) > 5 and f[5] else DLT
             log(f'dl {name} base {base} pen {pen} rules {rules}')
             ra = []; [ra.extend(['--rule', r]) for r in rules]
-            run(['bin/dlns', '--tours', base, '--start', base, '--seed', str(seed)] + COMMON + ['--time', str(DLT), '--pen', pen] + ra + ['--out', f'y/{name}_best.txt'], f'y/{name}.log', DLT + 60)
+            run(['bin/dlns', '--tours', base, '--start', base, '--seed', str(seed)] + COMMON + ['--time', str(dlt), '--pen', pen] + ra + ['--out', f'y/{name}_best.txt'], f'y/{name}.log', dlt + 60)
             fe = f'y/{name}_best.txt.feas_best.txt'
             if not os.path.exists(fe):
                 row(name, base, f[4], 'NA', '', '', '', '', 'no feasible'); log(f'dl {name}: no feasible'); continue

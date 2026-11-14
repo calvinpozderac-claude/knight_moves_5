@@ -1,0 +1,36 @@
+head: cannot open 'lns/L_s921_best.txt' for reading: No such file or directory
+head: cannot open 'lns/L_s921_best.txt' for reading: No such file or directory
+sed: can't read lns/L_s921_best.txt: No such file or directory
+Traceback (most recent call last):
+  File "/home/user/knight_moves_5/subagents/polish92/../../tools/check_tour.py", line 14, in <module>
+    check(sys.argv[1])
+    ~~~~~^^^^^^^^^^^^^
+  File "/home/user/knight_moves_5/subagents/polish92/../../tools/check_tour.py", line 11, in check
+    print(f'moves={len(moves)} ok={ok} T={T} {msg} maxvisits={mv} maxwait={max(t for t,_ in moves)} unnecessary={bad}')
+                                                                           ~~~^^^^^^^^^^^^^^^^^^^^
+ValueError: max() iterable argument is empty
+./seedq.sh: line 13: [: : integer expression expected
+head: cannot open 'lns/L_s922_best.txt' for reading: No such file or directory
+head: cannot open 'lns/L_s922_best.txt' for reading: No such file or directory
+sed: can't read lns/L_s922_best.txt: No such file or directory
+Traceback (most recent call last):
+  File "/home/user/knight_moves_5/subagents/polish92/../../tools/check_tour.py", line 14, in <module>
+    check(sys.argv[1])
+    ~~~~~^^^^^^^^^^^^^
+  File "/home/user/knight_moves_5/subagents/polish92/../../tools/check_tour.py", line 11, in check
+    print(f'moves={len(moves)} ok={ok} T={T} {msg} maxvisits={mv} maxwait={max(t for t,_ in moves)} unnecessary={bad}')
+                                                                           ~~~^^^^^^^^^^^^^^^^^^^^
+ValueError: max() iterable argument is empty
+./seedq.sh: line 13: [: : integer expression expected
+head: cannot open 'lns/L_s923_best.txt' for reading: No such file or directory
+head: cannot open 'lns/L_s923_best.txt' for reading: No such file or directory
+sed: can't read lns/L_s923_best.txt: No such file or directory
+Traceback (most recent call last):
+  File "/home/user/knight_moves_5/subagents/polish92/../../tools/check_tour.py", line 14, in <module>
+    check(sys.argv[1])
+    ~~~~~^^^^^^^^^^^^^
+  File "/home/user/knight_moves_5/subagents/polish92/../../tools/check_tour.py", line 11, in check
+    print(f'moves={len(moves)} ok={ok} T={T} {msg} maxvisits={mv} maxwait={max(t for t,_ in moves)} unnecessary={bad}')
+                                                                           ~~~^^^^^^^^^^^^^^^^^^^^
+ValueError: max() iterable argument is empty
+./seedq.sh: line 13: [: : integer expression expected

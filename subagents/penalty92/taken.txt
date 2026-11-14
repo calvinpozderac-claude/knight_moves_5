@@ -10,3 +10,10 @@ lns|A_L_c6c7_L2|keep/A_L_c6c7_9263.txt|7402|600|
 dl|A_S_d4d5|in/record_9275.txt|150|d4,d5:80:999
 dl|A_U_b6c6d4d5|in/record_9275.txt|150|b6,c6,d4,d5:80:999
 dl|A_U_c6c7c8|in/record_9275.txt|150|c6,c7,c8:80:999
+dl|A_O_c6c7|in/record_9275.txt|150|c6,c7,f3,f2:80:999
+dl|A_U_c3c4d3|in/record_9275.txt|150|c3,c4,d3:80:999
+dl|A_X_c4c5|in/record_9275.txt|300|c4,c5:0:999
+dl|A_U_b6b7c8|in/record_9275.txt|150|b6,b7,c8:80:999
+dl|A_O_d6d7|in/record_9275.txt|150|d6,d7,e3,e2:80:999
+dl|A_U_a5a8b5c4|in/record_9275.txt|150|a5,a6,a7,a8,b5,c4:80:999|360
+lns|A_U_b6b7c8_L2|keep/A_U_b6b7c8_9178.txt|8802|600|

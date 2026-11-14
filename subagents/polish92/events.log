@@ -9,3 +9,9 @@
 23:55:17 exact E9268: proven from move 151 of 175
 23:55:17 q1 done
 23:55:18 lns L s921 start 9275 focus 1 152 0.85
+00:05:35 lns L s921 end:  done it 60000 acc 7040 best 9275 restarts 4
+00:05:35 lns L s922 start 9275 focus 1 152 0.85
+00:15:38 lns L s922 end:  done it 60000 acc 7143 best 9275 restarts 4
+00:15:38 lns L s923 start 9275 focus 1 152 0.85
+00:25:26 lns L s923 end:  done it 60000 acc 6968 best 9275 restarts 5
+00:25:26 lns L s924 start 9275 focus 1 152 0.85
