@@ -1,0 +1,58 @@
+rule mask 0004040000000000 moves [91,999)
+y/E_K_c6c7_best.txt.feas_best.txt: 175 moves, 8845 minutes (replay 8845)
+start y/E_K_c6c7_best.txt.feas_best.txt: 175 moves, 8845 minutes
+  [it 1] feasible best 8807
+  [it 2] feasible best 8845
+  eff 8904 forbidden sits 5
+[22s it 1857] NEW BEST 9104 (op 0 i 154 D 7) len 172
+[24s] it 2000 acc 369 cur 9090 best 9104 temp 22.4 elite 40 gains 654/566/1092/44/148/0/230/374/0/184 acc 78/63/99/24/11/6/31/33/5/19
+  eff 8908 forbidden sits 5
+[24s it 2019] NEW BEST 9108 (op 0 i 116 D 5) len 170
+  eff 8916 forbidden sits 5
+[27s it 2326] NEW BEST 9116 (op 6 a 115 len 2) len 172
+  eff 8958 forbidden sits 5
+[29s it 2427] NEW BEST 9158 (op 1 i 110 D 3) len 173
+  eff 8962 forbidden sits 5
+[29s it 2473] NEW BEST 9162 (op 3 i 100 D 2) len 177
+  eff 8966 forbidden sits 5
+[29s it 2480] NEW BEST 9166 (op 2 i 96 D 7) len 177
+  eff 8970 forbidden sits 5
+[29s it 2497] NEW BEST 9170 (op 2 i 99 D 5) len 177
+  eff 8978 forbidden sits 5
+[30s it 2546] NEW BEST 9178 (op 1 i 153 D 3) len 179
+  eff 8982 forbidden sits 5
+[32s it 2760] NEW BEST 9182 (op 1 i 131 D 3) len 179
+[96s] it 8000 acc 1094 cur 9167 best 9182 temp 3.8 elite 40 gains 811/909/1381/64/148/4/280/550/0/400 acc 225/202/324/82/23/17/70/79/7/65
+  eff 9025 forbidden sits 5
+[111s it 9354] NEW BEST 9225 (op 7 a 69 c 75 d 103 b 89) len 173
+  eff 9031 forbidden sits 5
+[113s it 9476] NEW BEST 9231 (op 0 i 153 D 5) len 179
+  eff 9032 forbidden sits 5
+[115s it 9639] NEW BEST 9232 (op 7 a 58 c 61 d 69 b 66) len 176
+  eff 9040 forbidden sits 5
+[115s it 9651] NEW BEST 9240 (op 1 i 132 D 2) len 176
+  eff 9044 forbidden sits 5
+[116s it 9739] NEW BEST 9244 (op 3 i 134 D 2) len 178
+  eff 9045 forbidden sits 5
+[116s it 9747] NEW BEST 9245 (op 2 i 37 D 5) len 175
+  eff 9047 forbidden sits 5
+[121s it 10170] NEW BEST 9247 (op 1 i 63 D 2) len 181
+  eff 9056 forbidden sits 5
+[135s it 11467] NEW BEST 9256 (op 4 a 125 len 1) len 175
+[140s] it 12000 acc 1401 cur 9256 best 9256 temp 1.3 elite 40 gains 829/934/1402/72/159/4/280/634/4/400 acc 282/270/410/105/30/19/82/103/9/91
+[184s] it 16000 acc 1933 cur 9149 best 9256 temp 17.3 elite 40 gains 1078/1341/2118/173/324/100/586/912/4/868 acc 373/369/564/142/49/28/120/141/12/135
+[206s] it 18000 acc 2174 cur 9248 best 9256 temp 10.2 elite 40 gains 1144/1402/2313/177/325/104/639/1101/4/976 acc 432/419/624/153/56/33/132/163/13/149
+[227s] it 20000 acc 2341 cur 9231 best 9256 temp 6.0 elite 40 gains 1156/1410/2381/177/325/104/647/1150/4/976 acc 474/445/670/157/60/34/139/183/14/165
+[248s] it 22000 acc 2518 cur 9238 best 9256 temp 3.6 elite 40 gains 1168/1410/2404/194/325/104/655/1179/4/1012 acc 510/478/717/178/62/34/150/194/16/179
+  eff 9058 forbidden sits 5
+[251s it 22303] NEW BEST 9258 (op 1 i 108 D 3) len 177
+[348s] it 32000 acc 3574 cur 9233 best 9258 temp 12.2 elite 40 gains 1496/2032/3874/583/361/107/1130/1769/80/1588 acc 673/663/1023/266/82/46/245/286/25/265
+[389s] it 36000 acc 3962 cur 9253 best 9258 temp 4.4 elite 40 gains 1508/2050/3980/607/361/107/1130/1851/80/1588 acc 755/735/1132/298/87/51/260/324/28/292
+[430s] it 40000 acc 4279 cur 9252 best 9258 temp 1.6 elite 40 gains 1516/2059/3999/619/363/107/1130/1892/80/1588 acc 821/802/1215/319/95/53/266/350/31/327
+[452s] it 42000 acc 4434 cur 9137 best 9258 temp 38.5 elite 40 gains 1519/2097/4035/623/363/143/1130/1928/80/1660 acc 864/832/1252/328/98/56/274/362/32/336
+[472s] it 44000 acc 4751 cur 9172 best 9258 temp 23.3 elite 40 gains 2108/2357/4485/743/403/337/1462/2298/80/2056 acc 924/872/1339/352/103/62/313/396/32/358
+[535s] it 50000 acc 5482 cur 9237 best 9258 temp 5.0 elite 40 gains 2340/2545/4727/889/439/373/1722/2579/152/2236 acc 1065/1009/1536/412/113/73/367/461/42/404
+[555s] it 52000 acc 5655 cur 9245 best 9258 temp 3.0 elite 40 gains 2344/2553/4737/889/439/377/1726/2606/152/2236 acc 1090/1043/1595/428/115/74/376/477/43/414
+[598s] it 56000 acc 5913 cur 9245 best 9258 temp 1.1 elite 40 gains 2353/2559/4745/900/441/377/1726/2620/152/2236 acc 1150/1107/1665/447/121/79/382/490/43/429
+done it 56211 acc 5932 best 9258 restarts 3
+elite: 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258 9258

@@ -1,0 +1,52 @@
+rule mask 00000000000c0000 moves [91,999)
+in/P_9282.txt: 177 moves, 9282 minutes (replay 9282)
+in/G_9282.txt: 179 moves, 9282 minutes (replay 9282)
+start in/P_9282.txt: 177 moves, 9282 minutes
+  eff 8418 forbidden sits 4
+[1s it 130] NEW BEST 9018 (op 0 i 97 D 8) len 179
+  [it 155] feasible best 8882
+  eff 8882 forbidden sits 0
+[2s it 155] NEW BEST 8882 (op 1 i 75 D 2) len 167
+  [it 161] feasible best 8898
+  eff 8898 forbidden sits 0
+[2s it 161] NEW BEST 8898 (op 7 a 97 c 109 d 123 b 113) len 167
+  [it 206] feasible best 8957
+  eff 8957 forbidden sits 0
+[2s it 206] NEW BEST 8957 (op 3 i 82 D 2) len 168
+  [it 284] feasible best 9142
+  eff 9142 forbidden sits 0
+[4s it 284] NEW BEST 9142 (op 2 i 76 D 9) len 169
+  [it 290] feasible best 9146
+  eff 9146 forbidden sits 0
+[4s it 290] NEW BEST 9146 (op 1 i 105 D 3) len 171
+  [it 356] feasible best 9150
+  eff 9150 forbidden sits 0
+[4s it 356] NEW BEST 9150 (op 6 a 102 len 1) len 169
+[23s] it 2000 acc 253 cur 9150 best 9150 temp 2.2 elite 40 gains 100/730/354/171/42/76/76/190/72/72 acc 48/57/55/18/4/7/18/27/2/17
+  [it 2791] feasible best 9180
+  eff 9180 forbidden sits 0
+[31s it 2791] NEW BEST 9180 (op 0 i 76 D 6) len 171
+  [it 2804] feasible best 9192
+  eff 9192 forbidden sits 0
+[31s it 2804] NEW BEST 9192 (op 0 i 98 D 3) len 171
+  [it 3005] feasible best 9196
+  eff 9196 forbidden sits 0
+[33s it 3005] NEW BEST 9196 (op 7 a 112 c 102 d 122 b 124) len 171
+  [it 3026] feasible best 9200
+  eff 9200 forbidden sits 0
+[33s it 3026] NEW BEST 9200 (op 2 i 85 D 2) len 171
+  [it 3667] feasible best 9202
+  eff 9202 forbidden sits 0
+[40s it 3667] NEW BEST 9202 (op 0 i 103 D 5) len 169
+  [it 4641] feasible best 9206
+  eff 9206 forbidden sits 0
+[50s it 4641] NEW BEST 9206 (op 7 a 145 c 153 d 176 b 168) len 171
+  [it 4732] feasible best 9208
+  eff 9208 forbidden sits 0
+[51s it 4732] NEW BEST 9208 (op 2 i 35 D 7) len 169
+  [it 5124] feasible best 9216
+  eff 9216 forbidden sits 0
+[54s it 5124] NEW BEST 9216 (op 7 a 110 c 118 d 139 b 127) len 171
+[84s] it 8000 acc 748 cur 9210 best 9216 temp 2.1 elite 40 gains 638/934/697/333/290/84/312/729/108/252 acc 137/130/211/58/12/14/52/92/4/38
+done it 11585 acc 1032 best 9216 restarts 0
+elite: 9282 9282 9282 9282 9274 9274 9266 9266 9266 9216 9216 9216 9216 9216 9216 9216 9216 9216 9216 9216 9216 9216 9216 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214 9214

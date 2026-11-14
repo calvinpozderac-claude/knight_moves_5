@@ -1,0 +1,53 @@
+rule mask 0008080000000000 moves [83,999)
+y/R9089_K_d6d7_best.txt.feas_best.txt: 166 moves, 8661 minutes (replay 8661)
+start y/R9089_K_d6d7_best.txt.feas_best.txt: 166 moves, 8661 minutes
+  [it 15] feasible best 8661
+[47s] it 4000 acc 613 cur 8625 best 8661 temp 12.5 elite 40 gains 331/336/585/295/96/90/210/914/92/436 acc 102/110/182/49/12/15/42/57/8/36
+[92s] it 8000 acc 1107 cur 8628 best 8661 temp 4.1 elite 40 gains 375/376/696/315/96/106/286/953/96/436 acc 218/222/324/74/16/23/61/91/13/65
+[137s] it 12000 acc 1473 cur 8642 best 8661 temp 1.4 elite 40 gains 394/392/717/327/96/106/288/984/96/436 acc 289/307/424/105/19/27/73/117/15/97
+[182s] it 16000 acc 2037 cur 8372 best 8661 temp 18.2 elite 40 gains 762/785/1152/428/136/106/786/1390/193/712 acc 383/403/595/154/32/34/124/162/19/131
+[205s] it 18000 acc 2270 cur 8803 best 8661 temp 10.2 elite 40 gains 787/848/1467/436/140/106/829/1398/193/922 acc 427/445/665/173/37/38/139/175/20/151
+  eff 8663 forbidden sits 1
+[234s it 20330] NEW BEST 8783 (op 0 i 33 D 5) len 170
+  eff 8667 forbidden sits 1
+[236s it 20506] NEW BEST 8787 (op 2 i 131 D 8) len 170
+  eff 8671 forbidden sits 1
+[236s it 20528] NEW BEST 8791 (op 6 a 102 len 7) len 174
+  eff 8673 forbidden sits 1
+[236s it 20558] NEW BEST 8793 (op 1 i 61 D 2) len 174
+[252s] it 22000 acc 2683 cur 8781 best 8793 temp 3.3 elite 40 gains 838/940/1606/470/140/110/837/1476/193/922 acc 514/521/804/209/42/41/157/197/24/174
+  eff 8675 forbidden sits 1
+[260s it 22765] NEW BEST 8795 (op 2 i 129 D 7) len 170
+  eff 8677 forbidden sits 1
+[260s it 22774] NEW BEST 8797 (op 0 i 56 D 5) len 170
+  eff 8679 forbidden sits 1
+[280s it 24669] NEW BEST 8799 (op 0 i 39 D 3) len 176
+[317s] it 28000 acc 3277 cur 8777 best 8799 temp 26.4 elite 40 gains 1152/1123/1896/503/245/118/943/1591/193/922 acc 644/635/978/252/53/48/182/241/29/215
+  [it 28760] feasible best 8772
+  eff 8772 forbidden sits 0
+[325s it 28760] NEW BEST 8772 (op 0 i 150 D 7) len 174
+  [it 29533] feasible best 8775
+  eff 8775 forbidden sits 0
+[334s it 29533] NEW BEST 8775 (op 0 i 159 D 8) len 173
+  [it 29551] feasible best 8779
+  eff 8779 forbidden sits 0
+[334s it 29551] NEW BEST 8779 (op 1 i 100 D 3) len 173
+  [it 29659] feasible best 8783
+  eff 8783 forbidden sits 0
+[335s it 29659] NEW BEST 8783 (op 3 i 105 D 2) len 173
+[340s] it 30000 acc 3502 cur 8776 best 8783 temp 15.1 elite 40 gains 1507/1152/2038/511/245/122/951/1657/193/922 acc 690/681/1051/271/55/51/196/254/31/222
+  [it 31622] feasible best 8786
+  eff 8786 forbidden sits 0
+[357s it 31622] NEW BEST 8786 (op 7 a 151 c 137 d 150 b 164) len 170
+[361s] it 32000 acc 3732 cur 8775 best 8786 temp 8.9 elite 40 gains 1527/1229/2071/531/245/126/967/1697/193/922 acc 730/741/1106/289/63/53/218/271/32/229
+  [it 34149] feasible best 8788
+  eff 8788 forbidden sits 0
+[385s it 34149] NEW BEST 8788 (op 2 i 88 D 6) len 168
+  [it 34702] feasible best 8790
+  eff 8790 forbidden sits 0
+[392s it 34702] NEW BEST 8790 (op 7 a 158 c 156 d 173 b 173) len 174
+[405s] it 36000 acc 4077 cur 8784 best 8790 temp 3.0 elite 40 gains 1558/1268/2137/535/254/126/979/1733/193/922 acc 803/813/1219/304/72/55/242/289/32/248
+[516s] it 46000 acc 5071 cur 8705 best 8790 temp 8.0 elite 40 gains 1775/1486/2360/591/262/289/1105/1924/193/922 acc 991/1008/1527/391/89/69/292/351/41/312
+[539s] it 48000 acc 5274 cur 8775 best 8790 temp 4.5 elite 40 gains 1783/1504/2397/722/262/297/1109/1960/193/922 acc 1018/1050/1599/403/90/75/304/369/41/325
+done it 53393 acc 5723 best 8790 restarts 3
+elite: 8800 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799 8799

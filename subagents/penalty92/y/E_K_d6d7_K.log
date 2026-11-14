@@ -1,0 +1,48 @@
+rule mask 0008080000000000 moves [91,999)
+y/E_K_d6d7_best.txt.feas_best.txt: 173 moves, 8742 minutes (replay 8742)
+start y/E_K_d6d7_best.txt.feas_best.txt: 173 moves, 8742 minutes
+  eff 8745 forbidden sits 4
+[1s it 95] NEW BEST 8905 (op 2 i 146 D 2) len 170
+  eff 8870 forbidden sits 4
+[2s it 109] NEW BEST 9030 (op 2 i 126 D 7) len 171
+  eff 8876 forbidden sits 6
+[16s it 1288] NEW BEST 9116 (op 7 a 133 c 135 d 159 b 155) len 169
+  eff 8892 forbidden sits 6
+[17s it 1351] NEW BEST 9132 (op 7 a 104 c 110 d 121 b 115) len 173
+  eff 8950 forbidden sits 6
+[21s it 1687] NEW BEST 9190 (op 0 i 72 D 5) len 169
+  eff 8954 forbidden sits 6
+[22s it 1756] NEW BEST 9194 (op 6 a 87 len 12) len 175
+  eff 8958 forbidden sits 6
+[22s it 1764] NEW BEST 9198 (op 6 a 141 len 1) len 175
+  eff 8960 forbidden sits 6
+[29s it 2463] NEW BEST 9200 (op 2 i 147 D 2) len 177
+  eff 8961 forbidden sits 6
+[31s it 2660] NEW BEST 9201 (op 3 i 132 D 2) len 170
+  eff 8964 forbidden sits 6
+[33s it 2776] NEW BEST 9204 (op 2 i 90 D 4) len 175
+  eff 8968 forbidden sits 6
+[33s it 2808] NEW BEST 9208 (op 2 i 135 D 6) len 173
+  eff 8974 forbidden sits 6
+[34s it 2877] NEW BEST 9214 (op 7 a 94 c 100 d 128 b 120) len 171
+[72s] it 6000 acc 895 cur 9201 best 9214 temp 6.8 elite 40 gains 757/492/1276/270/13/20/176/564/0/326 acc 167/148/291/65/17/12/57/80/7/51
+  eff 9035 forbidden sits 6
+[97s it 8131] NEW BEST 9275 (op 7 a 62 c 61 d 85 b 80) len 176
+  eff 9036 forbidden sits 6
+[98s it 8262] NEW BEST 9276 (op 7 a 141 c 143 d 146 b 142) len 175
+  eff 9040 forbidden sits 6
+[102s it 8542] NEW BEST 9280 (op 0 i 150 D 3) len 175
+  eff 9042 forbidden sits 6
+[132s it 11545] NEW BEST 9282 (op 2 i 35 D 5) len 179
+[160s] it 14000 acc 1547 cur 9102 best 9282 temp 31.0 elite 40 gains 899/597/1737/418/85/20/369/888/0/434 acc 283/274/504/112/36/18/99/145/8/68
+[182s] it 16000 acc 1859 cur 9262 best 9282 temp 18.1 elite 40 gains 1131/783/2213/741/85/56/427/990/36/686 acc 347/325/595/147/39/25/122/166/12/81
+[246s] it 22000 acc 2435 cur 9280 best 9282 temp 3.8 elite 40 gains 1437/886/2470/786/121/84/476/1266/40/866 acc 467/435/763/183/54/32/158/232/16/95
+[266s] it 24000 acc 2582 cur 9280 best 9282 temp 2.3 elite 40 gains 1439/894/2487/786/121/84/484/1286/40/866 acc 490/468/810/193/60/33/164/243/18/103
+[415s] it 38000 acc 3928 cur 9270 best 9282 temp 2.3 elite 40 gains 1910/1541/3823/1191/153/150/977/2127/40/1262 acc 767/696/1232/320/86/53/242/359/28/145
+[437s] it 40000 acc 4024 cur 9280 best 9282 temp 1.4 elite 40 gains 1910/1557/3827/1195/153/150/981/2135/40/1262 acc 790/711/1260/330/87/53/247/369/28/149
+[481s] it 44000 acc 4563 cur 9117 best 9282 temp 18.9 elite 40 gains 2345/1780/4726/1609/385/226/1412/2710/44/1696 acc 880/809/1402/378/101/62/300/417/33/181
+[500s] it 46000 acc 4787 cur 9260 best 9282 temp 11.7 elite 40 gains 2555/1832/5035/1691/385/226/1458/2817/80/1948 acc 922/856/1459/399/107/65/313/439/36/191
+[541s] it 50000 acc 5135 cur 9276 best 9282 temp 4.3 elite 40 gains 2595/1845/5203/1691/398/262/1474/2935/80/2020 acc 993/931/1574/427/113/70/327/461/38/201
+[582s] it 54000 acc 5380 cur 9282 best 9282 temp 1.5 elite 40 gains 2603/1854/5237/1696/398/262/1474/2961/80/2020 acc 1050/993/1640/443/118/72/334/482/39/209
+done it 55705 acc 5478 best 9282 restarts 3
+elite: 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282 9282

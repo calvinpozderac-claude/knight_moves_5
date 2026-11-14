@@ -1,0 +1,39 @@
+rule mask 0008080000000000 moves [91,999)
+in/P_9282.txt: 177 moves, 9282 minutes (replay 9282)
+in/G_9282.txt: 179 moves, 9282 minutes (replay 9282)
+start in/P_9282.txt: 177 moves, 9282 minutes
+  eff 8530 forbidden sits 4
+[0s it 7] NEW BEST 9130 (op 1 i 164 D 1) len 175
+  eff 8670 forbidden sits 2
+[1s it 83] NEW BEST 8970 (op 1 i 166 D 2) len 177
+  [it 1652] feasible best 8667
+  [it 3835] feasible best 8673
+  eff 8673 forbidden sits 0
+[44s it 3835] NEW BEST 8673 (op 3 i 117 D 1) len 175
+  [it 3852] feasible best 8677
+  eff 8677 forbidden sits 0
+[44s it 3852] NEW BEST 8677 (op 3 i 116 D 2) len 171
+  [it 3853] feasible best 8685
+  eff 8685 forbidden sits 0
+[44s it 3853] NEW BEST 8685 (op 2 i 96 D 2) len 171
+  [it 3941] feasible best 8689
+  eff 8689 forbidden sits 0
+[45s it 3941] NEW BEST 8689 (op 2 i 111 D 6) len 173
+  [it 4510] feasible best 8693
+  eff 8693 forbidden sits 0
+[52s it 4510] NEW BEST 8693 (op 5 a 95 len 5) len 169
+[73s] it 6000 acc 740 cur 8657 best 8693 temp 7.8 elite 40 gains 106/868/445/157/167/283/86/288/2/144 acc 130/153/214/65/9/14/41/56/5/53
+  [it 8939] feasible best 8726
+  eff 8726 forbidden sits 0
+[114s it 8939] NEW BEST 8726 (op 8 i 163 D 2) len 177
+  [it 8956] feasible best 8734
+  eff 8734 forbidden sits 0
+[115s it 8956] NEW BEST 8734 (op 0 i 148 D 2) len 181
+  [it 9171] feasible best 8738
+  eff 8738 forbidden sits 0
+[117s it 9171] NEW BEST 8738 (op 4 a 103 len 11) len 175
+  [it 9365] feasible best 8742
+  eff 8742 forbidden sits 0
+[120s it 9365] NEW BEST 8742 (op 0 i 102 D 3) len 173
+done it 9380 acc 1083 best 8742 restarts 1
+elite: 9282 9282 9130 9126 9122 9122 9122 8970 8968 8968 8968 8964 8964 8964 8960 8910 8906 8906 8906 8906 8906 8906 8902 8898 8898 8898 8897 8894 8890 8890 8890 8890 8890 8886 8885 8878 8877 8877 8866 8842

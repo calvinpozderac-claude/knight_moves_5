@@ -40,3 +40,20 @@ E_U_b6c6d4d5P	in/P_9282.txt	b6,c6,d4,d5:91:999	8790	5	4	9204	4/0	final new: f3/f
 E_F_c4c5	in/P_9282.txt	c4,c5:91:999	8896	1	2	9282	0/0	final P_9282: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 G_U_b6c6d4d5	in/G_9282.txt	b6,c6,d4,d5:93:999	8458	9	2	9148	10/0	final new: f3/f7 g6/h3 c3/d3 c4/d4 c5/d5 a5/b5 a4/b4 b2/b3 a2/a3 a4/a5 a6/b6 c6/c7 a7/b7 a8/b8 c8/d8 d6/d7 e7/e8 f8/g8
 E_F_a7b7	in/P_9282.txt	a7,b7:91:999	8849	1	2	9282	0/0	final P_9282: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_U_c6c7c8	in/P_9282.txt	c6,c7,c8:91:999	8604	7	3	9175	7/0	final new: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c6/c7 c4/c5 c4/d4 d4/d5 c5/c6 c7/c8 c8/d8 d6/d7 e7/e8 f8/g8
+R9166_L1	lns:in/R9166.txt		9166			9180	13/2	f7/h3 f1/g6 c3/d3 c4/d4 b3/b4 a2/b2 a3/a4 a5/a6 b5/b6 c5/d5 c6/c7 c8/d8 a7/a8 b7/b8 d6/d7 e7/e8 f8/g8
+R9222_L1	lns:in/R9222.txt		9222			9244	10/0	f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+E_K_c8d8_K	in/P_9282.txt	c8,d8:91:999 pen 40	8897	3	2	9261	8/0	keep stage; feasible best 8893: f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c5/c6 c5/d5 c6/c7 c7/c8 c8/d8 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+E_K_c8d8	in/P_9282.txt	c8,d8:91:999	8897	3	2	9268	8/1	final record_9268: f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c5/c6 c5/d5 c6/c7 c7/c8 a7/b7 a8/b8 c8/d6 d6/d7 e7/e8 f8/g8
+E_K_c6c7_K	in/P_9282.txt	c6,c7:91:999 pen 40	8845	1	2	9258	5/0	keep stage; feasible best 8845: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/c6 a7/a8 b7/b8 c8/d8 c6/c7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_K_d6d7_K	in/P_9282.txt	d6,d7:91:999 pen 40	8742	6	2	9282	0/0	keep stage; feasible best None: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_K_c3d3	in/P_9282.txt	c3,d3:91:999	9216	0	0	skip		known P_9282
+R9091_K_c6c7c8_K	in/R9091.txt	c6,c7,c8:93:999 pen 40	8269	13	4	8977	12/0	keep stage; feasible best 8269: f3/f7 g6/h3 d3/d4 c4/d4 d3/d4 c3/c4 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 b7/b8 a8/b8 a7/b7 a7/a8 b7/c7 d6/d7 c8/d8 d6/d7 c5/d5 c5/c6 e7/e8 f8/g8
+E_K_d8	in/P_9282.txt	d8:91:999	NA					no feasible
+E_K_c6c7	in/P_9282.txt	c6,c7:91:999	8845	1	2	9270	4/0	final P92_E_U_b6c6d4d5P_L1: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c8/d8 c6/c7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_K_d6d7	in/P_9282.txt	d6,d7:91:999	8742	6	2	9282	0/0	final P_9282: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+R9091_K_c6c7c8	in/R9091.txt	c6,c7,c8:93:999	8269	13	4	9009	8/0	final new: f3/f7 g6/h3 d3/d4 c3/c4 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 a8/b8 a7/b7 c7/d7 c8/d8 d6/d7 c5/d5 c5/c6 e7/e8 f8/g8
+R9222_K_c4c5d4_K	in/R9222.txt	c4,c5,d4:93:999 pen 120	8578	8	3	8754	10/2	keep stage; feasible best 8578: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 c3/d3 d4/d5 d6/d7 b7/d5 a7/b7 a8/b8 d6/d7 e7/e8 f8/g8
+E_K_a8b8b7_K	in/P_9282.txt	a8,b8,b7:91:999 pen 120	8443	2	4	8894	2/2	keep stage; feasible best 8443: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a7/a8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_K_d4d5_K	in/P_9282.txt	d4,d5:91:999 pen 120	8990	1	2	9122	1/2	keep stage; feasible best 8992: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/e4 d6/d7 e7/e8 f8/g8
+R9089_K_d6d7_K	in/R9089.txt	d6,d7:83:999 pen 120	8661	11	2	8790	11/2	keep stage; feasible best 8790: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 a7/b7 a8/b8 f8/g8 e7/e8 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5

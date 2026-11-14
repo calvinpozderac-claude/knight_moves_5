@@ -106,3 +106,16 @@ donor in dlns (`dl` field 7 = donors). Saver threshold 9,282; distances vs 9,282
 08:17: graft92's core is free (3 threads). Its repaired splices R9166 (9,279 merge x 9,080 dance) and R9222 (x 8,946)
 have **9,282's dance sitter set** (R9166 differs only in the merge: g4 for f3), so they are reorderings, not
 sitter-set changes; given one plain-LNS seed each (840 s / 720 s) on the third thread and worker 1.
+| E_U_c6c7c8 | c6,c7,c8:91:999 (300 s) | 8,604 | 7/3 | 9,175 | 7/0 | 9,282 sitters |
+| E_F_a7b7 | a7,b7:91:999 | 8,849 | 1/2 | **9,282** | 0/0 | a fourth distinct 9,282 (md5 cd42bdb9, `keep/E_F_a7b7_9282.txt`), a tie |
+| R9166 seed (840 s) | plain LNS | 9,166 | | 9,180 | 13/2 | |
+| R9222 seed (720 s) | plain LNS | 9,222 | | 9,244 | 10/0 | |
+
+graft92's splice families R9089 / R9091 / R9222 / R9166 all have 9,282's dance sitter set (R9089 and R9091 lack the
+f8 sit; R9166 has g4 for f3 in the merge), so they are reorderings, not sitter-set changes.
+
+## 08:24- (4 threads, ~90 min): flip/ban rules with a KEEP stage
+Since plain LNS put every moved sitter back, `dl` jobs now take a keep stage (fields 8-9): after the dlns raw tour,
+a second dlns with the same rules at a small penalty (40 per banned sit, 600 s) climbs inside the new sitter set
+unless restoring a sit gains more than 40; then plain LNS 420 s from that. Rows `<rule>_K` in results.tsv.
+Queue: flips of single blocks/sitters of 9,282 (E_K_*) and a few on the splice families (R*_K_*).

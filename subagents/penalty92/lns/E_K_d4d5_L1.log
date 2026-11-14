@@ -1,0 +1,13 @@
+lns/in_E_K_d4d5_L1/start.txt: 175 moves, 9122 minutes (replay 9122)
+start lns/in_E_K_d4d5_L1/start.txt: 175 moves, 9122 minutes
+[0s it 14] NEW BEST 9232 (op 2 i 151 D 7) len 176
+[1s it 56] NEW BEST 9262 (op 7 a 145 c 137 d 152 b 159) len 181
+[1s it 57] NEW BEST 9266 (op 0 i 116 D 3) len 181
+[21s] it 2000 acc 331 cur 9122 best 9266 temp 18.9 elite 40 gains 340/263/596/148/72/128/196/376/0/540 acc 57/48/94/24/6/9/32/29/3/29
+[57s it 5451] NEW BEST 9268 (op 7 a 73 c 71 d 86 b 84) len 177
+[60s it 5753] NEW BEST 9276 (op 7 a 149 c 141 d 170 b 178) len 183
+[75s it 7183] NEW BEST 9280 (op 7 a 106 c 106 d 133 b 131) len 175
+[80s it 7563] NEW BEST 9282 (op 7 a 157 c 157 d 176 b 176) len 181
+[85s] it 8000 acc 963 cur 9282 best 9282 temp 2.0 elite 40 gains 370/418/781/212/84/136/264/676/0/612 acc 201/171/265/73/16/17/60/83/10/67
+[168s] it 16000 acc 1797 cur 9268 best 9282 temp 4.4 elite 40 gains 717/571/1468/699/160/140/718/1111/72/1152 acc 387/302/486/151/31/33/121/163/15/108
+[188s] it 18000 acc 1917 cur 9274 best 9282 temp 2.1 elite 40 gains 717/579/1488/703/160/144/723/1123/72/1152 acc 413/333/518/159/32/34/129/170/15/114

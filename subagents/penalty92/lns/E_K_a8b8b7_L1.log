@@ -1,0 +1,15 @@
+lns/in_E_K_a8b8b7_L1/start.txt: 176 moves, 8894 minutes (replay 8894)
+start lns/in_E_K_a8b8b7_L1/start.txt: 176 moves, 8894 minutes
+[0s it 7] NEW BEST 8937 (op 2 i 144 D 3) len 178
+[0s it 33] NEW BEST 9188 (op 2 i 131 D 8) len 177
+[0s it 39] NEW BEST 9204 (op 7 a 98 c 100 d 128 b 124) len 177
+[1s it 159] NEW BEST 9208 (op 0 i 139 D 4) len 175
+[1s it 163] NEW BEST 9212 (op 0 i 139 D 8) len 175
+[21s] it 2000 acc 399 cur 9146 best 9212 temp 19.0 elite 40 gains 212/404/1100/224/48/0/236/284/36/396 acc 66/78/121/34/7/7/25/33/2/26
+[22s it 2109] NEW BEST 9214 (op 7 a 61 c 57 d 66 b 72) len 175
+[42s] it 4000 acc 681 cur 9196 best 9214 temp 9.0 elite 40 gains 288/494/1244/352/84/0/402/414/36/540 acc 108/126/204/63/14/11/46/60/5/44
+[63s] it 6000 acc 914 cur 9196 best 9214 temp 4.3 elite 40 gains 354/519/1296/384/84/0/407/428/36/540 acc 167/160/268/88/18/13/60/73/7/60
+[84s it 7805] NEW BEST 9216 (op 2 i 39 D 3) len 179
+[107s] it 10000 acc 1270 cur 8934 best 9216 temp 36.9 elite 40 gains 380/522/1306/430/84/28/455/539/36/612 acc 239/242/368/118/21/18/79/98/9/78
+[151s] it 14000 acc 1835 cur 9204 best 9216 temp 8.0 elite 40 gains 826/771/1988/558/196/104/772/839/72/936 acc 348/336/550/154/36/27/131/141/13/99
+[174s] it 16000 acc 2036 cur 9212 best 9216 temp 3.6 elite 40 gains 836/783/2051/569/196/108/772/907/72/936 acc 384/378/614/173/41/31/136/155/13/111

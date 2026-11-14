@@ -1,0 +1,10 @@
+lns/in_R9089_K_d6d7_L1/start.txt: 174 moves, 8790 minutes (replay 8790)
+start lns/in_R9089_K_d6d7_L1/start.txt: 174 moves, 8790 minutes
+[0s it 2] NEW BEST 8797 (op 5 a 167 len 2) len 176
+[0s it 14] NEW BEST 8828 (op 0 i 175 D 7) len 181
+[8s it 708] NEW BEST 9002 (op 0 i 152 D 6) len 180
+[9s it 714] NEW BEST 9006 (op 7 a 74 c 72 d 95 b 95) len 180
+[19s it 1736] NEW BEST 9011 (op 7 a 80 c 83 d 107 b 102) len 175
+[20s it 1792] NEW BEST 9012 (op 2 i 17 D 4) len 176
+[22s] it 2000 acc 292 cur 9008 best 9012 temp 18.8 elite 40 gains 546/99/262/4/0/139/12/119/4/0 acc 61/57/90/16/9/3/15/23/4/14
+[22s it 2092] NEW BEST 9016 (op 7 a 101 c 97 d 114 b 116) len 182

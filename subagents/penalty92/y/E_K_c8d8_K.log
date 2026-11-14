@@ -1,0 +1,92 @@
+rule mask 0c00000000000000 moves [91,999)
+y/E_K_c8d8_best.txt.feas_best.txt: 174 moves, 8897 minutes (replay 8897)
+start y/E_K_c8d8_best.txt.feas_best.txt: 174 moves, 8897 minutes
+  [it 3] feasible best 8893
+  eff 8928 forbidden sits 5
+[30s it 2399] NEW BEST 9128 (op 2 i 144 D 8) len 172
+  eff 8932 forbidden sits 5
+[31s it 2414] NEW BEST 9132 (op 2 i 89 D 2) len 172
+  eff 8936 forbidden sits 5
+[31s it 2415] NEW BEST 9136 (op 1 i 108 D 3) len 172
+  eff 8940 forbidden sits 5
+[31s it 2435] NEW BEST 9140 (op 3 i 138 D 1) len 174
+  eff 8956 forbidden sits 4
+[37s it 2918] NEW BEST 9116 (op 6 a 136 len 6) len 174
+  eff 8966 forbidden sits 4
+[38s it 3006] NEW BEST 9126 (op 7 a 101 c 101 d 127 b 125) len 176
+  eff 8969 forbidden sits 4
+[41s it 3250] NEW BEST 9129 (op 6 a 134 len 5) len 171
+  eff 8977 forbidden sits 4
+[41s it 3254] NEW BEST 9137 (op 2 i 146 D 2) len 173
+  eff 8981 forbidden sits 4
+[41s it 3335] NEW BEST 9141 (op 1 i 146 D 3) len 175
+  eff 8987 forbidden sits 4
+[43s it 3484] NEW BEST 9147 (op 2 i 106 D 5) len 177
+  eff 8990 forbidden sits 4
+[46s it 3772] NEW BEST 9150 (op 2 i 91 D 2) len 176
+  eff 8991 forbidden sits 4
+[47s it 3805] NEW BEST 9151 (op 0 i 18 D 3) len 171
+  eff 8993 forbidden sits 4
+[48s it 3874] NEW BEST 9153 (op 7 a 53 c 51 d 74 b 78) len 173
+  eff 8995 forbidden sits 4
+[49s it 3970] NEW BEST 9155 (op 2 i 116 D 2) len 179
+  eff 8997 forbidden sits 4
+[49s it 3986] NEW BEST 9157 (op 1 i 61 D 3) len 175
+  eff 9001 forbidden sits 4
+[49s it 3992] NEW BEST 9161 (op 2 i 148 D 6) len 175
+[49s] it 4000 acc 632 cur 9161 best 9161 temp 12.0 elite 40 gains 462/306/1478/300/114/138/423/452/0/254 acc 127/109/188/49/11/10/59/51/1/27
+  eff 9005 forbidden sits 4
+[60s it 5007] NEW BEST 9165 (op 7 a 87 c 93 d 122 b 112) len 173
+  eff 9009 forbidden sits 4
+[60s it 5044] NEW BEST 9169 (op 6 a 129 len 2) len 169
+[70s] it 6000 acc 874 cur 9165 best 9169 temp 7.2 elite 40 gains 474/350/1602/308/114/138/477/520/0/254 acc 175/153/260/71/14/12/78/68/3/40
+  eff 9013 forbidden sits 4
+[70s it 6052] NEW BEST 9173 (op 6 a 89 len 6) len 175
+  eff 9017 forbidden sits 4
+[84s it 7410] NEW BEST 9177 (op 2 i 127 D 7) len 175
+[90s] it 8000 acc 1114 cur 9168 best 9177 temp 4.4 elite 40 gains 478/374/1629/320/115/142/487/561/0/254 acc 227/198/320/94/20/14/94/86/4/57
+[111s] it 10000 acc 1292 cur 9169 best 9177 temp 2.6 elite 40 gains 483/380/1639/320/115/146/487/583/0/254 acc 265/241/369/101/22/18/100/101/6/69
+  eff 9021 forbidden sits 4
+[114s it 10331] NEW BEST 9181 (op 7 a 100 c 102 d 125 b 119) len 175
+  eff 9023 forbidden sits 4
+[129s it 11763] NEW BEST 9183 (op 2 i 35 D 3) len 177
+[151s] it 14000 acc 1660 cur 9062 best 9183 temp 38.6 elite 40 gains 521/460/1691/367/115/146/523/647/0/290 acc 325/313/461/139/33/20/132/126/8/103
+[196s] it 18000 acc 2373 cur 9121 best 9183 temp 13.0 elite 40 gains 1198/885/2938/718/115/302/1158/940/4/686 acc 461/413/679/199/47/44/197/172/17/144
+[238s] it 22000 acc 2880 cur 9165 best 9183 temp 4.6 elite 40 gains 1298/957/3077/785/115/338/1202/1052/4/722 acc 562/526/832/244/56/47/217/209/19/168
+  eff 9079 forbidden sits 4
+[247s it 22733] NEW BEST 9239 (op 7 a 75 c 73 d 90 b 83) len 181
+  eff 9081 forbidden sits 4
+[250s it 23034] NEW BEST 9241 (op 7 a 24 c 26 d 44 b 44) len 175
+  eff 9085 forbidden sits 4
+[250s it 23058] NEW BEST 9245 (op 1 i 117 D 3) len 177
+  eff 9087 forbidden sits 4
+[256s it 23606] NEW BEST 9247 (op 7 a 45 c 49 d 76 b 72) len 175
+  eff 9090 forbidden sits 4
+[259s it 23846] NEW BEST 9250 (op 5 a 133 len 10) len 176
+  eff 9091 forbidden sits 4
+[259s it 23895] NEW BEST 9251 (op 1 i 35 D 3) len 175
+[260s] it 24000 acc 3058 cur 9249 best 9251 temp 2.6 elite 40 gains 1306/966/3137/785/115/346/1206/1132/4/722 acc 595/563/885/254/58/50/225/223/26/179
+  eff 9093 forbidden sits 4
+[264s it 24359] NEW BEST 9253 (op 3 i 104 D 2) len 177
+  eff 9094 forbidden sits 4
+[267s it 24551] NEW BEST 9254 (op 0 i 61 D 1) len 180
+  eff 9095 forbidden sits 4
+[267s it 24588] NEW BEST 9255 (op 0 i 21 D 6) len 181
+  eff 9097 forbidden sits 4
+[278s it 25661] NEW BEST 9257 (op 1 i 35 D 3) len 177
+[281s] it 26000 acc 3213 cur 9257 best 9257 temp 1.6 elite 40 gains 1318/972/3145/789/115/346/1210/1136/4/722 acc 641/590/925/267/60/50/230/232/27/191
+[301s] it 28000 acc 3362 cur 9249 best 9257 temp 39.0 elite 40 gains 1354/974/3145/943/115/382/1218/1146/4/722 acc 669/619/966/280/61/51/238/244/27/207
+[323s] it 30000 acc 3745 cur 9125 best 9257 temp 22.9 elite 40 gains 1618/1428/3950/1203/131/382/1320/1408/4/1082 acc 729/706/1070/310/69/60/269/271/28/233
+[387s] it 36000 acc 4454 cur 9237 best 9257 temp 4.7 elite 40 gains 1959/1501/4530/1350/183/424/1600/1643/4/1334 acc 857/822/1285/376/82/73/321/328/35/275
+[414s] it 38000 acc 4606 cur 9247 best 9257 temp 2.5 elite 40 gains 1959/1506/4540/1350/183/428/1604/1695/4/1334 acc 891/849/1332/390/86/76/327/339/36/280
+  eff 9099 forbidden sits 4
+[448s it 40847] NEW BEST 9259 (op 1 i 135 D 3) len 179
+[461s] it 42000 acc 4946 cur 9042 best 9259 temp 30.7 elite 40 gains 2041/1622/4892/1350/219/504/1646/1799/76/1478 acc 959/910/1445/407/93/83/350/361/38/300
+[505s] it 46000 acc 5493 cur 9239 best 9259 temp 10.4 elite 40 gains 2471/2113/5513/1436/263/540/1841/2297/76/1874 acc 1050/1014/1608/448/107/95/388/411/41/331
+[527s] it 48000 acc 5712 cur 9236 best 9259 temp 6.1 elite 40 gains 2480/2168/5564/1440/263/544/1849/2319/76/1874 acc 1088/1066/1679/462/112/97/398/422/41/347
+  eff 9101 forbidden sits 4
+[554s it 50339] NEW BEST 9261 (op 2 i 137 D 6) len 181
+[572s] it 52000 acc 6031 cur 9255 best 9261 temp 2.0 elite 40 gains 2516/2198/5611/1448/264/544/1865/2348/76/1874 acc 1152/1133/1769/479/115/100/415/453/43/372
+[593s] it 54000 acc 6177 cur 9258 best 9261 temp 1.2 elite 40 gains 2518/2200/5627/1456/264/544/1865/2358/76/1874 acc 1181/1173/1806/490/117/101/418/464/43/384
+done it 54739 acc 6235 best 9261 restarts 2
+elite: 9261 9261 9261 9261 9261 9261 9261 9261 9261 9261 9261 9261 9261 9261 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259 9259
