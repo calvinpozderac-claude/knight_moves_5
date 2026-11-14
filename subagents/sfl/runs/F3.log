@@ -6,3 +6,5 @@ start 9290: 3 free sinks, exact necessity ok (bad move 0)
    nec calls 1712742 fail 1695660 unk 0 probes 10674248 | fsp calls 1072 hits 74 gain 100 | dumped 234
 [80s] it 6000 acc 530 cur 9287 best 9290 temp 4.4 elite 40 gains 332/486/1002/392/72/36/452/548/72/468 acc 67/79/184/58/13/7/40/64/4/14
    nec calls 2566442 fail 2541063 unk 0 probes 15744665 | fsp calls 1619 hits 112 gain 180 | dumped 311
+[136s] it 10000 acc 711 cur 9290 best 9290 temp 40.0 elite 40 gains 336/502/1018/404/72/40/452/570/72/468 acc 95/110/242/78/16/10/51/85/7/17
+   nec calls 4320398 fail 4278589 unk 0 probes 26219524 | fsp calls 2663 hits 185 gain 267 | dumped 400
