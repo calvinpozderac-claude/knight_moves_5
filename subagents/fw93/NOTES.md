@@ -24,3 +24,13 @@
   sinks 1-4, anchors 35..end, `tmp/p2/fw_summary.txt`): every run ends at exactly input + 4 (the same b7->c5 sink).
 - **fnrpa pass p3 on the 13 distinct 9,286s** (`in2/`, rngs 101-108, 20 s each, same settings): **104/104 runs -> 9,286**,
   ~6,000 finishes, none above 9,286. Zero rng spread: 9,286 is a fixed point of the warm free-sink pass.
+- Variation runs p4 on NEW_RECORD_9286 (`fw_var.sh`, 120 s each): opening anchors 1-40 (warm 10 and warm 3), warm 3
+  anchors 35+, free sinks up to 8 units: every finish exactly 9,286.
+
+## Round 2 (coordinator: 4 cores, ~75 more min, until 14:00)
+- 41 more inputs (all distinct checker-ok strict tours 9,267-9,277 in data/, penalty92/, graft92/, polish92/, incl.
+  penalty92's 9,277s, 9,273, 9,270, 9,267). Sweep (`sweep_list.sh`): gains +1..+4 only, always the b7->c5-type hop:
+  9,277 -> 9,281 (2), 9,274 -> 9,278, 9,273 -> 9,277 (2), 9,272 -> 9,276 (2), 9,271 -> 9,275 (5) / 9,272 (8),
+  9,270 -> 9,274, 9,268 -> 9,269 (13), 9,267 -> 9,271 (6), 9,269: nothing. No tour above 9,286.
+- p5 (`fw_queue.sh tmp/q5.txt`, shared queue, up to 4 workers): the 59 improved non-9,282 tours (`in3/`) x 8 rngs
+  (301-308, 15 s, anchors 35+), then 8 more rngs on each 9,286 (4 with anchors 120+ = dance only, 4 with 35-120 = merge).
