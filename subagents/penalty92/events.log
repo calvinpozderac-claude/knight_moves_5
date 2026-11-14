@@ -163,3 +163,11 @@
 09:03:07 [w5] dl E_K_a8b8b7: keep stage -> 8894 dist 2/2 (feasible 8443)
 09:03:08 [w6] dl E_K_d4d5: keep stage -> 9122 dist 1/2 (feasible 8992)
 09:06:09 [w7] dl R9089_K_d6d7: keep stage -> 8790 dist 11/2 (feasible 8790)
+09:09:35 [w4] dl R9222_K_c4c5d4: lns -> 9136 dist 12/0 (new)
+09:09:35 [w4] worker exit
+09:10:07 [w5] dl E_K_a8b8b7: lns -> 9280 dist 0/0 (P_9282)
+09:10:07 [w5] worker exit
+09:10:08 [w6] dl E_K_d4d5: lns -> 9282 dist 0/0 (P_9282)
+09:10:08 [w6] worker exit
+09:13:09 [w7] dl R9089_K_d6d7: lns -> 9182 dist 9/0 (new)
+09:13:09 [w7] worker exit

@@ -57,3 +57,7 @@ R9222_K_c4c5d4_K	in/R9222.txt	c4,c5,d4:93:999 pen 120	8578	8	3	8754	10/2	keep st
 E_K_a8b8b7_K	in/P_9282.txt	a8,b8,b7:91:999 pen 120	8443	2	4	8894	2/2	keep stage; feasible best 8443: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a7/a8 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
 E_K_d4d5_K	in/P_9282.txt	d4,d5:91:999 pen 120	8990	1	2	9122	1/2	keep stage; feasible best 8992: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/e4 d6/d7 e7/e8 f8/g8
 R9089_K_d6d7_K	in/R9089.txt	d6,d7:83:999 pen 120	8661	11	2	8790	11/2	keep stage; feasible best 8790: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 a7/b7 a8/b8 f8/g8 e7/e8 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5
+R9222_K_c4c5d4	in/R9222.txt	c4,c5,d4:93:999	8578	8	3	9136	12/0	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c7/c8 c8/d8 c6/c7 c5/c6 c4/c5 c3/c4 c3/d3 d3/d4 d4/d5 d6/d7 a8/b8 a7/b7 d6/d7 e7/e8 f8/g8
+E_K_a8b8b7	in/P_9282.txt	a8,b8,b7:91:999	8443	2	4	9280	0/0	final P_9282: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+E_K_d4d5	in/P_9282.txt	d4,d5:91:999	8990	1	2	9282	0/0	final P_9282: f3/f7 g6/h3 c3/d3 b2/b3 a2/a3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 a8/b8 a7/b7 c4/c5 d4/d5 d6/d7 e7/e8 f8/g8
+R9089_K_d6d7	in/R9089.txt	d6,d7:83:999	8661	11	2	9182	9/0	final new: f3/f7 g6/h3 a2/b2 a3/b3 a4/b4 a5/b5 a6/b6 c6/c7 c8/d8 c6/c7 a7/b7 a8/b8 d6/d7 d3/d4 c3/c4 c5/d5 e7/e8 f8/g8
