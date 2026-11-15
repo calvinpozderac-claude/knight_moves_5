@@ -105,3 +105,21 @@ Commands: `subagents/prior/NOTES.md` (scripts `r3c.sh`, `r4.sh`, `r5.sh`, `fw_mu
 - `check_tour.py` reads only integers and a/b fractions; decimal waits are silently dropped.
 - Records in `data/tours/` are permanent copies. Agents' own `NEW_RECORD_*` files may be renamed or removed by
   their scripts.
+
+## Update: rounds 5-9 (final)
+**Final record: 9,290 minutes** (`data/tours/record_9290.txt`, 178 moves, free waits at moves 90, 92 and 152;
+`tools/check_tour.py`: ok=True, maxvisits=3, unnecessary=[]).
+
+| Record | Agent | Method |
+|---|---|---|
+| 8,484 → 8,605 | lns84 | polish + LNS on the user's AlphaZero tour (new family) |
+| 8,609 | lns84 | polish + LNS on AlphaZero 8,537-8,553 |
+| 8,812 → 8,830 | families, f5push | penalty LNS forced a new dance family (F5, d-file sitter), then same-family LNS |
+| (user, main) 8,842 → 9,279 | user's family search | penalty rebuilds, order/flip trials, new merges |
+| 9,282 | polish92, graft92 | 9,275's merge + 9,279's dance |
+| 9,286 | fw93 | sound free-wait pass: one free sink at a dance block change, sink x (n_prev - n_next) |
+| 9,290 | sfl | LNS with free sinks inside the search and an exact necessity check (1,423/1,423 validation cases agree with the checker) |
+
+What stopped working: polish on fresh LNS output; penalty rebuilds (75+ rules) all return to the 9,282 sitter
+set; the after-search free-wait pass is a fixed point at 9,286 (74 ties). The one lever still producing gains when
+the runs stopped was sound free-wait LNS focused on the merge. All runs are stopped.
