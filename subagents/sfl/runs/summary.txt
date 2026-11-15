@@ -9,3 +9,29 @@ B2 0  done it 40000 acc 4172 best 9286 restarts 2
 B3 1 9290 done it 40000 acc 2868 best 9290 restarts 2
 B5 0  done it 40000 acc 2794 best 9286 restarts 3
 B4 0  done it 40000 acc 4143 best 9286 restarts 2
+B6 1 9288 done it 40000 acc 3294 best 9288 restarts 3
+F1 0  done it 40000 acc 3107 best 9290 restarts 2
+F2 0  done it 40000 acc 2856 best 9290 restarts 3
+F3 0  done it 40000 acc 2802 best 9290 restarts 3
+C1 1 9286 done it 40000 acc 2895 best 9286 restarts 3
+F4 0  done it 40000 acc 3692 best 9290 restarts 7
+G1 0  done it 40000 acc 2744 best 9290 restarts 2
+C2 2 9288 done it 40000 acc 3240 best 9288 restarts 3
+C3 1 9286 done it 40000 acc 2863 best 9286 restarts 3
+G2 0  done it 40000 acc 3585 best 9290 restarts 6
+G3 0  done it 40000 acc 2475 best 9288 restarts 3
+G4 0  done it 40000 acc 3060 best 9290 restarts 2
+D1 2 9290 done it 40000 acc 3294 best 9290 restarts 25
+C4 1 9286 done it 40000 acc 4345 best 9286 restarts 2
+D2 0  done it 40000 acc 3603 best 9286 restarts 18
+B7 1 9288 done it 40000 acc 2928 best 9288 restarts 3
+B8 1 9288 done it 40000 acc 2759 best 9288 restarts 3
+B9 0  done it 40000 acc 3420 best 9286 restarts 3
+B10 2 9290 done it 40000 acc 3143 best 9290 restarts 2
+H1 1 9288 done it 40000 acc 2795 best 9288 restarts 3
+H2 0  done it 40000 acc 3566 best 9286 restarts 3
+H3 0  done it 40000 acc 3381 best 9286 restarts 3
+H4 0  done it 40000 acc 3348 best 9286 restarts 2
+H5 1 9290 done it 40000 acc 3023 best 9290 restarts 3
+H6 0  done it 40000 acc 3415 best 9286 restarts 2
+H7 0  done it 40000 acc 3095 best 9286 restarts 2

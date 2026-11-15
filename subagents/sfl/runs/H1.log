@@ -1,0 +1,22 @@
+in/ties/t9286_0257d957.txt: 179 moves, 9286 minutes (replay 9286)
+../../data/tours/record_9286.txt: 177 moves, 9286 minutes (replay 9286)
+in/r9290.txt: 178 moves, 9290 minutes (replay 9290)
+start in/ties/t9286_0257d957.txt: 179 moves, 9286 minutes
+start 9286: 1 free sinks, exact necessity ok (bad move 0)
+[97s] it 6000 acc 539 cur 9276 best 9286 temp 4.4 elite 40 gains 152/280/632/296/108/114/299/538/0/216 acc 60/135/131/64/13/4/32/63/2/35
+   nec calls 4464413 fail 4442886 unk 0 probes 25991012 | fsp calls 1300 hits 24 gain 62 | dumped 400
+[128s] it 8000 acc 638 cur 9284 best 9286 temp 2.1 elite 40 gains 156/282/640/304/108/114/299/560/0/216 acc 83/147/156/77/13/7/41/71/2/41
+   nec calls 5611725 fail 5583861 unk 0 probes 32585469 | fsp calls 1729 hits 32 gain 74 | dumped 400
+[263s] it 16000 acc 1272 cur 9286 best 9286 temp 4.4 elite 40 gains 324/636/1199/640/144/150/620/938/0/972 acc 167/267/330/141/26/18/88/134/10/91
+   nec calls 12141607 fail 12085512 unk 0 probes 71408908 | fsp calls 3515 hits 75 gain 125 | dumped 400
+[297s] it 18000 acc 1394 cur 9284 best 9286 temp 2.1 elite 40 gains 326/636/1206/646/144/150/620/954/0/972 acc 186/293/366/148/28/19/96/144/11/103
+   nec calls 13559248 fail 13496085 unk 0 probes 80496666 | fsp calls 3917 hits 86 gain 141 | dumped 400
+[362s] it 22000 acc 1716 cur 9214 best 9286 temp 19.1 elite 40 gains 620/780/1338/798/180/258/764/1230/0/1476 acc 229/358/447/182/39/23/120/177/13/128
+   nec calls 16790140 fail 16711881 unk 0 probes 100834800 | fsp calls 4741 hits 98 gain 155 | dumped 400
+[427s] it 26000 acc 2043 cur 9286 best 9286 temp 4.4 elite 40 gains 628/930/1548/802/180/290/786/1316/0/1548 acc 282/425/547/208/41/25/141/205/18/151
+   nec calls 19981336 fail 19888376 unk 0 probes 120042113 | fsp calls 5681 hits 120 gain 177 | dumped 400
+[460s] it 28000 acc 2139 cur 9282 best 9286 temp 2.1 elite 40 gains 630/930/1548/802/180/290/786/1322/0/1548 acc 304/444/570/222/42/25/145/212/18/157
+   nec calls 21749522 fail 21649012 unk 0 probes 131262825 | fsp calls 6088 hits 131 gain 191 | dumped 400
+[463s it 28166] NEW BEST 9288 (op 7 a 18 c 18 d 47 b 45) len 181
+done it 40000 acc 2795 best 9288 restarts 3
+elite: 9290 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288
