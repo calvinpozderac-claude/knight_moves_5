@@ -314,6 +314,7 @@ static vector<S> states_of(const vector<M>& X) {
 // ---- sfl: greedy free-sink pass (fw93's insertion sweep inside the search): at every in-group zero-wait hop
 // (dz 0 knight move to a member of the knight's group) try a free sink of 1..FREEMAX units (or change an existing
 // one); later moves keep their dz (their waits re-derive); keep the best exact-necessary improvement; 3 rounds.
+static double BLOCKP = 0; static int BLO = 85;  // sfl: share of op 4 that moves whole dance blocks, from move BLO
 static int FSP = 0; static long long FSPG = 60, FSP_GAIN = 0, FSP_CALLS = 0, FSP_HIT = 0;
 static long long score_from(S s, const vector<M>& X, size_t i0) {
   for (size_t i = i0; i < X.size(); i++) { if (X[i].q == H8 && i + 1 != X.size()) return -1; if (!stepM(s, X[i])) return -1; }
@@ -453,6 +454,8 @@ int main(int argc, char** argv) {
     else if (s == "--fspgate") FSPG = atoll(argv[++a]);    // sfl: only candidates within this of cur
     else if (s == "--dump") DUMPF = fopen(argv[++a], "w");  // sfl: accepted tours with free sinks (for validation)
     else if (s == "--dumpmax") DUMPMAX = atoi(argv[++a]);
+    else if (s == "--blockp") BLOCKP = atof(argv[++a]);
+    else if (s == "--blo") BLO = atoi(argv[++a]);
     else if (s == "--budget") BUDGET = atoll(argv[++a]);
     else if (s == "--dmax") DMAX = atoi(argv[++a]);
     else if (s == "--xover") XOVER = atoi(argv[++a]);
@@ -572,7 +575,7 @@ int main(int argc, char** argv) {
   if (FSP) { long long T = gbest.T; fsp(gbest.X, T); if (T > gbest.T) { gbest.T = T; mark_keys(gbest.X); save(gbest, "fsp on start"); } }
   // ---- SA
   Elite cur = gbest; long long it = 0, acc = 0, impr = 0;
-  long long stat_gain[10] = {0}, stat_cnt[10] = {0};
+  long long stat_gain[11] = {0}, stat_cnt[11] = {0};
   double lastImpr = el(); int restarts = 0;
   vector<S> st = states_of(cur.X);
   long long lastImprIt = 0;
@@ -629,10 +632,24 @@ int main(int argc, char** argv) {
       int lo = RI(0, 1) ? 34 : 1;
       if (N - 2 - lo < 6) continue;
       int a = RI(lo, N - 4), len = RI(1, min(24, N - 2 - a)), b = a + len;
+      int cB = -1;
+      if (op == 4 && BLOCKP > 0 && U() < BLOCKP) {  // sfl: dance order trial: move whole blocks (sit-pair runs)
+        vector<int> B; auto PQ = [&](int k) { return k == 0 ? (int)A1 : (int)cur.X[k - 1].q; };
+        for (int k = max(BLO, 1); k < N - 1; k++) {
+          int p1 = PQ(k - 1), q1 = cur.X[k - 1].q, p2 = PQ(k), q2 = cur.X[k].q;
+          bool same = (p1 == p2 && q1 == q2) || (p1 == q2 && q1 == p2);
+          if (st[k + 1].T == st[k].T || !same) B.push_back(k);
+        }
+        if (B.size() < 3) continue;
+        int ia = RI(0, (int)B.size() - 2), ib = RI(ia + 1, min<int>((int)B.size() - 1, ia + 6));
+        a = B[ia]; b = B[ib]; len = b - a; cB = B[RI(0, (int)B.size() - 1)];
+        if (cB >= a && cB <= b) continue;
+        op = 10;  // stats slot
+      }
       vector<M> Y2;
       int from = a;
-      if (op == 4) {  // move segment [a,b) to position c (after b or before a)
-        int c = RI(lo, N - 2);
+      if (op == 4 || op == 10) {  // move segment [a,b) to position c (after b or before a)
+        int c = cB >= 0 ? cB : RI(lo, N - 2);
         if (c >= a && c <= b) continue;
         if (c > b) { Y2.assign(cur.X.begin(), cur.X.begin() + a); Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.begin() + c);
           Y2.insert(Y2.end(), cur.X.begin() + a, cur.X.begin() + b); Y2.insert(Y2.end(), cur.X.begin() + c, cur.X.end()); }
@@ -701,7 +718,7 @@ int main(int argc, char** argv) {
       printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
              elite.size(), stat_gain[0], stat_gain[1], stat_gain[2], stat_gain[3], stat_gain[4], stat_gain[5], stat_gain[6], stat_gain[7], stat_gain[8], stat_gain[9],
              stat_cnt[0], stat_cnt[1], stat_cnt[2], stat_cnt[3], stat_cnt[4], stat_cnt[5], stat_cnt[6], stat_cnt[7], stat_cnt[8], stat_cnt[9]);
-      printf("   nec calls %lld fail %lld unk %lld probes %lld | fsp calls %lld hits %lld gain %lld | dumped %d\n", NEC_CALLS, NEC_FAIL, NEC_UNK, NEC_PROBES, FSP_CALLS, FSP_HIT, FSP_GAIN, DUMPN);
+      printf("   nec calls %lld fail %lld unk %lld probes %lld | fsp calls %lld hits %lld gain %lld | dumped %d | block op acc %lld gain %lld\n", NEC_CALLS, NEC_FAIL, NEC_UNK, NEC_PROBES, FSP_CALLS, FSP_HIT, FSP_GAIN, DUMPN, stat_cnt[10], stat_gain[10]);
       fflush(stdout);
     }
     // restart from elite if stuck far below best

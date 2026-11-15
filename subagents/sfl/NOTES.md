@@ -52,3 +52,23 @@ Batch A (from record_9286, donors 3 ties): A1 (s101, focus 95-177) **9,288** at 
 - fw93's sweep93.py on 9,290: no legal single variant (its repin profile does not handle the merge free sinks); the
   in-search fsp pass is the polisher instead.
 - Queued F1-F4 from 9,290 (s501 35-177, s502 60-130, s503 95-177, s504 1-177 p 0.5 t0 60).
+- Results of the first queue (all done 15:50 on 11-14, before the stop; best per job):
+  F1-F4 (from 9,290: s501-s504): 9,290 each (plateau). G1, G2, G4 (from 9,290, merge 55-130, many donors): 9,290;
+  G3 (from 9,288): 9,288. C1-C4 (strict 9,282s, s301-304): 9,286 / 9,288 (C2) / 9,286 / 9,286 (fsp gives the +4 at it 0).
+  D1 (s105, from 9,286, t0 80, free 6): **9,290** (independent). D2: 9,286. B4/B5/B9: 9,286; B6, B7, B8: 9,288;
+  **B10 (s210): 9,290**. H1-H7 (other ties, focus 40-140, donors 9,286 + 9,290): H1 9,288, **H5 (s705) 9,290**,
+  the rest 9,286.
+- Tally: 37 jobs; 9,290 reached by 4 independent starts (B3, D1, B10, H5); 193 distinct checker-ok 9,290s,
+  512 distinct 9,288s, 11 x 9,287; saver: 0 rejected out of every distinct tour above 9,286 (>700).
+- Sample of 300 random production dump tours (all scores, all with free sinks): 300/300 pass check_tour.
+
+## Round 2 (resumed 02:48 on 11-15 after a container restart; 4 cores, ~2.5 h)
+- Saver restarted with threshold 9,290 (`newrec_sfl.py` BEST = 9290; cache tmp/checked.txt kept).
+- Seeds: 8 diverse 9,290s (farthest-point by square-sequence edit distance, in/p9290/) + D1/H5 bests (I1-I10),
+  8 diverse 9,288s (in/p9288/, J1-J8), 9,279 / 9,275 (other merge class) with free waits (K1-K3), 9,290 itself (K4).
+  Merge focus 35-130 (every third job 60-130), donors record_9279 (d3/g6 + f7/h3 merge), 9,275, 9,282, 9,290.
+- New `--blockp P` (binary `sfl2`, same source): share P of op 4 becomes a dance order trial that moves whole
+  blocks (runs of sits on one pair; boundaries at zero-wait moves or pair changes, from move `--blo` 85), seams
+  re-patched, then fsp prices the new in-group transitions. Stats "block op acc/gain" in the log. L1-L4 queued
+  (from 4 diverse 9,290s, focus 85-177, --blockp 1). `run.sh` takes `BIN=sfl2`.
+- I1-I4 (diverse 9,290s, merge 35-130 / 60-130): 9,290, no gain.

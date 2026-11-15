@@ -1,0 +1,15 @@
+in/p9288/t9288_3c4022af.txt: 185 moves, 9288 minutes (replay 9288)
+../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+../../data/tours/record_9275.txt: 181 moves, 9275 minutes (replay 9275)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+start in/p9288/t9288_3c4022af.txt: 185 moves, 9288 minutes
+start 9288: 4 free sinks, exact necessity ok (bad move 0)
+[39s] it 2000 acc 214 cur 9278 best 9288 temp 19.1 elite 40 gains 108/189/231/112/36/36/484/230/0/180 acc 28/43/53/19/7/5/25/26/1/7
+   nec calls 1752178 fail 1743300 unk 0 probes 14091960 | fsp calls 381 hits 13 gain 26 | dumped 158
+[78s] it 4000 acc 363 cur 9284 best 9288 temp 9.1 elite 40 gains 180/225/340/184/36/36/492/382/0/252 acc 49/65/100/35/8/7/33/48/2/16
+   nec calls 3676497 fail 3659234 unk 0 probes 29937083 | fsp calls 754 hits 20 gain 35 | dumped 283
+[394s] it 20000 acc 1284 cur 9286 best 9288 temp 40.0 elite 40 gains 324/355/991/409/72/40/788/783/0/540 acc 196/249/343/126/22/17/90/149/15/77
+   nec calls 19977513 fail 19892201 unk 0 probes 154568380 | fsp calls 3775 hits 87 gain 149 | dumped 400
+[434s] it 22000 acc 1483 cur 9282 best 9288 temp 19.1 elite 40 gains 600/461/1387/496/76/112/1004/1059/0/936 acc 217/277/391/146/24/23/114/183/16/92
+   nec calls 22155775 fail 22061872 unk 0 probes 170194816 | fsp calls 4158 hits 97 gain 169 | dumped 400

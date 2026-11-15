@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# usage (from subagents/sfl): python3 newrec_sfl.py FILE...  Every distinct tour above 9,286 found in the files
+# usage (from subagents/sfl): python3 newrec_sfl.py FILE...  Every distinct tour above 9,290 found in the files
 # (2-line records: minutes, tour) is run through tools/check_tour.py; ok=True, maxvisits<=3, unnecessary=[] ->
 # NEW_RECORD_<m>.txt (line 1 minutes, line 2 tour), never overwritten. Checked tours are cached in tmp/checked.txt.
 import sys, subprocess, re, os
 from fractions import Fraction
-BEST = Fraction(9286)
+BEST = Fraction(9290)
 seen_f = 'tmp/checked.txt'
 seen = set(open(seen_f).read().split('\n')) if os.path.exists(seen_f) else set()
 cands = {}

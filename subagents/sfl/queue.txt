@@ -1,0 +1,20 @@
+./run.sh J3 903 in/p9288/t9288_4fdd1ce2.txt 40000 60 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh J4 904 in/p9288/t9288_5af7f42a.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh J5 905 in/p9288/t9288_9d29a8f8.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh J6 906 in/p9288/t9288_c36ef571.txt 40000 60 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh J7 907 in/p9288/t9288_cfdbd9c0.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh J8 908 in/p9288/t9288_f6e5d246.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh K1 1001 ../../data/tours/record_9279.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9290.txt ../../data/tours/record_9282.txt
+./run.sh K2 1002 ../../data/tours/record_9279.txt 40000 35 130 0.85 60 4 ../../data/tours/record_9290.txt in/p9288/t9288_3c4022af.txt
+./run.sh K3 1003 ../../data/tours/record_9275.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9290.txt ../../data/tours/record_9279.txt
+./run.sh K4 1004 ../../data/tours/record_9290.txt 40000 35 130 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9275.txt ../../data/tours/record_9282.txt
+BIN=sfl2 ./run.sh L1 1101 in/p9290/t9290_7f1dc222.txt 40000 85 177 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt --blockp 1
+BIN=sfl2 ./run.sh L2 1102 in/p9290/t9290_8217500f.txt 40000 85 177 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt --blockp 1
+BIN=sfl2 ./run.sh L3 1103 in/p9290/t9290_97a8e8d3.txt 40000 85 177 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt --blockp 1
+BIN=sfl2 ./run.sh L4 1104 in/p9290/t9290_dedfeae5.txt 40000 85 177 0.85 40 4 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt --blockp 1
+./run.sh M1 1201 in/p9290/t9290_69526099.txt 40000 35 177 0.7 100 6 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh M2 1202 in/p9290/t9290_7201c345.txt 40000 35 177 0.7 100 6 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh M3 1203 in/p9290/t9290_7f1dc222.txt 40000 35 177 0.7 100 6 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh M4 1204 in/p9290/t9290_8217500f.txt 40000 35 177 0.7 100 6 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh M5 1205 in/p9288/t9288_3c4022af.txt 40000 35 177 0.7 100 6 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
+./run.sh M6 1206 in/p9288/t9288_3ecde24f.txt 40000 35 177 0.7 100 6 ../../data/tours/record_9279.txt ../../data/tours/record_9282.txt ../../data/tours/record_9290.txt
