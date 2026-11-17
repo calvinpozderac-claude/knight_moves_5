@@ -1,0 +1,6 @@
+../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+start ../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes
+start 9290: 5 free sinks, exact necessity ok (bad move 0)

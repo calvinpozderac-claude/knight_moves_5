@@ -8,3 +8,4 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - Batch A (40k it, 10 min each, penalty P=80-150 on arrivals before move 91): no raw gain; searches only remove 1-3 arrivals (c2/f7/d5 shifted by 2 moves) and lose 68-70 raw (9222, 124 sits vs 127), A3 & A4 reached the same 9222 tour. Unpenalised LNS from that 9222 returns to 9290 (B1) i.e. freed visit is not converted to a sit; B2-B4 <= 9226 at 9 min.
 - dance_pot2 beam from 9290's move-91 state gives only 8096 (W=3000): can't rebuild a dance from scratch with it. pot at move 91 = 9402.
 - Batch C (16 jobs from 2 p9290 ties, single/pair-square penalties 100-200, focus 20-130): queued, workers running (queue.txt).
+- 09:57 restart after limit: saver + 4 workers restarted; batch C first 4 jobs (C1-C4) all 9290, remaining 8 queued jobs resumed (C5-C8 lost mid-run are not requeued).
