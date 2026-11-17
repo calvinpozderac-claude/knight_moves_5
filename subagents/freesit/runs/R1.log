@@ -1,0 +1,6 @@
+in/t9520.txt: 165 moves, 9520 minutes (replay 9520)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+in/t9520.txt: 165 moves, 9520 minutes (replay 9520)
+start in/t9520.txt: 165 moves, 9520 minutes
+start 9520: 19 free sinks, exact necessity ok (bad move 0)
