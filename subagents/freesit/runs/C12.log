@@ -4,3 +4,5 @@
 ../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
 start ../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes
 start 9290: 5 free sinks, exact necessity ok (bad move 0)
+[85s] it 4000 acc 384 cur 9192 best 9290 temp 9.1 elite 11 gains 196/228/383/144/108/72/116/310/0/648 acc 51/69/95/34/11/7/33/40/6/38
+   nec calls 2660685 fail 2645553 unk 0 probes 17807737 | fsp calls 802 hits 17 gain 45 | dumped 304 | block op acc 0 gain 0
