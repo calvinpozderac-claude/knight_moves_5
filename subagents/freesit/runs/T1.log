@@ -9,3 +9,5 @@ start 9774: 22 free sinks, exact necessity ok (bad move 0)
 [1004s it 12457] ADJ BEST 9777 (raw 9777 pen 0)
 [1031s it 12873] NEW BEST 9778 (op 2 i 126 D 3) len 176
 [1031s it 12873] ADJ BEST 9778 (raw 9778 pen 0)
+[1262s] it 16000 acc 2177 cur 9572 best 9778 temp 45.7 elite 40 gains 89/467/529/30/4/4/140/538/36/1 acc 338/555/501/226/28/22/187/180/20/120
+   nec calls 76081219 fail 76037105 unk 0 probes 1153155210 | fsp calls 2414 hits 329 gain 11711 | dumped 400 | block op acc 0 gain 0
