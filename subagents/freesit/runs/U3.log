@@ -1,0 +1,19 @@
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+start in/t9811.txt: 173 moves, 9811 minutes
+start 9811: 19 free sinks, exact necessity ok (bad move 0)
+[90s it 1352] ADJ BEST 8789 (raw 9789 pen 1000)
+[90s it 1378] ADJ BEST 8797 (raw 9797 pen 1000)
+[103s it 1560] ADJ BEST 8799 (raw 9799 pen 1000)
+[113s it 1735] ADJ BEST 8800 (raw 9800 pen 1000)
+[114s it 1763] ADJ BEST 8801 (raw 9801 pen 1000)
+[124s it 1933] ADJ BEST 8802 (raw 9802 pen 1000)
+[137s] it 2000 acc 220 cur 9798 best 9811 temp 39.8 elite 40 gains 1002/399/8/6/0/2/12/265/0/0 acc 36/51/51/21/4/5/17/16/1/18
+   nec calls 7037032 fail 7032286 unk 0 probes 83118166 | fsp calls 227 hits 11 gain 633 | dumped 202 | block op acc 0 gain 0
+[160s it 2322] ADJ BEST 8804 (raw 9804 pen 1000)
+[980s] it 14000 acc 1358 cur 9804 best 9811 temp 3.4 elite 40 gains 1122/588/52/20/8/6/80/389/4/0 acc 234/328/303/109/17/16/128/106/9/108
+   nec calls 48479964 fail 48448311 unk 0 probes 586353991 | fsp calls 1494 hits 75 gain 2731 | dumped 400 | block op acc 0 gain 0
+[1206s it 17924] ADJ BEST 8805 (raw 9805 pen 1000)
+[1210s] it 18000 acc 1742 cur 9805 best 9811 temp 1.5 elite 40 gains 1122/591/59/20/8/8/100/399/4/0 acc 299/406/384/136/26/23/161/137/16/154
+   nec calls 63582479 fail 63541975 unk 0 probes 744537655 | fsp calls 1946 hits 92 gain 3404 | dumped 400 | block op acc 0 gain 0

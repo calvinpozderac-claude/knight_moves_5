@@ -1,0 +1,15 @@
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+in/t9520.txt: 165 moves, 9520 minutes (replay 9520)
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+start in/t9724.txt: 171 moves, 9724 minutes
+start 9724: 21 free sinks, exact necessity ok (bad move 0)
+[216s] it 2000 acc 296 cur 9711 best 9724 temp 24.5 elite 40 gains 120/185/267/256/0/0/62/150/0/0 acc 38/89/75/31/6/3/26/21/6/1
+   nec calls 11491674 fail 11487018 unk 0 probes 178214914 | fsp calls 330 hits 81 gain 2833 | dumped 194 | block op acc 0 gain 0
+[478s] it 4000 acc 623 cur 9700 best 9724 temp 15.0 elite 40 gains 128/248/371/268/0/0/80/174/0/0 acc 94/165/162/83/7/5/50/43/10/4
+   nec calls 23608205 fail 23599040 unk 0 probes 376162430 | fsp calls 682 hits 188 gain 5929 | dumped 391 | block op acc 0 gain 0
+[672s] it 6000 acc 921 cur 9713 best 9724 temp 9.1 elite 40 gains 144/274/399/276/0/0/84/222/0/0 acc 140/239/245/113/13/7/71/70/14/9
+   nec calls 33311745 fail 33297884 unk 0 probes 526748516 | fsp calls 1008 hits 277 gain 8191 | dumped 400 | block op acc 0 gain 0
+[1425s] it 14000 acc 2016 cur 9720 best 9724 temp 1.3 elite 40 gains 201/307/482/300/2/4/116/289/6/0 acc 330/528/532/248/23/18/132/149/28/28
+   nec calls 76972572 fail 76940714 unk 0 probes 1202443441 | fsp calls 2354 hits 662 gain 19635 | dumped 400 | block op acc 0 gain 0
+done it 15916 acc 2228 best 9724 restarts 1
+elite: 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724 9724

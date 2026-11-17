@@ -21,3 +21,7 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - 13:13 **9513** (NEW_RECORD_9513.txt, checker ok) from the P-round (9387 on the way). Queue Q1-Q6 from 9513.
 - 13:42 **9520** (NEW_RECORD_9520.txt, checker ok). Q-round still running; saver and workers left running.
 - 13:43 Phase 4 from 9520: saver threshold 9520; queue R1-R16 (plain x4, hard penalty 1000 on f8,d5,g8,f7,g7,h7,e8,g6,h6,e6,f6,c2 arrivals before 91, from 9520).
+- 13:53 **9724** (NEW_RECORD_9724.txt, checker ok). Queue S1-S4 from 9724 put in front.
+- 14:13 9766, **9774** (NEW_RECORD_9774.txt, checker ok). T1-T4 from 9774 queued at front.
+- 14:33 **9811** (NEW_RECORD_9811.txt, checker ok). U1-U4 from 9811 queued at front.
+- 14:54 **9936** (NEW_RECORD_9936.txt, checker ok). V1-V4 from 9936 queued at front.

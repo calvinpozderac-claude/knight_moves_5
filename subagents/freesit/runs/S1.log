@@ -1,0 +1,19 @@
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+in/t9520.txt: 165 moves, 9520 minutes (replay 9520)
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+start in/t9724.txt: 171 moves, 9724 minutes
+start 9724: 21 free sinks, exact necessity ok (bad move 0)
+[173s] it 2000 acc 295 cur 9707 best 9724 temp 34.8 elite 40 gains 53/162/115/93/0/10/57/447/176/0 acc 46/72/77/27/2/7/24/24/4/12
+   nec calls 9648466 fail 9642530 unk 0 probes 130222239 | fsp calls 307 hits 37 gain 1225 | dumped 246 | block op acc 0 gain 0
+[554s] it 6000 acc 835 cur 9705 best 9724 temp 11.7 elite 40 gains 170/176/165/101/0/16/77/561/176/0 acc 163/198/212/67/7/16/57/72/10/33
+   nec calls 27754930 fail 27737995 unk 0 probes 385527430 | fsp calls 902 hits 107 gain 3790 | dumped 400 | block op acc 0 gain 0
+[746s] it 8000 acc 1079 cur 9715 best 9724 temp 6.8 elite 40 gains 178/182/184/103/2/18/87/601/176/0 acc 202/264/271/87/11/19/73/100/13/39
+   nec calls 37612209 fail 37589754 unk 0 probes 529331840 | fsp calls 1181 hits 150 gain 5351 | dumped 400 | block op acc 0 gain 0
+[908s] it 10000 acc 1317 cur 9716 best 9724 temp 3.9 elite 40 gains 185/186/194/109/4/20/98/633/180/0 acc 249/313/328/100/17/21/92/129/16/52
+   nec calls 46312507 fail 46284329 unk 0 probes 649664873 | fsp calls 1468 hits 174 gain 6164 | dumped 400 | block op acc 0 gain 0
+[1027s it 11354] NEW BEST 9764 (op 1 i 145 D 3) len 168
+[1027s it 11354] ADJ BEST 9764 (raw 9764 pen 0)
+[1059s it 11813] NEW BEST 9811 (op 0 i 132 D 4) len 173
+[1059s it 11813] ADJ BEST 9811 (raw 9811 pen 0)
+done it 19287 acc 2415 best 9811 restarts 1
+elite: 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811 9811

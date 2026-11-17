@@ -1,0 +1,13 @@
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+in/t9520.txt: 165 moves, 9520 minutes (replay 9520)
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+start in/t9724.txt: 171 moves, 9724 minutes
+start 9724: 21 free sinks, exact necessity ok (bad move 0)
+[125s it 1901] ADJ BEST 8717 (raw 9717 pen 1000)
+[961s] it 14000 acc 1585 cur 9717 best 9724 temp 3.4 elite 40 gains 1086/145/403/76/6/20/200/170/0/0 acc 253/385/331/171/24/26/148/126/15/106
+   nec calls 50124748 fail 50091911 unk 0 probes 615848640 | fsp calls 1709 hits 106 gain 2345 | dumped 400 | block op acc 0 gain 0
+[995s it 14326] ADJ BEST 8718 (raw 9718 pen 1000)
+[1561s] it 24000 acc 2650 cur 9714 best 9724 temp 26.5 elite 40 gains 1096/362/654/82/8/24/246/414/1/0 acc 415/681/578/279/38/41/228/185/27/178
+   nec calls 90103185 fail 90046404 unk 0 probes 1139574743 | fsp calls 2888 hits 205 gain 4063 | dumped 400 | block op acc 0 gain 0
+done it 24796 acc 2746 best 9724 restarts 7
+elite: 9724 9724 9724 9722 9722 9722 9722 9722 9722 9722 9722 9722 9722 9722 9722 9722 9722 9720 9718 9718 9718 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717 9717

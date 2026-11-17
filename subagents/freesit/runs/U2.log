@@ -1,0 +1,15 @@
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+start in/t9811.txt: 173 moves, 9811 minutes
+start 9811: 19 free sinks, exact necessity ok (bad move 0)
+[336s it 3859] NEW BEST 9928 (op 2 i 155 D 9) len 166
+[336s it 3859] ADJ BEST 9928 (raw 9928 pen 0)
+[341s it 3913] NEW BEST 9934 (op 7 a 132 c 135 d 148 b 145) len 170
+[341s it 3913] ADJ BEST 9934 (raw 9934 pen 0)
+[343s it 3935] NEW BEST 9936 (op 2 i 157 D 7) len 166
+[343s it 3935] ADJ BEST 9936 (raw 9936 pen 0)
+[348s] it 4000 acc 558 cur 9936 best 9936 temp 15.0 elite 40 gains 78/106/557/101/2/2/10/390/2/0 acc 93/140/143/67/8/9/29/47/4/18
+   nec calls 16537742 fail 16528265 unk 0 probes 213636140 | fsp calls 614 hits 163 gain 5954 | dumped 358 | block op acc 0 gain 0
+[704s] it 8000 acc 1103 cur 9924 best 9936 temp 5.6 elite 40 gains 99/123/614/111/2/6/44/433/2/0 acc 172/277/281/127/17/16/76/90/14/33
+   nec calls 32170178 fail 32151459 unk 0 probes 399529199 | fsp calls 1245 hits 328 gain 11985 | dumped 400 | block op acc 0 gain 0

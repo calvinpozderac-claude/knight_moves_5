@@ -1,3 +1,11 @@
+./run.sh V1 1701 in/t9936.txt 60000 1 178 0.6 60 6 in/t9811.txt in/t9936.txt
+./run.sh V2 1702 in/t9936.txt 60000 60 178 0.85 40 6 in/t9811.txt in/t9936.txt
+./run.sh V3 1703 in/t9936.txt 80000 1 100 0.9 60 6 in/t9811.txt in/t9936.txt --vpen 1000 --vsq f8 --vrange 1 91
+./run.sh V4 1704 in/t9936.txt 80000 1 100 0.9 60 6 in/t9811.txt in/t9936.txt --vpen 1000 --vsq g8 --vrange 1 91
+./run.sh T1 1501 in/t9774.txt 60000 1 178 0.6 60 6 in/t9724.txt in/t9774.txt
+./run.sh T2 1502 in/t9774.txt 60000 60 178 0.85 40 6 in/t9724.txt in/t9774.txt
+./run.sh T3 1503 in/t9774.txt 80000 1 100 0.9 60 6 in/t9724.txt in/t9774.txt --vpen 1000 --vsq g8 --vrange 1 91
+./run.sh T4 1504 in/t9774.txt 80000 1 100 0.9 60 6 in/t9724.txt in/t9774.txt --vpen 1000 --vsq f7 --vrange 1 91
 ./run.sh R5 1305 in/t9520.txt 60000 1 178 0.6 60 6 in/t9382.txt in/t9513.txt in/t9520.txt
 ./run.sh R6 1306 in/t9520.txt 80000 1 100 0.9 60 6 in/t9382.txt in/t9513.txt in/t9520.txt --vpen 1000 --vsq f7 --vrange 1 91
 ./run.sh R7 1307 in/t9520.txt 80000 1 100 0.9 60 6 in/t9382.txt in/t9513.txt in/t9520.txt --vpen 1000 --vsq g7 --vrange 1 91

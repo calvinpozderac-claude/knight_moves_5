@@ -1,0 +1,21 @@
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+start in/t9811.txt: 173 moves, 9811 minutes
+start 9811: 19 free sinks, exact necessity ok (bad move 0)
+[150s] it 2000 acc 274 cur 9573 best 9811 temp 34.8 elite 40 gains 182/4/78/115/6/66/12/60/0/0 acc 54/69/70/23/5/5/19/16/0/13
+   nec calls 7157529 fail 7152209 unk 0 probes 94295157 | fsp calls 283 hits 47 gain 1678 | dumped 220 | block op acc 0 gain 0
+[482s] it 6000 acc 772 cur 9674 best 9811 temp 11.7 elite 40 gains 373/66/484/228/58/68/52/282/8/0 acc 134/182/183/93/13/9/62/57/4/35
+   nec calls 23686067 fail 23670169 unk 0 probes 311021449 | fsp calls 841 hits 141 gain 5176 | dumped 400 | block op acc 0 gain 0
+[688s] it 8000 acc 1005 cur 9688 best 9811 temp 6.8 elite 40 gains 384/73/503/234/58/70/66/315/8/0 acc 163/239/245/123/16/11/77/72/7/52
+   nec calls 33439750 fail 33418169 unk 0 probes 436994558 | fsp calls 1107 hits 184 gain 6781 | dumped 400 | block op acc 0 gain 0
+[916s] it 10000 acc 1259 cur 9680 best 9811 temp 3.9 elite 40 gains 388/82/514/236/58/74/78/330/8/0 acc 209/307/304/148/20/14/93/88/8/68
+   nec calls 44774012 fail 44747272 unk 0 probes 595064862 | fsp calls 1421 hits 243 gain 8974 | dumped 400 | block op acc 0 gain 0
+[1049s] it 12000 acc 1511 cur 9685 best 9811 temp 2.3 elite 40 gains 394/86/518/236/62/74/88/337/8/0 acc 245/381/371/168/26/16/112/96/12/84
+   nec calls 53664817 fail 53632830 unk 0 probes 701278811 | fsp calls 1709 hits 304 gain 11038 | dumped 400 | block op acc 0 gain 0
+[1181s] it 14000 acc 1733 cur 9681 best 9811 temp 1.3 elite 40 gains 401/88/524/238/62/74/95/338/8/0 acc 299/433/425/199/26/17/121/103/12/98
+   nec calls 61596343 fail 61558816 unk 0 probes 806863243 | fsp calls 1981 hits 357 gain 12776 | dumped 400 | block op acc 0 gain 0
+[1267s it 15195] NEW BEST 9932 (op 2 i 158 D 4) len 168
+[1267s it 15195] ADJ BEST 9932 (raw 9932 pen 0)
+[1269s it 15212] NEW BEST 9936 (op 2 i 94 D 3) len 166
+[1269s it 15212] ADJ BEST 9936 (raw 9936 pen 0)

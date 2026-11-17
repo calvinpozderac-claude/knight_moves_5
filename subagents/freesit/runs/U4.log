@@ -1,0 +1,13 @@
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+start in/t9811.txt: 173 moves, 9811 minutes
+start 9811: 19 free sinks, exact necessity ok (bad move 0)
+[158s] it 2000 acc 246 cur 9791 best 9811 temp 39.8 elite 40 gains 12/8/78/0/0/0/710/308/0/0 acc 31/62/59/19/3/2/30/22/4/14
+   nec calls 8460535 fail 8454886 unk 0 probes 104312625 | fsp calls 240 hits 16 gain 517 | dumped 223 | block op acc 0 gain 0
+[886s] it 12000 acc 1288 cur 9799 best 9811 temp 5.1 elite 40 gains 47/91/208/82/4/10/813/419/4/0 acc 173/303/294/128/16/22/116/116/16/104
+   nec calls 45659122 fail 45625270 unk 0 probes 521535453 | fsp calls 1357 hits 71 gain 2285 | dumped 400 | block op acc 0 gain 0
+[1002s] it 14000 acc 1521 cur 9805 best 9811 temp 3.4 elite 40 gains 48/92/214/82/4/10/821/433/4/0 acc 212/360/351/156/19/23/131/126/17/126
+   nec calls 54053237 fail 54013334 unk 0 probes 626257415 | fsp calls 1612 hits 77 gain 2433 | dumped 400 | block op acc 0 gain 0
+[1337s] it 20000 acc 2037 cur 9809 best 9811 temp 60.0 elite 40 gains 51/94/226/84/4/10/831/471/4/0 acc 310/489/449/211/23/26/169/165/24/171
+   nec calls 75803306 fail 75745725 unk 0 probes 886786328 | fsp calls 2241 hits 112 gain 3685 | dumped 400 | block op acc 0 gain 0
