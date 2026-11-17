@@ -1,0 +1,21 @@
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div10_9938.txt: 173 moves, 9938 minutes (replay 9938)
+start in/t9944.txt: 172 moves, 9944 minutes
+start 9944: 20 free sinks, exact necessity ok (bad move 0)
+[157s] it 2000 acc 322 cur 9933 best 9944 temp 26.5 elite 40 gains 142/421/674/340/0/0/150/225/0/144 acc 49/87/92/33/3/1/30/20/5/2
+   nec calls 8281892 fail 8277318 unk 0 probes 110252925 | fsp calls 336 hits 89 gain 3608 | dumped 202 | block op acc 0 gain 0
+[279s] it 4000 acc 634 cur 9944 best 9944 temp 11.7 elite 40 gains 164/480/722/389/0/2/168/259/4/144 acc 111/165/175/58/8/8/55/44/8/2
+   nec calls 15307090 fail 15297887 unk 0 probes 195706100 | fsp calls 686 hits 200 gain 7703 | dumped 371 | block op acc 0 gain 0
+[455s] it 6000 acc 901 cur 9937 best 9944 temp 5.1 elite 40 gains 172/494/743/393/0/2/178/273/4/144 acc 161/238/243/82/12/9/73/70/11/2
+   nec calls 25054424 fail 25040792 unk 0 probes 322595616 | fsp calls 1000 hits 315 gain 11866 | dumped 400 | block op acc 0 gain 0
+[873s] it 10000 acc 1398 cur 9944 best 9944 temp 60.0 elite 40 gains 182/516/780/399/0/6/191/293/4/144 acc 248/397/369/132/18/14/106/96/14/4
+   nec calls 47871125 fail 47847824 unk 0 probes 621458021 | fsp calls 1657 hits 540 gain 20044 | dumped 400 | block op acc 0 gain 0
+[1467s] it 18000 acc 2618 cur 9938 best 9944 temp 2.3 elite 40 gains 289/1009/1168/660/4/12/241/932/12/144 acc 443/725/712/268/31/28/189/186/31/5
+   nec calls 82378984 fail 82336904 unk 0 probes 1035334356 | fsp calls 3056 hits 1002 gain 37275 | dumped 400 | block op acc 0 gain 0
+done it 19382 acc 2765 best 9944 restarts 4
+elite: 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944

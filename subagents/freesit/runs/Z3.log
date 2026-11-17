@@ -1,0 +1,26 @@
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+NEW_RECORD_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/div0_9943.txt: 178 moves, 9943 minutes
+start 9943: 23 free sinks, exact necessity ok (bad move 0)
+[146s it 1249] ADJ BEST 8481 (raw 9481 pen 1000)
+[146s it 1253] ADJ BEST 8557 (raw 9557 pen 1000)
+[230s it 2016] ADJ BEST 8558 (raw 9558 pen 1000)
+[402s it 3343] ADJ BEST 8559 (raw 9559 pen 1000)
+[402s it 3354] ADJ BEST 8560 (raw 9560 pen 1000)
+[419s it 3539] ADJ BEST 8565 (raw 9565 pen 1000)
+[420s it 3545] ADJ BEST 8569 (raw 9569 pen 1000)
+[426s it 3586] ADJ BEST 8573 (raw 9573 pen 1000)
+[684s it 6109] ADJ BEST 8597 (raw 9597 pen 1000)
+[687s it 6138] ADJ BEST 8612 (raw 9612 pen 1000)
+[689s it 6160] ADJ BEST 8613 (raw 9613 pen 1000)
+[765s it 6923] ADJ BEST 8615 (raw 9615 pen 1000)
+[904s it 8294] ADJ BEST 8616 (raw 9616 pen 1000)
+[1010s it 9315] ADJ BEST 8619 (raw 9619 pen 1000)
+[1076s] it 10000 acc 1222 cur 9612 best 9943 temp 7.7 elite 40 gains 170/1204/239/16/3/0/56/292/2/3 acc 175/282/268/117/14/15/122/111/11/107
+   nec calls 36122155 fail 36091994 unk 0 probes 384370289 | fsp calls 1383 hits 86 gain 2178 | dumped 400 | block op acc 0 gain 0
+done it 16596 acc 1961 best 9943 restarts 1052
+elite: 9943 9943 9943 9941 9940 9940 9940 9940 9939 9938 9938 9938 9938 9938 9938 9938 9938 9938 9936 9936 9936 9936 9935 9935 9935 9935 9934 9933 9933 9933 9933 9933 9931 9931 9931 9929 9929 9927 9926 9925

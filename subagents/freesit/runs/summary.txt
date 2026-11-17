@@ -74,3 +74,35 @@ X1 0  done it 25459 acc 2757 best 9943 restarts 3
 X2 0  done it 26291 acc 2747 best 9943 restarts 2
 X3 0  done it 26555 acc 2995 best 9943 restarts 13
 X4 0  done it 26160 acc 2507 best 9943 restarts 4
+T3 0  [1169s] it 18000 acc 2358 cur 9385 best 9774 temp 1.5 elite 40 gains 504/306/121/32/10/12/245/670/6/0 acc 383/543/537/249/35/29/197/132/29/224
+T2 3 9779 [908s it 10726] NEW BEST 9779 (op 7 a 35 c 37 d 67 b 71) len 175
+T4 1 9775 [1271s] it 20000 acc 2189 cur 9774 best 9775 temp 60.0 elite 40 gains 253/216/1178/26/2/10/73/698/4/0 acc 340/491/516/195/44/28/178/187/17/193
+T1 3 9778 [1262s] it 16000 acc 2177 cur 9572 best 9778 temp 45.7 elite 40 gains 89/467/529/30/4/4/140/538/36/1 acc 338/555/501/226/28/22/187/180/20/120
+Ydiv11_9913 11 9941 done it 26878 acc 3430 best 9941 restarts 0
+Ydiv1_9934 2 9937 done it 25411 acc 3287 best 9937 restarts 1
+Ydiv10_9938 1 9940 done it 25992 acc 3116 best 9940 restarts 2
+Ydiv0_9943 0  done it 26105 acc 3230 best 9943 restarts 1
+Ydiv2_9867 6 9938 done it 13634 acc 1628 best 9938 restarts 0
+Ydiv3_9940 2 9944 done it 14337 acc 1752 best 9944 restarts 0
+Ydiv4_9860 6 9871 done it 15238 acc 1929 best 9871 restarts 0
+Ydiv5_9939 1 9943 done it 14165 acc 1775 best 9943 restarts 1
+Z3 0  done it 16596 acc 1961 best 9943 restarts 1052
+Z4 0  done it 16022 acc 1682 best 9943 restarts 2
+Z2 0  done it 16956 acc 1431 best 9943 restarts 0
+Z1 0  done it 17579 acc 1528 best 9943 restarts 1
+Z6 0  done it 31270 acc 3280 best 9943 restarts 7012
+Z7 0  done it 32961 acc 2586 best 9943 restarts 3
+Z5 0  done it 30981 acc 2927 best 9943 restarts 5
+Z8 0  done it 31079 acc 3455 best 9943 restarts 3
+ZR3 15 9936 done it 29649 acc 3919 best 9936 restarts 1
+ZR5 1 9942 done it 25167 acc 3189 best 9942 restarts 2
+ZR6 18 9937 done it 25221 acc 3141 best 9937 restarts 1
+ZR9 0  done it 25108 acc 3273 best 9944 restarts 4
+AA1 0  done it 24191 acc 3334 best 9944 restarts 22
+AA2 1 9945 done it 29940 acc 2768 best 9945 restarts 2
+AA3 0  done it 25311 acc 3412 best 9944 restarts 20
+AA4 0  done it 24849 acc 3545 best 9944 restarts 61
+AA5 0  done it 28175 acc 2956 best 9944 restarts 7
+AA6 0  done it 19382 acc 2765 best 9944 restarts 4
+AA7 0  done it 23450 acc 3059 best 9944 restarts 1
+AA8 1 9945 done it 25567 acc 2761 best 9945 restarts 26

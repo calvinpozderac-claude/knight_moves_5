@@ -1,0 +1,30 @@
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+NEW_RECORD_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/div0_9943.txt: 178 moves, 9943 minutes
+start 9943: 23 free sinks, exact necessity ok (bad move 0)
+[116s it 2049] ADJ BEST 6800 (raw 9800 pen 3000)
+[118s it 2076] ADJ BEST 6862 (raw 9862 pen 3000)
+[125s it 2198] ADJ BEST 6863 (raw 9863 pen 3000)
+[133s it 2291] ADJ BEST 6923 (raw 9923 pen 3000)
+[135s it 2344] ADJ BEST 6925 (raw 9925 pen 3000)
+[148s it 2650] ADJ BEST 7412 (raw 9412 pen 2000)
+[153s it 2744] ADJ BEST 7462 (raw 9462 pen 2000)
+[153s it 2751] ADJ BEST 7482 (raw 9482 pen 2000)
+[209s it 3954] ADJ BEST 7521 (raw 9521 pen 2000)
+[210s it 3977] ADJ BEST 7529 (raw 9529 pen 2000)
+[210s it 3988] ADJ BEST 7531 (raw 9531 pen 2000)
+[211s it 3998] ADJ BEST 7535 (raw 9535 pen 2000)
+[211s] it 4000 acc 466 cur 9535 best 9943 temp 26.5 elite 40 gains 83/1093/321/1232/2/0/138/206/2/0 acc 74/110/102/47/4/7/51/39/4/28
+   nec calls 12834030 fail 12824622 unk 0 probes 134325501 | fsp calls 501 hits 17 gain 548 | dumped 400 | block op acc 0 gain 0
+[216s it 4097] ADJ BEST 7541 (raw 9541 pen 2000)
+[221s it 4189] ADJ BEST 7542 (raw 9542 pen 2000)
+[630s] it 12000 acc 1307 cur 9520 best 9943 temp 5.1 elite 40 gains 174/1107/351/1253/5/6/202/326/2/0 acc 208/314/266/137/24/18/152/109/13/66
+   nec calls 41478322 fail 41451213 unk 0 probes 413865733 | fsp calls 1465 hits 72 gain 2302 | dumped 400 | block op acc 0 gain 0
+[1232s] it 24000 acc 2515 cur 9934 best 9943 temp 26.5 elite 40 gains 1180/1113/371/1257/8/12/228/1357/2/0 acc 422/624/535/253/44/42/264/220/25/86
+   nec calls 80188022 fail 80133771 unk 0 probes 881408378 | fsp calls 2913 hits 176 gain 4710 | dumped 400 | block op acc 0 gain 0
+done it 31270 acc 3280 best 9943 restarts 7012
+elite: 9943 9943 9943 9943 9943 9943 9943 9943 9943 9941 9941 9940 9940 9939 9938 9938 9938 9938 9938 9938 9938 9938 9936 9936 9936 9936 9936 9936 9936 9936 9936 9935 9934 9934 9934 9934 9934 9934 9934 9934

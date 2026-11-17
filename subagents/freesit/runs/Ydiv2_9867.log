@@ -1,0 +1,26 @@
+in/div2_9867.txt: 165 moves, 9867 minutes (replay 9867)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+in/div8_9938.txt: 179 moves, 9938 minutes (replay 9938)
+in/div6_9936.txt: 166 moves, 9936 minutes (replay 9936)
+NEW_RECORD_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/div2_9867.txt: 165 moves, 9867 minutes
+start 9867: 19 free sinks, exact necessity ok (bad move 0)
+[3s it 82] NEW BEST 9930 (op 1 i 75 D 2) len 164
+[3s it 82] ADJ BEST 9930 (raw 9930 pen 0)
+[47s it 771] NEW BEST 9932 (op 7 a 111 c 106 d 135 b 139) len 171
+[47s it 771] ADJ BEST 9932 (raw 9932 pen 0)
+[129s] it 2000 acc 253 cur 9925 best 9932 temp 24.5 elite 40 gains 168/140/61/4/0/0/14/175/0/0 acc 46/68/63/23/4/1/24/20/0/4
+   nec calls 8478422 fail 8473179 unk 0 probes 93770889 | fsp calls 265 hits 52 gain 2084 | dumped 193 | block op acc 0 gain 0
+[438s it 4824] NEW BEST 9934 (op 2 i 165 D 9) len 171
+[438s it 4824] ADJ BEST 9934 (raw 9934 pen 0)
+[905s it 8452] NEW BEST 9935 (op 3 i 65 D 2) len 166
+[905s it 8452] ADJ BEST 9935 (raw 9935 pen 0)
+[1425s it 12388] NEW BEST 9937 (op 7 a 69 c 77 d 107 b 98) len 167
+[1425s it 12388] ADJ BEST 9937 (raw 9937 pen 0)
+[1467s it 12658] NEW BEST 9938 (op 7 a 30 c 30 d 41 b 37) len 175
+[1467s it 12658] ADJ BEST 9938 (raw 9938 pen 0)
+done it 13634 acc 1628 best 9938 restarts 0
+elite: 9943 9943 9940 9939 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938

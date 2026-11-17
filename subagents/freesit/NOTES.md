@@ -28,3 +28,9 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - 15:24 9937, 9941, **9943** (NEW_RECORD_9943.txt, checker ok). Gains slowing (+7 in 30 min). W1-W4 from 9943 queued.
 - 15:54 plateau at 9943 for 30 min. Queued X1 (force b1 start: penalty on c2 at move 1), X2 (b1,c1 opposite sitters), X3 (g8,f8,d5 at 700), X4 (b1).
 - 16:44 no gain after 9943 over ~1h20 (W, X jobs: b1 start, b1/c1, g8+f8+d5 penalties all <= 9943). Saver and workers still running.
+- 16:44 Phase 5 (from 9943): saver threshold 9943. 12 diverse seeds in/div*_*.txt (farthest-point from the 609 distinct >=9850 tours); jobs Ydiv* = plain LNS from each, donor pool of 7 high tours (op 7 crossover).
+- 17:15 Ydiv jobs (diverse seeds + crossover pool): best 9941/9940/9937, no gain over 9943. Anatomy of 9943: sitters with prefix arrivals and few late sits: c3 3/1, c1 2/1, f8 2/1, g8 2/1, d1 2/1, e5 1/1, c5 1/1, d5 1/2. Queued Z1-Z8 hard penalties (1000) on c3,c1,d1,e5,c5,f8+g8,c3+c1,d5 before move 85.
+- 17:44 9944 found (NEW_RECORD_9944.txt, from Z jobs). Z1-Z4 no gain; queued relax jobs ZR3/5/6 from adjusted Z tours and ZR9 from 9944.
+- 18:34 ZR/Z5-8 no gain. Queued AA1-AA8: plain LNS from 9944 with varied focus/temperature (t0 40-150) and a crossover pool.
+- 19:04 9945 (NEW_RECORD_9945.txt, checker ok) from AA2 (focus 35-130, t0 60).
+- 19:40 end of phase 5: best 9945. Saver/workers left running.

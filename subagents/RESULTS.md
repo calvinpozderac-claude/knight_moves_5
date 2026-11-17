@@ -51,3 +51,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 10 | freesit | continued penalty-then-relax cycle from 9,520 | **9,690** (+170) | checker ok |
 | 10 | freesit | continued penalty-then-relax cycle | **9,936** (+246 over 9,690) | checker ok, 166 moves |
 | 10 | freesit | plain relaxed LNS + hard single-square penalties for diversity | **9,943** | checker ok, 178 moves; plateau after; b1 start/sitters no gain |
+| 10 | freesit | hard penalty before move 85 then plain LNS (focus 35-130) | **9,945** (+2) | checker ok, 176 moves; climb flattened |

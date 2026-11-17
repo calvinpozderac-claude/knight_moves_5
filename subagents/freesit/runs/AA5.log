@@ -1,0 +1,21 @@
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div10_9938.txt: 173 moves, 9938 minutes (replay 9938)
+start in/t9944.txt: 172 moves, 9944 minutes
+start 9944: 20 free sinks, exact necessity ok (bad move 0)
+[240s] it 4000 acc 469 cur 9934 best 9944 temp 13.9 elite 40 gains 12/23/138/237/1/132/40/240/0/0 acc 64/117/99/42/8/6/52/41/7/33
+   nec calls 15518359 fail 15506684 unk 0 probes 142927975 | fsp calls 496 hits 21 gain 514 | dumped 400 | block op acc 0 gain 0
+[786s] it 14000 acc 1515 cur 9932 best 9944 temp 13.9 elite 40 gains 90/344/298/376/134/134/389/624/0/0 acc 225/395/325/149/28/18/145/118/17/95
+   nec calls 50174022 fail 50133636 unk 0 probes 484743620 | fsp calls 1692 hits 112 gain 2324 | dumped 400 | block op acc 0 gain 0
+[1271s] it 22000 acc 2344 cur 9739 best 9944 temp 33.3 elite 40 gains 229/487/385/377/134/134/423/1157/0/0 acc 359/599/503/225/34/31/217/193/28/155
+   nec calls 82434304 fail 82371321 unk 0 probes 789398718 | fsp calls 2634 hits 173 gain 4179 | dumped 400 | block op acc 0 gain 0
+[1486s] it 26000 acc 2749 cur 9930 best 9944 temp 5.8 elite 40 gains 248/769/478/387/134/134/445/1244/2/0 acc 416/698/590/265/38/35/257/229/33/188
+   nec calls 96461602 fail 96387455 unk 0 probes 914476834 | fsp calls 3087 hits 203 gain 5264 | dumped 400 | block op acc 0 gain 0
+[1591s] it 28000 acc 2939 cur 9932 best 9944 temp 2.4 elite 40 gains 252/780/481/387/134/134/455/1260/2/0 acc 447/758/623/281/38/37/276/240/38/201
+   nec calls 102717536 fail 102637922 unk 0 probes 985453288 | fsp calls 3306 hits 226 gain 5742 | dumped 400 | block op acc 0 gain 0
+done it 28175 acc 2956 best 9944 restarts 7
+elite: 9944 9944 9944 9944 9944 9944 9943 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9940 9939 9939 9939 9939 9939 9939 9939

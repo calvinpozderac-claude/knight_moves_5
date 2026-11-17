@@ -1,0 +1,60 @@
+in/zadj6.txt: 167 moves, 9412 minutes (replay 9412)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/zadj6.txt: 167 moves, 9412 minutes
+start 9412: 15 free sinks, exact necessity ok (bad move 0)
+[1s it 28] NEW BEST 9617 (op 1 i 29 D 3) len 169
+[1s it 28] ADJ BEST 9617 (raw 9617 pen 0)
+[2s it 33] NEW BEST 9619 (op 6 a 154 len 10) len 169
+[2s it 33] ADJ BEST 9619 (raw 9619 pen 0)
+[6s it 188] NEW BEST 9620 (op 0 i 161 D 6) len 168
+[6s it 188] ADJ BEST 9620 (raw 9620 pen 0)
+[6s it 197] NEW BEST 9628 (op 2 i 99 D 2) len 170
+[6s it 197] ADJ BEST 9628 (raw 9628 pen 0)
+[15s it 383] NEW BEST 9673 (op 1 i 96 D 3) len 163
+[15s it 383] ADJ BEST 9673 (raw 9673 pen 0)
+[20s it 497] NEW BEST 9674 (op 1 i 71 D 3) len 167
+[20s it 497] ADJ BEST 9674 (raw 9674 pen 0)
+[20s it 524] NEW BEST 9868 (op 2 i 144 D 4) len 163
+[20s it 524] ADJ BEST 9868 (raw 9868 pen 0)
+[23s it 564] NEW BEST 9911 (op 2 i 125 D 2) len 166
+[23s it 564] ADJ BEST 9911 (raw 9911 pen 0)
+[80s it 1529] NEW BEST 9914 (op 2 i 135 D 2) len 171
+[80s it 1529] ADJ BEST 9914 (raw 9914 pen 0)
+[112s] it 2000 acc 280 cur 9731 best 9914 temp 34.8 elite 40 gains 12/479/321/55/0/2/12/63/0/0 acc 50/79/62/28/5/3/20/21/3/9
+   nec calls 7683874 fail 7678281 unk 0 probes 72731714 | fsp calls 293 hits 59 gain 2398 | dumped 219 | block op acc 0 gain 0
+[157s it 2719] NEW BEST 9921 (op 7 a 78 c 81 d 109 b 106) len 175
+[157s it 2719] ADJ BEST 9921 (raw 9921 pen 0)
+[158s it 2728] NEW BEST 9923 (op 7 a 170 c 165 d 170 b 173) len 175
+[158s it 2728] ADJ BEST 9923 (raw 9923 pen 0)
+[158s it 2748] NEW BEST 9925 (op 2 i 102 D 8) len 173
+[158s it 2748] ADJ BEST 9925 (raw 9925 pen 0)
+[165s it 2857] NEW BEST 9927 (op 6 a 162 len 3) len 171
+[165s it 2857] ADJ BEST 9927 (raw 9927 pen 0)
+[197s it 3470] NEW BEST 9928 (op 7 a 132 c 126 d 145 b 151) len 177
+[197s it 3470] ADJ BEST 9928 (raw 9928 pen 0)
+[273s it 4709] NEW BEST 9933 (op 7 a 103 c 101 d 131 b 133) len 174
+[273s it 4709] ADJ BEST 9933 (raw 9933 pen 0)
+[311s it 5267] NEW BEST 9935 (op 2 i 161 D 2) len 169
+[311s it 5267] ADJ BEST 9935 (raw 9935 pen 0)
+[374s] it 6000 acc 838 cur 9933 best 9935 temp 11.7 elite 40 gains 220/493/692/114/2/10/36/435/0/0 acc 133/222/205/81/13/12/68/69/7/28
+   nec calls 23990309 fail 23972767 unk 0 probes 262766277 | fsp calls 894 hits 155 gain 5709 | dumped 400 | block op acc 0 gain 0
+[637s] it 10000 acc 1323 cur 9933 best 9935 temp 3.9 elite 40 gains 231/500/722/118/2/14/56/482/2/0 acc 202/352/312/137/16/18/115/105/9/57
+   nec calls 40956254 fail 40927398 unk 0 probes 441045018 | fsp calls 1456 hits 247 gain 8845 | dumped 400 | block op acc 0 gain 0
+[913s] it 14000 acc 1746 cur 9934 best 9935 temp 1.3 elite 40 gains 236/504/744/122/3/16/66/486/2/0 acc 263/474/414/189/19/21/147/127/11/81
+   nec calls 58742556 fail 58703108 unk 0 probes 646028507 | fsp calls 1997 hits 350 gain 12628 | dumped 400 | block op acc 0 gain 0
+[959s it 14560] NEW BEST 9936 (op 3 i 32 D 2) len 168
+[959s it 14560] ADJ BEST 9936 (raw 9936 pen 0)
+[1060s] it 16000 acc 1964 cur 9850 best 9936 temp 45.7 elite 40 gains 289/839/1033/124/3/20/131/556/2/0 acc 293/518/472/214/20/24/170/151/11/91
+   nec calls 68307121 fail 68262622 unk 0 probes 760979890 | fsp calls 2240 hits 390 gain 14150 | dumped 400 | block op acc 0 gain 0
+[1311s] it 20000 acc 2515 cur 9918 best 9936 temp 15.3 elite 40 gains 396/1119/1369/132/5/22/271/765/2/0 acc 380/664/601/264/23/32/230/191/13/117
+   nec calls 85007732 fail 84952136 unk 0 probes 944830700 | fsp calls 2844 hits 497 gain 18201 | dumped 400 | block op acc 0 gain 0
+[1427s] it 22000 acc 2754 cur 9932 best 9936 temp 8.9 elite 40 gains 399/1131/1378/132/7/24/289/806/2/0 acc 418/720/648/289/27/36/253/218/16/129
+   nec calls 92464543 fail 92403679 unk 0 probes 1027355583 | fsp calls 3116 hits 544 gain 19955 | dumped 400 | block op acc 0 gain 0
+[1474s it 22758] NEW BEST 9937 (op 0 i 32 D 4) len 167
+[1474s it 22758] ADJ BEST 9937 (raw 9937 pen 0)
+done it 25221 acc 3141 best 9937 restarts 1
+elite: 9944 9943 9940 9939 9937 9937 9937 9937 9937 9937 9937 9937 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936

@@ -1,0 +1,22 @@
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+in/div8_9938.txt: 179 moves, 9938 minutes (replay 9938)
+in/div6_9936.txt: 166 moves, 9936 minutes (replay 9936)
+NEW_RECORD_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/div3_9940.txt: 170 moves, 9940 minutes
+start 9940: 20 free sinks, exact necessity ok (bad move 0)
+[135s] it 2000 acc 238 cur 9928 best 9940 temp 24.5 elite 40 gains 17/73/18/9/0/2/138/81/0/0 acc 51/54/57/17/3/1/26/20/2/7
+   nec calls 9119574 fail 9114127 unk 0 probes 98285029 | fsp calls 254 hits 43 gain 1613 | dumped 184 | block op acc 0 gain 0
+[888s it 8617] NEW BEST 9943 (op 0 i 31 D 6) len 173
+[888s it 8617] ADJ BEST 9943 (raw 9943 pen 0)
+[894s it 8666] NEW BEST 9944 (op 2 i 74 D 6) len 172
+[894s it 8666] ADJ BEST 9944 (raw 9944 pen 0)
+[1318s] it 12000 acc 1486 cur 9941 best 9944 temp 2.1 elite 40 gains 61/203/135/15/3/8/194/221/0/0 acc 256/381/345/142/15/13/141/130/14/49
+   nec calls 50523069 fail 50489332 unk 0 probes 557620727 | fsp calls 1687 hits 326 gain 11551 | dumped 400 | block op acc 0 gain 0
+[1560s] it 14000 acc 1712 cur 9943 best 9944 temp 1.3 elite 40 gains 65/206/139/15/3/8/198/229/0/0 acc 307/434/396/164/18/19/156/143/15/60
+   nec calls 57704046 fail 57664731 unk 0 probes 639866516 | fsp calls 1972 hits 376 gain 13307 | dumped 400 | block op acc 0 gain 0
+done it 14337 acc 1752 best 9944 restarts 0
+elite: 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9943 9943 9943 9943 9943 9943 9943 9943 9943 9943 9943

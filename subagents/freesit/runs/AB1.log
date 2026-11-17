@@ -1,0 +1,12 @@
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/t9945.txt: 176 moves, 9945 minutes
+start 9945: 21 free sinks, exact necessity ok (bad move 0)
+[251s] it 4000 acc 442 cur 9924 best 9945 temp 11.7 elite 40 gains 158/280/497/292/0/2/137/418/0/0 acc 51/108/122/39/3/7/51/35/6/20
+   nec calls 14634519 fail 14624633 unk 0 probes 170730321 | fsp calls 497 hits 35 gain 961 | dumped 394 | block op acc 0 gain 0
+[598s] it 10000 acc 995 cur 9944 best 9945 temp 60.0 elite 40 gains 167/284/514/300/0/4/161/521/0/0 acc 133/238/256/91/12/9/107/89/11/49
+   nec calls 37764094 fail 37738245 unk 0 probes 433247323 | fsp calls 1187 hits 102 gain 2617 | dumped 400 | block op acc 0 gain 0

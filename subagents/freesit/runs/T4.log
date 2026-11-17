@@ -27,3 +27,5 @@ start 9774: 22 free sinks, exact necessity ok (bad move 0)
 [1184s] it 18000 acc 1992 cur 9772 best 9775 temp 1.5 elite 40 gains 253/212/1177/22/2/10/71/694/4/0 acc 307/458/460/179/42/26/160/172/16/172
    nec calls 66235366 fail 66184875 unk 0 probes 927176630 | fsp calls 2151 hits 65 gain 1953 | dumped 400 | block op acc 0 gain 0
 [1228s it 18902] ADJ BEST 9775 (raw 9775 pen 0)
+[1271s] it 20000 acc 2189 cur 9774 best 9775 temp 60.0 elite 40 gains 253/216/1178/26/2/10/73/698/4/0 acc 340/491/516/195/44/28/178/187/17/193
+   nec calls 71317899 fail 71261656 unk 0 probes 995407885 | fsp calls 2399 hits 77 gain 2113 | dumped 400 | block op acc 0 gain 0

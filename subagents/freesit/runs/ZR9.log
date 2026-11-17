@@ -1,0 +1,24 @@
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/t9944.txt: 172 moves, 9944 minutes
+start 9944: 20 free sinks, exact necessity ok (bad move 0)
+[108s] it 2000 acc 281 cur 9933 best 9944 temp 34.8 elite 40 gains 197/93/193/168/0/63/18/162/0/0 acc 42/64/92/21/4/3/26/20/4/5
+   nec calls 7355768 fail 7350347 unk 0 probes 75288954 | fsp calls 290 hits 65 gain 2562 | dumped 209 | block op acc 0 gain 0
+[360s] it 6000 acc 827 cur 9934 best 9944 temp 11.7 elite 40 gains 221/236/305/180/0/65/58/472/2/0 acc 130/197/219/66/9/8/77/81/14/26
+   nec calls 24116241 fail 24099793 unk 0 probes 261367687 | fsp calls 898 hits 181 gain 6780 | dumped 400 | block op acc 0 gain 0
+[517s] it 8000 acc 1108 cur 9928 best 9944 temp 6.8 elite 40 gains 230/243/342/181/0/69/64/488/4/0 acc 181/273/278/99/16/12/92/97/16/44
+   nec calls 34486155 fail 34464001 unk 0 probes 389081783 | fsp calls 1217 hits 228 gain 8372 | dumped 400 | block op acc 0 gain 0
+[898s] it 14000 acc 1793 cur 9944 best 9944 temp 1.3 elite 40 gains 246/263/362/187/0/71/82/524/4/2 acc 289/466/454/168/22/20/136/153/19/66
+   nec calls 62197979 fail 62159281 unk 0 probes 693592275 | fsp calls 2074 hits 405 gain 14508 | dumped 400 | block op acc 0 gain 0
+[999s] it 16000 acc 2058 cur 9749 best 9944 temp 45.7 elite 40 gains 249/440/598/187/0/71/225/530/4/2 acc 327/541/527/197/25/22/156/173/20/70
+   nec calls 69059810 fail 69015478 unk 0 probes 765778360 | fsp calls 2374 hits 463 gain 16505 | dumped 400 | block op acc 0 gain 0
+[1139s] it 18000 acc 2340 cur 9931 best 9944 temp 26.5 elite 40 gains 554/449/625/303/2/72/490/645/4/2 acc 369/612/592/232/33/27/180/195/20/80
+   nec calls 79453081 fail 79403023 unk 0 probes 881792025 | fsp calls 2668 hits 522 gain 18600 | dumped 400 | block op acc 0 gain 0
+[1400s] it 22000 acc 2870 cur 9932 best 9944 temp 8.9 elite 40 gains 567/469/698/360/4/74/514/799/4/2 acc 449/739/721/286/39/35/235/241/23/102
+   nec calls 97668369 fail 97607097 unk 0 probes 1104710811 | fsp calls 3262 hits 631 gain 22526 | dumped 400 | block op acc 0 gain 0
+done it 25108 acc 3273 best 9944 restarts 4
+elite: 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944

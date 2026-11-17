@@ -1,0 +1,22 @@
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+NEW_RECORD_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/div0_9943.txt: 178 moves, 9943 minutes
+start 9943: 23 free sinks, exact necessity ok (bad move 0)
+[196s] it 2000 acc 189 cur 9881 best 9943 temp 39.8 elite 40 gains 3/64/66/5/2/2/18/428/0/0 acc 27/53/39/15/4/1/26/19/0/5
+   nec calls 7101994 fail 7095276 unk 0 probes 65255657 | fsp calls 268 hits 10 gain 235 | dumped 174 | block op acc 0 gain 0
+[416s] it 4000 acc 346 cur 9863 best 9943 temp 26.5 elite 40 gains 13/64/130/237/2/2/28/494/0/0 acc 53/92/71/32/6/2/48/31/2/9
+   nec calls 15452403 fail 15438822 unk 0 probes 137624238 | fsp calls 528 hits 19 gain 573 | dumped 314 | block op acc 0 gain 0
+[992s] it 10000 acc 891 cur 9931 best 9943 temp 7.7 elite 40 gains 15/132/284/242/8/12/115/599/3/0 acc 128/224/202/77/13/18/128/73/8/20
+   nec calls 35837211 fail 35803587 unk 0 probes 338089238 | fsp calls 1347 hits 55 gain 1773 | dumped 400 | block op acc 0 gain 0
+[1197s] it 12000 acc 1060 cur 9929 best 9943 temp 5.1 elite 40 gains 15/133/289/242/8/14/127/602/3/0 acc 159/269/236/94/14/21/146/83/11/27
+   nec calls 42672848 fail 42632047 unk 0 probes 405309945 | fsp calls 1649 hits 78 gain 2451 | dumped 400 | block op acc 0 gain 0
+[1394s] it 14000 acc 1202 cur 9931 best 9943 temp 3.4 elite 40 gains 15/135/289/242/8/14/139/608/3/0 acc 180/307/273/106/17/22/161/95/12/29
+   nec calls 48939035 fail 48891193 unk 0 probes 472077901 | fsp calls 1898 hits 98 gain 3006 | dumped 400 | block op acc 0 gain 0
+[1507s] it 16000 acc 1377 cur 9937 best 9943 temp 2.3 elite 40 gains 20/144/298/243/8/16/149/612/3/0 acc 214/357/310/116/18/24/179/111/12/36
+   nec calls 56119185 fail 56064554 unk 0 probes 545712261 | fsp calls 2186 hits 112 gain 3336 | dumped 400 | block op acc 0 gain 0
+done it 17579 acc 1528 best 9943 restarts 1
+elite: 9943 9943 9943 9943 9940 9939 9939 9939 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937
