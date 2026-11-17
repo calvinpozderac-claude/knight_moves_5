@@ -8,3 +8,7 @@ start in/t9945.txt: 176 moves, 9945 minutes
 start 9945: 21 free sinks, exact necessity ok (bad move 0)
 [398s] it 6000 acc 708 cur 9940 best 9945 temp 5.1 elite 40 gains 251/67/196/175/2/53/45/273/0/0 acc 88/178/176/63/6/10/67/79/7/34
    nec calls 23937011 fail 23922366 unk 0 probes 279547494 | fsp calls 839 hits 55 gain 1631 | dumped 400 | block op acc 0 gain 0
+[720s] it 12000 acc 1256 cur 9931 best 9945 temp 26.5 elite 40 gains 264/185/403/189/2/57/124/784/0/0 acc 158/318/303/112/11/19/116/143/13/63
+   nec calls 46747273 fail 46716415 unk 0 probes 520802306 | fsp calls 1502 hits 109 gain 2754 | dumped 400 | block op acc 0 gain 0
+[953s] it 16000 acc 1603 cur 9923 best 9945 temp 5.1 elite 40 gains 265/190/463/190/2/57/162/866/0/0 acc 211/415/368/140/17/26/162/177/15/72
+   nec calls 61167848 fail 61126971 unk 0 probes 695067648 | fsp calls 1922 hits 148 gain 3882 | dumped 400 | block op acc 0 gain 0

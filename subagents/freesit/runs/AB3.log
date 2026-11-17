@@ -14,3 +14,5 @@ start 9945: 21 free sinks, exact necessity ok (bad move 0)
    nec calls 23319033 fail 23302082 unk 0 probes 310697448 | fsp calls 905 hits 163 gain 5285 | dumped 400 | block op acc 0 gain 0
 [691s] it 10000 acc 1306 cur 9939 best 9945 temp 60.0 elite 40 gains 83/329/204/108/0/4/47/256/0/0 acc 226/309/337/145/15/13/91/107/11/52
    nec calls 41933627 fail 41905652 unk 0 probes 524562937 | fsp calls 1504 hits 258 gain 8545 | dumped 400 | block op acc 0 gain 0
+[974s] it 14000 acc 1866 cur 9927 best 9945 temp 11.7 elite 40 gains 102/466/928/163/10/6/189/412/0/0 acc 314/449/479/197/26/17/150/154/12/68
+   nec calls 59864172 fail 59825068 unk 0 probes 740323067 | fsp calls 2100 hits 374 gain 12324 | dumped 400 | block op acc 0 gain 0
