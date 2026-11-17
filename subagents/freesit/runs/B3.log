@@ -1,0 +1,29 @@
+in/a4adj.txt: 170 moves, 9222 minutes (replay 9222)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+start in/a4adj.txt: 170 moves, 9222 minutes
+start 9222: 4 free sinks, exact necessity ok (bad move 0)
+[55s] it 4000 acc 389 cur 9216 best 9222 temp 9.1 elite 40 gains 485/414/972/542/36/114/258/430/108/396 acc 60/51/105/55/7/14/26/54/5/12
+   nec calls 2295043 fail 2278333 unk 0 probes 15510291 | fsp calls 1056 hits 53 gain 74 | dumped 227 | block op acc 0 gain 0
+[87s it 6379] NEW BEST 9224 (op 2 i 28 D 4) len 174
+[87s it 6379] ADJ BEST 9224 (raw 9224 pen 0)
+[122s it 9086] NEW BEST 9226 (op 2 i 56 D 4) len 176
+[122s it 9086] ADJ BEST 9226 (raw 9226 pen 0)
+[134s] it 10000 acc 701 cur 9226 best 9226 temp 40.0 elite 40 gains 489/422/1010/566/40/114/258/470/108/396 acc 100/114/190/91/17/19/48/99/9/14
+   nec calls 4885238 fail 4843939 unk 0 probes 32392339 | fsp calls 2691 hits 172 gain 290 | dumped 400 | block op acc 0 gain 0
+[162s] it 12000 acc 978 cur 9205 best 9226 temp 19.1 elite 40 gains 763/742/1801/704/114/114/718/1118/108/684 acc 138/152/278/116/24/23/81/133/10/23
+   nec calls 6001165 fail 5951105 unk 0 probes 41010778 | fsp calls 3240 hits 201 gain 430 | dumped 400 | block op acc 0 gain 0
+[239s] it 18000 acc 1370 cur 9208 best 9226 temp 2.1 elite 40 gains 817/810/2069/824/114/150/830/1431/108/936 acc 197/214/400/153/28/29/105/192/13/39
+   nec calls 8489517 fail 8414731 unk 0 probes 56360128 | fsp calls 4894 hits 302 gain 566 | dumped 400 | block op acc 0 gain 0
+[344s] it 26000 acc 2032 cur 9208 best 9226 temp 4.4 elite 40 gains 1575/1104/3323/1156/208/222/978/2183/176/1368 acc 301/324/613/215/37/37/160/263/23/59
+   nec calls 11749428 fail 11641570 unk 0 probes 76502107 | fsp calls 7051 hits 450 gain 1137 | dumped 400 | block op acc 0 gain 0
+[425s] it 32000 acc 2481 cur 9218 best 9226 temp 19.1 elite 40 gains 1795/1444/4202/1378/244/330/1240/2606/180/1800 acc 359/388/745/262/45/48/204/327/30/73
+   nec calls 14492071 fail 14358995 unk 0 probes 94144872 | fsp calls 8702 hits 561 gain 1321 | dumped 400 | block op acc 0 gain 0
+[452s] it 34000 acc 2645 cur 9214 best 9226 temp 9.1 elite 40 gains 1903/1528/4362/1530/244/330/1320/2701/216/1872 acc 384/411/793/284/49/52/218/345/32/77
+   nec calls 15418825 fail 15277199 unk 0 probes 99968061 | fsp calls 9261 hits 594 gain 1365 | dumped 400 | block op acc 0 gain 0
+[477s] it 36000 acc 2756 cur 9208 best 9226 temp 4.4 elite 40 gains 1979/1532/4394/1530/244/330/1320/2723/216/1908 acc 405/428/824/293/50/55/226/359/34/82
+   nec calls 15964947 fail 15815257 unk 0 probes 103328074 | fsp calls 9803 hits 627 gain 1416 | dumped 400 | block op acc 0 gain 0
+[504s] it 38000 acc 2838 cur 9214 best 9226 temp 2.1 elite 40 gains 1983/1540/4398/1530/244/330/1320/2735/216/1908 acc 422/440/850/297/52/57/229/373/35/83
+   nec calls 16945961 fail 16787969 unk 0 probes 110220416 | fsp calls 10366 hits 658 gain 1460 | dumped 400 | block op acc 0 gain 0
+done it 40000 acc 2915 best 9226 restarts 3
+elite: 9290 9282 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226 9226

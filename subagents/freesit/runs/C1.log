@@ -1,0 +1,22 @@
+../sfl/in/p9290/t9290_69526099.txt: 182 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+start ../sfl/in/p9290/t9290_69526099.txt: 182 moves, 9290 minutes
+start 9290: 4 free sinks, exact necessity ok (bad move 0)
+[69s] it 4000 acc 399 cur 9224 best 9290 temp 9.1 elite 33 gains 289/176/318/199/37/24/222/430/76/434 acc 59/77/99/36/7/9/31/42/7/32
+   nec calls 3564598 fail 3549885 unk 0 probes 21822498 | fsp calls 870 hits 24 gain 45 | dumped 318 | block op acc 0 gain 0
+[202s] it 12000 acc 1121 cur 9208 best 9290 temp 19.1 elite 33 gains 488/385/715/578/37/24/594/652/112/902 acc 167/267/275/94/15/15/89/91/14/94
+   nec calls 10105530 fail 10061366 unk 0 probes 63071921 | fsp calls 2642 hits 68 gain 123 | dumped 400 | block op acc 0 gain 0
+[267s] it 16000 acc 1425 cur 9260 best 9290 temp 4.4 elite 40 gains 571/405/800/693/37/60/630/776/148/938 acc 207/351/347/124/20/18/104/131/18/105
+   nec calls 13104476 fail 13046467 unk 0 probes 80921706 | fsp calls 3435 hits 81 gain 151 | dumped 400 | block op acc 0 gain 0
+[300s] it 18000 acc 1541 cur 9272 best 9290 temp 2.1 elite 40 gains 575/413/813/693/37/60/630/782/148/938 acc 226/379/382/133/23/19/109/142/18/110
+   nec calls 14506964 fail 14442357 unk 0 probes 89680364 | fsp calls 3804 hits 92 gain 166 | dumped 400 | block op acc 0 gain 0
+[366s] it 22000 acc 1901 cur 9193 best 9290 temp 19.1 elite 40 gains 745/787/1118/881/73/132/746/984/148/1334 acc 277/451/478/164/29/22/142/180/20/138
+   nec calls 17756587 fail 17677542 unk 0 probes 110555880 | fsp calls 4639 hits 112 gain 207 | dumped 400 | block op acc 0 gain 0
+[429s] it 26000 acc 2234 cur 9208 best 9290 temp 4.4 elite 40 gains 800/875/1178/881/73/132/746/1032/148/1370 acc 339/526/568/184/36/23/155/207/22/174
+   nec calls 20552425 fail 20458484 unk 0 probes 128991916 | fsp calls 5476 hits 135 gain 244 | dumped 400 | block op acc 0 gain 0
+[528s] it 32000 acc 2770 cur 9152 best 9290 temp 19.1 elite 40 gains 956/915/1767/964/109/172/967/1346/176/1802 acc 411/633/709/234/41/26/196/267/27/226
+   nec calls 24965545 fail 24849365 unk 0 probes 157612717 | fsp calls 6741 hits 168 gain 316 | dumped 400 | block op acc 0 gain 0
+done it 40000 acc 3389 best 9290 restarts 2
+elite: 9290 9290 9290 9290 9290 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9286 9284 9284 9284 9284

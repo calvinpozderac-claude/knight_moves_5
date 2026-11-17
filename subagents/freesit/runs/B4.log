@@ -1,0 +1,23 @@
+in/a4adj.txt: 170 moves, 9222 minutes (replay 9222)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+start in/a4adj.txt: 170 moves, 9222 minutes
+start 9222: 4 free sinks, exact necessity ok (bad move 0)
+[89s it 5850] NEW BEST 9224 (op 2 i 37 D 4) len 174
+[89s it 5850] ADJ BEST 9224 (raw 9224 pen 0)
+[152s] it 10000 acc 942 cur 9222 best 9224 temp 40.0 elite 40 gains 196/397/595/278/0/0/264/459/40/468 acc 155/187/246/96/11/9/56/113/11/58
+   nec calls 6775927 fail 6738840 unk 0 probes 41544048 | fsp calls 2492 hits 108 gain 224 | dumped 400 | block op acc 0 gain 0
+[208s] it 14000 acc 1424 cur 9216 best 9224 temp 9.1 elite 40 gains 476/896/1156/478/36/36/492/864/40/972 acc 216/279/380/148/16/17/88/167/18/95
+   nec calls 8949889 fail 8897596 unk 0 probes 55440766 | fsp calls 3531 hits 143 gain 272 | dumped 400 | block op acc 0 gain 0
+[238s] it 16000 acc 1595 cur 9224 best 9224 temp 4.4 elite 40 gains 552/903/1172/480/36/36/508/922/40/972 acc 251/310/416/163/17/20/105/188/19/106
+   nec calls 10246146 fail 10186229 unk 0 probes 63079187 | fsp calls 4026 hits 169 gain 326 | dumped 400 | block op acc 0 gain 0
+[245s it 16506] NEW BEST 9290 (op 7 a 53 c 51 d 79 b 71) len 182
+[245s it 16506] ADJ BEST 9290 (raw 9290 pen 0)
+[472s] it 32000 acc 2853 cur 9202 best 9290 temp 19.1 elite 40 gains 1163/1379/2242/1065/72/112/1200/2302/80/1692 acc 459/555/757/305/34/31/192/329/26/165
+   nec calls 20173574 fail 20054924 unk 0 probes 123698543 | fsp calls 7631 hits 327 gain 558 | dumped 400 | block op acc 0 gain 0
+[504s] it 34000 acc 3069 cur 9218 best 9290 temp 9.1 elite 40 gains 1208/1457/2381/1113/108/112/1240/2406/80/1800 acc 494/594/821/321/36/34/209/354/30/176
+   nec calls 21872113 fail 21746516 unk 0 probes 134572060 | fsp calls 8131 hits 352 gain 593 | dumped 400 | block op acc 0 gain 0
+[534s] it 36000 acc 3221 cur 9206 best 9290 temp 4.4 elite 40 gains 1212/1465/2386/1117/108/116/1276/2420/80/1800 acc 521/621/865/338/39/36/216/371/31/183
+   nec calls 23190233 fail 23057714 unk 0 probes 142702997 | fsp calls 8612 hits 374 gain 620 | dumped 400 | block op acc 0 gain 0
+done it 40000 acc 3531 best 9290 restarts 1
+elite: 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290

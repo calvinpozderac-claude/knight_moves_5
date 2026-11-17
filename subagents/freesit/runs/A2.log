@@ -7,3 +7,15 @@ start 9290: 3 free sinks, exact necessity ok (bad move 0)
    nec calls 1216566 fail 1209444 unk 0 probes 7510958 | fsp calls 441 hits 5 gain 8 | dumped 217 | block op acc 0 gain 0
 [61s] it 4000 acc 467 cur 9152 best 9290 temp 9.1 elite 16 gains 166/228/539/146/36/0/262/527/72/432 acc 85/93/122/34/7/9/39/35/4/39
    nec calls 2862272 fail 2847831 unk 0 probes 18042093 | fsp calls 887 hits 13 gain 19 | dumped 400 | block op acc 0 gain 0
+[138s] it 8000 acc 799 cur 9152 best 9290 temp 2.1 elite 16 gains 172/233/554/147/36/1/262/551/72/432 acc 144/169/211/70/11/13/50/59/7/65
+   nec calls 8303249 fail 8274135 unk 0 probes 57500885 | fsp calls 1797 hits 33 gain 61 | dumped 400 | block op acc 0 gain 0
+[241s] it 14000 acc 1396 cur 9270 best 9290 temp 9.1 elite 40 gains 536/476/997/261/108/1/490/1254/72/792 acc 245/301/348/131/22/21/92/118/12/106
+   nec calls 14267162 fail 14216550 unk 0 probes 96041910 | fsp calls 3099 hits 64 gain 127 | dumped 400 | block op acc 0 gain 0
+[425s] it 26000 acc 2275 cur 9290 best 9290 temp 4.4 elite 40 gains 730/753/1420/350/144/188/843/1542/72/1044 acc 398/487/582/201/35/34/160/207/15/156
+   nec calls 22970594 fail 22878587 unk 0 probes 149376652 | fsp calls 5458 hits 112 gain 199 | dumped 400 | block op acc 0 gain 0
+[456s] it 28000 acc 2384 cur 9284 best 9290 temp 2.1 elite 40 gains 730/757/1428/350/144/188/843/1553/72/1044 acc 412/515/614/211/35/35/167/221/15/159
+   nec calls 24333251 fail 24234827 unk 0 probes 157761250 | fsp calls 5853 hits 121 gain 216 | dumped 400 | block op acc 0 gain 0
+[487s] it 30000 acc 2492 cur 9288 best 9290 temp 40.0 elite 40 gains 730/761/1429/351/144/188/843/1557/72/1044 acc 437/542/651/217/35/35/169/229/15/162
+   nec calls 25924687 fail 25818956 unk 0 probes 167600947 | fsp calls 6235 hits 129 gain 231 | dumped 400 | block op acc 0 gain 0
+done it 40000 acc 3273 best 9290 restarts 2
+elite: 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290

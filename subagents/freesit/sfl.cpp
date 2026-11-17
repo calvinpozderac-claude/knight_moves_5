@@ -578,7 +578,7 @@ int main(int argc, char** argv) {
   if (getenv("BEAMTEST")) {
     int W = atoi(getenv("BEAMTEST"));
     auto st0 = states_of(gbest.X);
-    for (int i : {36, 40, 45, 50, 60, 80, 100, 115}) {
+    for (int i : {60, 80, 91, 92, 100, 115}) {
       Search SR; SR.setY(gbest.X); SR.X = &gbest.X; SR.path.assign(gbest.X.begin(), gbest.X.begin() + i);
       auto tb = el(); beam_tail(SR, st0[i], W, 0.0);
       printf("beam W %d from %d: %lld (%.2fs) pot at start %.0f\n", W, i, SR.bestT, el() - tb, dance_pot2(st0[i])); fflush(stdout);

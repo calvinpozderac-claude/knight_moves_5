@@ -1,0 +1,12 @@
+A3 0  done it 40000 acc 3174 best 9290 restarts 3
+A1 0  done it 40000 acc 3398 best 9290 restarts 2
+A2 0  done it 40000 acc 3273 best 9290 restarts 2
+A4 0  done it 40000 acc 3312 best 9290 restarts 2
+B3 2 9226 done it 40000 acc 2915 best 9226 restarts 3
+B1 7 9290 done it 40000 acc 2876 best 9290 restarts 2
+B4 2 9290 done it 40000 acc 3531 best 9290 restarts 1
+B2 2 9286 done it 40000 acc 3811 best 9286 restarts 3
+C4 0  done it 40000 acc 3186 best 9290 restarts 3
+C1 0  done it 40000 acc 3389 best 9290 restarts 2
+C3 0  done it 40000 acc 3217 best 9290 restarts 3
+C2 0  done it 40000 acc 3065 best 9290 restarts 2

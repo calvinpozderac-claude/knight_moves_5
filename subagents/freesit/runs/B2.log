@@ -1,0 +1,35 @@
+in/a3adj.txt: 170 moves, 9222 minutes (replay 9222)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+start in/a3adj.txt: 170 moves, 9222 minutes
+start 9222: 5 free sinks, exact necessity ok (bad move 0)
+[19s it 1247] NEW BEST 9224 (op 0 i 37 D 4) len 172
+[19s it 1247] ADJ BEST 9224 (raw 9224 pen 0)
+[88s] it 6000 acc 663 cur 9215 best 9224 temp 4.4 elite 40 gains 327/164/726/268/0/108/344/498/0/324 acc 90/143/197/61/9/13/49/57/3/41
+   nec calls 3727738 fail 3705272 unk 0 probes 22977737 | fsp calls 1482 hits 66 gain 126 | dumped 400 | block op acc 0 gain 0
+[119s] it 8000 acc 841 cur 9212 best 9224 temp 2.1 elite 40 gains 327/166/739/276/0/108/348/511/0/324 acc 118/178/250/76/9/14/57/75/5/59
+   nec calls 5035359 fail 5004899 unk 0 probes 31612023 | fsp calls 2008 hits 96 gain 164 | dumped 400 | block op acc 0 gain 0
+[203s] it 14000 acc 1435 cur 9224 best 9224 temp 9.1 elite 40 gains 412/625/1141/391/36/112/750/1106/0/864 acc 202/302/412/123/15/21/101/139/12/108
+   nec calls 8061925 fail 8009740 unk 0 probes 50102320 | fsp calls 3460 hits 157 gain 273 | dumped 400 | block op acc 0 gain 0
+[235s] it 16000 acc 1596 cur 9218 best 9224 temp 4.4 elite 40 gains 412/629/1213/403/36/112/750/1162/0/864 acc 231/336/451/147/17/22/106/155/13/118
+   nec calls 9285952 fail 9226076 unk 0 probes 58259965 | fsp calls 3949 hits 179 gain 298 | dumped 400 | block op acc 0 gain 0
+[294s] it 20000 acc 1899 cur 9224 best 9224 temp 40.0 elite 40 gains 416/633/1219/407/36/112/750/1179/0/864 acc 283/401/532/181/20/22/118/179/16/147
+   nec calls 11856013 fail 11780478 unk 0 probes 75214438 | fsp calls 4946 hits 218 gain 376 | dumped 400 | block op acc 0 gain 0
+[324s] it 22000 acc 2209 cur 9147 best 9224 temp 19.1 elite 40 gains 740/1006/2265/635/112/112/1067/1405/0/1188 acc 323/459/618/211/26/25/152/214/19/162
+   nec calls 12997552 fail 12914334 unk 0 probes 82178116 | fsp calls 5454 hits 233 gain 442 | dumped 400 | block op acc 0 gain 0
+[353s] it 24000 acc 2406 cur 9202 best 9224 temp 9.1 elite 40 gains 950/1154/2393/683/112/120/1067/1430/0/1296 acc 352/501/678/229/29/26/162/229/20/180
+   nec calls 14251855 fail 14160983 unk 0 probes 89404265 | fsp calls 5914 hits 262 gain 490 | dumped 400 | block op acc 0 gain 0
+[383s] it 26000 acc 2547 cur 9204 best 9224 temp 4.4 elite 40 gains 964/1162/2409/683/112/120/1067/1466/2/1296 acc 371/538/721/237/30/26/167/242/21/194
+   nec calls 15525540 fail 15427568 unk 0 probes 96740965 | fsp calls 6352 hits 276 gain 516 | dumped 400 | block op acc 0 gain 0
+[412s] it 28000 acc 2708 cur 9224 best 9224 temp 2.1 elite 40 gains 966/1162/2413/687/112/120/1067/1490/2/1296 acc 394/576/766/255/33/29/169/258/21/207
+   nec calls 16794024 fail 16688994 unk 0 probes 104194365 | fsp calls 6837 hits 299 gain 541 | dumped 400 | block op acc 0 gain 0
+[469s] it 32000 acc 3148 cur 9198 best 9224 temp 19.1 elite 40 gains 1422/1632/2826/763/148/192/1139/1829/2/1692 acc 479/659/874/296/42/34/192/306/25/241
+   nec calls 19284602 fail 19164258 unk 0 probes 120638004 | fsp calls 7862 hits 328 gain 585 | dumped 400 | block op acc 0 gain 0
+[498s] it 34000 acc 3333 cur 9140 best 9224 temp 9.1 elite 40 gains 1494/1636/3021/765/148/196/1215/1925/2/1800 acc 503/699/935/312/46/36/201/320/25/256
+   nec calls 20496406 fail 20368478 unk 0 probes 127889862 | fsp calls 8340 hits 350 gain 635 | dumped 400 | block op acc 0 gain 0
+[561s] it 38000 acc 3677 cur 9215 best 9224 temp 2.1 elite 40 gains 1501/1643/3100/773/148/196/1223/1963/2/1800 acc 560/758/1049/355/49/39/213/341/30/283
+   nec calls 23347657 fail 23204468 unk 0 probes 145628260 | fsp calls 9313 hits 392 gain 746 | dumped 400 | block op acc 0 gain 0
+[586s it 39626] NEW BEST 9286 (op 6 a 70 len 16) len 179
+[586s it 39626] ADJ BEST 9286 (raw 9286 pen 0)
+done it 40000 acc 3811 best 9286 restarts 3
+elite: 9290 9286 9286 9286 9286 9286 9286 9286 9284 9282 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224 9224
