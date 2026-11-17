@@ -1,0 +1,26 @@
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+start in/t9936.txt: 166 moves, 9936 minutes
+start 9936: 18 free sinks, exact necessity ok (bad move 0)
+[25s it 423] ADJ BEST 8852 (raw 9852 pen 1000)
+[27s it 439] ADJ BEST 8854 (raw 9854 pen 1000)
+[36s it 483] ADJ BEST 8855 (raw 9855 pen 1000)
+[37s it 505] ADJ BEST 8867 (raw 9867 pen 1000)
+[39s it 538] ADJ BEST 8930 (raw 9930 pen 1000)
+[74s it 1017] ADJ BEST 8932 (raw 9932 pen 1000)
+[119s it 1676] ADJ BEST 8934 (raw 9934 pen 1000)
+[136s] it 2000 acc 236 cur 9927 best 9936 temp 39.8 elite 40 gains 129/1283/74/422/0/4/151/295/0/0 acc 45/62/42/28/0/5/18/17/2/17
+   nec calls 6828512 fail 6823711 unk 0 probes 69255382 | fsp calls 235 hits 12 gain 471 | dumped 215 | block op acc 0 gain 0
+[263s it 4173] ADJ BEST 8935 (raw 9935 pen 1000)
+[400s] it 6000 acc 717 cur 9921 best 9936 temp 17.6 elite 40 gains 202/1358/231/427/0/8/167/698/0/0 acc 118/180/137/67/6/14/52/80/5/58
+   nec calls 20205908 fail 20191662 unk 0 probes 210616904 | fsp calls 759 hits 35 gain 1210 | dumped 400 | block op acc 0 gain 0
+[592s] it 8000 acc 982 cur 9927 best 9936 temp 11.7 elite 40 gains 202/1375/249/429/0/10/183/708/0/0 acc 160/237/209/99/6/15/79/94/6/77
+   nec calls 29749280 fail 29729874 unk 0 probes 318924405 | fsp calls 1048 hits 46 gain 1598 | dumped 400 | block op acc 0 gain 0
+[989s] it 14000 acc 1735 cur 9932 best 9936 temp 3.4 elite 40 gains 215/1385/265/443/5/10/213/762/0/0 acc 264/414/364/183/20/25/144/151/18/152
+   nec calls 51613139 fail 51579438 unk 0 probes 559955339 | fsp calls 1907 hits 108 gain 3175 | dumped 400 | block op acc 0 gain 0
+[1141s it 16934] ADJ BEST 8936 (raw 9936 pen 1000)
+[1195s] it 18000 acc 2160 cur 9934 best 9936 temp 1.5 elite 40 gains 217/1388/272/446/7/10/227/766/0/0 acc 327/526/465/225/26/27/182/176/23/183
+   nec calls 65299407 fail 65256514 unk 0 probes 703543872 | fsp calls 2411 hits 138 gain 3902 | dumped 400 | block op acc 0 gain 0
+done it 25136 acc 2932 best 9936 restarts 5
+elite: 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936

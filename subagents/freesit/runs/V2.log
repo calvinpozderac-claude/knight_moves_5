@@ -1,0 +1,15 @@
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+start in/t9936.txt: 166 moves, 9936 minutes
+start 9936: 18 free sinks, exact necessity ok (bad move 0)
+[837s it 9373] NEW BEST 9937 (op 1 i 168 D 3) len 175
+[837s it 9373] ADJ BEST 9937 (raw 9937 pen 0)
+[1016s] it 12000 acc 1520 cur 9932 best 9937 temp 2.1 elite 40 gains 117/339/513/145/2/2/273/180/0/0 acc 264/365/395/167/15/12/123/121/22/36
+   nec calls 47631456 fail 47604299 unk 0 probes 557877873 | fsp calls 1789 hits 475 gain 16689 | dumped 400 | block op acc 0 gain 0
+[1135s] it 14000 acc 1738 cur 9936 best 9937 temp 1.3 elite 40 gains 121/341/521/146/2/4/275/184/0/0 acc 295/416/460/199/15/15/140/137/22/39
+   nec calls 54965544 fail 54933725 unk 0 probes 636898464 | fsp calls 2090 hits 566 gain 20154 | dumped 400 | block op acc 0 gain 0
+[1234s] it 16000 acc 1969 cur 9922 best 9937 temp 31.3 elite 40 gains 121/403/717/162/2/4/285/410/0/0 acc 337/467/519/226/18/17/157/161/24/43
+   nec calls 60709849 fail 60673601 unk 0 probes 703885532 | fsp calls 2372 hits 637 gain 22828 | dumped 400 | block op acc 0 gain 0
+done it 21874 acc 2731 best 9937 restarts 0
+elite: 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937 9937

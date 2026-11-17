@@ -1,0 +1,23 @@
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+in/t9811.txt: 173 moves, 9811 minutes (replay 9811)
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+start in/t9936.txt: 166 moves, 9936 minutes
+start 9936: 18 free sinks, exact necessity ok (bad move 0)
+[65s it 1128] NEW BEST 9941 (op 7 a 16 c 16 d 40 b 35) len 175
+[65s it 1128] ADJ BEST 7941 (raw 9941 pen 2000)
+[240s] it 4000 acc 470 cur 9932 best 9941 temp 26.5 elite 40 gains 144/220/351/70/0/0/65/354/0/0 acc 73/112/84/44/4/4/48/57/3/41
+   nec calls 13991705 fail 13982146 unk 0 probes 136366168 | fsp calls 481 hits 19 gain 704 | dumped 400 | block op acc 0 gain 0
+[686s] it 10000 acc 1115 cur 9931 best 9941 temp 7.7 elite 40 gains 149/242/370/94/2/8/89/487/0/0 acc 162/271/230/105/17/12/92/127/14/85
+   nec calls 36146345 fail 36122252 unk 0 probes 358043212 | fsp calls 1184 hits 52 gain 1747 | dumped 400 | block op acc 0 gain 0
+[1065s] it 16000 acc 1748 cur 9934 best 9941 temp 2.3 elite 40 gains 155/249/395/102/4/10/121/517/0/0 acc 240/413/389/154/26/26/157/182/21/140
+   nec calls 58198509 fail 58160514 unk 0 probes 596817537 | fsp calls 1899 hits 85 gain 2945 | dumped 400 | block op acc 0 gain 0
+[1438s it 23341] ADJ BEST 8234 (raw 9234 pen 1000)
+[1441s it 23396] ADJ BEST 8236 (raw 9236 pen 1000)
+[1442s it 23406] ADJ BEST 8240 (raw 9240 pen 1000)
+[1446s it 23484] ADJ BEST 8280 (raw 9280 pen 1000)
+[1449s it 23517] ADJ BEST 8282 (raw 9282 pen 1000)
+[1461s it 23822] ADJ BEST 8318 (raw 9318 pen 1000)
+[1472s] it 24000 acc 2541 cur 9201 best 9941 temp 26.5 elite 40 gains 274/851/595/125/8/12/157/896/0/0 acc 369/599/552/228/38/40/247/241/29/198
+   nec calls 85545715 fail 85488810 unk 0 probes 865501657 | fsp calls 2780 hits 125 gain 4156 | dumped 400 | block op acc 0 gain 0
+done it 26231 acc 2834 best 9941 restarts 4
+elite: 9941 9941 9941 9941 9941 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939

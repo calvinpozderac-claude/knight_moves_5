@@ -1,0 +1,19 @@
+in/t9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+in/t9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/t9943.txt: 178 moves, 9943 minutes
+start 9943: 23 free sinks, exact necessity ok (bad move 0)
+[139s] it 2000 acc 240 cur 9924 best 9943 temp 39.8 elite 34 gains 126/244/309/287/2/0/192/282/0/0 acc 31/64/56/24/7/0/24/27/1/6
+   nec calls 6532304 fail 6526449 unk 0 probes 79073167 | fsp calls 243 hits 10 gain 346 | dumped 218 | block op acc 0 gain 0
+[282s] it 4000 acc 483 cur 9863 best 9943 temp 26.5 elite 40 gains 213/249/314/298/2/2/200/434/0/0 acc 80/105/109/55/11/6/50/43/4/20
+   nec calls 12707588 fail 12695934 unk 0 probes 139721980 | fsp calls 500 hits 30 gain 950 | dumped 400 | block op acc 0 gain 0
+[569s] it 8000 acc 923 cur 9918 best 9943 temp 11.7 elite 40 gains 219/276/381/298/6/6/229/516/0/0 acc 159/223/204/92/16/13/91/71/7/47
+   nec calls 26906022 fail 26883168 unk 0 probes 284030695 | fsp calls 965 hits 52 gain 1621 | dumped 400 | block op acc 0 gain 0
+[716s] it 10000 acc 1101 cur 9933 best 9943 temp 7.7 elite 40 gains 236/278/388/298/6/14/235/531/0/0 acc 191/262/245/106/17/16/112/81/9/62
+   nec calls 33124538 fail 33096119 unk 0 probes 345780409 | fsp calls 1167 hits 65 gain 2110 | dumped 400 | block op acc 0 gain 0
+[951s] it 14000 acc 1511 cur 9936 best 9943 temp 3.4 elite 40 gains 242/287/396/304/6/18/253/570/0/0 acc 258/360/339/140/26/21/150/110/12/95
+   nec calls 43687655 fail 43648204 unk 0 probes 452922137 | fsp calls 1635 hits 87 gain 2712 | dumped 400 | block op acc 0 gain 0
+[1070s] it 16000 acc 1700 cur 9937 best 9943 temp 2.3 elite 40 gains 243/288/402/305/6/20/255/584/0/0 acc 287/407/388/156/27/23/161/132/16/103
+   nec calls 50332326 fail 50287440 unk 0 probes 522440732 | fsp calls 1856 hits 99 gain 3028 | dumped 400 | block op acc 0 gain 0
+done it 25879 acc 2708 best 9943 restarts 2
+elite: 9943 9943 9941 9941 9941 9939 9939 9939 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938 9938

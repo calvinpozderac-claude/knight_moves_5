@@ -1,0 +1,11 @@
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+start in/t9774.txt: 166 moves, 9774 minutes
+start 9774: 22 free sinks, exact necessity ok (bad move 0)
+[75s it 975] NEW BEST 9775 (op 2 i 71 D 4) len 172
+[75s it 975] ADJ BEST 9775 (raw 9775 pen 0)
+[1004s it 12457] NEW BEST 9777 (op 2 i 164 D 5) len 170
+[1004s it 12457] ADJ BEST 9777 (raw 9777 pen 0)
+[1031s it 12873] NEW BEST 9778 (op 2 i 126 D 3) len 176
+[1031s it 12873] ADJ BEST 9778 (raw 9778 pen 0)

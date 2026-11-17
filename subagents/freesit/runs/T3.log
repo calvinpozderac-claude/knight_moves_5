@@ -1,0 +1,30 @@
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+start in/t9774.txt: 166 moves, 9774 minutes
+start 9774: 22 free sinks, exact necessity ok (bad move 0)
+[134s] it 2000 acc 290 cur 9753 best 9774 temp 39.8 elite 40 gains 62/50/51/0/0/2/142/536/0/0 acc 32/82/58/34/4/6/22/23/2/27
+   nec calls 7377807 fail 7372806 unk 0 probes 97714075 | fsp calls 299 hits 11 gain 342 | dumped 269 | block op acc 0 gain 0
+[155s it 2249] ADJ BEST 8135 (raw 9135 pen 1000)
+[155s it 2251] ADJ BEST 8137 (raw 9137 pen 1000)
+[170s it 2571] ADJ BEST 8340 (raw 9340 pen 1000)
+[173s it 2613] ADJ BEST 8348 (raw 9348 pen 1000)
+[175s it 2644] ADJ BEST 8350 (raw 9350 pen 1000)
+[192s it 2898] ADJ BEST 8354 (raw 9354 pen 1000)
+[233s it 3591] ADJ BEST 8358 (raw 9358 pen 1000)
+[242s it 3698] ADJ BEST 8374 (raw 9374 pen 1000)
+[268s it 3986] ADJ BEST 8376 (raw 9376 pen 1000)
+[273s it 4080] ADJ BEST 8378 (raw 9378 pen 1000)
+[520s it 7243] ADJ BEST 8381 (raw 9381 pen 1000)
+[573s] it 8000 acc 1089 cur 9370 best 9774 temp 11.7 elite 40 gains 463/281/81/20/4/2/189/635/6/0 acc 166/251/240/121/11/16/94/73/18/99
+   nec calls 32433454 fail 32413229 unk 0 probes 414189601 | fsp calls 1141 hits 31 gain 1029 | dumped 400 | block op acc 0 gain 0
+[824s] it 12000 acc 1592 cur 9374 best 9774 temp 5.1 elite 40 gains 494/295/95/20/6/10/213/663/6/0 acc 249/376/347/171/20/24/141/99/23/142
+   nec calls 47565415 fail 47534308 unk 0 probes 605514697 | fsp calls 1689 hits 61 gain 1790 | dumped 400 | block op acc 0 gain 0
+[838s it 12291] ADJ BEST 8382 (raw 9382 pen 1000)
+[903s it 13455] ADJ BEST 8383 (raw 9383 pen 1000)
+[938s] it 14000 acc 1851 cur 9376 best 9774 temp 3.4 elite 40 gains 497/301/105/25/8/10/223/666/6/0 acc 293/426/419/198/24/25/159/115/27/165
+   nec calls 55592426 fail 55556544 unk 0 probes 704579791 | fsp calls 1980 hits 72 gain 2027 | dumped 400 | block op acc 0 gain 0
+[1074s it 16317] ADJ BEST 8386 (raw 9386 pen 1000)
+[1116s it 17135] ADJ BEST 8387 (raw 9387 pen 1000)
+[1169s] it 18000 acc 2358 cur 9385 best 9774 temp 1.5 elite 40 gains 504/306/121/32/10/12/245/670/6/0 acc 383/543/537/249/35/29/197/132/29/224
+   nec calls 72145123 fail 72098418 unk 0 probes 903021357 | fsp calls 2548 hits 96 gain 2536 | dumped 400 | block op acc 0 gain 0

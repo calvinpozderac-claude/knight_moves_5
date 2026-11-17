@@ -58,3 +58,19 @@ S2 0  done it 15916 acc 2228 best 9724 restarts 1
 S1 2 9811 done it 19287 acc 2415 best 9811 restarts 1
 S3 0  done it 24796 acc 2746 best 9724 restarts 7
 S4 5 9781 done it 25472 acc 2929 best 9781 restarts 1
+U1 3 9937 done it 20192 acc 2568 best 9937 restarts 5
+U3 0  done it 24932 acc 2511 best 9811 restarts 12
+U4 0  done it 24905 acc 2647 best 9811 restarts 3
+U2 3 9936 done it 19383 acc 2406 best 9936 restarts 2
+V1 5 9943 done it 21840 acc 2867 best 9943 restarts 3
+V3 0  done it 25136 acc 2932 best 9936 restarts 5
+V2 1 9937 done it 21874 acc 2731 best 9937 restarts 0
+V4 1 9941 done it 26231 acc 2834 best 9941 restarts 4
+W3 0  done it 24680 acc 2707 best 9943 restarts 5
+W2 0  done it 16305 acc 2023 best 9943 restarts 1
+W4 0  done it 25879 acc 2708 best 9943 restarts 2
+W1 0  done it 21565 acc 2706 best 9943 restarts 3
+X1 0  done it 25459 acc 2757 best 9943 restarts 3
+X2 0  done it 26291 acc 2747 best 9943 restarts 2
+X3 0  done it 26555 acc 2995 best 9943 restarts 13
+X4 0  done it 26160 acc 2507 best 9943 restarts 4

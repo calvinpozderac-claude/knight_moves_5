@@ -25,3 +25,6 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - 14:13 9766, **9774** (NEW_RECORD_9774.txt, checker ok). T1-T4 from 9774 queued at front.
 - 14:33 **9811** (NEW_RECORD_9811.txt, checker ok). U1-U4 from 9811 queued at front.
 - 14:54 **9936** (NEW_RECORD_9936.txt, checker ok). V1-V4 from 9936 queued at front.
+- 15:24 9937, 9941, **9943** (NEW_RECORD_9943.txt, checker ok). Gains slowing (+7 in 30 min). W1-W4 from 9943 queued.
+- 15:54 plateau at 9943 for 30 min. Queued X1 (force b1 start: penalty on c2 at move 1), X2 (b1,c1 opposite sitters), X3 (g8,f8,d5 at 700), X4 (b1).
+- 16:44 no gain after 9943 over ~1h20 (W, X jobs: b1 start, b1/c1, g8+f8+d5 penalties all <= 9943). Saver and workers still running.

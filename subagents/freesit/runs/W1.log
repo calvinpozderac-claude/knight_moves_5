@@ -1,0 +1,15 @@
+in/t9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+in/t9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/t9943.txt: 178 moves, 9943 minutes
+start 9943: 23 free sinks, exact necessity ok (bad move 0)
+[331s] it 4000 acc 586 cur 9924 best 9943 temp 20.1 elite 40 gains 19/507/376/69/134/10/204/254/4/0 acc 86/152/154/51/4/9/49/59/8/14
+   nec calls 15605280 fail 15594146 unk 0 probes 182979501 | fsp calls 617 hits 90 gain 3618 | dumped 400 | block op acc 0 gain 0
+[998s] it 12000 acc 1508 cur 9936 best 9943 temp 2.3 elite 40 gains 47/520/477/122/138/18/248/431/6/0 acc 227/395/369/134/15/22/130/149/15/52
+   nec calls 46178073 fail 46144879 unk 0 probes 504284632 | fsp calls 1713 hits 267 gain 10285 | dumped 400 | block op acc 0 gain 0
+[1409s] it 18000 acc 2246 cur 9851 best 9943 temp 26.5 elite 40 gains 61/940/1320/428/140/22/406/885/6/0 acc 334/582/549/212/25/32/206/208/24/74
+   nec calls 71440445 fail 71390929 unk 0 probes 804190604 | fsp calls 2556 hits 436 gain 16573 | dumped 400 | block op acc 0 gain 0
+[1511s] it 20000 acc 2514 cur 9923 best 9943 temp 15.3 elite 40 gains 127/998/1351/452/140/24/418/903/12/0 acc 376/640/619/239/26/39/237/224/29/85
+   nec calls 77906833 fail 77851674 unk 0 probes 875164535 | fsp calls 2848 hits 492 gain 18620 | dumped 400 | block op acc 0 gain 0
+done it 21565 acc 2706 best 9943 restarts 3
+elite: 9943 9943 9943 9943 9943 9943 9942 9942 9942 9942 9942 9941 9941 9941 9941 9941 9941 9941 9941 9941 9941 9941 9941 9941 9941 9941 9940 9940 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9939 9938

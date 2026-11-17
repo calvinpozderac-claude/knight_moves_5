@@ -1,0 +1,29 @@
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+in/t9724.txt: 171 moves, 9724 minutes (replay 9724)
+in/t9774.txt: 166 moves, 9774 minutes (replay 9774)
+start in/t9774.txt: 166 moves, 9774 minutes
+start 9774: 22 free sinks, exact necessity ok (bad move 0)
+[38s it 866] NEW BEST 9775 (op 7 a 150 c 149 d 164 b 165) len 167
+[38s it 866] ADJ BEST 8775 (raw 9775 pen 1000)
+[409s] it 6000 acc 754 cur 9763 best 9775 temp 17.6 elite 40 gains 242/186/88/5/2/2/24/605/0/0 acc 117/150/190/70/17/11/62/52/5/80
+   nec calls 21798341 fail 21781732 unk 0 probes 281186006 | fsp calls 777 hits 23 gain 614 | dumped 400 | block op acc 0 gain 0
+[409s it 6002] ADJ BEST 9763 (raw 9763 pen 0)
+[423s it 6115] ADJ BEST 9765 (raw 9765 pen 0)
+[426s it 6163] ADJ BEST 9767 (raw 9767 pen 0)
+[531s it 7385] ADJ BEST 9771 (raw 9771 pen 0)
+[584s] it 8000 acc 967 cur 9771 best 9775 temp 11.7 elite 40 gains 242/192/1161/14/2/2/30/628/0/0 acc 148/203/245/87/20/12/77/74/6/95
+   nec calls 31217071 fail 31194845 unk 0 probes 416223341 | fsp calls 1004 hits 29 gain 801 | dumped 400 | block op acc 0 gain 0
+[601s it 8224] ADJ BEST 9772 (raw 9772 pen 0)
+[726s] it 10000 acc 1176 cur 9772 best 9775 temp 7.7 elite 40 gains 242/195/1166/14/2/4/47/642/0/0 acc 183/248/291/105/27/15/99/87/8/113
+   nec calls 39095158 fail 39067415 unk 0 probes 533935922 | fsp calls 1230 hits 35 gain 1027 | dumped 400 | block op acc 0 gain 0
+[732s it 10096] ADJ BEST 9773 (raw 9773 pen 0)
+[859s] it 12000 acc 1397 cur 9771 best 9775 temp 5.1 elite 40 gains 246/202/1167/15/2/4/59/660/0/0 acc 215/300/339/126/32/15/115/115/11/129
+   nec calls 46589407 fail 46555685 unk 0 probes 646046630 | fsp calls 1471 hits 40 gain 1216 | dumped 400 | block op acc 0 gain 0
+[978s] it 14000 acc 1591 cur 9772 best 9775 temp 3.4 elite 40 gains 248/204/1172/16/2/6/63/669/0/0 acc 242/355/379/141/34/17/128/138/14/143
+   nec calls 53858148 fail 53818634 unk 0 probes 750563870 | fsp calls 1685 hits 49 gain 1336 | dumped 400 | block op acc 0 gain 0
+[1070s it 15825] ADJ BEST 9774 (raw 9774 pen 0)
+[1082s] it 16000 acc 1811 cur 9772 best 9775 temp 2.3 elite 40 gains 251/207/1176/17/2/10/67/690/0/0 acc 278/413/424/160/39/23/142/162/15/155
+   nec calls 59816661 fail 59771648 unk 0 probes 837631784 | fsp calls 1925 hits 57 gain 1623 | dumped 400 | block op acc 0 gain 0
+[1184s] it 18000 acc 1992 cur 9772 best 9775 temp 1.5 elite 40 gains 253/212/1177/22/2/10/71/694/4/0 acc 307/458/460/179/42/26/160/172/16/172
+   nec calls 66235366 fail 66184875 unk 0 probes 927176630 | fsp calls 2151 hits 65 gain 1953 | dumped 400 | block op acc 0 gain 0
+[1228s it 18902] ADJ BEST 9775 (raw 9775 pen 0)

@@ -1,0 +1,33 @@
+in/t9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/t9936.txt: 166 moves, 9936 minutes (replay 9936)
+in/t9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/t9943.txt: 178 moves, 9943 minutes
+start 9943: 23 free sinks, exact necessity ok (bad move 0)
+[17s it 227] ADJ BEST 6870 (raw 9670 pen 2800)
+[19s it 293] ADJ BEST 6942 (raw 9742 pen 2800)
+[23s it 339] ADJ BEST 7072 (raw 9872 pen 2800)
+[24s it 348] ADJ BEST 7132 (raw 9932 pen 2800)
+[24s it 351] ADJ BEST 7134 (raw 9934 pen 2800)
+[41s it 641] ADJ BEST 7247 (raw 9347 pen 2100)
+[42s it 665] ADJ BEST 7360 (raw 9460 pen 2100)
+[61s it 1010] ADJ BEST 7416 (raw 9516 pen 2100)
+[61s it 1027] ADJ BEST 7420 (raw 9520 pen 2100)
+[62s it 1035] ADJ BEST 7424 (raw 9524 pen 2100)
+[63s it 1062] ADJ BEST 7425 (raw 9525 pen 2100)
+[98s it 1623] ADJ BEST 7426 (raw 9526 pen 2100)
+[101s it 1675] ADJ BEST 7428 (raw 9528 pen 2100)
+[117s it 2027] ADJ BEST 7429 (raw 9529 pen 2100)
+[118s it 2036] ADJ BEST 7431 (raw 9531 pen 2100)
+[146s it 2506] ADJ BEST 7434 (raw 9534 pen 2100)
+[788s] it 12000 acc 1451 cur 9517 best 9943 temp 5.1 elite 40 gains 85/391/968/663/134/12/527/302/0/1 acc 255/348/311/152/21/18/145/88/16/97
+   nec calls 41028477 fail 41003466 unk 0 probes 421288983 | fsp calls 1612 hits 83 gain 2590 | dumped 400 | block op acc 0 gain 0
+[995s it 15477] ADJ BEST 7437 (raw 9537 pen 2100)
+[1027s] it 16000 acc 1859 cur 9537 best 9943 temp 2.3 elite 40 gains 91/393/1333/665/134/12/539/314/0/1 acc 316/458/404/196/29/21/173/113/23/126
+   nec calls 57954959 fail 57921007 unk 0 probes 602169697 | fsp calls 2113 hits 111 gain 3544 | dumped 400 | block op acc 0 gain 0
+[1203s it 18992] ADJ BEST 7438 (raw 9538 pen 2100)
+[1245s] it 20000 acc 2214 cur 9538 best 9943 temp 60.0 elite 40 gains 94/399/1342/665/134/12/549/322/0/1 acc 365/569/481/233/31/26/198/145/26/140
+   nec calls 71852572 fail 71810109 unk 0 probes 755704772 | fsp calls 2621 hits 143 gain 4383 | dumped 400 | block op acc 0 gain 0
+[1576s] it 26000 acc 2933 cur 9524 best 9943 temp 17.6 elite 40 gains 236/492/1504/809/134/18/591/630/0/79 acc 470/755/635/302/42/41/266/220/32/170
+   nec calls 93310663 fail 93255049 unk 0 probes 987920636 | fsp calls 3407 hits 189 gain 5998 | dumped 400 | block op acc 0 gain 0
+done it 26555 acc 2995 best 9943 restarts 13
+elite: 9943 9943 9943 9943 9941 9941 9940 9940 9940 9936 9935 9935 9934 9934 9934 9934 9934 9934 9934 9932 9932 9928 9928 9922 9920 9920 9872 9872 9742 9740 9740 9740 9740 9670 9538 9538 9538 9538 9538 9538
