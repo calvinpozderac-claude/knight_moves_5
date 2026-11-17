@@ -1,0 +1,7 @@
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+start ../../data/tours/record_9290.txt: 178 moves, 9290 minutes
+start 9290: 3 free sinks, exact necessity ok (bad move 0)
+[30s] it 2000 acc 256 cur 9160 best 9290 temp 19.1 elite 6 gains 116/108/298/221/0/72/329/454/0/326 acc 38/47/69/21/1/6/23/31/1/19
+   nec calls 1188639 fail 1182008 unk 0 probes 8718564 | fsp calls 435 hits 4 gain 7 | dumped 204 | block op acc 0 gain 0

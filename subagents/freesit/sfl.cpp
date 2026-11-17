@@ -144,12 +144,19 @@ static double U() { return std::uniform_real_distribution<double>(0, 1)(rng); }
 static int RI(int a, int b) { return std::uniform_int_distribution<int>(a, b)(rng); }
 
 static int H8NB[16], H8NBN = 0;
+// freesit: soft penalty VPEN minutes per arrival at a square of VSQ at move index (1-based) in [VLO,VHI]
+static long long VPEN = 0; static bool VSQ[64]; static int VLO = 1, VHI = 91;
+static long long pen_of(const vector<M>& X) {
+  if (!VPEN) return 0; long long c = 0;
+  for (int k = 0; k < (int)X.size() && k + 1 <= VHI; k++) if (k + 1 >= VLO && VSQ[X[k].q]) c++;
+  return c * VPEN;
+}
 
 struct Search {
   const vector<M>* Y; vector<int> P0;  // source tour and square before each move
   const vector<M>* X;                    // tour to avoid reproducing exactly
   vector<M> path; long long bestT = -1; vector<M> best;
-  long long nodes = 0, budget = 200000;
+  long long nodes = 0, budget = 200000; long long bestA = -(1LL<<60);
   int PD = 2, R = 4;                     // patch depth and resync range
   std::unordered_set<uint64_t> memo;
   vector<pair<int, int>> mvbuf[16];
@@ -159,11 +166,12 @@ struct Search {
     for (size_t i = 0; i < y.size(); i++) P0[i + 1] = y[i].q;
   }
   void record(long long T, M fin) {
-    if (T <= bestT) return;
     path.push_back(fin);
+    long long A = T - pen_of(path);
+    if (A <= bestA) { path.pop_back(); return; }
     if (NONEC && DUMPF && U() < RECDUMP) { bool any = false; for (auto& m : path) if (m.fd) any = true;
       if (any) { long long TT; string s = fmt_tour(path, &TT); fprintf(DUMPF, "%lld\n%s\n", TT, s.c_str()); } }
-    if (!(path.size() == X->size() && std::equal(path.begin(), path.end(), X->begin())) && (NONEC || nec_ok(path))) { bestT = T; best = path; }
+    if (!(path.size() == X->size() && std::equal(path.begin(), path.end(), X->begin())) && (NONEC || nec_ok(path))) { bestT = T; bestA = A; best = path; }
     path.pop_back();
   }
   void finish_check(const S& s) {
@@ -454,6 +462,9 @@ int main(int argc, char** argv) {
     else if (s == "--fspgate") FSPG = atoll(argv[++a]);    // sfl: only candidates within this of cur
     else if (s == "--dump") DUMPF = fopen(argv[++a], "w");  // sfl: accepted tours with free sinks (for validation)
     else if (s == "--dumpmax") DUMPMAX = atoi(argv[++a]);
+    else if (s == "--vpen") VPEN = atoll(argv[++a]);
+    else if (s == "--vsq") { string l = argv[++a]; for (size_t k = 0; k + 1 < l.size(); k += 3) VSQ[(l[k]-'a')+8*(l[k+1]-'1')] = true; }
+    else if (s == "--vrange") { VLO = atoi(argv[++a]); VHI = atoi(argv[++a]); }
     else if (s == "--blockp") BLOCKP = atof(argv[++a]);
     else if (s == "--blo") BLO = atoi(argv[++a]);
     else if (s == "--budget") BUDGET = atoll(argv[++a]);
@@ -534,6 +545,10 @@ int main(int argc, char** argv) {
     FILE* f = fopen(out.c_str(), "w"); fprintf(f, "%lld\n%s\n", T, s.c_str()); fclose(f);
     printf("[%.0fs it %lld] NEW BEST %lld (%s) len %zu\n", el(), itg, T, why, e.X.size()); fflush(stdout);
   };
+  long long gbA = gbest.T - pen_of(gbest.X);
+  auto adjsave = [&](const Elite& e) { long long T; string s = fmt_tour(e.X, &T); if (!nec_ok(e.X)) return;
+    FILE* f = fopen((out + ".adj").c_str(), "w"); fprintf(f, "%lld\n%s\n", T, s.c_str()); fclose(f);
+    printf("[%.0fs it %lld] ADJ BEST %lld (raw %lld pen %lld)\n", el(), itg, T - pen_of(e.X), T, pen_of(e.X)); fflush(stdout); };
   vector<Elite> elite = recs;  // pool
   auto add_elite = [&](const Elite& e) {
     for (auto& x : elite) if (x.T == e.T && x.X.size() == e.X.size() && std::equal(x.X.begin(), x.X.end(), e.X.begin())) return;
@@ -550,7 +565,7 @@ int main(int argc, char** argv) {
       long long bt = -1; vector<M> bs;
       for (size_t k = 1; k < recs[a].X.size(); k++) {
         S1.path.assign(recs[a].X.begin(), recs[a].X.begin() + k);
-        S1.bestT = -1; S1.best.clear(); S1.nodes = 0; S1.memo.clear();
+        S1.bestT = -1; S1.bestA = -(1LL<<60); S1.best.clear(); S1.nodes = 0; S1.memo.clear();
         S1.D = 2; S1.jlo = 1; S1.jhi = (int)recs[b].X.size() - 1; S1.i0 = -100; S1.sameXY = false; S1.PD = 2;
         S st = stA[k]; S1.win_dfs(st, 0, false, 1);
         if (S1.bestT > bt) { bt = S1.bestT; bs = S1.best; }
@@ -591,11 +606,12 @@ int main(int argc, char** argv) {
       SR.path.assign(cur.X.begin(), cur.X.begin() + i);
       SR.skel_replay(st[i], i, RI(0, 1), (float)(U() * 8));
       if (FSP && SR.bestT >= 0 && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
-      if (SR.bestT >= cur.T && score_full(SR.best) == SR.bestT && (SR.bestT > cur.T || SR.best.size() <= cur.X.size())) {
-        long long dT = SR.bestT - cur.T; acc++; stat_cnt[9]++; if (dT > 0) stat_gain[9] += dT;
+      long long dA9 = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
+      if (SR.bestT >= 0 && dA9 >= 0 && score_full(SR.best) == SR.bestT && (dA9 > 0 || SR.best.size() <= cur.X.size())) {
+        long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X)); acc++; stat_cnt[9]++; if (dT > 0) stat_gain[9] += dT;
         cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; save(gbest, "op 9 reroute"); }
-        add_elite(cur);
+        { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
       }
       continue;
     }
@@ -616,7 +632,7 @@ int main(int argc, char** argv) {
       S s0 = st[a]; SR.replay(s0, a, RI(2, 4));
       if (SR.bestT < 0) continue;
       if (FSP && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
-      long long dT = SR.bestT - cur.T;
+      long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
       if (dT >= 0 || U() < exp(dT / temp)) {
         if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d skel %lld full %lld best %lld len %zu\n", op, SR.skel_calls, score_full(SR.best), SR.bestT, SR.best.size());
           { S z = start_state(); for (size_t k = 0; k < SR.best.size(); k++) { S z2 = z; if (!stepM(z2, SR.best[k])) { printf("  fail at %zu: %s->%s dz %d altdiff %d vis %d\n", k, nm(z.pos).c_str(), nm(SR.best[k].q).c_str(), SR.best[k].dz, z.alt[SR.best[k].q]-z.alt[z.pos], z.vis[SR.best[k].q]); break; } z = z2; } printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T); }
@@ -624,7 +640,7 @@ int main(int argc, char** argv) {
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
         cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
-        if (cur.T >= gbest.T - 30) add_elite(cur);
+        { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
       }
       continue;
     }
@@ -671,7 +687,7 @@ int main(int argc, char** argv) {
       S s0 = st[from]; SR.replay(s0, from, RI(2, 4));
       if (SR.bestT < 0) continue;
       if (FSP && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
-      long long dT = SR.bestT - cur.T;
+      long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
       if (dT >= 0 || U() < exp(dT / temp)) {
         if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d skel %lld full %lld best %lld len %zu\n", op, SR.skel_calls, score_full(SR.best), SR.bestT, SR.best.size());
           { S z = start_state(); for (size_t k = 0; k < SR.best.size(); k++) { S z2 = z; if (!stepM(z2, SR.best[k])) { printf("  fail at %zu: %s->%s dz %d altdiff %d vis %d\n", k, nm(z.pos).c_str(), nm(SR.best[k].q).c_str(), SR.best[k].dz, z.alt[SR.best[k].q]-z.alt[z.pos], z.vis[SR.best[k].q]); break; } z = z2; } printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T); }
@@ -679,7 +695,7 @@ int main(int argc, char** argv) {
         acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
         cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
         if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d a %d len %d", op, a, len); save(gbest, w); }
-        if (cur.T >= gbest.T - 30) add_elite(cur);
+        { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
       }
       continue;
     }
@@ -705,14 +721,14 @@ int main(int argc, char** argv) {
     SR.win_dfs(s0, 0, !walked, pd);
     if (SR.bestT < 0) continue;
       if (FSP && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
-    long long dT = SR.bestT - cur.T;
+    long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
     if (dT >= 0 || U() < exp(dT / temp)) {
       if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); dbg_fail(SR.best); continue; }
       acc++; stat_cnt[op]++;
       if (dT > 0) stat_gain[op] += dT;
       cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
       if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d i %d D %d", op, i, SR.D); save(gbest, w); }
-      if (cur.T >= gbest.T - 30) add_elite(cur);
+      { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
     }
     if (it % 2000 == 0) {
       printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
@@ -722,7 +738,7 @@ int main(int argc, char** argv) {
       fflush(stdout);
     }
     // restart from elite if stuck far below best
-    if (cur.T < gbest.T - 400 || ((ITERS ? (it - lastImprIt > 12000) : (el() - lastImpr > 120)) && U() < 0.001)) {
+    if (cur.T - pen_of(cur.X) < gbA - 400 || ((ITERS ? (it - lastImprIt > 12000) : (el() - lastImpr > 120)) && U() < 0.001)) {
       lastImprIt = it;
       cur = elite[RI(0, (int)elite.size() - 1)]; st = states_of(cur.X); restarts++; lastImpr = el();
     }

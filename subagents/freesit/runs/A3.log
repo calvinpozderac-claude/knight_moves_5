@@ -1,0 +1,5 @@
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+start ../../data/tours/record_9290.txt: 178 moves, 9290 minutes
+start 9290: 3 free sinks, exact necessity ok (bad move 0)
