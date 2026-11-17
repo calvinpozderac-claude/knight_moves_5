@@ -5,3 +5,5 @@ start ../../data/tours/record_9290.txt: 178 moves, 9290 minutes
 start 9290: 3 free sinks, exact necessity ok (bad move 0)
 [29s] it 2000 acc 263 cur 9142 best 9290 temp 19.1 elite 16 gains 4/220/487/110/36/0/258/439/72/432 acc 35/46/71/19/7/7/28/19/4/27
    nec calls 1216566 fail 1209444 unk 0 probes 7510958 | fsp calls 441 hits 5 gain 8 | dumped 217 | block op acc 0 gain 0
+[61s] it 4000 acc 467 cur 9152 best 9290 temp 9.1 elite 16 gains 166/228/539/146/36/0/262/527/72/432 acc 85/93/122/34/7/9/39/35/4/39
+   nec calls 2862272 fail 2847831 unk 0 probes 18042093 | fsp calls 887 hits 13 gain 19 | dumped 400 | block op acc 0 gain 0
