@@ -6,3 +6,17 @@ start ../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes
 start 9290: 5 free sinks, exact necessity ok (bad move 0)
 [85s] it 4000 acc 384 cur 9192 best 9290 temp 9.1 elite 11 gains 196/228/383/144/108/72/116/310/0/648 acc 51/69/95/34/11/7/33/40/6/38
    nec calls 2660685 fail 2645553 unk 0 probes 17807737 | fsp calls 802 hits 17 gain 45 | dumped 304 | block op acc 0 gain 0
+[216s] it 10000 acc 804 cur 9218 best 9290 temp 40.0 elite 11 gains 199/236/391/155/108/72/128/353/0/648 acc 125/170/202/73/20/9/51/68/9/77
+   nec calls 7302525 fail 7266138 unk 0 probes 47439735 | fsp calls 2090 hits 37 gain 88 | dumped 400 | block op acc 0 gain 0
+[257s] it 12000 acc 1064 cur 9144 best 9290 temp 19.1 elite 11 gains 343/415/619/315/112/72/356/503/0/1044 acc 162/219/267/101/28/11/77/85/9/105
+   nec calls 8630110 fail 8586081 unk 0 probes 56453970 | fsp calls 2525 hits 46 gain 101 | dumped 400 | block op acc 0 gain 0
+[300s] it 14000 acc 1215 cur 9278 best 9290 temp 9.1 elite 40 gains 346/502/812/323/112/72/396/565/0/1116 acc 190/246/304/113/29/12/96/102/9/114
+   nec calls 10353591 fail 10302257 unk 0 probes 67754170 | fsp calls 2916 hits 60 gain 125 | dumped 400 | block op acc 0 gain 0
+[431s] it 20000 acc 1548 cur 9288 best 9290 temp 40.0 elite 40 gains 369/518/827/327/115/72/400/615/4/1116 acc 243/331/389/137/33/17/112/138/13/135
+   nec calls 15332829 fail 15260259 unk 0 probes 98559699 | fsp calls 4092 hits 81 gain 158 | dumped 400 | block op acc 0 gain 0
+[515s] it 24000 acc 1945 cur 9214 best 9290 temp 9.1 elite 40 gains 526/722/1087/479/187/108/799/939/16/1404 acc 303/422/478/171/38/26/155/175/18/159
+   nec calls 18220367 fail 18133304 unk 0 probes 117833885 | fsp calls 4955 hits 101 gain 196 | dumped 400 | block op acc 0 gain 0
+[725s] it 34000 acc 2711 cur 9214 best 9290 temp 9.1 elite 40 gains 968/929/1429/579/224/162/1066/1602/52/1732 acc 423/578/671/247/52/39/208/261/26/206
+   nec calls 25445706 fail 25322268 unk 0 probes 166462946 | fsp calls 6968 hits 141 gain 278 | dumped 400 | block op acc 0 gain 0
+done it 40000 acc 3137 best 9290 restarts 2
+elite: 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288

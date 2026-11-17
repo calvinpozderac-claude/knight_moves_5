@@ -9,3 +9,4 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - dance_pot2 beam from 9290's move-91 state gives only 8096 (W=3000): can't rebuild a dance from scratch with it. pot at move 91 = 9402.
 - Batch C (16 jobs from 2 p9290 ties, single/pair-square penalties 100-200, focus 20-130): queued, workers running (queue.txt).
 - 09:57 restart after limit: saver + 4 workers restarted; batch C first 4 jobs (C1-C4) all 9290, remaining 8 queued jobs resumed (C5-C8 lost mid-run are not requeued).
+- 10:28 Batch C (C1-C12, single/pair penalties 100-200 on g8,f8,d5,c2,f7 before move 91): all 9290, no raw gain. Visit penalty frees 1-3 arrivals but LNS cannot convert them into dance sits (raw loss 68). Next idea: dedicated sit-block insertion operator / manual c2 block construction.

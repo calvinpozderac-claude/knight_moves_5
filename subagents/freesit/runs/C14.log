@@ -1,0 +1,32 @@
+../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
+start ../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes
+start 9290: 5 free sinks, exact necessity ok (bad move 0)
+[15s it 739] ADJ BEST 8218 (raw 9218 pen 1000)
+[17s it 813] ADJ BEST 8222 (raw 9222 pen 1000)
+[116s it 4847] ADJ BEST 8224 (raw 9224 pen 1000)
+[143s] it 6000 acc 540 cur 9222 best 9290 temp 4.4 elite 40 gains 284/201/891/156/80/108/288/210/0/432 acc 81/116/159/38/9/9/30/63/7/28
+   nec calls 6701407 fail 6679618 unk 0 probes 47045580 | fsp calls 1244 hits 17 gain 28 | dumped 400 | block op acc 0 gain 0
+[197s] it 8000 acc 665 cur 9222 best 9290 temp 2.1 elite 40 gains 284/205/899/156/80/108/288/226/0/432 acc 99/151/196/47/9/10/37/70/9/37
+   nec calls 9258925 fail 9229742 unk 0 probes 68066360 | fsp calls 1654 hits 26 gain 45 | dumped 400 | block op acc 0 gain 0
+[246s] it 10000 acc 807 cur 9220 best 9290 temp 40.0 elite 40 gains 284/205/900/156/80/108/288/232/0/432 acc 123/187/234/60/12/11/43/83/13/41
+   nec calls 11539681 fail 11502959 unk 0 probes 85254359 | fsp calls 2118 hits 35 gain 60 | dumped 400 | block op acc 0 gain 0
+[381s it 15128] ADJ BEST 8415 (raw 9215 pen 800)
+[381s it 15134] ADJ BEST 8432 (raw 9232 pen 800)
+[388s it 15398] ADJ BEST 8434 (raw 9234 pen 800)
+[403s] it 16000 acc 1366 cur 9234 best 9290 temp 4.4 elite 40 gains 446/335/1996/461/80/184/577/595/36/812 acc 217/319/365/121/23/17/75/138/14/77
+   nec calls 19616097 fail 19560055 unk 0 probes 147568569 | fsp calls 3369 hits 65 gain 113 | dumped 400 | block op acc 0 gain 0
+[423s it 16692] ADJ BEST 8584 (raw 9184 pen 600)
+[463s] it 18000 acc 1512 cur 9184 best 9290 temp 2.1 elite 40 gains 446/339/2001/465/80/338/581/599/36/812 acc 248/345/400/140/25/20/83/148/17/86
+   nec calls 23097315 fail 23031172 unk 0 probes 177590621 | fsp calls 3823 hits 74 gain 125 | dumped 400 | block op acc 0 gain 0
+[595s] it 22000 acc 1861 cur 9031 best 9290 temp 19.1 elite 40 gains 518/373/2196/609/111/406/933/830/70/1016 acc 296/403/489/179/33/27/120/175/19/120
+   nec calls 30929793 fail 30843100 unk 0 probes 252284101 | fsp calls 4667 hits 87 gain 138 | dumped 400 | block op acc 0 gain 0
+[602s it 22235] ADJ BEST 8586 (raw 9186 pen 600)
+[838s] it 30000 acc 2502 cur 9234 best 9290 temp 40.0 elite 40 gains 543/491/2299/623/115/431/1224/1157/104/1086 acc 381/538/648/265/43/32/165/244/24/162
+   nec calls 43940908 fail 43817452 unk 0 probes 372456171 | fsp calls 6395 hits 178 gain 322 | dumped 400 | block op acc 0 gain 0
+[894s] it 32000 acc 2764 cur 9217 best 9290 temp 19.1 elite 40 gains 649/664/2701/812/115/431/1445/1505/112/1334 acc 410/595/702/293/45/36/205/274/27/177
+   nec calls 46954048 fail 46822458 unk 0 probes 400040701 | fsp calls 6867 hits 189 gain 342 | dumped 400 | block op acc 0 gain 0
+[948s] it 34000 acc 2958 cur 9216 best 9290 temp 9.1 elite 40 gains 712/671/2722/850/115/431/1573/1716/112/1436 acc 437/640/738/310/47/41/231/295/29/190
+   nec calls 49788295 fail 49648668 unk 0 probes 425776260 | fsp calls 7304 hits 195 gain 354 | dumped 400 | block op acc 0 gain 0

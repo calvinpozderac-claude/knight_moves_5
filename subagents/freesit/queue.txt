@@ -1,4 +1,0 @@
-./run.sh C13 313 ../sfl/in/p9290/t9290_69526099.txt 40000 20 130 0.85 40 4 ../../data/tours/record_9290.txt ../../data/tours/record_9282.txt ../../data/tours/record_9279.txt --vpen 200 --vsq c2,f7 --vrange 1 91
-./run.sh C14 314 ../sfl/in/p9290/t9290_7f1dc222.txt 40000 20 130 0.85 40 4 ../../data/tours/record_9290.txt ../../data/tours/record_9282.txt ../../data/tours/record_9279.txt --vpen 200 --vsq c2,f7 --vrange 1 91
-./run.sh C15 315 ../sfl/in/p9290/t9290_69526099.txt 40000 20 130 0.85 40 4 ../../data/tours/record_9290.txt ../../data/tours/record_9282.txt ../../data/tours/record_9279.txt --vpen 150 --vsq d5,c2 --vrange 1 91
-./run.sh C16 316 ../sfl/in/p9290/t9290_7f1dc222.txt 40000 20 130 0.85 40 4 ../../data/tours/record_9290.txt ../../data/tours/record_9282.txt ../../data/tours/record_9279.txt --vpen 150 --vsq d5,c2 --vrange 1 91

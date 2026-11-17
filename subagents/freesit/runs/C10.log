@@ -4,3 +4,18 @@
 ../../data/tours/record_9279.txt: 177 moves, 9279 minutes (replay 9279)
 start ../sfl/in/p9290/t9290_7f1dc222.txt: 182 moves, 9290 minutes
 start 9290: 5 free sinks, exact necessity ok (bad move 0)
+[178s] it 8000 acc 616 cur 9284 best 9290 temp 2.1 elite 40 gains 74/315/374/127/112/72/300/457/72/180 acc 89/138/150/58/16/9/54/69/6/27
+   nec calls 6358582 fail 6329490 unk 0 probes 40745182 | fsp calls 1599 hits 43 gain 100 | dumped 400 | block op acc 0 gain 0
+[302s] it 14000 acc 1113 cur 9200 best 9290 temp 9.1 elite 40 gains 258/470/712/473/148/180/520/738/72/648 acc 158/245/273/114/23/21/90/124/10/55
+   nec calls 10949351 fail 10899161 unk 0 probes 69945159 | fsp calls 2828 hits 65 gain 144 | dumped 400 | block op acc 0 gain 0
+[340s] it 16000 acc 1244 cur 9284 best 9290 temp 4.4 elite 40 gains 266/479/728/485/148/180/520/825/72/720 acc 180/272/303/130/27/22/98/142/11/59
+   nec calls 12171516 fail 12113904 unk 0 probes 77760600 | fsp calls 3232 hits 74 gain 159 | dumped 400 | block op acc 0 gain 0
+[424s] it 20000 acc 1470 cur 9288 best 9290 temp 40.0 elite 40 gains 277/488/734/485/148/180/524/841/72/720 acc 228/319/358/148/33/25/114/165/14/66
+   nec calls 15526063 fail 15454463 unk 0 probes 98283811 | fsp calls 4002 hits 98 gain 191 | dumped 400 | block op acc 0 gain 0
+[537s it 25281] ADJ BEST 9010 (raw 9210 pen 200)
+[538s it 25305] ADJ BEST 9012 (raw 9212 pen 200)
+[540s it 25334] ADJ BEST 9016 (raw 9216 pen 200)
+[862s] it 40000 acc 2894 cur 9288 best 9290 temp 40.0 elite 40 gains 619/1227/1308/800/184/256/844/1695/108/1586 acc 477/621/735/268/53/44/194/309/32/161
+   nec calls 31927956 fail 31786450 unk 0 probes 200004496 | fsp calls 7996 hits 192 gain 377 | dumped 400 | block op acc 0 gain 0
+done it 40000 acc 2894 best 9290 restarts 3
+elite: 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9290 9288 9288 9288 9288 9288 9288 9288 9288 9288 9288
