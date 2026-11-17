@@ -46,3 +46,7 @@ P1 4 9387 done it 28462 acc 3823 best 9387 restarts 4
 P2 2 9384 done it 30240 acc 3449 best 9384 restarts 0
 P3 1 9386 done it 33471 acc 4301 best 9386 restarts 3
 P4 3 9389 done it 34554 acc 4482 best 9389 restarts 2
+Q2 3 9520 [190s] it 2000 acc 281 cur 9498 best 9520 temp 24.5 elite 40 gains 94/87/114/161/8/0/4/120/0/0 acc 43/94/64/21/7/3/22/20/3/4
+Q4 0  [114s] it 2000 acc 270 cur 9178 best 9513 temp 39.8 elite 40 gains 12/11/15/63/0/0/69/60/0/0 acc 38/57/66/26/2/6/28/27/3/17
+Q1 9 9713 [358s it 4491] NEW BEST 9713 (op 2 i 20 D 3) len 166
+Q3 3 9519 [47s it 956] NEW BEST 9519 (op 2 i 32 D 4) len 168

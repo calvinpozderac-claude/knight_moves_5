@@ -4,7 +4,7 @@
 # NEW_RECORD_<m>.txt (line 1 minutes, line 2 tour), never overwritten. Checked tours are cached in tmp/checked.txt.
 import sys, subprocess, re, os
 from fractions import Fraction
-BEST = Fraction(9290)
+BEST = Fraction(9520)
 seen_f = 'tmp/checked.txt'
 seen = set(open(seen_f).read().split('\n')) if os.path.exists(seen_f) else set()
 cands = {}
