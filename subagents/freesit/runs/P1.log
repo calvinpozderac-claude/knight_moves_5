@@ -1,0 +1,26 @@
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/t9307.txt: 173 moves, 9307 minutes (replay 9307)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+start in/t9382.txt: 173 moves, 9382 minutes
+start 9382: 13 free sinks, exact necessity ok (bad move 0)
+[113s] it 2000 acc 301 cur 9371 best 9382 temp 34.8 elite 40 gains 20/37/472/449/160/0/120/606/2/36 acc 37/62/78/45/6/0/22/31/6/14
+   nec calls 7366242 fail 7361402 unk 0 probes 73511253 | fsp calls 311 hits 25 gain 677 | dumped 258 | block op acc 0 gain 0
+[210s it 3798] NEW BEST 9383 (op 2 i 20 D 4) len 170
+[210s it 3798] ADJ BEST 9383 (raw 9383 pen 0)
+[211s it 3805] NEW BEST 9385 (op 6 a 167 len 4) len 174
+[211s it 3805] ADJ BEST 9385 (raw 9385 pen 0)
+[230s] it 4000 acc 598 cur 9374 best 9385 temp 20.1 elite 40 gains 29/83/543/461/168/4/129/634/4/36 acc 92/117/161/81/10/3/42/54/10/28
+   nec calls 15478242 fail 15468787 unk 0 probes 155574636 | fsp calls 625 hits 78 gain 2181 | dumped 400 | block op acc 0 gain 0
+[355s] it 6000 acc 854 cur 9374 best 9385 temp 11.7 elite 40 gains 79/89/603/463/168/12/141/666/4/36 acc 125/183/235/103/14/5/62/74/13/40
+   nec calls 22657141 fail 22643194 unk 0 probes 225617405 | fsp calls 904 hits 115 gain 2973 | dumped 400 | block op acc 0 gain 0
+[948s it 15978] NEW BEST 9386 (op 7 a 5 c 5 d 34 b 31) len 164
+[948s it 15978] ADJ BEST 9386 (raw 9386 pen 0)
+[950s it 16039] NEW BEST 9387 (op 1 i 84 D 1) len 166
+[950s it 16039] ADJ BEST 9387 (raw 9387 pen 0)
+[1354s] it 24000 acc 3290 cur 9376 best 9387 temp 5.1 elite 40 gains 404/382/955/502/172/20/606/1747/4/38 acc 496/766/861/368/39/30/251/266/38/175
+   nec calls 92919524 fail 92864470 unk 0 probes 929987825 | fsp calls 3572 hits 544 gain 12259 | dumped 400 | block op acc 0 gain 0
+[1580s] it 28000 acc 3772 cur 9379 best 9387 temp 1.7 elite 40 gains 414/386/981/514/172/26/629/1777/4/38 acc 579/869/985/411/48/38/293/303/47/199
+   nec calls 111638630 fail 111574679 unk 0 probes 1138706444 | fsp calls 4123 hits 624 gain 13543 | dumped 400 | block op acc 0 gain 0
+done it 28462 acc 3823 best 9387 restarts 4
+elite: 9387 9387 9387 9387 9387 9387 9386 9386 9386 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385 9385

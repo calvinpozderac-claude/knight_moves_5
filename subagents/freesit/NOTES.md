@@ -10,3 +10,13 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - Batch C (16 jobs from 2 p9290 ties, single/pair-square penalties 100-200, focus 20-130): queued, workers running (queue.txt).
 - 09:57 restart after limit: saver + 4 workers restarted; batch C first 4 jobs (C1-C4) all 9290, remaining 8 queued jobs resumed (C5-C8 lost mid-run are not requeued).
 - 10:28 Batch C (C1-C12, single/pair penalties 100-200 on g8,f8,d5,c2,f7 before move 91): all 9290, no raw gain. Visit penalty frees 1-3 arrivals but LNS cannot convert them into dance sits (raw loss 68). Next idea: dedicated sit-block insertion operator / manual c2 block construction.
+- 10:29 New phase (coordinator: build operator). State at move 91: c2 and f7 both in group 0 (36 pts, opposite pair), 0 visits left; c2 move 1 is forced (a1->c2 or b1). So an operator needs visits freed in the prefix first: H1-H4 = hard penalty 1000 on f7 / c2 / both arrivals before 91, to see what raw a prefix without them gives.
+- 10:58 H1-H4 (1000/arrival): f7 hard-penalised reaches raw 9102 with f7 arrivals 3->1 in prefix (c2 and both: 8456 / worse). Queued I1-I4: unpenalised LNS from the H1/H4 tours to see if the 2 freed f7 visits turn into sits.
+- 11:08 **9294** (NEW_RECORD_9294.txt, checker ok, 164 moves): I4 = unpenalised LNS (focus 1-178 p0.6 t0 60 free 4) from H4's tour (f7 hard-penalised, 9078). Also 9292. Route works: penalise f7 arrivals hard, then relax.
+- 11:25 J1-J6 running (from 9294/H4/H1 with free 6): 9295, 9297 found (NEW_RECORD_9297.txt). fsp-on-start of H4 tour with --free 6 gives the 9294.
+- 11:53 J1-J4: from 9294 -> 9297 (J1), others 9294/9209. K1-K3 (plain from 9297), L1-L3 (hard penalty 1000 on g8/d5/f8 before 91 from 9297) running.
+- 12:32 **9300** (NEW_RECORD_9300.txt, checker ok) from L2/L3 (hard penalty 1000 on d5/f8 arrivals before move 91, from 9297). Queued M1-M2 plain LNS from 9300.
+- 12:42 **9307** (NEW_RECORD_9307.txt, checker ok, 173 moves) from L-jobs: op 7 crossover after the hard-penalty tour. Queue N1-N8 from 9307 (plain + hard penalty d5/f8/g8/f7/d5+f8).
+- 12:52 **9382** (NEW_RECORD_9382.txt, checker ok, 173 moves) from N4 (hard penalty 1000 f8 arrivals before 91, from 9307; 9336/9337 on the way). Queue P1-P6 from 9382.
+- 13:13 **9513** (NEW_RECORD_9513.txt, checker ok) from the P-round (9387 on the way). Queue Q1-Q6 from 9513.
+- 13:42 **9520** (NEW_RECORD_9520.txt, checker ok). Q-round still running; saver and workers left running.

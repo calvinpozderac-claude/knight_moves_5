@@ -1,0 +1,28 @@
+in/t9297.txt: 168 moves, 9297 minutes (replay 9297)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+in/t9297.txt: 168 moves, 9297 minutes (replay 9297)
+start in/t9297.txt: 168 moves, 9297 minutes
+start 9297: 9 free sinks, exact necessity ok (bad move 0)
+[92s] it 2000 acc 286 cur 9237 best 9297 temp 39.8 elite 40 gains 52/118/224/0/43/0/253/245/0/74 acc 42/59/65/33/5/5/32/31/0/14
+   nec calls 6226377 fail 6220214 unk 0 probes 46405342 | fsp calls 312 hits 13 gain 171 | dumped 256 | block op acc 0 gain 0
+[186s] it 4000 acc 520 cur 9165 best 9297 temp 26.5 elite 40 gains 113/118/288/10/43/0/263/253/0/74 acc 71/108/124/57/6/11/53/49/3/38
+   nec calls 13837293 fail 13824446 unk 0 probes 116231274 | fsp calls 559 hits 26 gain 505 | dumped 400 | block op acc 0 gain 0
+[319s it 6992] NEW BEST 9299 (op 7 a 148 c 144 d 161 b 161) len 166
+[319s it 6992] ADJ BEST 8299 (raw 9299 pen 1000)
+[340s it 7442] NEW BEST 9300 (op 7 a 101 c 107 d 126 b 118) len 173
+[340s it 7442] ADJ BEST 8300 (raw 9300 pen 1000)
+[533s] it 12000 acc 1498 cur 9295 best 9300 temp 5.1 elite 40 gains 138/196/352/58/45/12/303/397/6/74 acc 228/347/348/167/20/23/131/119/13/102
+   nec calls 41197500 fail 41159111 unk 0 probes 345802323 | fsp calls 1654 hits 56 gain 1010 | dumped 400 | block op acc 0 gain 0
+[620s] it 14000 acc 1747 cur 9291 best 9300 temp 3.4 elite 40 gains 144/200/356/60/45/14/311/407/6/74 acc 265/409/405/198/22/27/147/142/16/116
+   nec calls 48329513 fail 48284566 unk 0 probes 405352301 | fsp calls 1940 hits 68 gain 1239 | dumped 400 | block op acc 0 gain 0
+[1201s it 26663] NEW BEST 9304 (op 0 i 22 D 5) len 172
+[1201s it 26663] ADJ BEST 8304 (raw 9304 pen 1000)
+[1213s it 26882] NEW BEST 9305 (op 2 i 36 D 4) len 167
+[1213s it 26882] ADJ BEST 8305 (raw 9305 pen 1000)
+[1334s it 29804] NEW BEST 9307 (op 7 a 132 c 133 d 147 b 146) len 173
+[1334s it 29804] ADJ BEST 8307 (raw 9307 pen 1000)
+[1419s] it 32000 acc 4012 cur 9299 best 9307 temp 5.1 elite 40 gains 265/360/602/105/105/232/507/571/6/74 acc 644/934/967/447/53/65/321/267/33/281
+   nec calls 111388066 fail 111293507 unk 0 probes 969643116 | fsp calls 4409 hits 156 gain 1979 | dumped 400 | block op acc 0 gain 0
+done it 35888 acc 4487 best 9307 restarts 4
+elite: 9307 9307 9307 9307 9307 9307 9307 9307 9307 9307 9307 9307 9307 9307 9307 9305 9305 9305 9305 9305 9305 9305 9305 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304 9304

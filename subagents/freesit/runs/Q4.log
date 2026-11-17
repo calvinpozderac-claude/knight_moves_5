@@ -1,0 +1,8 @@
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+start in/t9513.txt: 165 moves, 9513 minutes
+start 9513: 17 free sinks, exact necessity ok (bad move 0)
+[114s] it 2000 acc 270 cur 9178 best 9513 temp 39.8 elite 40 gains 12/11/15/63/0/0/69/60/0/0 acc 38/57/66/26/2/6/28/27/3/17
+   nec calls 7459373 fail 7453246 unk 0 probes 73846424 | fsp calls 275 hits 8 gain 280 | dumped 248 | block op acc 0 gain 0

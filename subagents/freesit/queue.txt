@@ -1,0 +1,2 @@
+./run.sh Q5 1205 in/t9513.txt 80000 1 100 0.9 60 6 ../../data/tours/record_9290.txt in/t9382.txt in/t9513.txt --vpen 1000 --vsq g8 --vrange 1 91
+./run.sh Q6 1206 in/t9513.txt 60000 20 130 0.85 40 6 ../../data/tours/record_9290.txt in/t9382.txt in/t9513.txt

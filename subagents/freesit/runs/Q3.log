@@ -1,0 +1,17 @@
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+start in/t9513.txt: 165 moves, 9513 minutes
+start 9513: 17 free sinks, exact necessity ok (bad move 0)
+[0s it 4] NEW BEST 9514 (op 1 i 115 D 3) len 167
+[0s it 4] ADJ BEST 7514 (raw 9514 pen 2000)
+[16s it 365] ADJ BEST 8445 (raw 9445 pen 1000)
+[17s it 397] ADJ BEST 8465 (raw 9465 pen 1000)
+[20s it 430] ADJ BEST 8467 (raw 9467 pen 1000)
+[23s it 480] ADJ BEST 8473 (raw 9473 pen 1000)
+[26s it 553] ADJ BEST 8477 (raw 9477 pen 1000)
+[45s it 886] NEW BEST 9517 (op 2 i 76 D 5) len 160
+[45s it 886] ADJ BEST 8517 (raw 9517 pen 1000)
+[47s it 956] NEW BEST 9519 (op 2 i 32 D 4) len 168
+[47s it 956] ADJ BEST 8519 (raw 9519 pen 1000)

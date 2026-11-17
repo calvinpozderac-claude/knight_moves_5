@@ -47,3 +47,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 9 | fw93 | free-wait pass on 73 tours 9,267-9,282 | 9,286 (74 distinct ties; fixed point) | gain = one free sink at a block change: sink x (n_prev - n_next) |
 | 9 | sfl | sound free-wait LNS (necessity-checked free sinks inside the search) | **9,290 (verified)** | record |
 | 10 | freesit | visit penalty on dance-sitter squares before the dance (28 jobs) | 9,290 (no gain) | freed visits never became dance sits; needs an operator that inserts a c2/f7 sit block |
+| 10 | freesit | hard visit penalty (1000/arrival before move 91) on f7, then d5/f8, then plain relaxed sfl LNS; long LNS from 9,307 | **9,520** (+230) | checker ok, 165 moves; penalty-then-relax cycle is the lever |

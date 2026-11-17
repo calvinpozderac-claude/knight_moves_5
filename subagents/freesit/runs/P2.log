@@ -1,0 +1,24 @@
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/t9307.txt: 173 moves, 9307 minutes (replay 9307)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+start in/t9382.txt: 173 moves, 9382 minutes
+start 9382: 13 free sinks, exact necessity ok (bad move 0)
+[242s] it 4000 acc 532 cur 9360 best 9382 temp 15.0 elite 40 gains 123/141/423/182/0/2/30/445/8/0 acc 70/123/157/55/9/8/45/53/6/6
+   nec calls 14694807 fail 14685727 unk 0 probes 140182411 | fsp calls 576 hits 167 gain 3292 | dumped 311 | block op acc 0 gain 0
+[637s] it 10000 acc 1253 cur 9382 best 9382 temp 3.4 elite 40 gains 169/171/529/208/0/8/78/545/18/0 acc 189/267/359/131/14/18/130/115/19/11
+   nec calls 37032076 fail 37009824 unk 0 probes 356405148 | fsp calls 1436 hits 419 gain 9280 | dumped 400 | block op acc 0 gain 0
+[653s it 10225] NEW BEST 9383 (op 2 i 93 D 3) len 167
+[653s it 10225] ADJ BEST 9383 (raw 9383 pen 0)
+[732s] it 12000 acc 1465 cur 9382 best 9383 temp 2.1 elite 40 gains 179/175/549/210/0/8/92/561/18/0 acc 225/308/422/147/16/19/154/138/24/12
+   nec calls 43248579 fail 43221952 unk 0 probes 421300299 | fsp calls 1721 hits 497 gain 10938 | dumped 400 | block op acc 0 gain 0
+[918s it 16236] NEW BEST 9384 (op 1 i 124 D 3) len 165
+[918s it 16236] ADJ BEST 9384 (raw 9384 pen 0)
+[1098s] it 20000 acc 2347 cur 9382 best 9384 temp 11.7 elite 40 gains 405/515/677/294/4/10/138/1173/18/0 acc 373/493/662/250/30/26/236/226/30/21
+   nec calls 68636474 fail 68591854 unk 0 probes 676132533 | fsp calls 2782 hits 812 gain 17806 | dumped 400 | block op acc 0 gain 0
+[1386s] it 26000 acc 3020 cur 9382 best 9384 temp 2.7 elite 40 gains 435/538/794/306/8/12/160/1249/28/0 acc 482/634/863/314/42/31/291/293/41/29
+   nec calls 90535822 fail 90477856 unk 0 probes 889934727 | fsp calls 3619 hits 1037 gain 22542 | dumped 400 | block op acc 0 gain 0
+[1584s] it 30000 acc 3417 cur 9384 best 9384 temp 40.0 elite 40 gains 446/549/807/316/8/12/160/1252/28/0 acc 545/729/969/362/51/34/323/327/44/33
+   nec calls 104521241 fail 104454287 unk 0 probes 1036823180 | fsp calls 4170 hits 1212 gain 26496 | dumped 400 | block op acc 0 gain 0
+done it 30240 acc 3449 best 9384 restarts 0
+elite: 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384 9384

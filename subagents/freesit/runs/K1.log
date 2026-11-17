@@ -1,0 +1,16 @@
+in/t9297.txt: 168 moves, 9297 minutes (replay 9297)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+in/t9297.txt: 168 moves, 9297 minutes (replay 9297)
+start in/t9297.txt: 168 moves, 9297 minutes
+start 9297: 9 free sinks, exact necessity ok (bad move 0)
+[388s] it 6000 acc 817 cur 9279 best 9297 temp 11.7 elite 40 gains 446/351/664/10/1/0/264/528/206/0 acc 139/163/225/70/14/5/89/67/11/34
+   nec calls 27697223 fail 27674269 unk 0 probes 255960168 | fsp calls 856 hits 182 gain 3371 | dumped 400 | block op acc 0 gain 0
+[605s] it 10000 acc 1344 cur 9293 best 9297 temp 3.9 elite 40 gains 468/369/692/20/1/0/286/586/208/0 acc 229/279/353/126/16/7/142/115/14/63
+   nec calls 45385653 fail 45348075 unk 0 probes 413493979 | fsp calls 1456 hits 294 gain 5333 | dumped 400 | block op acc 0 gain 0
+[920s] it 16000 acc 2063 cur 9283 best 9297 temp 45.7 elite 40 gains 540/534/1000/68/1/0/596/864/282/0 acc 366/440/546/194/27/13/194/163/25/95
+   nec calls 69461067 fail 69400648 unk 0 probes 633408112 | fsp calls 2292 hits 471 gain 8431 | dumped 400 | block op acc 0 gain 0
+[1032s] it 18000 acc 2351 cur 9235 best 9297 temp 26.5 elite 40 gains 708/654/1258/78/1/6/802/1278/282/0 acc 410/507/627/221/32/17/214/192/27/104
+   nec calls 78325772 fail 78257299 unk 0 probes 713919958 | fsp calls 2583 hits 519 gain 9358 | dumped 400 | block op acc 0 gain 0
+done it 29430 acc 3769 best 9297 restarts 4
+elite: 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297 9297

@@ -1,0 +1,26 @@
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+start in/t9513.txt: 165 moves, 9513 minutes
+start 9513: 17 free sinks, exact necessity ok (bad move 0)
+[133s] it 2000 acc 309 cur 9436 best 9513 temp 34.8 elite 40 gains 73/233/810/160/0/5/14/393/0/0 acc 45/88/78/28/4/5/27/23/3/8
+   nec calls 8465676 fail 8460501 unk 0 probes 112577923 | fsp calls 314 hits 34 gain 1168 | dumped 269 | block op acc 0 gain 0
+[198s it 2856] NEW BEST 9692 (op 2 i 148 D 3) len 160
+[198s it 2856] ADJ BEST 9692 (raw 9692 pen 0)
+[267s it 3618] NEW BEST 9695 (op 0 i 80 D 2) len 164
+[267s it 3618] ADJ BEST 9695 (raw 9695 pen 0)
+[270s it 3635] NEW BEST 9699 (op 2 i 92 D 7) len 162
+[270s it 3635] ADJ BEST 9699 (raw 9699 pen 0)
+[275s it 3675] NEW BEST 9703 (op 3 i 98 D 1) len 166
+[275s it 3675] ADJ BEST 9703 (raw 9703 pen 0)
+[280s it 3721] NEW BEST 9704 (op 6 a 161 len 3) len 167
+[280s it 3721] ADJ BEST 9704 (raw 9704 pen 0)
+[349s it 4408] NEW BEST 9708 (op 7 a 95 c 93 d 100 b 96) len 165
+[349s it 4408] ADJ BEST 9708 (raw 9708 pen 0)
+[352s it 4438] NEW BEST 9710 (op 0 i 155 D 7) len 163
+[352s it 4438] ADJ BEST 9710 (raw 9710 pen 0)
+[352s it 4447] NEW BEST 9712 (op 1 i 55 D 1) len 163
+[352s it 4447] ADJ BEST 9712 (raw 9712 pen 0)
+[358s it 4491] NEW BEST 9713 (op 2 i 20 D 3) len 166
+[358s it 4491] ADJ BEST 9713 (raw 9713 pen 0)

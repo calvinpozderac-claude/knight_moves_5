@@ -17,3 +17,32 @@ C11 0  done it 40000 acc 3367 best 9290 restarts 2
 C16 0  done it 40000 acc 3092 best 9290 restarts 3
 C13 0  done it 40000 acc 3427 best 9290 restarts 2
 C15 0  done it 40000 acc 3681 best 9290 restarts 3
+C14 0  done it 40000 acc 3415 best 9290 restarts 3
+H3 0  done it 64009 acc 6975 best 9290 restarts 21923
+H2 0  done it 69758 acc 7468 best 9290 restarts 11
+H1 0  done it 57357 acc 6170 best 9290 restarts 10
+H4 0  done it 53966 acc 7462 best 9290 restarts 2585
+I2 1 9290 done it 60000 acc 5057 best 9290 restarts 13
+I3 0  done it 36126 acc 4691 best 9078 restarts 2
+I1 1 9103 done it 53365 acc 5274 best 9103 restarts 3
+I4 2 9295 done it 29499 acc 3829 best 9295 restarts 3
+J1 1 9297 done it 30101 acc 3795 best 9297 restarts 4
+J2 0  done it 27354 acc 3211 best 9294 restarts 2
+J3 1 9294 done it 30057 acc 3882 best 9294 restarts 2
+J4 3 9209 done it 42601 acc 4090 best 9209 restarts 4
+J5 2 9295 done it 31203 acc 4090 best 9295 restarts 9
+J6 1 9295 done it 30445 acc 4201 best 9295 restarts 27
+K1 0  done it 29430 acc 3769 best 9297 restarts 4
+K2 0  done it 29806 acc 3295 best 9297 restarts 2
+K3 0  done it 29177 acc 3370 best 9297 restarts 1
+L1 0  done it 35877 acc 4393 best 9297 restarts 9783
+L2 5 9307 done it 35888 acc 4487 best 9307 restarts 4
+L3 2 9300 done it 37471 acc 4525 best 9300 restarts 1
+N1 12 9513 done it 31636 acc 4176 best 9513 restarts 4
+N2 0  done it 27364 acc 2825 best 9307 restarts 2
+N4 2 9337 done it 33610 acc 4322 best 9337 restarts 2
+N3 2 9310 done it 35107 acc 4250 best 9310 restarts 3
+P1 4 9387 done it 28462 acc 3823 best 9387 restarts 4
+P2 2 9384 done it 30240 acc 3449 best 9384 restarts 0
+P3 1 9386 done it 33471 acc 4301 best 9386 restarts 3
+P4 3 9389 done it 34554 acc 4482 best 9389 restarts 2

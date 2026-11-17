@@ -1,0 +1,14 @@
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+in/t9382.txt: 173 moves, 9382 minutes (replay 9382)
+in/t9513.txt: 165 moves, 9513 minutes (replay 9513)
+start in/t9513.txt: 165 moves, 9513 minutes
+start 9513: 17 free sinks, exact necessity ok (bad move 0)
+[12s it 153] NEW BEST 9515 (op 2 i 159 D 4) len 163
+[12s it 153] ADJ BEST 9515 (raw 9515 pen 0)
+[12s it 159] NEW BEST 9516 (op 2 i 111 D 3) len 165
+[12s it 159] ADJ BEST 9516 (raw 9516 pen 0)
+[15s it 187] NEW BEST 9520 (op 1 i 126 D 3) len 165
+[15s it 187] ADJ BEST 9520 (raw 9520 pen 0)
+[190s] it 2000 acc 281 cur 9498 best 9520 temp 24.5 elite 40 gains 94/87/114/161/8/0/4/120/0/0 acc 43/94/64/21/7/3/22/20/3/4
+   nec calls 10601054 fail 10596486 unk 0 probes 156093863 | fsp calls 313 hits 57 gain 2195 | dumped 196 | block op acc 0 gain 0

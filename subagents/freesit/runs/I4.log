@@ -1,0 +1,23 @@
+in/h4adj.txt: 164 moves, 9078 minutes (replay 9078)
+../../data/tours/record_9290.txt: 178 moves, 9290 minutes (replay 9290)
+../../data/tours/record_9282.txt: 177 moves, 9282 minutes (replay 9282)
+start in/h4adj.txt: 164 moves, 9078 minutes
+start 9078: 10 free sinks, exact necessity ok (bad move 0)
+[0s it 0] NEW BEST 9294 (fsp on start) len 164
+[0s it 1] ADJ BEST 9294 (raw 9294 pen 0)
+[104s] it 2000 acc 290 cur 9116 best 9294 temp 34.8 elite 40 gains 134/50/680/0/2/2/4/490/0/0 acc 46/59/90/26/5/5/21/21/3/14
+   nec calls 7214928 fail 7207314 unk 0 probes 67518729 | fsp calls 289 hits 65 gain 1166 | dumped 214 | block op acc 0 gain 0
+[221s] it 4000 acc 581 cur 9266 best 9294 temp 20.1 elite 40 gains 142/104/858/72/2/4/14/656/2/0 acc 89/127/158/59/9/10/48/45/7/29
+   nec calls 15223709 fail 15208994 unk 0 probes 144196525 | fsp calls 590 hits 121 gain 2177 | dumped 400 | block op acc 0 gain 0
+[542s] it 10000 acc 1367 cur 9294 best 9294 temp 3.9 elite 40 gains 170/122/904/84/8/6/54/733/4/0 acc 216/299/378/138/24/20/115/99/17/61
+   nec calls 39349167 fail 39312611 unk 0 probes 362683483 | fsp calls 1429 hits 306 gain 4949 | dumped 400 | block op acc 0 gain 0
+[780s] it 14000 acc 1848 cur 9294 best 9294 temp 1.3 elite 40 gains 190/128/918/86/8/10/66/749/4/0 acc 301/419/499/182/34/28/153/130/19/83
+   nec calls 56522043 fail 56471244 unk 0 probes 525004949 | fsp calls 1990 hits 402 gain 6186 | dumped 400 | block op acc 0 gain 0
+[1068s] it 20000 acc 2658 cur 9293 best 9294 temp 15.3 elite 40 gains 427/422/1643/98/8/10/392/1508/6/0 acc 447/591/702/269/44/35/218/206/30/116
+   nec calls 77792144 fail 77720172 unk 0 probes 706323379 | fsp calls 2837 hits 581 gain 9114 | dumped 400 | block op acc 0 gain 0
+[1393s] it 26000 acc 3424 cur 9294 best 9294 temp 3.0 elite 40 gains 440/502/1689/182/10/12/426/1584/6/0 acc 568/774/897/356/53/44/277/274/37/144
+   nec calls 103092682 fail 102999880 unk 0 probes 927520175 | fsp calls 3677 hits 755 gain 11263 | dumped 400 | block op acc 0 gain 0
+[1551s it 28533] NEW BEST 9295 (op 1 i 84 D 3) len 168
+[1551s it 28533] ADJ BEST 9295 (raw 9295 pen 0)
+done it 29499 acc 3829 best 9295 restarts 3
+elite: 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9295 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294 9294
