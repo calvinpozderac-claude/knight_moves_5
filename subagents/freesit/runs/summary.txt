@@ -228,3 +228,38 @@ sO_500_g8f8 0  done it 100000 acc 13013 best 9329 restarts 7
 sO_300_g6g8r 1 9328 done it 100000 acc 12420 best 9328 restarts 26
 sO_500_f7f8 0  done it 100000 acc 13349 best 9329 restarts 7
 sO_500_g6g8 0  done it 100000 acc 13621 best 9329 restarts 8
+sO_500_g6g8r 17 9329 done it 100000 acc 12211 best 9329 restarts 13
+sS1_4 1 9329 done it 60000 acc 8709 best 9329 restarts 13
+sS1_1 0  done it 60000 acc 8728 best 9329 restarts 59
+sS1_3 0  done it 60000 acc 8540 best 9329 restarts 15
+sS1_2 2 9330 done it 60000 acc 9777 best 9330 restarts 55
+sS1_5 0  done it 60000 acc 9389 best 9329 restarts 89
+sS1_6 1 9329 done it 60000 acc 10026 best 9329 restarts 95
+sS1_8 1 9329 done it 60000 acc 8748 best 9329 restarts 17
+sS1_7 0  done it 60000 acc 7641 best 9329 restarts 30
+sS2_1 0  done it 60000 acc 9613 best 9330 restarts 57
+sS2_3 0  done it 60000 acc 9903 best 9330 restarts 113
+sS2_2 0  done it 60000 acc 8947 best 9330 restarts 14
+sS2_4 1 9330 done it 60000 acc 9175 best 9330 restarts 58
+sS2_5 0  done it 60000 acc 8792 best 9330 restarts 104
+sS2_6 0  done it 60000 acc 8988 best 9330 restarts 73
+sS3_1 0  done it 60000 acc 9332 best 9330 restarts 55
+sS3_2 1 9329 done it 60000 acc 9299 best 9329 restarts 46
+sS3_3 0  done it 60000 acc 9904 best 9330 restarts 54
+sS3_4 2 9330 done it 60000 acc 9220 best 9330 restarts 45
+sS3_5 0  done it 60000 acc 9469 best 9330 restarts 52
+sS3_6 1 9330 done it 60000 acc 9684 best 9330 restarts 59
+sS4_1 0  done it 60000 acc 10476 best 9330 restarts 133
+sS4_2 2 9330 done it 60000 acc 9428 best 9330 restarts 122
+sS4_3 0  done it 60000 acc 10220 best 9330 restarts 177
+sS4_4 2 9330 done it 60000 acc 10668 best 9330 restarts 166
+sS4_5 0  done it 60000 acc 10114 best 9330 restarts 58
+sS4_6 2 9330 done it 60000 acc 9639 best 9330 restarts 65
+sS4_7 1 9330 done it 60000 acc 9746 best 9330 restarts 57
+sS4_8 1 9330 done it 60000 acc 10245 best 9330 restarts 129
+sS5_1 0  done it 60000 acc 9472 best 9330 restarts 63
+sS5_2 0  done it 60000 acc 9136 best 9330 restarts 62
+sS5_3 0  done it 60000 acc 9498 best 9330 restarts 59
+sS5_4 0  done it 60000 acc 9391 best 9330 restarts 74
+sS5_5 0  done it 60000 acc 8996 best 9330 restarts 64
+sS5_6 0  done it 60000 acc 9283 best 9330 restarts 67

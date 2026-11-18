@@ -347,11 +347,11 @@ static void fsp(vector<M>& X, long long& T) {
     FSP_GAIN += bt - T; FSP_HIT++; X = bx; T = bt;
   }
 }
-static int DUMPMAX = 3000, DUMPN = 0; static std::unordered_set<string> DUMPSEEN;
+static bool DUMPALL = getenv("DUMPALL") != nullptr; static int DUMPMAX = 3000, DUMPN = 0; static std::unordered_set<string> DUMPSEEN;
 static string fmt_tour(const vector<M>& X, long long* Tout);
 static void dump_cur(const vector<M>& X) {
   if (!DUMPF || DUMPN >= DUMPMAX) return;
-  bool any = false; for (auto& m : X) if (m.fd) { any = true; break; }
+  bool any = DUMPALL; for (auto& m : X) if (m.fd) { any = true; break; }
   if (!any) return;
   long long T; string s = fmt_tour(X, &T);
   if (!DUMPSEEN.insert(s).second) return;
@@ -393,6 +393,62 @@ static double dance_pot2(const S& s) {
   return s.T + fut;
 }
 
+// freesit: dance block-macro beam from state s0 reached by `prefix`; returns best finish (tour in bestX)
+static long long blockbeam(const vector<M>& prefix, const S& s0, int W, bool BBT, vector<M>& bestX, int MAXD = 40, bool verbose = false) {
+  struct BN { S s; int par; vector<M> mv; double h; };
+  vector<vector<BN>> layers; layers.push_back({{s0, -1, {}, 0}});
+  static const vector<M> NOX; Search SR; SR.setY(prefix); SR.X = &NOX; long long best = -1;
+  auto pathOf = [&](int L, int idx) { vector<M> out = prefix; vector<vector<M>*> seq;
+    for (int l = L; l >= 1; l--) { seq.push_back(&layers[l][idx].mv); idx = layers[l][idx].par; }
+    for (int q = (int)seq.size() - 1; q >= 0; q--) out.insert(out.end(), seq[q]->begin(), seq[q]->end()); return out; };
+  vector<pair<int,int>> mv1, mv2, mv3;
+  for (int L = 0; L < MAXD && !layers[L].empty(); L++) {
+    for (size_t i = 0; i < layers[L].size(); i++) { const S& s = layers[L][i].s; if (TYP[s.pos][H8] < 0) continue;
+      SR.path = pathOf(L, (int)i); SR.bestT = -1; SR.bestA = -(1LL<<60); SR.finish_check(s);
+      if (SR.bestT > best && score_full(SR.best) == SR.bestT) { best = SR.bestT; bestX = SR.best; } }
+    vector<BN> nxt; std::unordered_map<uint64_t, int> seenI;
+    auto addN = [&](const S& c, int par, const vector<M>& sq) { double hv = BBT ? c.T : dance_pot2(c); if (hv < -1e8) hv = c.T; uint64_t h = hashS(c); auto it = seenI.find(h);
+      if (it == seenI.end()) { seenI[h] = (int)nxt.size(); nxt.push_back({c, par, sq, hv}); } else if (nxt[it->second].s.T < c.T) nxt[it->second] = {c, par, sq, hv}; };
+    for (size_t i = 0; i < layers[L].size(); i++) {
+      const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv1);
+      for (auto [d1, x] : mv1) {
+        S s1 = s; int p = s.pos; apply_move(s1, d1, x); M m1{(uint8_t)x, (int8_t)(s1.alt[x] - s1.alt[p]), (uint8_t)(d1 > 0), (uint8_t)p};
+        addN(s1, (int)i, vector<M>{m1});
+        pinned_moves(s1, 3, false, mv2);
+        for (auto [d2, y] : mv2) { if (d2 <= 0) continue;
+          vector<M> seq{m1}; S c = s1; int a = x, b = y; int dd = d2;
+          for (int step = 0; step < 6; step++) {
+            int pp = c.pos; apply_move(c, dd, b); seq.push_back({(uint8_t)b, (int8_t)(c.alt[b] - c.alt[pp]), 1, (uint8_t)pp});
+            addN(c, (int)i, seq);
+            pinned_moves(c, 3, false, mv3); int bd = -1;
+            for (auto [d3, z] : mv3) if (z == a && d3 > 0 && d3 > bd) bd = d3;
+            if (bd < 0) break; std::swap(a, b); dd = bd;
+          }
+        }
+      }
+    }
+    if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const BN& u, const BN& v) { return u.h > v.h; }); nxt.resize(W); }
+    if (verbose) { printf("layer %d: %zu nodes, best finish %lld\n", L + 1, nxt.size(), best); fflush(stdout); }
+    layers.push_back(std::move(nxt));
+  }
+  return best;
+}
+// dance-start test: >= dsmin points on the knight's level and the denser neighbouring level (+-2), and dance_pot2 valid
+static bool is_dance_start(const S& z, int dsmin) {
+  if (dance_pot2(z) < -1e8) return false;
+  int a0 = z.alt[z.pos], nm = 0, np = 0, n0 = 0;
+  for (int i = 0; i < 64; i++) { if (z.alt[i] == a0 - 2) nm++; if (z.alt[i] == a0 + 2) np++; if (z.alt[i] == a0) n0++; }
+  return n0 + max(nm, np) >= dsmin;
+}
+static int spare_pairs(const S& s) {
+  int a = s.alt[s.pos], nm = 0, np = 0; for (int i = 0; i < 64; i++) { if (s.alt[i] == a - 2) nm++; if (s.alt[i] == a + 2) np++; }
+  int l1 = nm >= np ? a - 2 : a + 2; int gi[64];
+  for (int i = 0; i < 64; i++) gi[i] = (i == H8 || i == A1) ? -1 : s.alt[i] == a ? 0 : s.alt[i] == l1 ? 1 : -1;
+  int pairs = 0;
+  for (int x = 0; x < 64; x++) if (gi[x] >= 0 && s.vis[x] < 3) for (int k = 0; k < NBN[x]; k++) { int y = NBQ[x][k];
+    if (NBT[x][k] != 0 && gi[y] >= 0 && gi[y] != gi[x] && s.vis[y] < 3 && y > x) pairs++; }
+  return pairs;
+}
 struct BNode { S s; int par; M m; double h; };
 // beam search from s (path = moves leading to s); records finishes into SR via finish_check
 static void beam_tail(Search& SR, const S& s0, int W, double noise, int maxDepth = 200) {
@@ -587,54 +643,82 @@ int main(int argc, char** argv) {
     }
     return 0;
   }
-  if (getenv("BLOCKBEAM")) {  // freesit: dance block-order beam: macro = enter x from pos (pinned), then alternate x<->y
-    // sits (each a pinned sit, largest-delta option first) for 1..m steps; beam over macros ranked by T + dance_pot2.
-    int W = atoi(getenv("BLOCKBEAM")); int k0 = atoi(getenv("BBK")); int MAXD = getenv("BBD") ? atoi(getenv("BBD")) : 40;
-    const vector<M> X0 = gbest.X; auto st0 = states_of(X0);
-    printf("pot at k %d: %.0f\n", k0, dance_pot2(st0[k0])); for (int kk = 90; kk < (int)X0.size(); kk += 10) printf("  pot k %d %.0f\n", kk, dance_pot2(st0[kk]));
-    bool BBT = getenv("BBT") != nullptr;
-    struct BN { S s; int par; vector<M> mv; double h; };
-    vector<vector<BN>> layers; layers.push_back({{st0[k0], -1, {}, 0}});
-    static const vector<M> NOX; Search SR; SR.setY(X0); SR.X = &NOX; long long best = -1; vector<M> bestX;
-    auto pathOf = [&](int L, int idx) { vector<M> out(X0.begin(), X0.begin() + k0); vector<vector<M>*> seq;
-      for (int l = L; l >= 1; l--) { seq.push_back(&layers[l][idx].mv); idx = layers[l][idx].par; }
-      for (int q = (int)seq.size() - 1; q >= 0; q--) out.insert(out.end(), seq[q]->begin(), seq[q]->end()); return out; };
-    vector<pair<int,int>> mv1, mv2;
-    for (int L = 0; L < MAXD && !layers[L].empty(); L++) {
-      // finishes
-      for (size_t i = 0; i < layers[L].size(); i++) { const S& s = layers[L][i].s; if (TYP[s.pos][H8] < 0) continue;
-        SR.path = pathOf(L, (int)i); SR.bestT = -1; SR.bestA = -(1LL<<60); SR.finish_check(s);
-        if (SR.bestT > best && score_full(SR.best) == SR.bestT) { best = SR.bestT; bestX = SR.best; } }
-      vector<BN> nxt; std::unordered_map<uint64_t, int> seenI;
-      auto addN = [&](const S& c, int par, const vector<M>& sq) { double hv = BBT ? c.T : dance_pot2(c); if (hv < -1e8) hv = c.T; uint64_t h = hashS(c); auto it = seenI.find(h);
-        if (it == seenI.end()) { seenI[h] = (int)nxt.size(); nxt.push_back({c, par, sq, hv}); } else if (nxt[it->second].s.T < c.T) nxt[it->second] = {c, par, sq, hv}; };
-      for (size_t i = 0; i < layers[L].size(); i++) {
-        const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv1);
-        for (auto [d1, x] : mv1) {
-          S s1 = s; int p = s.pos; apply_move(s1, d1, x); M m1{(uint8_t)x, (int8_t)(s1.alt[x] - s1.alt[p]), (uint8_t)(d1 > 0), (uint8_t)p};
-          addN(s1, (int)i, vector<M>{m1});
-          pinned_moves(s1, 3, false, mv2);
-          for (auto [d2, y] : mv2) { if (d2 <= 0) continue;
-            vector<M> seq{m1}; S c = s1; int a = x, b = y; int dd = d2;
-            for (int step = 0; step < 6; step++) {
-              int pp = c.pos; apply_move(c, dd, b); seq.push_back({(uint8_t)b, (int8_t)(c.alt[b] - c.alt[pp]), 1, (uint8_t)pp});
-              addN(c, (int)i, seq);
-              // next: back to a with the largest pinned positive delta
-              vector<pair<int,int>> mv3; pinned_moves(c, 3, false, mv3); int bd = -1;
-              for (auto [d3, z] : mv3) if (z == a && d3 > 0 && d3 > bd) bd = d3;
-              if (bd < 0) break; std::swap(a, b); dd = bd;
-            }
-          }
-        }
-      }
-      if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const BN& u, const BN& v) { return u.h > v.h; }); nxt.resize(W); }
-      printf("layer %d: %zu nodes, best finish %lld\n", L + 1, nxt.size(), best); fflush(stdout);
-      layers.push_back(std::move(nxt));
-    }
-    printf("BLOCKBEAM from k %d W %d: best %lld (tour %lld)\n", k0, W, best, gbest.T);
-    if (best > 0) { gbest = {best, bestX}; save(gbest, "blockbeam"); }
+  if (getenv("DSSCORE")) {  // freesit stage 1 scorer: for every tour line in file DSSCORE: dance start ds = first k >= 60 where
+    // dance_pot2 is valid (two groups); print ds, T(ds), pot(ds), spare visits in groups, paired-spare count, final T
+    std::ifstream in(getenv("DSSCORE")); string l; int idx = 0;
+    while (getline(in, l)) if (l.find('(') != string::npos) { long long T; auto X = parse_tour(l, &T); auto st = states_of(X);
+      int ds = -1; int DSMIN = getenv("DSMIN") ? atoi(getenv("DSMIN")) : 58;
+      for (int k = 60; k < (int)X.size(); k++) if (dance_pot2(st[k]) > -1e8) { const S& z = st[k]; int a0 = z.alt[z.pos], n = 0;
+        for (int i = 0; i < 64; i++) if (z.alt[i] == a0 || z.alt[i] == a0 - 2 || z.alt[i] == a0 + 2) n++;
+        int nm = 0, np = 0; for (int i = 0; i < 64; i++) { if (z.alt[i] == a0 - 2) nm++; if (z.alt[i] == a0 + 2) np++; }
+        n = 0; for (int i = 0; i < 64; i++) if (z.alt[i] == a0 || z.alt[i] == (nm >= np ? a0 - 2 : a0 + 2)) n++;
+        if (n >= DSMIN) { ds = k; break; } }
+      if (ds < 0) { printf("%d -1\n", idx++); continue; }
+      const S& s = st[ds]; int a = s.alt[s.pos]; int lv[2] = {a, a - 2}; int c0 = 0, cm = 0, cp = 0;
+      for (int i = 0; i < 64; i++) { if (s.alt[i] == a - 2) cm++; if (s.alt[i] == a + 2) cp++; }
+      if (cp > cm) { lv[1] = a + 2; }
+      int spare = 0, pairs = 0; bool g[64]; int gi[64];
+      for (int i = 0; i < 64; i++) { gi[i] = s.alt[i] == lv[0] ? 0 : s.alt[i] == lv[1] ? 1 : -1; g[i] = gi[i] >= 0 && i != H8 && i != A1; if (g[i]) spare += 3 - s.vis[i]; }
+      for (int x = 0; x < 64; x++) if (g[x] && s.vis[x] < 3) for (int k = 0; k < NBN[x]; k++) { int y = NBQ[x][k]; if (NBT[x][k] != 0 && g[y] && gi[y] != gi[x] && s.vis[y] < 3 && y > x) pairs++; }
+      (void)c0; printf("%d %d %d %.0f %d %d %lld %016llx\n", idx++, ds, s.T, dance_pot2(s), spare, pairs, score_full(X), (unsigned long long)hashS(s)); }
     return 0;
   }
+  if (getenv("BLOCKBEAM")) {
+    int W = atoi(getenv("BLOCKBEAM")); int k0 = atoi(getenv("BBK"));
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0); vector<M> pre(X0.begin(), X0.begin() + k0), bx;
+    long long best = blockbeam(pre, st0[k0], W, getenv("BBT") != nullptr, bx, 40, true);
+    printf("BLOCKBEAM from k %d W %d: best %lld (tour %lld)\n", k0, W, best, gbest.T);
+    if (best > 0) { gbest = {best, bx}; save(gbest, "blockbeam"); }
+    return 0;
+  }
+  if (getenv("MERGEBEAM")) {  // freesit two-stage: stage 1 = beam over pinned moves from the state before move MBK+1 of the
+    // start tour, ranked by T + MBL * spare_pairs (+ noise MBN); states that reach the dance start (is_dance_start, DSMIN)
+    // go to a pool (not expanded); stage 2 = T-ranked blockbeam (W BBW) from the top MBP pool states.
+    int W = atoi(getenv("MERGEBEAM")), k0 = atoi(getenv("MBK")), DSM = getenv("DSMIN") ? atoi(getenv("DSMIN")) : 61;
+    double lam = getenv("MBL") ? atof(getenv("MBL")) : 0, noise = getenv("MBN") ? atof(getenv("MBN")) : 0;
+    int P = getenv("MBP") ? atoi(getenv("MBP")) : 50, W2 = getenv("BBW") ? atoi(getenv("BBW")) : 20000, MD = getenv("MBD") ? atoi(getenv("MBD")) : 90;
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0);
+    struct NN { S s; int par; M m; double h; };
+    vector<vector<NN>> layers; layers.push_back({{st0[k0], -1, {}, 0}});
+    struct PE { double sc; int L, idx; }; vector<PE> pool;
+    vector<pair<int,int>> mv;
+    for (int L = 0; L < MD && !layers[L].empty(); L++) {
+      vector<NN> nxt; std::unordered_set<uint64_t> seen;
+      for (size_t i = 0; i < layers[L].size(); i++) { if (layers[L][i].h < -1e17) continue; const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv);
+        for (auto [d, q] : mv) { NN b; b.s = s; int p = s.pos; apply_move(b.s, d, q); if (!seen.insert(hashS(b.s)).second) continue;
+          b.par = (int)i; b.m = {(uint8_t)q, (int8_t)(b.s.alt[q] - b.s.alt[p]), (uint8_t)(d > 0), (uint8_t)p};
+          b.h = b.s.T + lam * spare_pairs(b.s) + noise * U(); nxt.push_back(b); } }
+      if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const NN& u, const NN& v) { return u.h > v.h; }); nxt.resize(W); }
+      vector<NN> keep; for (auto& b : nxt) { if (is_dance_start(b.s, DSM)) pool.push_back({getenv("MBPOT") ? dance_pot2(b.s) : (double)b.s.T + lam * spare_pairs(b.s), L + 1, (int)keep.size()}), keep.push_back(b), keep.back().h = -1e18; else keep.push_back(b); }
+      // pooled nodes stay in the layer only for path reconstruction (h = -inf: not expanded)
+      layers.push_back(std::move(keep));
+      vector<NN>& cur = layers.back(); vector<NN> exp; (void)exp;
+      int npool = 0; for (auto& b : cur) if (b.h < -1e17) npool++;
+      printf("mlayer %d: %zu nodes, pool %zu (+%d), maxT %d\n", L + 1, cur.size(), pool.size(), npool, cur.empty() ? 0 : std::max_element(cur.begin(), cur.end(), [](const NN& u, const NN& v) { return u.s.T < v.s.T; })->s.T); fflush(stdout);
+      // remove pooled nodes from expansion next round: handled by skipping h < -1e17 below
+      vector<NN> tmp; for (auto& b : cur) tmp.push_back(b); layers.back() = tmp;
+      // expansion filter
+      for (auto& b : layers.back()) if (b.h < -1e17) b.s.pos = b.s.pos;  // marker kept
+      // stop expanding pooled nodes
+      { vector<NN>& lb = layers.back(); for (auto& b : lb) if (b.h < -1e17) { /* no children: mark visits full */ } }
+      if (pool.size() > 200000) break;
+      // strip pooled nodes' expansion by setting a flag in par sign? simpler: they are expanded but their children are pruned by pool flag
+    }
+    std::sort(pool.begin(), pool.end(), [](const PE& a, const PE& b) { return a.sc > b.sc; });
+    long long best = -1; vector<M> bestX; std::unordered_set<uint64_t> done; int ran = 0;
+    for (auto& pe : pool) { if (ran >= P) break;
+      const NN& nd = layers[pe.L][pe.idx]; if (!done.insert(hashS(nd.s)).second) continue;
+      vector<M> pre(X0.begin(), X0.begin() + k0); vector<M> tail; int L = pe.L, idx = pe.idx;
+      while (L >= 1) { tail.push_back(layers[L][idx].m); idx = layers[L][idx].par; L--; }
+      for (int q = (int)tail.size() - 1; q >= 0; q--) pre.push_back(tail[q]);
+      vector<M> bx; long long b = blockbeam(pre, nd.s, W2, true, bx); ran++;
+      printf("pool %d: ds %zu T(ds) %d pairs %d pot %.0f -> %lld\n", ran, pre.size(), nd.s.T, spare_pairs(nd.s), dance_pot2(nd.s), b); fflush(stdout);
+      if (b > best) { best = b; bestX = bx; if (best > gbest.T) { Elite e{best, bestX}; save(e, "mergebeam"); } }
+    }
+    printf("MERGEBEAM from k %d W %d lam %.0f: pool %zu, best %lld (start %lld)\n", k0, W, lam, pool.size(), best, gbest.T);
+    return 0;
+  }
+
   if (getenv("INSWEEP")) {  // freesit: deterministic sit-insertion sweep: at every step k in [INLO, INHI] run a strict
     // window DFS of depth 1..INSWEEP pinned moves from the state before move k and re-sync anywhere in X[k..k+D+INW]
     // (later moves keep their dz, waits re-derived; patch DFS / skeleton reroute on a break). Prints best per k.

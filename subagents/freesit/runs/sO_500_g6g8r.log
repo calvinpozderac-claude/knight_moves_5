@@ -77,3 +77,15 @@ start 9080: 0 free sinks, exact necessity ok (bad move 0)
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
 [696s] it 82000 acc 10564 cur 9316 best 9329 temp 19.1 elite 40 gains 6968/4949/13386/3598/1276/1238/4724/7486/411/5968 acc 1951/1704/3082/855/246/180/792/931/74/749
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[713s] it 84000 acc 10800 cur 9302 best 9329 temp 13.7 elite 40 gains 7104/5046/13635/3858/1276/1270/4778/7587/411/6192 acc 1991/1739/3150/885/248/183/811/950/76/767
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[730s] it 86000 acc 11061 cur 9300 best 9329 temp 9.9 elite 40 gains 7185/5119/13914/3914/1340/1270/4891/7680/411/6288 acc 2040/1774/3223/906/254/186/837/973/77/791
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[746s] it 88000 acc 11281 cur 9322 best 9329 temp 7.1 elite 40 gains 7245/5139/14050/3914/1340/1270/4935/7740/415/6320 acc 2083/1817/3299/917/256/191/849/987/79/803
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[779s] it 92000 acc 11643 cur 9320 best 9329 temp 3.7 elite 40 gains 7265/5161/14111/3931/1348/1270/4968/7833/415/6320 acc 2162/1880/3402/943/264/196/869/1016/86/825
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[796s] it 94000 acc 11796 cur 9326 best 9329 temp 2.7 elite 40 gains 7275/5166/14132/3932/1348/1270/4972/7845/415/6320 acc 2194/1908/3445/962/268/196/875/1025/86/837
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 100000 acc 12211 best 9329 restarts 13
+elite: 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328

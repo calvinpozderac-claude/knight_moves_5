@@ -59,3 +59,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | main | user (family search v3) | strict tours only, new merge class; visit-penalty trial | **9,329** strict (9,328 too) | merged from main; checker ok + STRICT |
 | 11 | freesit (strict) | insweep strict sit-insertion operator; 23 jobs on 9,329/9,328 (plain, blockp, exclude-then-relax) | 9,329 (no gain) | extra dance sit needs a pair of opposite-group sitters with spare visits; none exist |
 | 11 | freesit (strict) | pair exclusions (g8+f8 etc.) then relax; BLOCKBEAM dance block-order beam (w<=60k) | 9,329 (no gain) | beam reproduces record dance exactly from dance start: dance order saturated; needs new merge freeing g8+f8 |
+| 11 | freesit (strict) | hot strict LNS (t0 150, focus 15-99) from 9,328 with 9,329/9,328 donors; stage-2 dance beam on ~6k dance-start states | **9,330** strict (+1) | checker ok + STRICT, 179 moves |
