@@ -1,0 +1,7 @@
+in/t47_3.txt: 175 moves, 9947 minutes (replay 9947)
+in/t47_4.txt: 173 moves, 9947 minutes (replay 9947)
+in/t47_5.txt: 173 moves, 9947 minutes (replay 9947)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div8_9938.txt: 179 moves, 9938 minutes (replay 9938)
+start in/t47_3.txt: 175 moves, 9947 minutes
+start 9947: 21 free sinks, exact necessity ok (bad move 0)

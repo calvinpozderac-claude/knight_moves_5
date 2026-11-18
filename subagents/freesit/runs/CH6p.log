@@ -1,0 +1,9 @@
+in/t9947.txt: 171 moves, 9947 minutes (replay 9947)
+in/t47_3.txt: 175 moves, 9947 minutes (replay 9947)
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+start in/t9947.txt: 171 moves, 9947 minutes
+start 9947: 21 free sinks, exact necessity ok (bad move 0)
+[2s it 46] ADJ BEST 8745 (raw 9745 pen 1000)
+[4s it 79] ADJ BEST 9745 (raw 9745 pen 0)

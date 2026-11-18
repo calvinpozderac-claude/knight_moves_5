@@ -1,0 +1,20 @@
+in/CH1adj.txt: 171 moves, 9938 minutes (replay 9938)
+in/t9947.txt: 171 moves, 9947 minutes (replay 9947)
+in/t47_1.txt: 173 moves, 9947 minutes (replay 9947)
+in/t47_2.txt: 173 moves, 9947 minutes (replay 9947)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+start in/CH1adj.txt: 171 moves, 9938 minutes
+start 9938: 22 free sinks, exact necessity ok (bad move 0)
+[314s] it 6000 acc 853 cur 9898 best 9938 temp 22.5 elite 40 gains 215/419/1235/256/0/8/36/464/53/72 acc 134/193/215/98/10/16/69/67/6/45
+   nec calls 26312808 fail 26296824 unk 0 probes 311552353 | fsp calls 898 hits 174 gain 5973 | dumped 400 | block op acc 0 gain 0
+[730s it 13904] NEW BEST 9942 (op 2 i 23 D 4) len 172
+[730s it 13904] ADJ BEST 9942 (raw 9942 pen 0)
+[756s it 14215] NEW BEST 9943 (op 1 i 87 D 3) len 172
+[756s it 14215] ADJ BEST 9943 (raw 9943 pen 0)
+[1187s] it 22000 acc 2795 cur 9942 best 9943 temp 1.6 elite 40 gains 290/516/1383/337/10/32/115/697/59/72 acc 446/688/694/309/26/44/223/216/18/131
+   nec calls 97249677 fail 97192300 unk 0 probes 1189308593 | fsp calls 3178 hits 594 gain 21069 | dumped 400 | block op acc 0 gain 0
+[1374s] it 26000 acc 3289 cur 9641 best 9943 temp 50.9 elite 40 gains 300/577/1388/340/10/32/133/772/68/72 acc 531/807/799/366/28/50/268/261/26/153
+   nec calls 112601758 fail 112533921 unk 0 probes 1368238701 | fsp calls 3787 hits 682 gain 24124 | dumped 400 | block op acc 0 gain 0
+[1477s] it 28000 acc 3580 cur 9876 best 9943 temp 36.7 elite 40 gains 305/635/1582/346/10/32/147/1029/185/72 acc 572/886/863/394/34/56/293/285/30/167
+   nec calls 121477624 fail 121404567 unk 0 probes 1478482714 | fsp calls 4088 hits 737 gain 26134 | dumped 400 | block op acc 0 gain 0

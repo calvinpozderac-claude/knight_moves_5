@@ -123,3 +123,8 @@ Commands: `subagents/prior/NOTES.md` (scripts `r3c.sh`, `r4.sh`, `r5.sh`, `fw_mu
 What stopped working: polish on fresh LNS output; penalty rebuilds (75+ rules) all return to the 9,282 sitter
 set; the after-search free-wait pass is a fixed point at 9,286 (74 ties). The one lever still producing gains when
 the runs stopped was sound free-wait LNS focused on the merge. All runs are stopped.
+
+## Rules update (2026-11-18): no free waits
+The user ruled that free waits break the game's rules. Tours 9,286-9,947 all use free waits and no longer count.
+The best valid (strict) tour is **9,282** (`data/tours/record_9282.txt`). The freesit agent was redirected to
+strict-only search (free waits disabled, saver requires `strict_check.py` STRICT).
