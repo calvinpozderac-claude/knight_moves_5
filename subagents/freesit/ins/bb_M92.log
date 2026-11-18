@@ -14,3 +14,25 @@ pot at k 92: -1000000000
 layer 1: 102 nodes, best finish -1
 layer 2: 4145 nodes, best finish -1
 layer 3: 60000 nodes, best finish 1461
+layer 4: 60000 nodes, best finish 2024
+layer 5: 60000 nodes, best finish 2652
+layer 6: 60000 nodes, best finish 2652
+layer 7: 60000 nodes, best finish 2652
+layer 8: 60000 nodes, best finish 2652
+layer 9: 60000 nodes, best finish 2652
+layer 10: 60000 nodes, best finish 2652
+layer 11: 60000 nodes, best finish 2652
+layer 12: 60000 nodes, best finish 2652
+layer 13: 60000 nodes, best finish 2652
+layer 14: 60000 nodes, best finish 2652
+layer 15: 60000 nodes, best finish 8151
+layer 16: 60000 nodes, best finish 8508
+layer 17: 60000 nodes, best finish 8824
+layer 18: 52034 nodes, best finish 8824
+layer 19: 28959 nodes, best finish 8824
+layer 20: 11335 nodes, best finish 8824
+layer 21: 2336 nodes, best finish 8824
+layer 22: 152 nodes, best finish 8824
+layer 23: 0 nodes, best finish 8824
+BLOCKBEAM from k 92 W 60000: best 8824 (tour 9329)
+[36s it 0] NEW BEST 8824 (blockbeam) len 177

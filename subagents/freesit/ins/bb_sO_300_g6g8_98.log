@@ -1,0 +1,35 @@
+runs/sO_300_g6g8_best.txt.adj: 177 moves, 9081 minutes (replay 9081)
+start runs/sO_300_g6g8_best.txt.adj: 177 moves, 9081 minutes
+pot at k 98: 9230
+  pot k 90 -1000000000
+  pot k 100 9230
+  pot k 110 9230
+  pot k 120 9346
+  pot k 130 9230
+  pot k 140 9183
+  pot k 150 9239
+  pot k 160 9175
+  pot k 170 9097
+layer 1: 90 nodes, best finish -1
+layer 2: 6524 nodes, best finish 1820
+layer 3: 30000 nodes, best finish 2582
+layer 4: 30000 nodes, best finish 3438
+layer 5: 30000 nodes, best finish 4235
+layer 6: 30000 nodes, best finish 4850
+layer 7: 30000 nodes, best finish 5440
+layer 8: 30000 nodes, best finish 6007
+layer 9: 30000 nodes, best finish 6549
+layer 10: 30000 nodes, best finish 7067
+layer 11: 30000 nodes, best finish 7556
+layer 12: 30000 nodes, best finish 7940
+layer 13: 30000 nodes, best finish 8306
+layer 14: 30000 nodes, best finish 8676
+layer 15: 30000 nodes, best finish 8978
+layer 16: 30000 nodes, best finish 9081
+layer 17: 30000 nodes, best finish 9081
+layer 18: 18560 nodes, best finish 9081
+layer 19: 7662 nodes, best finish 9081
+layer 20: 1692 nodes, best finish 9081
+layer 21: 0 nodes, best finish 9081
+BLOCKBEAM from k 98 W 30000: best 9081 (tour 9081)
+[13s it 0] NEW BEST 9081 (blockbeam) len 177

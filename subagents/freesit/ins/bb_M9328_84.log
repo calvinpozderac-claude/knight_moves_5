@@ -1,0 +1,42 @@
+in/s9328.txt: 176 moves, 9328 minutes (replay 9328)
+start in/s9328.txt: 176 moves, 9328 minutes
+pot at k 84: 6074
+  pot k 90 9653
+  pot k 100 9477
+  pot k 110 9477
+  pot k 120 9589
+  pot k 130 9477
+  pot k 140 9430
+  pot k 150 9482
+  pot k 160 -1000000000
+  pot k 170 9344
+layer 1: 34 nodes, best finish -1
+layer 2: 687 nodes, best finish -1
+layer 3: 24781 nodes, best finish 1079
+layer 4: 60000 nodes, best finish 1750
+layer 5: 60000 nodes, best finish 2522
+layer 6: 60000 nodes, best finish 3204
+layer 7: 60000 nodes, best finish 3204
+layer 8: 60000 nodes, best finish 3204
+layer 9: 60000 nodes, best finish 3204
+layer 10: 60000 nodes, best finish 3204
+layer 11: 60000 nodes, best finish 3204
+layer 12: 60000 nodes, best finish 3204
+layer 13: 60000 nodes, best finish 7319
+layer 14: 60000 nodes, best finish 7717
+layer 15: 60000 nodes, best finish 8079
+layer 16: 60000 nodes, best finish 8274
+layer 17: 60000 nodes, best finish 8313
+layer 18: 60000 nodes, best finish 8313
+layer 19: 51712 nodes, best finish 8313
+layer 20: 41056 nodes, best finish 8313
+layer 21: 25748 nodes, best finish 8313
+layer 22: 13081 nodes, best finish 8313
+layer 23: 6316 nodes, best finish 8313
+layer 24: 2719 nodes, best finish 8313
+layer 25: 1064 nodes, best finish 8313
+layer 26: 322 nodes, best finish 8313
+layer 27: 44 nodes, best finish 8313
+layer 28: 0 nodes, best finish 8313
+BLOCKBEAM from k 84 W 60000: best 8313 (tour 9328)
+[27s it 0] NEW BEST 8313 (blockbeam) len 166

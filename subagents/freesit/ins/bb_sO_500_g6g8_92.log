@@ -1,0 +1,37 @@
+runs/sO_500_g6g8_best.txt.adj: 178 moves, 9080 minutes (replay 9080)
+start runs/sO_500_g6g8_best.txt.adj: 178 moves, 9080 minutes
+pot at k 92: 5004
+  pot k 90 5272
+  pot k 100 9229
+  pot k 110 9365
+  pot k 120 9229
+  pot k 130 9229
+  pot k 140 9398
+  pot k 150 9182
+  pot k 160 9174
+  pot k 170 9096
+layer 1: 108 nodes, best finish -1
+layer 2: 4922 nodes, best finish -1
+layer 3: 30000 nodes, best finish 1638
+layer 4: 30000 nodes, best finish 2428
+layer 5: 30000 nodes, best finish 3314
+layer 6: 30000 nodes, best finish 4158
+layer 7: 30000 nodes, best finish 4158
+layer 8: 30000 nodes, best finish 4158
+layer 9: 30000 nodes, best finish 4158
+layer 10: 30000 nodes, best finish 4158
+layer 11: 30000 nodes, best finish 7099
+layer 12: 30000 nodes, best finish 7606
+layer 13: 30000 nodes, best finish 8010
+layer 14: 30000 nodes, best finish 8358
+layer 15: 30000 nodes, best finish 8675
+layer 16: 30000 nodes, best finish 8847
+layer 17: 30000 nodes, best finish 8953
+layer 18: 20129 nodes, best finish 8970
+layer 19: 9750 nodes, best finish 8970
+layer 20: 4206 nodes, best finish 8970
+layer 21: 1758 nodes, best finish 8970
+layer 22: 374 nodes, best finish 8970
+layer 23: 0 nodes, best finish 8970
+BLOCKBEAM from k 92 W 30000: best 8970 (tour 9080)
+[19s it 0] NEW BEST 8970 (blockbeam) len 178

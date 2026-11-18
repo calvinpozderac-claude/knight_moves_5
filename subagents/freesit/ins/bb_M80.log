@@ -15,3 +15,31 @@ layer 1: 22 nodes, best finish -1
 layer 2: 417 nodes, best finish 900
 layer 3: 10045 nodes, best finish 1121
 layer 4: 60000 nodes, best finish 1558
+layer 5: 60000 nodes, best finish 2087
+layer 6: 60000 nodes, best finish 2914
+layer 7: 60000 nodes, best finish 3538
+layer 8: 60000 nodes, best finish 4096
+layer 9: 60000 nodes, best finish 4675
+layer 10: 60000 nodes, best finish 5163
+layer 11: 60000 nodes, best finish 5678
+layer 12: 60000 nodes, best finish 5996
+layer 13: 60000 nodes, best finish 6380
+layer 14: 60000 nodes, best finish 6796
+layer 15: 60000 nodes, best finish 7063
+layer 16: 60000 nodes, best finish 7291
+layer 17: 60000 nodes, best finish 7630
+layer 18: 60000 nodes, best finish 7755
+layer 19: 60000 nodes, best finish 7794
+layer 20: 60000 nodes, best finish 7820
+layer 21: 59018 nodes, best finish 7820
+layer 22: 45047 nodes, best finish 7820
+layer 23: 28506 nodes, best finish 7820
+layer 24: 13776 nodes, best finish 7820
+layer 25: 5324 nodes, best finish 7820
+layer 26: 1482 nodes, best finish 7820
+layer 27: 341 nodes, best finish 7820
+layer 28: 38 nodes, best finish 7820
+layer 29: 4 nodes, best finish 7820
+layer 30: 0 nodes, best finish 7820
+BLOCKBEAM from k 80 W 60000: best 7820 (tour 9329)
+[26s it 0] NEW BEST 7820 (blockbeam) len 163

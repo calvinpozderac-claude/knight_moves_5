@@ -221,3 +221,10 @@ sN5r 68 9329 done it 100000 acc 11683 best 9329 restarts 23
 sO_150_g8f8 0  done it 100000 acc 13351 best 9329 restarts 7
 sO_150_g6g8 0  done it 100000 acc 13393 best 9329 restarts 6
 sO_150_f7f8 0  done it 100000 acc 13280 best 9329 restarts 7
+sO_300_g8f8 0  done it 100000 acc 13040 best 9329 restarts 6
+sO_300_f7f8 0  done it 100000 acc 13530 best 9329 restarts 6
+sO_300_g6g8 0  done it 100000 acc 13176 best 9329 restarts 6
+sO_500_g8f8 0  done it 100000 acc 13013 best 9329 restarts 7
+sO_300_g6g8r 1 9328 done it 100000 acc 12420 best 9328 restarts 26
+sO_500_f7f8 0  done it 100000 acc 13349 best 9329 restarts 7
+sO_500_g6g8 0  done it 100000 acc 13621 best 9329 restarts 8
