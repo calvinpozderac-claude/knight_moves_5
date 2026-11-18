@@ -1,0 +1,24 @@
+in/CH5adj.txt: 157 moves, 9533 minutes (replay 9533)
+in/t9947.txt: 171 moves, 9947 minutes (replay 9947)
+in/t47_1.txt: 173 moves, 9947 minutes (replay 9947)
+in/t47_2.txt: 173 moves, 9947 minutes (replay 9947)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+start in/CH5adj.txt: 157 moves, 9533 minutes
+start 9533: 18 free sinks, exact necessity ok (bad move 0)
+[2s it 22] NEW BEST 9695 (op 2 i 30 D 4) len 160
+[2s it 22] ADJ BEST 9695 (raw 9695 pen 0)
+[24s it 442] NEW BEST 9833 (op 7 a 143 c 147 d 165 b 159) len 169
+[24s it 442] ADJ BEST 9833 (raw 9833 pen 0)
+[24s it 459] NEW BEST 9835 (op 0 i 163 D 2) len 167
+[24s it 459] ADJ BEST 9835 (raw 9835 pen 0)
+[24s it 470] NEW BEST 9882 (op 2 i 126 D 4) len 168
+[24s it 470] ADJ BEST 9882 (raw 9882 pen 0)
+[27s it 569] NEW BEST 9884 (op 7 a 128 c 131 d 146 b 143) len 168
+[27s it 569] ADJ BEST 9884 (raw 9884 pen 0)
+[33s it 603] NEW BEST 9934 (op 0 i 117 D 3) len 167
+[33s it 603] ADJ BEST 9934 (raw 9934 pen 0)
+[36s it 663] NEW BEST 9936 (op 6 a 160 len 4) len 169
+[36s it 663] ADJ BEST 9936 (raw 9936 pen 0)
+[37s it 678] NEW BEST 9937 (op 1 i 82 D 3) len 171
+[37s it 678] ADJ BEST 9937 (raw 9937 pen 0)

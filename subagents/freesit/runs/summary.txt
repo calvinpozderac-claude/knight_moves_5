@@ -130,3 +130,39 @@ CH1r 2 9943 [1477s] it 28000 acc 3580 cur 9876 best 9943 temp 36.7 elite 40 gain
 CH4r 0  [1766s] it 38000 acc 4974 cur 9934 best 9947 temp 7.1 elite 40 gains 231/435/1511/452/14/65/379/2011/12/0 acc 784/1297/1169/521/64/60/428/429/47/175
 CH3r 1 9947 [1694s] it 34000 acc 4588 cur 9938 best 9947 temp 13.7 elite 40 gains 574/1443/2051/558/7/21/867/1876/8/0 acc 720/1160/1166/458/64/50/374/366/37/193
 CH2r 3 9945 [1742s] it 34000 acc 4467 cur 9939 best 9945 temp 13.7 elite 40 gains 370/1617/1242/435/0/28/592/1289/12/0 acc 694/1137/1056/492/49/54/360/378/46/201
+CH6p 0  [2s it 46] ADJ BEST 8745 (raw 9745 pen 1000)
+CH8p 0  [8s it 186] ADJ BEST 9938 (raw 9938 pen 0)
+CH5p 0  [33s it 880] ADJ BEST 8531 (raw 9531 pen 1000)
+CH7p 0  start in/t47_3.txt: 175 moves, 9947 minutes
+sC4p 0  done it 100000 acc 13619 best 9282 restarts 10
+sC1p 0  done it 100000 acc 12481 best 9282 restarts 31
+sC2p 0  done it 100000 acc 14194 best 9282 restarts 15
+sC3p 0  done it 100000 acc 13100 best 9282 restarts 7490
+sC4r 0  done it 100000 acc 11926 best 9282 restarts 16
+sC1r 7 9282 done it 100000 acc 11753 best 9282 restarts 24
+sC2r 0  done it 100000 acc 11715 best 9282 restarts 21
+sC3r 4 9282 done it 100000 acc 11508 best 9282 restarts 19
+sP1 0  done it 100000 acc 10937 best 9282 restarts 8
+sC5p 0  done it 100000 acc 13116 best 9282 restarts 14
+sC6p 0  done it 100000 acc 13177 best 9282 restarts 9
+sC7p 0  done it 100000 acc 11859 best 9282 restarts 26
+sP2 0  done it 100000 acc 11795 best 9282 restarts 22
+sC6r 3 9282 done it 100000 acc 11470 best 9282 restarts 15
+sC5r 0  done it 100000 acc 11882 best 9282 restarts 20
+sC7r 20 9282 done it 100000 acc 11627 best 9282 restarts 12
+sP3 0  done it 100000 acc 9894 best 9282 restarts 7
+sP4 1 9282 done it 100000 acc 11998 best 9282 restarts 19
+sD2p 0  done it 100000 acc 13885 best 9282 restarts 13
+sD1p 0  done it 100000 acc 14857 best 9282 restarts 14630
+sD3p 0  done it 100000 acc 12246 best 9282 restarts 16404
+sD4p 0  done it 100000 acc 10747 best 9282 restarts 15
+sD2r 0  done it 100000 acc 11653 best 9282 restarts 20
+sD1r 41 9242 done it 100000 acc 13245 best 9242 restarts 15
+sD3r 3 9282 done it 100000 acc 11466 best 9282 restarts 18
+sD4r 0  done it 100000 acc 12025 best 9282 restarts 23
+sD5p 0  done it 100000 acc 14550 best 9282 restarts 13
+sD6p 0  done it 100000 acc 8547 best 9282 restarts 31
+sQ3 0  done it 150000 acc 20159 best 9282 restarts 202
+sD6r 7 9282 done it 100000 acc 11589 best 9282 restarts 21
+sD5r 1 9282 done it 100000 acc 11782 best 9282 restarts 14
+sQ6 0  done it 150000 acc 20409 best 9282 restarts 215

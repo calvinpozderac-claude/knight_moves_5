@@ -1,4 +1,0 @@
-./chain.sh CH9 8090 in/t9947.txt c1 85 in/t47_4.txt in/t47_5.txt in/t9944.txt in/div8_9938.txt
-./chain.sh CH10 8100 in/t9947.txt d1 85 in/t47_1.txt in/t47_2.txt in/div1_9934.txt in/div3_9940.txt
-./chain.sh CH11 8110 in/t47_5.txt f7 85 in/t47_1.txt in/t47_2.txt in/div1_9934.txt in/div3_9940.txt
-./chain.sh CH12 8120 in/t9947.txt e5 85 in/t47_3.txt in/t9945.txt in/div0_9943.txt in/div5_9939.txt

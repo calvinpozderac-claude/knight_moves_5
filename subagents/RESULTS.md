@@ -55,3 +55,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 10 | freesit | hard f7 exclusion before move 85 then 2,400 s relaxed LNS | **9,947** (+2) | checker ok, 171 moves; longer jobs gave no gain |
 
 **Rules update (user, 2026-11-18): free waits are not allowed.** Every wait must be pinned (the next jump becomes illegal if the wait changes). All tours from 9,286 to 9,947 rely on free waits and are invalid under this rule. **Best strict tour: 9,282** (`data/tours/record_9282.txt`, and `record_9282_main.txt`; `strict_check.py` STRICT, checker ok). Search continues strict-only; strict records go to `STRICT_RECORD_<m>.txt`.
+| 11 | freesit (strict) | strict-only sfl (free sinks rejected): 13 exclude-then-relax chains, 6 long/hot plain LNS from 25 strict 9,270-9,282 seeds | 9,282 (no gain) | earlier 9,29x-9,947 jumps relied on free sinks; needs strict sit-insertion operator |

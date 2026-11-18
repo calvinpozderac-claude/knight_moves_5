@@ -1,0 +1,12 @@
+in/CH6adj.txt: 173 moves, 9745 minutes (replay 9745)
+in/t9947.txt: 171 moves, 9947 minutes (replay 9947)
+in/t47_3.txt: 175 moves, 9947 minutes (replay 9947)
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+in/div5_9939.txt: 171 moves, 9939 minutes (replay 9939)
+start in/CH6adj.txt: 173 moves, 9745 minutes
+start 9745: 20 free sinks, exact necessity ok (bad move 0)
+[37s it 833] NEW BEST 9943 (op 1 i 40 D 3) len 174
+[37s it 833] ADJ BEST 9943 (raw 9943 pen 0)
+[38s it 862] NEW BEST 9945 (op 2 i 41 D 3) len 172
+[38s it 862] ADJ BEST 9945 (raw 9945 pen 0)

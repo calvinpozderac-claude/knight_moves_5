@@ -167,6 +167,7 @@ struct Search {
   }
   void record(long long T, M fin) {
     path.push_back(fin);
+    for (auto& m : path) if (m.fd) { path.pop_back(); return; }  // strict: no free waits
     long long A = T - pen_of(path);
     if (A <= bestA) { path.pop_back(); return; }
     if (NONEC && DUMPF && U() < RECDUMP) { bool any = false; for (auto& m : path) if (m.fd) any = true;
