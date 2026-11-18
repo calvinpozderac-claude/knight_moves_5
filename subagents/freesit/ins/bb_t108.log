@@ -1,0 +1,34 @@
+in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
+start in/s9329.txt: 185 moves, 9329 minutes
+pot at k 108: 9478
+  pot k 90 -1000000000
+  pot k 100 9478
+  pot k 110 9626
+  pot k 120 9478
+  pot k 130 9478
+  pot k 140 9566
+  pot k 150 9431
+  pot k 160 9431
+  pot k 170 9415
+  pot k 180 9345
+layer 1: 77 nodes, best finish -1
+layer 2: 5522 nodes, best finish 2308
+layer 3: 20000 nodes, best finish 3070
+layer 4: 20000 nodes, best finish 3926
+layer 5: 20000 nodes, best finish 4723
+layer 6: 20000 nodes, best finish 5338
+layer 7: 20000 nodes, best finish 5928
+layer 8: 20000 nodes, best finish 6495
+layer 9: 20000 nodes, best finish 7037
+layer 10: 20000 nodes, best finish 7555
+layer 11: 20000 nodes, best finish 8044
+layer 12: 20000 nodes, best finish 8428
+layer 13: 20000 nodes, best finish 8758
+layer 14: 20000 nodes, best finish 9057
+layer 15: 20000 nodes, best finish 9160
+layer 16: 11496 nodes, best finish 9160
+layer 17: 3004 nodes, best finish 9160
+layer 18: 110 nodes, best finish 9160
+layer 19: 0 nodes, best finish 9160
+BLOCKBEAM from k 108 W 20000: best 9160 (tour 9329)
+[8s it 0] NEW BEST 9160 (blockbeam) len 184

@@ -1,0 +1,37 @@
+runs/sN2p_best.txt.adj: 175 moves, 8999 minutes (replay 8999)
+start runs/sN2p_best.txt.adj: 175 moves, 8999 minutes
+pot at k 90: 9481
+  pot k 90 9481
+  pot k 100 9289
+  pot k 110 9329
+  pot k 120 9201
+  pot k 130 9201
+  pot k 140 9363
+  pot k 150 9155
+  pot k 160 9147
+  pot k 170 9071
+layer 1: 108 nodes, best finish -1
+layer 2: 8989 nodes, best finish 1147
+layer 3: 20000 nodes, best finish 2104
+layer 4: 20000 nodes, best finish 2813
+layer 5: 20000 nodes, best finish 3487
+layer 6: 20000 nodes, best finish 4141
+layer 7: 20000 nodes, best finish 4771
+layer 8: 20000 nodes, best finish 5377
+layer 9: 20000 nodes, best finish 5959
+layer 10: 20000 nodes, best finish 6513
+layer 11: 20000 nodes, best finish 7041
+layer 12: 20000 nodes, best finish 7545
+layer 13: 20000 nodes, best finish 7939
+layer 14: 20000 nodes, best finish 8302
+layer 15: 20000 nodes, best finish 8634
+layer 16: 20000 nodes, best finish 8888
+layer 17: 19292 nodes, best finish 8888
+layer 18: 12193 nodes, best finish 8888
+layer 19: 6158 nodes, best finish 8888
+layer 20: 2512 nodes, best finish 8888
+layer 21: 742 nodes, best finish 8888
+layer 22: 24 nodes, best finish 8888
+layer 23: 0 nodes, best finish 8888
+BLOCKBEAM from k 90 W 20000: best 8888 (tour 8999)
+[9s it 0] NEW BEST 8888 (blockbeam) len 173

@@ -1,0 +1,21 @@
+in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
+in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
+in/s9328.txt: 176 moves, 9328 minutes (replay 9328)
+start in/s9329.txt: 185 moves, 9329 minutes
+start 9329: 0 free sinks, exact necessity ok (bad move 0)
+[20s] it 2000 acc 327 cur 9188 best 9329 temp 29.8 elite 40 gains 302/162/426/72/290/96/232/374/0/160 acc 50/55/91/19/14/9/32/32/1/24
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[40s] it 4000 acc 623 cur 9324 best 9329 temp 22.2 elite 40 gains 512/330/640/199/322/128/388/870/0/288 acc 105/98/175/42/20/16/60/62/2/43
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[79s] it 8000 acc 1283 cur 9314 best 9329 temp 12.3 elite 40 gains 635/446/1010/310/398/212/572/1208/0/832 acc 242/206/341/97/31/28/111/120/5/102
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[139s] it 14000 acc 2112 cur 9326 best 9329 temp 5.1 elite 40 gains 654/504/1139/355/414/220/672/1382/0/864 acc 398/360/585/159/50/34/160/168/11/187
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[159s] it 16000 acc 2365 cur 9326 best 9329 temp 3.8 elite 40 gains 659/507/1150/355/414/220/680/1417/0/864 acc 447/417/656/180/52/37/168/185/12/211
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[238s] it 24000 acc 3293 cur 9328 best 9329 temp 1.2 elite 40 gains 672/512/1185/355/414/220/684/1450/0/864 acc 643/615/931/262/66/44/190/220/19/303
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[278s] it 28000 acc 3947 cur 9317 best 9329 temp 25.7 elite 40 gains 1169/781/1626/630/518/284/900/1941/0/992 acc 786/729/1104/309/80/57/235/267/21/359
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[360s] it 36000 acc 5066 cur 9322 best 9329 temp 7.9 elite 40 gains 1618/1068/2022/856/650/292/1201/2326/0/1312 acc 1002/917/1430/396/104/71/316/343/29/458
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0

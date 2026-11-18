@@ -1,0 +1,35 @@
+runs/sN1p_best.txt.adj: 171 moves, 8880 minutes (replay 8880)
+start runs/sN1p_best.txt.adj: 171 moves, 8880 minutes
+pot at k 96: 9082
+  pot k 90 9086
+  pot k 100 9222
+  pot k 110 9078
+  pot k 120 9078
+  pot k 130 9162
+  pot k 140 9032
+  pot k 150 9032
+  pot k 160 8985
+  pot k 170 9020
+layer 1: 40 nodes, best finish -1
+layer 2: 1962 nodes, best finish -1
+layer 3: 20000 nodes, best finish 2484
+layer 4: 20000 nodes, best finish 3548
+layer 5: 20000 nodes, best finish 4236
+layer 6: 20000 nodes, best finish 4236
+layer 7: 20000 nodes, best finish 4236
+layer 8: 20000 nodes, best finish 4236
+layer 9: 20000 nodes, best finish 4236
+layer 10: 20000 nodes, best finish 4236
+layer 11: 20000 nodes, best finish 7548
+layer 12: 20000 nodes, best finish 7930
+layer 13: 20000 nodes, best finish 8340
+layer 14: 20000 nodes, best finish 8648
+layer 15: 12994 nodes, best finish 8648
+layer 16: 5794 nodes, best finish 8648
+layer 17: 1977 nodes, best finish 8648
+layer 18: 545 nodes, best finish 8648
+layer 19: 78 nodes, best finish 8648
+layer 20: 7 nodes, best finish 8648
+layer 21: 0 nodes, best finish 8648
+BLOCKBEAM from k 96 W 20000: best 8648 (tour 8880)
+[8s it 0] NEW BEST 8648 (blockbeam) len 169

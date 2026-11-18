@@ -1,0 +1,23 @@
+in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
+start in/s9329.txt: 185 moves, 9329 minutes
+pot at k 80: 3194
+  pot k 90 -1000000000
+  pot k 100 9478
+  pot k 110 9626
+  pot k 120 9478
+  pot k 130 9478
+  pot k 140 9566
+  pot k 150 9431
+  pot k 160 9431
+  pot k 170 9415
+  pot k 180 9345
+layer 1: 22 nodes, best finish -1
+layer 2: 417 nodes, best finish 900
+layer 3: 10045 nodes, best finish 1121
+layer 4: 300000 nodes, best finish 1558
+layer 5: 300000 nodes, best finish 2087
+layer 6: 300000 nodes, best finish 2914
+layer 7: 300000 nodes, best finish 3538
+layer 8: 300000 nodes, best finish 4096
+layer 9: 300000 nodes, best finish 4675
+layer 10: 300000 nodes, best finish 5163

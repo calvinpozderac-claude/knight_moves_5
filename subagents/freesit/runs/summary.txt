@@ -206,3 +206,18 @@ sL_d5p 0  done it 100000 acc 12978 best 9329 restarts 30605
 sK7 0  done it 100000 acc 13657 best 9329 restarts 123
 sL_f8r 0  done it 100000 acc 11534 best 9329 restarts 17
 sL_d5r 21 9329 done it 100000 acc 12288 best 9329 restarts 14
+sN2p 0  done it 100000 acc 13807 best 9329 restarts 40740
+sN1p 0  done it 100000 acc 12734 best 9329 restarts 36141
+sN3p 0  done it 100000 acc 14063 best 9329 restarts 41823
+sN2r 2 9329 done it 100000 acc 11597 best 9329 restarts 16
+sN1r 23 9329 done it 100000 acc 11046 best 9329 restarts 15
+sN3r 27 9329 done it 100000 acc 11331 best 9329 restarts 19
+sN4p 0  done it 100000 acc 13170 best 9329 restarts 29965
+sN6p 1 9329 done it 100000 acc 14269 best 9329 restarts 38663
+sN5p 0  done it 100000 acc 12936 best 9329 restarts 42433
+sN4r 29 9329 done it 100000 acc 11536 best 9329 restarts 17
+sN6r 3 9329 done it 100000 acc 11816 best 9329 restarts 15
+sN5r 68 9329 done it 100000 acc 11683 best 9329 restarts 23
+sO_150_g8f8 0  done it 100000 acc 13351 best 9329 restarts 7
+sO_150_g6g8 0  done it 100000 acc 13393 best 9329 restarts 6
+sO_150_f7f8 0  done it 100000 acc 13280 best 9329 restarts 7

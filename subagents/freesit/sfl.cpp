@@ -13,6 +13,7 @@
 #include "../../src/eng.h"
 #include <chrono>
 #include <unordered_set>
+#include <unordered_map>
 
 struct M { uint8_t q; int8_t dz; uint8_t key = 0; uint8_t fr = 255; uint8_t fd = 0; };  // fd: free sink (target in the knight's group)
 static int FREEMAX = 0;  // fr: square the move leaves (255 unknown)  // key: waits in the tour it came from (or final move)
@@ -584,6 +585,54 @@ int main(int argc, char** argv) {
       auto tb = el(); beam_tail(SR, st0[i], W, 0.0);
       printf("beam W %d from %d: %lld (%.2fs) pot at start %.0f\n", W, i, SR.bestT, el() - tb, dance_pot2(st0[i])); fflush(stdout);
     }
+    return 0;
+  }
+  if (getenv("BLOCKBEAM")) {  // freesit: dance block-order beam: macro = enter x from pos (pinned), then alternate x<->y
+    // sits (each a pinned sit, largest-delta option first) for 1..m steps; beam over macros ranked by T + dance_pot2.
+    int W = atoi(getenv("BLOCKBEAM")); int k0 = atoi(getenv("BBK")); int MAXD = getenv("BBD") ? atoi(getenv("BBD")) : 40;
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0);
+    printf("pot at k %d: %.0f\n", k0, dance_pot2(st0[k0])); for (int kk = 90; kk < (int)X0.size(); kk += 10) printf("  pot k %d %.0f\n", kk, dance_pot2(st0[kk]));
+    bool BBT = getenv("BBT") != nullptr;
+    struct BN { S s; int par; vector<M> mv; double h; };
+    vector<vector<BN>> layers; layers.push_back({{st0[k0], -1, {}, 0}});
+    static const vector<M> NOX; Search SR; SR.setY(X0); SR.X = &NOX; long long best = -1; vector<M> bestX;
+    auto pathOf = [&](int L, int idx) { vector<M> out(X0.begin(), X0.begin() + k0); vector<vector<M>*> seq;
+      for (int l = L; l >= 1; l--) { seq.push_back(&layers[l][idx].mv); idx = layers[l][idx].par; }
+      for (int q = (int)seq.size() - 1; q >= 0; q--) out.insert(out.end(), seq[q]->begin(), seq[q]->end()); return out; };
+    vector<pair<int,int>> mv1, mv2;
+    for (int L = 0; L < MAXD && !layers[L].empty(); L++) {
+      // finishes
+      for (size_t i = 0; i < layers[L].size(); i++) { const S& s = layers[L][i].s; if (TYP[s.pos][H8] < 0) continue;
+        SR.path = pathOf(L, (int)i); SR.bestT = -1; SR.bestA = -(1LL<<60); SR.finish_check(s);
+        if (SR.bestT > best && score_full(SR.best) == SR.bestT) { best = SR.bestT; bestX = SR.best; } }
+      vector<BN> nxt; std::unordered_map<uint64_t, int> seenI;
+      auto addN = [&](const S& c, int par, const vector<M>& sq) { double hv = BBT ? c.T : dance_pot2(c); if (hv < -1e8) hv = c.T; uint64_t h = hashS(c); auto it = seenI.find(h);
+        if (it == seenI.end()) { seenI[h] = (int)nxt.size(); nxt.push_back({c, par, sq, hv}); } else if (nxt[it->second].s.T < c.T) nxt[it->second] = {c, par, sq, hv}; };
+      for (size_t i = 0; i < layers[L].size(); i++) {
+        const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv1);
+        for (auto [d1, x] : mv1) {
+          S s1 = s; int p = s.pos; apply_move(s1, d1, x); M m1{(uint8_t)x, (int8_t)(s1.alt[x] - s1.alt[p]), (uint8_t)(d1 > 0), (uint8_t)p};
+          addN(s1, (int)i, vector<M>{m1});
+          pinned_moves(s1, 3, false, mv2);
+          for (auto [d2, y] : mv2) { if (d2 <= 0) continue;
+            vector<M> seq{m1}; S c = s1; int a = x, b = y; int dd = d2;
+            for (int step = 0; step < 6; step++) {
+              int pp = c.pos; apply_move(c, dd, b); seq.push_back({(uint8_t)b, (int8_t)(c.alt[b] - c.alt[pp]), 1, (uint8_t)pp});
+              addN(c, (int)i, seq);
+              // next: back to a with the largest pinned positive delta
+              vector<pair<int,int>> mv3; pinned_moves(c, 3, false, mv3); int bd = -1;
+              for (auto [d3, z] : mv3) if (z == a && d3 > 0 && d3 > bd) bd = d3;
+              if (bd < 0) break; std::swap(a, b); dd = bd;
+            }
+          }
+        }
+      }
+      if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const BN& u, const BN& v) { return u.h > v.h; }); nxt.resize(W); }
+      printf("layer %d: %zu nodes, best finish %lld\n", L + 1, nxt.size(), best); fflush(stdout);
+      layers.push_back(std::move(nxt));
+    }
+    printf("BLOCKBEAM from k %d W %d: best %lld (tour %lld)\n", k0, W, best, gbest.T);
+    if (best > 0) { gbest = {best, bestX}; save(gbest, "blockbeam"); }
     return 0;
   }
   if (getenv("INSWEEP")) {  // freesit: deterministic sit-insertion sweep: at every step k in [INLO, INHI] run a strict

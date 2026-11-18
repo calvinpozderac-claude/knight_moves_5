@@ -1,0 +1,55 @@
+in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
+start in/s9329.txt: 185 moves, 9329 minutes
+pot at k 112: 9478
+  pot k 90 -1000000000
+  pot k 100 9478
+  pot k 110 9626
+  pot k 120 9478
+  pot k 130 9478
+  pot k 140 9566
+  pot k 150 9431
+  pot k 160 9431
+  pot k 170 9415
+  pot k 180 9345
+layer 1: 42 nodes, best finish -1
+layer 2: 1442 nodes, best finish -1
+layer 3: 20000 nodes, best finish 3454
+layer 4: 20000 nodes, best finish 4166
+layer 5: 20000 nodes, best finish 4166
+layer 6: 20000 nodes, best finish 4166
+layer 7: 20000 nodes, best finish 4166
+layer 8: 20000 nodes, best finish 4166
+layer 9: 20000 nodes, best finish 4166
+layer 10: 20000 nodes, best finish 4166
+layer 11: 20000 nodes, best finish 4166
+layer 12: 20000 nodes, best finish 5396
+layer 13: 20000 nodes, best finish 5588
+layer 14: 20000 nodes, best finish 5588
+layer 15: 20000 nodes, best finish 5588
+layer 16: 20000 nodes, best finish 5943
+layer 17: 20000 nodes, best finish 6119
+layer 18: 20000 nodes, best finish 6142
+layer 19: 20000 nodes, best finish 6306
+layer 20: 20000 nodes, best finish 6640
+layer 21: 20000 nodes, best finish 7108
+layer 22: 20000 nodes, best finish 7134
+layer 23: 20000 nodes, best finish 7299
+layer 24: 20000 nodes, best finish 7444
+layer 25: 20000 nodes, best finish 7467
+layer 26: 20000 nodes, best finish 7467
+layer 27: 20000 nodes, best finish 7467
+layer 28: 20000 nodes, best finish 7467
+layer 29: 20000 nodes, best finish 7467
+layer 30: 20000 nodes, best finish 7606
+layer 31: 20000 nodes, best finish 7765
+layer 32: 20000 nodes, best finish 7767
+layer 33: 20000 nodes, best finish 7767
+layer 34: 20000 nodes, best finish 7767
+layer 35: 20000 nodes, best finish 7921
+layer 36: 20000 nodes, best finish 7921
+layer 37: 20000 nodes, best finish 7921
+layer 38: 20000 nodes, best finish 8058
+layer 39: 20000 nodes, best finish 8058
+layer 40: 20000 nodes, best finish 8126
+BLOCKBEAM from k 112 W 20000: best 8126 (tour 9329)
+[166s it 0] NEW BEST 8126 (blockbeam) len 173
