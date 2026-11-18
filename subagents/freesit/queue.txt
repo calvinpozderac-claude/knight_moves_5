@@ -1,0 +1,4 @@
+DUMPALL=1 ./mlns.sh q 18221 in/t30_5.txt 3000 15 --focus 60 99 1 
+DUMPALL=1 ./mlns.sh r 18189 in/s9328.txt 3000 20 --focus 40 99 1 
+DUMPALL=1 ./mlns.sh s 18386 in/t30_1.txt 3000 30 --focus 30 99 1 --dmax 8
+DUMPALL=1 ./mlns.sh t 18291 in/t30_3.txt 3000 20 --focus 50 99 1 --dmax 8
