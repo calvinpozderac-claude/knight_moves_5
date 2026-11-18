@@ -1,0 +1,23 @@
+in/np3.txt: 168 moves, 9597 minutes (replay 9597)
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/np3.txt: 168 moves, 9597 minutes
+start 9597: 23 free sinks, exact necessity ok (bad move 0)
+[10s it 118] NEW BEST 9944 (op 2 i 16 D 5) len 174
+[10s it 118] ADJ BEST 9944 (raw 9944 pen 0)
+[138s] it 2000 acc 298 cur 9880 best 9944 temp 43.2 elite 40 gains 184/79/657/2/0/2/57/336/2/0 acc 51/73/76/22/4/3/21/27/8/13
+   nec calls 9606771 fail 9601324 unk 0 probes 129793329 | fsp calls 303 hits 61 gain 1984 | dumped 228 | block op acc 0 gain 0
+[1017s] it 18000 acc 2451 cur 9935 best 9944 temp 3.1 elite 40 gains 270/298/981/282/4/12/201/793/8/0 acc 436/623/590/255/34/30/206/173/27/77
+   nec calls 73791084 fail 73741174 unk 0 probes 881413523 | fsp calls 2727 hits 526 gain 18864 | dumped 400 | block op acc 0 gain 0
+[1572s] it 28000 acc 3597 cur 9866 best 9944 temp 36.7 elite 40 gains 772/861/1561/996/4/14/243/1395/8/84 acc 622/924/853/373/51/37/306/270/36/125
+   nec calls 112661190 fail 112584511 unk 0 probes 1319159614 | fsp calls 4072 hits 787 gain 28820 | dumped 400 | block op acc 0 gain 0
+[1926s] it 34000 acc 4445 cur 9926 best 9944 temp 13.7 elite 40 gains 1129/1031/1676/1102/6/63/411/1814/10/84 acc 761/1120/1074/459/61/41/383/337/44/165
+   nec calls 138345422 fail 138252155 unk 0 probes 1630816646 | fsp calls 5010 hits 941 gain 34185 | dumped 400 | block op acc 0 gain 0
+[2250s it 39162] NEW BEST 9945 (op 2 i 140 D 3) len 176
+[2250s it 39162] ADJ BEST 9945 (raw 9945 pen 0)
+done it 41491 acc 5442 best 9945 restarts 9
+elite: 9945 9945 9945 9945 9945 9945 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9944 9943 9943 9943 9943 9943 9943 9943

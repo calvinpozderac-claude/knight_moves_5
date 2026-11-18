@@ -1,0 +1,29 @@
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/t9945.txt: 176 moves, 9945 minutes (replay 9945)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
+in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
+in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+start in/t9945.txt: 176 moves, 9945 minutes
+start 9945: 21 free sinks, exact necessity ok (bad move 0)
+[39s it 742] ADJ BEST 8533 (raw 9533 pen 1000)
+[41s it 795] ADJ BEST 8535 (raw 9535 pen 1000)
+[58s it 989] ADJ BEST 8538 (raw 9538 pen 1000)
+[64s it 1007] ADJ BEST 8539 (raw 9539 pen 1000)
+[64s it 1014] ADJ BEST 8540 (raw 9540 pen 1000)
+[66s it 1032] ADJ BEST 8595 (raw 9595 pen 1000)
+[71s it 1096] ADJ BEST 8597 (raw 9597 pen 1000)
+[126s] it 2000 acc 239 cur 9397 best 9945 temp 43.2 elite 40 gains 4/599/59/132/0/0/15/708/0/0 acc 46/49/63/20/3/4/21/21/2/10
+   nec calls 9345526 fail 9340579 unk 0 probes 109871945 | fsp calls 248 hits 11 gain 363 | dumped 219 | block op acc 0 gain 0
+[732s] it 14000 acc 1791 cur 9538 best 9945 temp 6.1 elite 40 gains 264/1287/122/378/2/11/99/1087/0/0 acc 306/421/402/203/18/29/164/134/10/104
+   nec calls 54420890 fail 54383935 unk 0 probes 601180528 | fsp calls 1941 hits 125 gain 3211 | dumped 400 | block op acc 0 gain 0
+[943s] it 18000 acc 2266 cur 9532 best 9945 temp 3.1 elite 40 gains 267/1293/126/378/2/15/120/1098/0/0 acc 396/529/502/254/21/40/210/169/14/131
+   nec calls 70365913 fail 70318763 unk 0 probes 771975486 | fsp calls 2488 hits 162 gain 4039 | dumped 400 | block op acc 0 gain 0
+[1056s] it 20000 acc 2473 cur 9536 best 9945 temp 2.3 elite 40 gains 274/1296/134/382/2/15/127/1104/0/0 acc 424/588/542/276/25/43/224/191/15/145
+   nec calls 78931249 fail 78878849 unk 0 probes 861706191 | fsp calls 2750 hits 180 gain 4587 | dumped 400 | block op acc 0 gain 0
+[1253s] it 24000 acc 2917 cur 9544 best 9945 temp 1.2 elite 40 gains 276/1305/152/382/3/15/139/1110/0/0 acc 506/702/645/328/32/45/250/217/18/174
+   nec calls 92504984 fail 92442481 unk 0 probes 1021591356 | fsp calls 3289 hits 214 gain 5157 | dumped 400 | block op acc 0 gain 0
+[1778s] it 34000 acc 4339 cur 9508 best 9945 temp 13.7 elite 40 gains 355/1467/1033/407/3/21/341/1341/0/0 acc 752/1072/942/490/48/61/384/309/27/254
+   nec calls 130751969 fail 130662135 unk 0 probes 1450348714 | fsp calls 4820 hits 319 gain 7412 | dumped 400 | block op acc 0 gain 0
+done it 45475 acc 5652 best 9945 restarts 1716
+elite: 9945 9945 9945 9945 9945 9945 9945 9945 9945 9945 9945 9945 9944 9943 9943 9943 9943 9942 9940 9940 9940 9939 9937 9937 9937 9937 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936 9936

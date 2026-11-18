@@ -34,3 +34,8 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - 18:34 ZR/Z5-8 no gain. Queued AA1-AA8: plain LNS from 9944 with varied focus/temperature (t0 40-150) and a crossover pool.
 - 19:04 9945 (NEW_RECORD_9945.txt, checker ok) from AA2 (focus 35-130, t0 60).
 - 19:40 end of phase 5: best 9945. Saver/workers left running.
+- 20:02 Phase 6: runl.sh (TL env = time cap, default 1600). nec_ok is already score-gated in record()/fsp (only improving candidates are checked), so no change there. Queue LA1/LA2 (plain, 6000 s, 150k it from 9945), LB1/LB2 (hard exclusion f8+g8 / c3+d1 before 85, 200k it, 6000 s). Saver threshold 9945.
+- 21:42 LA1/LA2 (long plain 6000 s, ~100k it) and LB1/LB2 (hard exclusion 200k it: raw 9599/9629 adjusted) all ended at 9945. Queued MA1-MA4: 5000 s relax from the LB adjusted tours with the other adjusted tour as donor.
+- 22:42 MA1-4 (relax from LB adj tours) no gain so far. Queued chained NP/NR i=1..4: 2400 s hard exclusion on f7,d5,g8,c5 then 2400 s relax from its adjusted tour.
+- 00:02 9947 (NEW_RECORD_9947.txt, checker ok) from the chained NP/NR jobs.
+- 00:32 end of phase 6: best 9947 (NR1: relax after f7 hard exclusion); NR2/NR3 9945; NR4 failed to run (donor path issue). Saver/workers idle/running.

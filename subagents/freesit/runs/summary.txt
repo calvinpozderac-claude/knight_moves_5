@@ -106,3 +106,19 @@ AA5 0  done it 28175 acc 2956 best 9944 restarts 7
 AA6 0  done it 19382 acc 2765 best 9944 restarts 4
 AA7 0  done it 23450 acc 3059 best 9944 restarts 1
 AA8 1 9945 done it 25567 acc 2761 best 9945 restarts 26
+LB1 0  done it 115770 acc 12871 best 9945 restarts 16580
+LA1 0  done it 112816 acc 11007 best 9945 restarts 15
+LB2 0  done it 126177 acc 12350 best 9945 restarts 32915
+LA2 0  done it 96036 acc 12632 best 9945 restarts 15
+MA2 25 9940 done it 78314 acc 10117 best 9940 restarts 12
+MA3 8 9945 done it 83215 acc 10870 best 9945 restarts 36
+MA1 6 9945 done it 86292 acc 11201 best 9945 restarts 13
+MA4 2 9945 done it 77365 acc 10391 best 9945 restarts 36
+NP1 0  done it 53135 acc 6395 best 9945 restarts 12222
+NP4 0  done it 45246 acc 5504 best 9945 restarts 7
+NR4 0  in/div0_9943.txt: 178 moves, 9943 minutes (replay 9943)
+NP3 0  done it 45475 acc 5652 best 9945 restarts 1716
+NP2 0  done it 48554 acc 5670 best 9945 restarts 14212
+NR1 3 9947 done it 40714 acc 5328 best 9947 restarts 8
+NR3 2 9945 done it 41491 acc 5442 best 9945 restarts 9
+NR2 7 9945 done it 38261 acc 4910 best 9945 restarts 4
