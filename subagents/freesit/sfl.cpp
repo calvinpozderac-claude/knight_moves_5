@@ -153,6 +153,10 @@ static long long pen_of(const vector<M>& X) {
   return c * VPEN;
 }
 
+struct PC { double proxy; vector<M> path; S s; };
+static bool PREFC = false; static vector<PC> PCAND; static int PCMAX = 3; static int PDSMIN = 61;
+static bool is_dance_start(const S& z, int dsmin);
+static double dance_pot2(const S& s);
 struct Search {
   const vector<M>* Y; vector<int> P0;  // source tour and square before each move
   const vector<M>* X;                    // tour to avoid reproducing exactly
@@ -203,6 +207,13 @@ struct Search {
       S s2 = s;
       if (!stepM(s2, y[k])) { if (SKELP > 0 && U() < SKELP) skel_replay(s, k, 0, (float)PENV); if (pd > 0) patch(s, k, pd - 1); break; }
       path.push_back(y[k]); s = s2;
+    }
+    if (PREFC && k == (int)y.size() && is_dance_start(s, PDSMIN)) {  // freesit MLNS: prefix candidate at the dance start
+      double pr = dance_pot2(s); bool dup = false;
+      for (auto& c : PCAND) if (c.s.T == s.T && hashS(c.s) == hashS(s)) { dup = true; break; }
+      if (!dup) { if ((int)PCAND.size() < PCMAX) PCAND.push_back({pr, path, s});
+        else { int w = 0; for (int q = 1; q < (int)PCAND.size(); q++) if (PCAND[q].proxy < PCAND[w].proxy) w = q;
+          if (pr > PCAND[w].proxy) PCAND[w] = {pr, path, s}; } }
     }
     path.resize(base);
   }
@@ -669,6 +680,45 @@ int main(int argc, char** argv) {
     long long best = blockbeam(pre, st0[k0], W, getenv("BBT") != nullptr, bx, 40, true);
     printf("BLOCKBEAM from k %d W %d: best %lld (tour %lld)\n", k0, W, best, gbest.T);
     if (best > 0) { gbest = {best, bx}; save(gbest, "blockbeam"); }
+    return 0;
+  }
+  if (getenv("MLNS")) {  // freesit: LNS on the merge (moves FLO..ds) scored by the stage-2 dance beam. Each iteration: window
+    // DFS (ops 0-2) from the state before move i, re-sync with the current prefix X[0..ds); every re-synced prefix that ends in a
+    // dance-start state is a candidate (top MLC by dance_pot2); candidates are scored by blockbeam W1 (T-ranked); SA on that.
+    int W1 = atoi(getenv("MLNS")), W2 = getenv("MLW2") ? atoi(getenv("MLW2")) : 20000; PCMAX = getenv("MLC") ? atoi(getenv("MLC")) : 2;
+    PDSMIN = getenv("DSMIN") ? atoi(getenv("DSMIN")) : 61; double temp0 = T0;
+    auto dsidx = [&](const vector<M>& X) { auto st = states_of(X); for (int k = 60; k < (int)X.size(); k++) if (is_dance_start(st[k], PDSMIN)) return k; return -1; };
+    Elite cur = gbest; int ds = dsidx(cur.X); printf("MLNS start %lld ds %d\n", cur.T, ds); fflush(stdout);
+    if (ds < 0) return 1;
+    static const vector<M> NOX; long long it = 0, evals = 0, acc = 0;
+    while (el() < TIME && (ITERS == 0 || it < ITERS)) {
+      it++; double frac = ITERS ? (double)it / ITERS : el() / TIME; double temp = temp0 * pow(T1 / temp0, fmod(frac * 2, 1.0));
+      auto st = states_of(cur.X); vector<M> Yp(cur.X.begin(), cur.X.begin() + ds);
+      int i = RI(max(1, FLO), max(FLO, ds - 1));
+      Search SR; SR.setY(Yp); SR.X = &NOX; SR.budget = BUDGET; SR.path.assign(cur.X.begin(), cur.X.begin() + i);
+      SR.i0 = i; SR.sameXY = true; SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX);
+      int op = RI(0, 2), pd = RI(0, 2);
+      if (op == 0) { SR.D = RI(1, DMAX); SR.jlo = i; SR.jhi = i + SR.D + 2 + WIDE; }
+      else if (op == 1) { SR.D = RI(1, 3); SR.jlo = i + 1; SR.jhi = i + 12 + WIDE; }
+      else { SR.D = RI(2, DMAX + 1); SR.jlo = i - 4 - WIDE / 2; SR.jhi = i + 4 + WIDE; }
+      PREFC = true; PCAND.clear(); S s0 = st[i]; SR.win_dfs(s0, 0, true, pd); PREFC = false;
+      for (auto& c : PCAND) {
+        if (c.path.size() == Yp.size() && std::equal(c.path.begin(), c.path.end(), Yp.begin())) continue;
+        vector<M> bx; long long b = blockbeam(c.path, c.s, W1, true, bx); evals++;
+        if (b < 0) continue;
+        if (b >= cur.T - 10 && W2 > W1) { vector<M> bx2; long long b2 = blockbeam(c.path, c.s, W2, true, bx2); if (b2 > b) { b = b2; bx = bx2; } }
+        long long dT = b - cur.T;
+        if (dT >= 0 || U() < exp(dT / temp)) {
+          if (score_full(bx) != b) { printf("MISMATCH mlns\n"); continue; }
+          acc++; cur = {b, bx}; mark_keys(cur.X); ds = dsidx(cur.X); dump_cur(cur.X);
+          if (cur.T > gbest.T) { gbest = cur; save(gbest, "mlns"); }
+          break;
+        }
+      }
+      if (it % 10 == 0) { printf("[%.0fs] it %lld evals %lld acc %lld cur %lld best %lld temp %.1f ds %d\n", el(), it, evals, acc, cur.T, gbest.T, temp, ds); fflush(stdout); }
+      if (cur.T < gbest.T - 300) { cur = gbest; ds = dsidx(cur.X); }
+    }
+    printf("MLNS done it %lld evals %lld best %lld\n", it, evals, gbest.T);
     return 0;
   }
   if (getenv("MERGEBEAM")) {  // freesit two-stage: stage 1 = beam over pinned moves from the state before move MBK+1 of the

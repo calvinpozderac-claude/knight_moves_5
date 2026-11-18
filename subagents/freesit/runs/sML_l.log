@@ -1,0 +1,55 @@
+in/s9328.txt: 176 moves, 9328 minutes (replay 9328)
+start in/s9328.txt: 176 moves, 9328 minutes
+MLNS start 9328 ds 90
+[106s] it 10 evals 20 acc 5 cur 9328 best 9328 temp 44.9 ds 92
+[143s] it 20 evals 33 acc 6 cur 9328 best 9328 temp 41.6 ds 90
+[200s] it 30 evals 44 acc 9 cur 9326 best 9328 temp 34.8 ds 92
+[277s] it 40 evals 56 acc 13 cur 9326 best 9328 temp 28.2 ds 88
+[339s] it 50 evals 67 acc 16 cur 9326 best 9328 temp 23.8 ds 90
+[364s] it 60 evals 74 acc 17 cur 9325 best 9328 temp 22.3 ds 91
+[416s] it 70 evals 88 acc 19 cur 9325 best 9328 temp 19.3 ds 87
+[457s] it 80 evals 106 acc 20 cur 9325 best 9328 temp 17.2 ds 87
+[484s] it 90 evals 115 acc 21 cur 9325 best 9328 temp 16.2 ds 89
+[535s] it 100 evals 128 acc 23 cur 9325 best 9328 temp 13.9 ds 89
+[606s] it 110 evals 151 acc 25 cur 9328 best 9328 temp 11.6 ds 92
+[650s] it 120 evals 175 acc 25 cur 9328 best 9328 temp 10.4 ds 92
+[709s] it 130 evals 201 acc 26 cur 9328 best 9328 temp 8.9 ds 94
+[770s] it 140 evals 213 acc 29 cur 9328 best 9328 temp 7.7 ds 92
+[815s] it 150 evals 223 acc 31 cur 9328 best 9328 temp 6.8 ds 96
+[839s] it 160 evals 234 acc 31 cur 9328 best 9328 temp 6.2 ds 96
+[900s] it 170 evals 245 acc 34 cur 9328 best 9328 temp 5.1 ds 94
+[958s] it 180 evals 261 acc 36 cur 9328 best 9328 temp 4.7 ds 94
+[1006s] it 190 evals 281 acc 37 cur 9326 best 9328 temp 3.8 ds 92
+[1082s] it 200 evals 299 acc 40 cur 9324 best 9328 temp 3.3 ds 92
+[1173s] it 210 evals 317 acc 44 cur 9324 best 9328 temp 2.4 ds 90
+[1234s] it 220 evals 342 acc 45 cur 9324 best 9328 temp 2.2 ds 92
+[1272s] it 230 evals 353 acc 46 cur 9324 best 9328 temp 1.9 ds 92
+[1343s] it 240 evals 368 acc 49 cur 9324 best 9328 temp 1.6 ds 90
+[1409s] it 250 evals 380 acc 52 cur 9324 best 9328 temp 1.3 ds 88
+[1475s] it 260 evals 400 acc 54 cur 9324 best 9328 temp 1.1 ds 92
+[1524s] it 270 evals 417 acc 55 cur 9324 best 9328 temp 56.3 ds 92
+[1566s] it 280 evals 431 acc 56 cur 9324 best 9328 temp 50.1 ds 94
+[1660s] it 290 evals 442 acc 61 cur 9324 best 9328 temp 39.0 ds 90
+[1734s] it 300 evals 457 acc 64 cur 9324 best 9328 temp 31.7 ds 90
+[1785s] it 310 evals 467 acc 66 cur 9324 best 9328 temp 28.3 ds 90
+[1856s] it 320 evals 481 acc 69 cur 9324 best 9328 temp 23.1 ds 88
+[1899s] it 330 evals 497 acc 70 cur 9324 best 9328 temp 20.2 ds 90
+[1962s] it 340 evals 513 acc 72 cur 9324 best 9328 temp 17.9 ds 90
+[2012s] it 350 evals 530 acc 73 cur 9324 best 9328 temp 15.1 ds 88
+[2099s] it 360 evals 552 acc 76 cur 9324 best 9328 temp 11.8 ds 92
+[2150s] it 370 evals 571 acc 78 cur 9324 best 9328 temp 10.2 ds 92
+[2232s] it 380 evals 594 acc 81 cur 9323 best 9328 temp 8.5 ds 93
+[2305s] it 390 evals 612 acc 84 cur 9323 best 9328 temp 6.8 ds 93
+[2370s] it 400 evals 634 acc 86 cur 9323 best 9328 temp 5.6 ds 95
+[2417s] it 410 evals 644 acc 88 cur 9324 best 9328 temp 4.9 ds 94
+[2443s] it 420 evals 656 acc 88 cur 9324 best 9328 temp 4.6 ds 94
+[2520s] it 430 evals 676 acc 91 cur 9324 best 9328 temp 3.9 ds 92
+[2557s] it 440 evals 694 acc 92 cur 9324 best 9328 temp 3.4 ds 94
+[2596s] it 450 evals 709 acc 93 cur 9324 best 9328 temp 3.0 ds 92
+[2661s] it 460 evals 726 acc 95 cur 9324 best 9328 temp 2.6 ds 92
+[2729s] it 470 evals 740 acc 98 cur 9324 best 9328 temp 2.1 ds 94
+[2793s] it 480 evals 751 acc 101 cur 9324 best 9328 temp 1.8 ds 90
+[2847s] it 490 evals 779 acc 101 cur 9324 best 9328 temp 1.6 ds 90
+[2905s] it 500 evals 793 acc 103 cur 9324 best 9328 temp 1.4 ds 94
+[2947s] it 510 evals 807 acc 104 cur 9324 best 9328 temp 1.2 ds 92
+MLNS done it 516 evals 831 best 9328

@@ -263,3 +263,15 @@ sS5_3 0  done it 60000 acc 9498 best 9330 restarts 59
 sS5_4 0  done it 60000 acc 9391 best 9330 restarts 74
 sS5_5 0  done it 60000 acc 8996 best 9330 restarts 64
 sS5_6 0  done it 60000 acc 9283 best 9330 restarts 67
+sML_c 0 MLNS done it 640 evals 568 best 9330
+sML_b 0 MLNS done it 573 evals 546 best 9330
+sML_a 0 MLNS done it 580 evals 516 best 9330
+sML_d 0 MLNS done it 724 evals 637 best 9329
+sML_e 0 MLNS done it 593 evals 568 best 9330
+sML_f 0 MLNS done it 651 evals 590 best 9328
+sML_h 0 MLNS done it 590 evals 557 best 9330
+sML_g 0 MLNS done it 659 evals 590 best 9330
+sML_k 0 MLNS done it 529 evals 776 best 9330
+sML_l 0 MLNS done it 516 evals 831 best 9328
+sML_j 0 MLNS done it 550 evals 743 best 9330
+sML_i 0 MLNS done it 581 evals 821 best 9330
