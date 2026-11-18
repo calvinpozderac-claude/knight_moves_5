@@ -5,3 +5,7 @@ in/div1_9934.txt: 175 moves, 9934 minutes (replay 9934)
 in/div3_9940.txt: 170 moves, 9940 minutes (replay 9940)
 start in/t9947.txt: 171 moves, 9947 minutes
 start 9947: 21 free sinks, exact necessity ok (bad move 0)
+[32s it 828] ADJ BEST 8476 (raw 9476 pen 1000)
+[32s it 870] ADJ BEST 8523 (raw 9523 pen 1000)
+[33s it 880] ADJ BEST 8531 (raw 9531 pen 1000)
+[33s it 897] ADJ BEST 8533 (raw 9533 pen 1000)
