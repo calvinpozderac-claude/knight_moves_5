@@ -75,3 +75,5 @@ start 9080: 0 free sinks, exact necessity ok (bad move 0)
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
 [661s] it 78000 acc 9892 cur 9262 best 9329 temp 36.7 elite 40 gains 6511/4442/11708/3237/1208/1190/4199/6747/379/5616 acc 1843/1591/2874/817/229/167/728/861/69/713
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[696s] it 82000 acc 10564 cur 9316 best 9329 temp 19.1 elite 40 gains 6968/4949/13386/3598/1276/1238/4724/7486/411/5968 acc 1951/1704/3082/855/246/180/792/931/74/749
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
