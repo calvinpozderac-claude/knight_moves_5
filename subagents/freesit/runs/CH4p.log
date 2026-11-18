@@ -1,0 +1,19 @@
+in/t9947.txt: 171 moves, 9947 minutes (replay 9947)
+in/t47_4.txt: 173 moves, 9947 minutes (replay 9947)
+in/t47_5.txt: 173 moves, 9947 minutes (replay 9947)
+in/t9944.txt: 172 moves, 9944 minutes (replay 9944)
+in/div8_9938.txt: 179 moves, 9938 minutes (replay 9938)
+start in/t9947.txt: 171 moves, 9947 minutes
+start 9947: 21 free sinks, exact necessity ok (bad move 0)
+[826s] it 16000 acc 1908 cur 9915 best 9947 temp 4.4 elite 40 gains 97/36/573/83/2/10/108/366/1/0 acc 301/435/438/187/35/24/181/151/23/133
+   nec calls 57994676 fail 57948668 unk 0 probes 654409308 | fsp calls 2059 hits 130 gain 3060 | dumped 400 | block op acc 0 gain 0
+[1048s] it 20000 acc 2375 cur 9937 best 9947 temp 2.3 elite 40 gains 99/45/588/84/2/10/132/411/1/0 acc 363/557/542/232/41/30/220/187/31/172
+   nec calls 75987265 fail 75929465 unk 0 probes 838039383 | fsp calls 2590 hits 162 gain 3663 | dumped 400 | block op acc 0 gain 0
+[1148s] it 22000 acc 2609 cur 9938 best 9947 temp 1.6 elite 40 gains 99/46/592/84/4/10/134/419/1/0 acc 405/608/598/252/44/34/236/204/33/195
+   nec calls 84031884 fail 83968204 unk 0 probes 911206743 | fsp calls 2868 hits 179 gain 4196 | dumped 400 | block op acc 0 gain 0
+[1729s] it 34000 acc 4043 cur 9925 best 9947 temp 13.7 elite 40 gains 202/467/1085/372/4/12/444/807/3/0 acc 628/997/924/397/62/53/342/311/46/283
+   nec calls 130450752 fail 130351578 unk 0 probes 1392588164 | fsp calls 4417 hits 271 gain 6453 | dumped 400 | block op acc 0 gain 0
+[1821s] it 36000 acc 4279 cur 9935 best 9947 temp 9.9 elite 40 gains 202/469/1099/372/6/12/456/872/3/0 acc 666/1065/978/417/65/54/363/327/47/297
+   nec calls 137355393 fail 137250693 unk 0 probes 1460984283 | fsp calls 4691 hits 285 gain 6698 | dumped 400 | block op acc 0 gain 0
+[1930s] it 38000 acc 4514 cur 9926 best 9947 temp 7.1 elite 40 gains 202/469/1105/372/6/12/466/878/3/0 acc 709/1136/1024/436/67/55/383/340/49/315
+   nec calls 144978550 fail 144868038 unk 0 probes 1541807783 | fsp calls 4951 hits 306 gain 7177 | dumped 400 | block op acc 0 gain 0

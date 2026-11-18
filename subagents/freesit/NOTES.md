@@ -39,3 +39,4 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - 22:42 MA1-4 (relax from LB adj tours) no gain so far. Queued chained NP/NR i=1..4: 2400 s hard exclusion on f7,d5,g8,c5 then 2400 s relax from its adjusted tour.
 - 00:02 9947 (NEW_RECORD_9947.txt, checker ok) from the chained NP/NR jobs.
 - 00:32 end of phase 6: best 9947 (NR1: relax after f7 hard exclusion); NR2/NR3 9945; NR4 failed to run (donor path issue). Saver/workers idle/running.
+- 01:02 Phase 7: saver threshold 9947. chain.sh = 2400 s hard exclusion then 2400 s relax (falls back to the start tour if no adjusted tour). 12 chains CH1-12 from 9947 and ties (in/t47_*.txt) on f7 x4, f8, d5, g8, c3, c5, c1, d1, e5 with 3 donor mixes. (NR4's c5 chain had no adj tour so its relax step never ran.)
