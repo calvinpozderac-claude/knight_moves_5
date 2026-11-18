@@ -3,19 +3,3 @@ in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
 in/s9328.txt: 176 moves, 9328 minutes (replay 9328)
 start in/s9329.txt: 185 moves, 9329 minutes
 start 9329: 0 free sinks, exact necessity ok (bad move 0)
-[20s] it 2000 acc 358 cur 9296 best 9329 temp 29.8 elite 40 gains 242/168/311/175/160/32/50/290/0/256 acc 57/54/93/32/8/3/33/45/5/28
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[122s] it 12000 acc 1856 cur 9324 best 9329 temp 6.8 elite 40 gains 713/447/946/317/256/172/540/1035/1/672 acc 375/304/515/150/27/30/143/159/13/140
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[141s] it 14000 acc 2130 cur 9307 best 9329 temp 5.1 elite 40 gains 726/451/971/318/256/172/548/1047/5/704 acc 423/365/610/169/29/31/153/169/14/167
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[180s] it 18000 acc 2637 cur 9317 best 9329 temp 2.8 elite 40 gains 731/460/987/323/257/176/556/1099/5/704 acc 529/473/755/211/35/35/169/196/17/217
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[220s] it 22000 acc 3114 cur 9328 best 9329 temp 1.6 elite 40 gains 733/460/1013/323/257/176/556/1142/5/704 acc 624/571/922/248/41/36/179/227/19/247
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[324s] it 32000 acc 4620 cur 9329 best 9329 temp 14.2 elite 40 gains 1204/1098/1843/517/423/308/1064/2109/37/1408 acc 934/834/1317/370/67/56/287/342/32/381
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[345s] it 34000 acc 4916 cur 9324 best 9329 temp 10.6 elite 40 gains 1250/1137/1960/550/423/312/1066/2206/38/1504 acc 991/888/1394/395/69/59/302/373/37/408
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
-[364s] it 36000 acc 5140 cur 9317 best 9329 temp 7.9 elite 40 gains 1385/1174/1972/550/423/312/1076/2264/38/1504 acc 1033/940/1453/411/72/60/321/384/37/429
-   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
