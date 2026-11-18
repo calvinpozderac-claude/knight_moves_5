@@ -179,3 +179,30 @@ sF_fam8_9277 1 9279 done it 100000 acc 12189 best 9279 restarts 23
 sH_fam8_9277 1 9279 done it 100000 acc 12275 best 9279 restarts 21
 sH_fam6_9279 0  done it 100000 acc 12423 best 9279 restarts 17
 sJ_fam8_9277_d5p 0  done it 100000 acc 12554 best 9277 restarts 38758
+sK4 0  done it 100000 acc 8117 best 9329 restarts 7
+sK1 0  done it 100000 acc 12142 best 9329 restarts 17
+sK3 1 9329 done it 100000 acc 12074 best 9329 restarts 18
+sK2 0  done it 100000 acc 11664 best 9329 restarts 7
+sL_f7p 0  done it 100000 acc 13614 best 9329 restarts 25816
+sL_g8p 0  done it 100000 acc 12837 best 9329 restarts 40762
+sL_g6p 0  done it 100000 acc 12284 best 9329 restarts 41722
+sK5 1 9329 done it 100000 acc 11788 best 9329 restarts 6
+sL_f7r 9 9329 done it 100000 acc 11519 best 9329 restarts 22
+sL_g8r 5 9329 done it 100000 acc 11750 best 9329 restarts 16
+sL_g6r 2 9329 done it 100000 acc 11982 best 9329 restarts 15
+sL_h3p 0  done it 100000 acc 8333 best 9329 restarts 9
+sK6 1 9329 done it 100000 acc 9843 best 9329 restarts 7
+sL_f1p 0  done it 100000 acc 14081 best 9329 restarts 10
+sL_h3r 0  done it 100000 acc 11806 best 9329 restarts 22
+sM_f7p 1 9329 done it 100000 acc 13442 best 9329 restarts 22976
+sL_c1p 0  done it 100000 acc 12485 best 9329 restarts 10
+sL_f1r 1 9329 done it 100000 acc 12185 best 9329 restarts 12
+sM_f7r 28 9329 done it 100000 acc 11664 best 9329 restarts 18
+sM_g8p 1 9329 done it 100000 acc 14134 best 9329 restarts 39235
+sL_c1r 0  done it 100000 acc 11738 best 9329 restarts 19
+sL_f8p 0  done it 100000 acc 13972 best 9329 restarts 7
+sM_g8r 5 9329 done it 100000 acc 11943 best 9329 restarts 17
+sL_d5p 0  done it 100000 acc 12978 best 9329 restarts 30605
+sK7 0  done it 100000 acc 13657 best 9329 restarts 123
+sL_f8r 0  done it 100000 acc 11534 best 9329 restarts 17
+sL_d5r 21 9329 done it 100000 acc 12288 best 9329 restarts 14

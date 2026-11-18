@@ -5,7 +5,7 @@ import sys, re, os, subprocess
 sys.path.insert(0, '../../tools')
 from sim import *
 from fractions import Fraction as F
-BEST = 9282
+BEST = 9329
 seen_f = 'tmp/checked_strict.txt'
 seen = set(open(seen_f).read().split('\n')) if os.path.exists(seen_f) else set()
 def strict(t):

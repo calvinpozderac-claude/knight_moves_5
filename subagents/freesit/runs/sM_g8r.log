@@ -1,0 +1,76 @@
+in/sM_g8adj.txt: 170 moves, 8931 minutes (replay 8931)
+in/s9328.txt: 176 moves, 9328 minutes (replay 9328)
+in/s9328.txt: 176 moves, 9328 minutes (replay 9328)
+in/s9329.txt: 185 moves, 9329 minutes (replay 9329)
+start in/sM_g8adj.txt: 170 moves, 8931 minutes
+start 8931: 0 free sinks, exact necessity ok (bad move 0)
+[16s] it 2000 acc 344 cur 8693 best 8931 temp 43.2 elite 39 gains 584/107/441/3/8/250/861/783/68/0 acc 84/64/87/25/10/6/27/29/3/9
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[32s] it 4000 acc 656 cur 8846 best 8931 temp 31.2 elite 40 gains 998/232/1025/7/12/326/1089/885/68/0 acc 159/117/178/45/15/17/43/55/5/22
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[35s it 4408] NEW BEST 8936 (op 1 i 90 D 2) len 174
+[35s it 4408] ADJ BEST 8936 (raw 8936 pen 0)
+[49s] it 6000 acc 905 cur 8905 best 8936 temp 22.5 elite 40 gains 1082/323/1493/95/12/326/1125/921/68/0 acc 203/165/260/72/17/22/59/69/9/29
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[65s] it 8000 acc 1178 cur 8913 best 8936 temp 16.2 elite 40 gains 1109/352/1691/100/12/330/1137/967/68/0 acc 251/215/352/101/24/25/73/89/10/38
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[81s] it 10000 acc 1428 cur 8924 best 8936 temp 11.7 elite 40 gains 1188/364/1815/124/24/330/1217/1097/72/0 acc 302/246/429/129/30/31/89/109/12/51
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[90s it 11067] NEW BEST 8938 (op 2 i 132 D 5) len 170
+[90s it 11067] ADJ BEST 8938 (raw 8938 pen 0)
+[98s] it 12000 acc 1659 cur 8905 best 8938 temp 8.4 elite 40 gains 1204/364/1839/132/28/338/1249/1165/72/0 acc 344/285/503/146/35/35/105/133/12/61
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[115s] it 14000 acc 1872 cur 8928 best 8938 temp 6.1 elite 40 gains 1237/367/1899/140/28/338/1253/1209/80/0 acc 392/316/575/165/37/37/115/146/14/75
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[148s] it 18000 acc 2262 cur 8932 best 8938 temp 3.1 elite 40 gains 1254/387/1937/150/32/338/1265/1271/80/0 acc 471/390/697/190/43/42/134/175/16/104
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[165s] it 20000 acc 2439 cur 8932 best 8938 temp 2.3 elite 40 gains 1275/387/1953/154/32/338/1265/1276/80/0 acc 514/420/749/208/45/44/143/185/17/114
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[195s it 23630] NEW BEST 8940 (op 2 i 37 D 4) len 177
+[195s it 23630] ADJ BEST 8940 (raw 8940 pen 0)
+[199s] it 24000 acc 2797 cur 8936 best 8940 temp 1.2 elite 40 gains 1297/387/1962/154/32/338/1266/1293/80/0 acc 606/494/840/234/52/46/160/208/18/139
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[216s] it 26000 acc 3051 cur 8623 best 8940 temp 50.9 elite 40 gains 1451/801/2501/255/32/338/1672/1599/80/0 acc 662/528/915/261/57/48/178/224/21/157
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[218s it 26220] NEW BEST 9297 (op 2 i 163 D 7) len 185
+[218s it 26220] ADJ BEST 9297 (raw 9297 pen 0)
+[218s it 26221] NEW BEST 9329 (op 2 i 76 D 3) len 185
+[218s it 26221] ADJ BEST 9329 (raw 9329 pen 0)
+[283s] it 34000 acc 4404 cur 9318 best 9329 temp 13.7 elite 40 gains 3071/1559/4768/1033/108/522/2718/3102/112/1152 acc 907/713/1296/384/78/77/297/373/25/254
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[300s] it 36000 acc 4617 cur 9312 best 9329 temp 9.9 elite 40 gains 3201/1599/4980/1069/116/562/2846/3226/168/1280 acc 948/749/1354/397/81/84/311/392/31/270
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[315s] it 38000 acc 4836 cur 9316 best 9329 temp 7.1 elite 40 gains 3241/1619/5001/1089/116/566/2942/3279/168/1280 acc 999/778/1405/418/88/89/333/409/34/283
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[349s] it 42000 acc 5210 cur 9328 best 9329 temp 3.7 elite 40 gains 3310/1644/5082/1103/116/566/2974/3387/168/1280 acc 1076/835/1512/446/94/97/361/440/37/312
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[367s] it 44000 acc 5374 cur 9326 best 9329 temp 2.7 elite 40 gains 3319/1644/5098/1121/116/566/2982/3415/168/1280 acc 1108/863/1559/463/96/98/368/453/40/326
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[384s] it 46000 acc 5525 cur 9314 best 9329 temp 1.9 elite 40 gains 3319/1646/5107/1121/116/566/2982/3447/168/1280 acc 1144/893/1612/467/96/99/372/464/40/338
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[400s] it 48000 acc 5668 cur 9328 best 9329 temp 1.4 elite 40 gains 3319/1646/5107/1121/116/566/2986/3457/168/1280 acc 1169/916/1652/481/98/103/385/472/40/352
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[416s] it 50000 acc 5792 cur 9328 best 9329 temp 60.0 elite 40 gains 3319/1646/5111/1121/116/566/2989/3457/168/1280 acc 1196/933/1689/495/98/103/392/482/40/364
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[448s] it 54000 acc 6598 cur 9266 best 9329 temp 31.2 elite 40 gains 4661/2418/7436/1501/364/706/3749/4739/236/2280 acc 1328/1041/1913/558/113/119/472/580/50/424
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[501s] it 60000 acc 7509 cur 9322 best 9329 temp 11.7 elite 40 gains 5279/2989/8825/1817/432/786/4369/5463/276/2728 acc 1491/1168/2189/624/128/138/555/679/55/482
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[550s] it 66000 acc 8187 cur 9326 best 9329 temp 4.4 elite 40 gains 5334/3077/9080/1849/436/798/4405/5595/276/2760 acc 1632/1281/2395/673/147/148/596/727/64/524
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[665s] it 80000 acc 9878 cur 9326 best 9329 temp 26.5 elite 40 gains 6754/3924/11752/2518/472/969/5363/7813/396/3954 acc 1932/1548/2875/817/175/182/727/890/80/652
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[681s] it 82000 acc 10188 cur 9302 best 9329 temp 19.1 elite 40 gains 7113/4057/12420/2582/603/1041/5641/7997/396/4182 acc 1985/1589/2959/836/182/192/769/922/83/671
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[714s] it 86000 acc 10797 cur 9316 best 9329 temp 9.9 elite 40 gains 7309/4218/12879/2670/667/1105/5977/8402/428/4342 acc 2087/1680/3172/881/199/204/814/971/88/701
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[746s] it 90000 acc 11229 cur 9318 best 9329 temp 5.1 elite 40 gains 7373/4262/13022/2686/667/1145/6005/8534/436/4374 acc 2173/1765/3293/911/207/210/852/1002/92/724
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[779s] it 94000 acc 11584 cur 9328 best 9329 temp 2.7 elite 40 gains 7402/4281/13058/2694/667/1145/6009/8608/436/4374 acc 2245/1819/3395/940/211/213/865/1037/96/763
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[795s] it 96000 acc 11706 cur 9326 best 9329 temp 1.9 elite 40 gains 7410/4281/13060/2694/667/1149/6009/8610/436/4374 acc 2268/1839/3428/951/214/214/872/1044/97/779
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[828s] it 100000 acc 11943 cur 9329 best 9329 temp 60.0 elite 40 gains 7420/4282/13070/2697/667/1149/6009/8624/436/4374 acc 2327/1886/3492/976/218/215/879/1061/97/792
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 100000 acc 11943 best 9329 restarts 17
+elite: 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9329 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328

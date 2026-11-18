@@ -1,7 +1,0 @@
-TL=2400 ./runl.sh sH_fam13_9275 25740 in/fam13_9275.txt 100000 1 178 0.6 60 0 in/fam13_9275.txt
-TL=2400 ./runl.sh sH_fam15_9272 6983 in/fam15_9272.txt 100000 1 178 0.6 60 0 in/fam15_9272.txt
-TL=2400 ./runl.sh sH_fam19_9265 25840 in/fam19_9265.txt 100000 1 178 0.6 60 0 in/fam19_9265.txt
-TL=2400 ./runl.sh sH_fam16_9268 26333 in/fam16_9268.txt 100000 1 178 0.6 60 0 in/fam16_9268.txt
-./schain.sh sI_fam7_9277 32264 in/fam7_9277.txt f7 91 in/fam7_9277.txt
-./schain.sh sI_fam14_9274 10214 in/fam14_9274.txt f7 91 in/fam14_9274.txt
-./schain.sh sI_fam17_9268 3424 in/fam17_9268.txt f7 91 in/fam17_9268.txt

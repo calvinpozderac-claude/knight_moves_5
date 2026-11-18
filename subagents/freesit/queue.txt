@@ -1,4 +1,0 @@
-./schain.sh sJ_fam9_9275_f8 11272 in/fam9_9275.txt f8 91 in/fam9_9275.txt
-./schain.sh sJ_fam6_9279_d5 16982 in/fam6_9279.txt d5 91 in/fam6_9279.txt
-./schain.sh sJ_fam10_9275_f7 12128 in/fam10_9275.txt f7 91 in/fam10_9275.txt
-./schain.sh sJ_fam13_9275_g8 26393 in/fam13_9275.txt g8 91 in/fam13_9275.txt
