@@ -166,3 +166,16 @@ sQ3 0  done it 150000 acc 20159 best 9282 restarts 202
 sD6r 7 9282 done it 100000 acc 11589 best 9282 restarts 21
 sD5r 1 9282 done it 100000 acc 11782 best 9282 restarts 14
 sQ6 0  done it 150000 acc 20409 best 9282 restarts 215
+sF_fam14_9274 5 9282 done it 100000 acc 11396 best 9282 restarts 19
+sF_fam7_9277 1 9282 done it 100000 acc 11421 best 9282 restarts 21
+sB3 0  done it 100000 acc 8275 best 9282 restarts 9
+sB0 0  done it 100000 acc 8399 best 9282 restarts 6
+sF_fam17_9268 1 9282 done it 100000 acc 11607 best 9282 restarts 23
+sF_fam4_9282 0  done it 100000 acc 12090 best 9282 restarts 16
+sB6 0  done it 100000 acc 8294 best 9282 restarts 10
+sB9 0  done it 100000 acc 8435 best 9282 restarts 8
+sF_fam6_9279 2 9282 done it 100000 acc 11764 best 9282 restarts 24
+sF_fam8_9277 1 9279 done it 100000 acc 12189 best 9279 restarts 23
+sH_fam8_9277 1 9279 done it 100000 acc 12275 best 9279 restarts 21
+sH_fam6_9279 0  done it 100000 acc 12423 best 9279 restarts 17
+sJ_fam8_9277_d5p 0  done it 100000 acc 12554 best 9277 restarts 38758

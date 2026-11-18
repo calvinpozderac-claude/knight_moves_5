@@ -1,0 +1,10 @@
+in/fam9_9275.txt: 183 moves, 9275 minutes (replay 9275)
+in/fam9_9275.txt: 183 moves, 9275 minutes (replay 9275)
+start in/fam9_9275.txt: 183 moves, 9275 minutes
+start 9275: 0 free sinks, exact necessity ok (bad move 0)
+[18s] it 2000 acc 416 cur 9195 best 9275 temp 43.2 elite 40 gains 1350/504/850/266/128/40/607/388/0/288 acc 76/70/119/42/6/12/41/38/3/9
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[34s] it 4000 acc 795 cur 9177 best 9275 temp 31.2 elite 40 gains 1929/785/2145/488/208/144/871/734/0/540 acc 132/140/222/71/19/24/77/83/4/23
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[84s] it 10000 acc 1786 cur 9197 best 9275 temp 11.7 elite 40 gains 2774/1216/3670/823/325/288/1391/1490/40/1264 acc 310/306/537/145/43/44/143/162/13/83
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0

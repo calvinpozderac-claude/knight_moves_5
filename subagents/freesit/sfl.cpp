@@ -586,6 +586,26 @@ int main(int argc, char** argv) {
     }
     return 0;
   }
+  if (getenv("INSWEEP")) {  // freesit: deterministic sit-insertion sweep: at every step k in [INLO, INHI] run a strict
+    // window DFS of depth 1..INSWEEP pinned moves from the state before move k and re-sync anywhere in X[k..k+D+INW]
+    // (later moves keep their dz, waits re-derived; patch DFS / skeleton reroute on a break). Prints best per k.
+    int lo = atoi(getenv("INLO")), hi = atoi(getenv("INHI")), DM = atoi(getenv("INSWEEP"));
+    long long B = getenv("INB") ? atoll(getenv("INB")) : 2000000; int W = getenv("INW") ? atoi(getenv("INW")) : 12;
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0); long long best = gbest.T - pen_of(X0); vector<M> bx;
+    int N = (int)X0.size();
+    for (int k = lo; k <= min(hi, N - 2); k++) {
+      long long bk = -1, bkA = -(1LL << 60); int bD = 0;
+      for (int D = 1; D <= DM; D++) {
+        Search S1; S1.setY(X0); S1.X = &X0; S1.budget = B; S1.path.assign(X0.begin(), X0.begin() + k);
+        S1.D = D; S1.jlo = k; S1.jhi = k + D + W; S1.i0 = k; S1.sameXY = true; S1.PD = 3; S1.R = 6;
+        S s0 = st0[k]; S1.win_dfs(s0, 0, true, 2);
+        if (S1.bestT >= 0 && S1.bestA > bkA) { bkA = S1.bestA; bk = S1.bestT; bD = D;
+          if (S1.bestA > best && score_full(S1.best) == S1.bestT) { best = S1.bestA; bx = S1.best; gbest = {S1.bestT, S1.best}; save(gbest, "insweep"); } }
+      }
+      printf("k %d best %lld adj %lld (D %d) vs start %lld\n", k, bk, bkA, bD, (long long)(X0.size() ? score_full(X0) - pen_of(X0) : 0)); fflush(stdout);
+    }
+    return 0;
+  }
   { int bi = -1; bool ok = nec_ok(gbest.X, &bi); int nf = 0; for (auto& m : gbest.X) if (m.fd) nf++;
     printf("start %lld: %d free sinks, exact necessity %s (bad move %d)\n", gbest.T, nf, ok ? "ok" : "FAIL", bi + 1); fflush(stdout); }
   if (FSP) { long long T = gbest.T; fsp(gbest.X, T); if (T > gbest.T) { gbest.T = T; mark_keys(gbest.X); save(gbest, "fsp on start"); } }
