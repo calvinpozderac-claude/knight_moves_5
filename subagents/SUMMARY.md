@@ -128,3 +128,11 @@ the runs stopped was sound free-wait LNS focused on the merge. All runs are stop
 The user ruled that free waits break the game's rules. Tours 9,286-9,947 all use free waits and no longer count.
 The best valid (strict) tour is **9,282** (`data/tours/record_9282.txt`). The freesit agent was redirected to
 strict-only search (free waits disabled, saver requires `strict_check.py` STRICT).
+
+## Final state (2026-11-19)
+**Best strict tour: 9,330 minutes** (`data/tours/strict_record_9330.txt`; checker ok, STRICT, 179 moves), +1 over the
+user's 9,329 from main. Found by a hot strict LNS on the merge (moves 15-99) from 9,328 with 9,329/9,328 donors.
+Strict-only work after the no-free-wait ruling: sit-insertion operator (insweep), pair exclusions, dance block-order beam
+(reproduces the record dance exactly from the dance start), two-stage merge+dance search, and merge LNS scored by the
+dance beam (~7,000 candidates). All plateau at 9,330; the dance appears saturated for the current merges, so further
+gains need a structurally different climb/merge. All runs stopped (agent hit its weekly usage limit).
