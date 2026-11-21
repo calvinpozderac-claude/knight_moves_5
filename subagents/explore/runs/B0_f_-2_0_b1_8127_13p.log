@@ -1,0 +1,59 @@
+in/f_-2_0_b1_8127_13.txt: 157 moves, 8127 minutes (replay 8127)
+in/f_-2_0_b1_8033_14.txt: 134 moves, 8033 minutes (replay 8033)
+in/f_-2_0_b1_8297_12.txt: 154 moves, 8297 minutes (replay 8297)
+start in/f_-2_0_b1_8127_13.txt: 157 moves, 8127 minutes
+start 8127: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 1] ADJ BEST 5927 (raw 7727 pen 1800)
+[0s it 11] ADJ BEST 6101 (raw 7601 pen 1500)
+[1s it 22] ADJ BEST 6193 (raw 7393 pen 1200)
+[1s it 32] ADJ BEST 6262 (raw 6562 pen 300)
+[2s it 57] ADJ BEST 6264 (raw 6264 pen 0)
+[2s it 63] ADJ BEST 6266 (raw 6266 pen 0)
+[4s it 84] ADJ BEST 6355 (raw 6355 pen 0)
+[5s it 87] ADJ BEST 6422 (raw 6422 pen 0)
+[7s it 183] ADJ BEST 6520 (raw 6520 pen 0)
+[8s it 206] ADJ BEST 6524 (raw 6524 pen 0)
+[11s it 285] ADJ BEST 6539 (raw 6539 pen 0)
+[12s it 292] ADJ BEST 6540 (raw 6540 pen 0)
+[12s it 293] ADJ BEST 6589 (raw 6589 pen 0)
+[13s it 320] ADJ BEST 6621 (raw 6621 pen 0)
+[13s it 367] ADJ BEST 6698 (raw 6698 pen 0)
+[14s it 377] ADJ BEST 6699 (raw 6699 pen 0)
+[14s it 381] ADJ BEST 6703 (raw 6703 pen 0)
+[32s it 990] ADJ BEST 6736 (raw 6736 pen 0)
+[49s it 1394] ADJ BEST 6833 (raw 6833 pen 0)
+[49s it 1399] ADJ BEST 6894 (raw 6894 pen 0)
+[49s it 1404] ADJ BEST 6898 (raw 6898 pen 0)
+[50s it 1421] ADJ BEST 6902 (raw 6902 pen 0)
+[54s it 1472] ADJ BEST 6988 (raw 6988 pen 0)
+[56s it 1556] ADJ BEST 7062 (raw 7062 pen 0)
+[57s it 1610] ADJ BEST 7134 (raw 7134 pen 0)
+[60s it 1728] ADJ BEST 7142 (raw 7142 pen 0)
+[65s it 1822] ADJ BEST 7168 (raw 7168 pen 0)
+[65s it 1837] ADJ BEST 7197 (raw 7197 pen 0)
+[66s it 1883] ADJ BEST 7249 (raw 7249 pen 0)
+[73s it 2061] ADJ BEST 7253 (raw 7253 pen 0)
+[137s] it 4000 acc 818 cur 7143 best 8127 temp 7.7 elite 40 gains 1848/1127/2726/1026/255/225/612/449/185/222 acc 162/166/242/76/28/14/50/32/9/39
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[258s it 8014] ADJ BEST 7256 (raw 7256 pen 0)
+[331s] it 10000 acc 1790 cur 7241 best 8127 temp 18.6 elite 40 gains 2914/1385/4478/1275/427/229/1547/1346/223/260 acc 373/334/517/154/55/31/117/87/19/103
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[346s it 10298] ADJ BEST 7257 (raw 7257 pen 0)
+[354s it 10571] ADJ BEST 7260 (raw 7260 pen 0)
+[402s] it 12000 acc 2064 cur 7245 best 8127 temp 5.8 elite 40 gains 2928/1392/4694/1283/465/229/1585/1365/261/260 acc 433/395/588/181/60/35/126/104/21/121
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[481s] it 14000 acc 2314 cur 7257 best 8127 temp 1.8 elite 40 gains 2930/1396/4696/1287/465/233/1588/1377/261/260 acc 475/444/667/209/70/38/136/119/21/135
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[496s it 14365] ADJ BEST 7270 (raw 7270 pen 0)
+[506s it 14588] ADJ BEST 7273 (raw 7273 pen 0)
+[520s it 14925] ADJ BEST 7274 (raw 7274 pen 0)
+[562s] it 16000 acc 2693 cur 7102 best 8127 temp 44.6 elite 40 gains 3484/1524/5344/1704/488/236/1856/1806/261/474 acc 546/509/782/241/77/45/163/149/22/159
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[634s] it 18000 acc 3106 cur 7217 best 8127 temp 13.9 elite 40 gains 3751/1936/6001/1860/488/236/2295/2097/261/606 acc 617/578/915/282/82/54/194/174/27/183
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[709s] it 20000 acc 3365 cur 7265 best 8127 temp 4.3 elite 40 gains 3756/1968/6051/1864/488/236/2307/2161/261/606 acc 680/631/989/306/90/55/202/187/28/197
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[990s] it 28000 acc 4742 cur 7223 best 8127 temp 3.2 elite 40 gains 4834/2217/7903/2377/729/316/3138/3090/305/992 acc 926/894/1385/438/133/77/323/251/40/275
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 5028 best 8127 restarts 16
+elite: 8297 8127 8033 7727 7601 7601 7393 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274 7274

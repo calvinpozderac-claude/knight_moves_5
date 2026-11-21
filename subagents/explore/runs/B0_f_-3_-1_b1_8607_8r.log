@@ -1,0 +1,126 @@
+in/B0_f_-3_-1_b1_8607_8adj.txt: 150 moves, 7369 minutes (replay 7369)
+in/f_-3_-1_b1_8607_8.txt: 157 moves, 8607 minutes (replay 8607)
+start in/B0_f_-3_-1_b1_8607_8adj.txt: 150 moves, 7369 minutes
+start 7369: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 9] NEW BEST 7502 (op 2 i 94 D 7) len 157
+[0s it 9] ADJ BEST 7502 (raw 7502 pen 0)
+[1s it 28] NEW BEST 7524 (op 6 a 67 len 1) len 162
+[1s it 28] ADJ BEST 7524 (raw 7524 pen 0)
+[1s it 33] NEW BEST 7538 (op 3 i 94 D 2) len 162
+[1s it 33] ADJ BEST 7538 (raw 7538 pen 0)
+[2s it 57] NEW BEST 7575 (op 6 a 126 len 12) len 161
+[2s it 57] ADJ BEST 7575 (raw 7575 pen 0)
+[2s it 58] NEW BEST 7688 (op 2 i 95 D 3) len 159
+[2s it 58] ADJ BEST 7688 (raw 7688 pen 0)
+[2s it 74] NEW BEST 7726 (op 1 i 135 D 3) len 160
+[2s it 74] ADJ BEST 7726 (raw 7726 pen 0)
+[3s it 89] NEW BEST 7730 (op 1 i 92 D 3) len 160
+[3s it 89] ADJ BEST 7730 (raw 7730 pen 0)
+[4s it 163] NEW BEST 7754 (op 3 i 75 D 2) len 160
+[4s it 163] ADJ BEST 7754 (raw 7754 pen 0)
+[4s it 205] NEW BEST 7755 (op 2 i 144 D 5) len 161
+[4s it 205] ADJ BEST 7755 (raw 7755 pen 0)
+[5s it 208] NEW BEST 7763 (op 6 a 127 len 3) len 161
+[5s it 208] ADJ BEST 7763 (raw 7763 pen 0)
+[6s it 280] NEW BEST 7774 (op 0 i 152 D 6) len 167
+[6s it 280] ADJ BEST 7774 (raw 7774 pen 0)
+[6s it 288] NEW BEST 7778 (op 2 i 114 D 3) len 165
+[6s it 288] ADJ BEST 7778 (raw 7778 pen 0)
+[10s it 450] NEW BEST 7797 (op 3 i 151 D 2) len 168
+[10s it 450] ADJ BEST 7797 (raw 7797 pen 0)
+[11s it 454] NEW BEST 7817 (op 2 i 89 D 4) len 167
+[11s it 454] ADJ BEST 7817 (raw 7817 pen 0)
+[11s it 467] NEW BEST 7821 (op 1 i 99 D 3) len 167
+[11s it 467] ADJ BEST 7821 (raw 7821 pen 0)
+[35s it 1720] NEW BEST 7870 (op 5 a 129 len 1) len 153
+[35s it 1720] ADJ BEST 7870 (raw 7870 pen 0)
+[35s it 1767] NEW BEST 7905 (op 0 i 122 D 6) len 161
+[35s it 1767] ADJ BEST 7905 (raw 7905 pen 0)
+[35s it 1804] NEW BEST 7918 (op 2 i 151 D 3) len 161
+[35s it 1804] ADJ BEST 7918 (raw 7918 pen 0)
+[35s it 1805] NEW BEST 7969 (op 0 i 96 D 3) len 160
+[35s it 1805] ADJ BEST 7969 (raw 7969 pen 0)
+[37s it 1865] NEW BEST 8032 (op 0 i 118 D 8) len 158
+[37s it 1865] ADJ BEST 8032 (raw 8032 pen 0)
+[39s it 1982] NEW BEST 8040 (op 5 a 71 len 2) len 168
+[39s it 1982] ADJ BEST 8040 (raw 8040 pen 0)
+[39s it 1998] NEW BEST 8044 (op 2 i 161 D 7) len 170
+[39s it 1998] ADJ BEST 8044 (raw 8044 pen 0)
+[48s it 2499] NEW BEST 8048 (op 5 a 140 len 18) len 160
+[48s it 2499] ADJ BEST 8048 (raw 8048 pen 0)
+[48s it 2510] NEW BEST 8052 (op 1 i 153 D 3) len 160
+[48s it 2510] ADJ BEST 8052 (raw 8052 pen 0)
+[53s it 2844] NEW BEST 8056 (op 7 a 63 c 55 d 69 b 71) len 164
+[53s it 2844] ADJ BEST 8056 (raw 8056 pen 0)
+[53s it 2850] NEW BEST 8060 (op 7 a 156 c 147 d 156 b 161) len 164
+[53s it 2850] ADJ BEST 8060 (raw 8060 pen 0)
+[53s it 2872] NEW BEST 8061 (op 0 i 18 D 7) len 165
+[53s it 2872] ADJ BEST 8061 (raw 8061 pen 0)
+[71s] it 4000 acc 550 cur 8027 best 8061 temp 6.8 elite 40 gains 847/274/1792/429/6/156/678/199/0/0 acc 129/104/152/58/13/7/49/29/7/2
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[74s it 4166] NEW BEST 8062 (op 5 a 155 len 3) len 164
+[74s it 4166] ADJ BEST 8062 (raw 8062 pen 0)
+[78s it 4396] NEW BEST 8229 (op 7 a 64 c 54 d 81 b 81) len 165
+[78s it 4396] ADJ BEST 8229 (raw 8229 pen 0)
+[80s it 4519] NEW BEST 8273 (op 0 i 111 D 5) len 166
+[80s it 4519] ADJ BEST 8273 (raw 8273 pen 0)
+[80s it 4520] NEW BEST 8277 (op 3 i 105 D 1) len 166
+[80s it 4520] ADJ BEST 8277 (raw 8277 pen 0)
+[82s it 4668] NEW BEST 8281 (op 1 i 100 D 3) len 164
+[82s it 4668] ADJ BEST 8281 (raw 8281 pen 0)
+[129s it 7865] NEW BEST 8285 (op 0 i 156 D 5) len 166
+[129s it 7865] ADJ BEST 8285 (raw 8285 pen 0)
+[129s it 7867] NEW BEST 8289 (op 2 i 148 D 8) len 166
+[129s it 7867] ADJ BEST 8289 (raw 8289 pen 0)
+[162s] it 10000 acc 1259 cur 8191 best 8289 temp 15.3 elite 40 gains 1406/591/2539/535/50/241/818/515/21/0 acc 276/245/379/128/29/25/81/74/15/7
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[230s] it 14000 acc 1807 cur 8265 best 8289 temp 1.7 elite 40 gains 1434/700/2591/597/60/318/830/538/21/0 acc 407/356/552/180/41/32/111/94/20/14
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[265s] it 16000 acc 2025 cur 8029 best 8289 temp 34.8 elite 40 gains 1453/902/2732/599/60/318/858/785/21/0 acc 459/393/605/206/46/33/136/112/20/15
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[265s it 16038] NEW BEST 8292 (op 2 i 118 D 9) len 161
+[265s it 16038] ADJ BEST 8292 (raw 8292 pen 0)
+[282s it 17034] NEW BEST 8296 (op 0 i 22 D 6) len 166
+[282s it 17034] ADJ BEST 8296 (raw 8296 pen 0)
+[296s] it 18000 acc 2301 cur 8247 best 8296 temp 11.7 elite 40 gains 1791/1120/2887/716/148/324/1040/815/21/0 acc 524/444/696/228/55/39/151/127/21/16
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[334s it 20489] NEW BEST 8330 (op 2 i 126 D 9) len 166
+[334s it 20489] ADJ BEST 8330 (raw 8330 pen 0)
+[335s it 20567] NEW BEST 8361 (op 2 i 140 D 4) len 166
+[335s it 20567] ADJ BEST 8361 (raw 8361 pen 0)
+[336s it 20651] NEW BEST 8364 (op 7 a 140 c 141 d 147 b 147) len 168
+[336s it 20651] ADJ BEST 8364 (raw 8364 pen 0)
+[336s it 20673] NEW BEST 8368 (op 0 i 41 D 3) len 170
+[336s it 20673] ADJ BEST 8368 (raw 8368 pen 0)
+[337s it 20751] NEW BEST 8370 (op 0 i 17 D 4) len 170
+[337s it 20751] ADJ BEST 8370 (raw 8370 pen 0)
+[349s it 21450] NEW BEST 8372 (op 2 i 37 D 8) len 170
+[349s it 21450] ADJ BEST 8372 (raw 8372 pen 0)
+[365s it 22387] NEW BEST 8406 (op 0 i 149 D 7) len 171
+[365s it 22387] ADJ BEST 8406 (raw 8406 pen 0)
+[371s it 22757] NEW BEST 8409 (op 4 a 151 len 2) len 171
+[371s it 22757] ADJ BEST 8409 (raw 8409 pen 0)
+[381s it 23378] NEW BEST 8411 (op 2 i 131 D 7) len 171
+[381s it 23378] ADJ BEST 8411 (raw 8411 pen 0)
+[396s] it 24000 acc 2887 cur 8389 best 8411 temp 26.5 elite 40 gains 2022/1284/3477/782/183/324/1395/981/21/0 acc 651/563/880/284/65/48/192/155/26/23
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[429s it 25716] NEW BEST 8442 (op 2 i 117 D 7) len 167
+[429s it 25716] ADJ BEST 8442 (raw 8442 pen 0)
+[432s it 25871] NEW BEST 8444 (op 1 i 66 D 3) len 165
+[432s it 25871] ADJ BEST 8444 (raw 8444 pen 0)
+[432s it 25879] NEW BEST 8446 (op 6 a 153 len 1) len 165
+[432s it 25879] ADJ BEST 8446 (raw 8446 pen 0)
+[433s it 25933] NEW BEST 8450 (op 2 i 109 D 7) len 167
+[433s it 25933] ADJ BEST 8450 (raw 8450 pen 0)
+[434s it 25969] NEW BEST 8454 (op 0 i 141 D 8) len 159
+[434s it 25969] ADJ BEST 8454 (raw 8454 pen 0)
+[434s] it 26000 acc 3210 cur 8450 best 8454 temp 8.9 elite 40 gains 2049/1311/3657/802/187/326/1423/1009/21/0 acc 715/626/983/310/72/55/213/178/26/32
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[465s it 27547] NEW BEST 8458 (op 0 i 21 D 5) len 165
+[465s it 27547] ADJ BEST 8458 (raw 8458 pen 0)
+[475s] it 28000 acc 3452 cur 8458 best 8458 temp 3.0 elite 40 gains 2080/1319/3689/806/187/326/1429/1027/21/0 acc 760/680/1061/334/79/57/225/192/26/38
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[499s it 29382] NEW BEST 8462 (op 1 i 141 D 3) len 167
+[499s it 29382] ADJ BEST 8462 (raw 8462 pen 0)
+done it 30000 acc 3687 best 8462 restarts 8
+elite: 8607 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462 8462

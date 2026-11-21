@@ -1,0 +1,60 @@
+in/B0_f_-3_-1_c2_8703_5adj.txt: 154 moves, 8005 minutes (replay 8005)
+in/f_-3_-1_c2_8703_5.txt: 165 moves, 8703 minutes (replay 8703)
+in/f_-3_-1_c2_8595_7.txt: 161 moves, 8595 minutes (replay 8595)
+in/f_-3_-1_c2_8607_6.txt: 157 moves, 8607 minutes (replay 8607)
+start in/B0_f_-3_-1_c2_8703_5adj.txt: 154 moves, 8005 minutes
+start 8005: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 12] NEW BEST 8045 (op 0 i 138 D 8) len 157
+[0s it 12] ADJ BEST 8045 (raw 8045 pen 0)
+[1s it 92] NEW BEST 8062 (op 7 a 97 c 93 d 102 b 100) len 158
+[1s it 92] ADJ BEST 8062 (raw 8062 pen 0)
+[2s it 116] NEW BEST 8250 (op 1 i 109 D 1) len 156
+[2s it 116] ADJ BEST 8250 (raw 8250 pen 0)
+[2s it 128] NEW BEST 8289 (op 2 i 135 D 2) len 153
+[2s it 128] ADJ BEST 8289 (raw 8289 pen 0)
+[8s it 392] NEW BEST 8290 (op 2 i 96 D 4) len 151
+[8s it 392] ADJ BEST 8290 (raw 8290 pen 0)
+[8s it 406] NEW BEST 8308 (op 2 i 145 D 4) len 154
+[8s it 406] ADJ BEST 8308 (raw 8308 pen 0)
+[33s it 1580] NEW BEST 8312 (op 2 i 143 D 6) len 152
+[33s it 1580] ADJ BEST 8312 (raw 8312 pen 0)
+[45s] it 2000 acc 439 cur 8304 best 8312 temp 20.1 elite 40 gains 883/710/634/100/36/140/296/485/0/108 acc 89/86/120/49/4/13/37/28/2/11
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[47s it 2073] NEW BEST 8320 (op 1 i 102 D 3) len 154
+[47s it 2073] ADJ BEST 8320 (raw 8320 pen 0)
+[59s it 2437] NEW BEST 8324 (op 2 i 110 D 6) len 152
+[59s it 2437] ADJ BEST 8324 (raw 8324 pen 0)
+[60s it 2482] NEW BEST 8328 (op 2 i 101 D 6) len 148
+[60s it 2482] ADJ BEST 8328 (raw 8328 pen 0)
+[64s it 2640] NEW BEST 8342 (op 0 i 148 D 5) len 153
+[64s it 2640] ADJ BEST 8342 (raw 8342 pen 0)
+[71s it 2928] NEW BEST 8343 (op 0 i 157 D 6) len 160
+[71s it 2928] ADJ BEST 8343 (raw 8343 pen 0)
+[89s it 3590] NEW BEST 8392 (op 1 i 99 D 3) len 154
+[89s it 3590] ADJ BEST 8392 (raw 8392 pen 0)
+[91s it 3647] NEW BEST 8394 (op 1 i 122 D 3) len 148
+[91s it 3647] ADJ BEST 8394 (raw 8394 pen 0)
+[93s it 3705] NEW BEST 8398 (op 0 i 153 D 4) len 158
+[93s it 3705] ADJ BEST 8398 (raw 8398 pen 0)
+[102s] it 4000 acc 734 cur 8394 best 8398 temp 6.8 elite 40 gains 1001/829/815/142/44/176/384/493/0/180 acc 147/134/214/80/8/19/61/41/2/28
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[102s it 4005] NEW BEST 8400 (op 8 i 150 D 3) len 158
+[102s it 4005] ADJ BEST 8400 (raw 8400 pen 0)
+[146s it 5560] NEW BEST 8403 (op 2 i 133 D 2) len 162
+[146s it 5560] ADJ BEST 8403 (raw 8403 pen 0)
+[159s] it 6000 acc 968 cur 8395 best 8403 temp 2.3 elite 40 gains 1031/835/862/144/44/180/406/497/4/180 acc 200/187/270/108/13/23/71/49/3/44
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[255s it 9346] NEW BEST 8408 (op 6 a 142 len 9) len 158
+[255s it 9346] ADJ BEST 8408 (raw 8408 pen 0)
+[271s] it 10000 acc 1637 cur 8300 best 8408 temp 15.3 elite 40 gains 1380/1145/1499/384/108/280/1164/716/40/504 acc 325/302/465/152/27/34/138/87/13/94
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[415s it 15202] NEW BEST 8412 (op 5 a 147 len 4) len 158
+[415s it 15202] ADJ BEST 8412 (raw 8412 pen 0)
+[437s] it 16000 acc 2505 cur 8376 best 8412 temp 34.8 elite 40 gains 1716/1414/2330/721/146/302/1378/813/44/504 acc 494/484/721/240/38/40/192/129/24/143
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[601s] it 22000 acc 3333 cur 8396 best 8412 temp 1.3 elite 40 gains 2004/1558/2930/749/184/372/1633/1059/47/880 acc 646/643/975/307/61/54/253/171/30/193
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[763s] it 28000 acc 4219 cur 8404 best 8412 temp 3.0 elite 40 gains 2332/2019/3861/932/325/436/2370/1280/51/952 acc 826/803/1220/397/84/67/321/216/43/242
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 4450 best 8412 restarts 4
+elite: 8703 8607 8595 8412 8412 8412 8412 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409 8409

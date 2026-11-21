@@ -1,0 +1,56 @@
+in/f_-3_-1_c2_8703_5.txt: 165 moves, 8703 minutes (replay 8703)
+in/f_-3_-1_c2_8595_7.txt: 161 moves, 8595 minutes (replay 8595)
+in/f_-3_-1_c2_8607_6.txt: 157 moves, 8607 minutes (replay 8607)
+start in/f_-3_-1_c2_8703_5.txt: 165 moves, 8703 minutes
+start 8703: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 2] ADJ BEST 6208 (raw 8008 pen 1800)
+[1s it 11] ADJ BEST 6338 (raw 8138 pen 1800)
+[2s it 71] ADJ BEST 6359 (raw 7559 pen 1200)
+[2s it 72] ADJ BEST 6523 (raw 7723 pen 1200)
+[2s it 85] ADJ BEST 6527 (raw 7727 pen 1200)
+[2s it 86] ADJ BEST 6630 (raw 7830 pen 1200)
+[3s it 109] ADJ BEST 7030 (raw 7630 pen 600)
+[3s it 132] ADJ BEST 7216 (raw 7516 pen 300)
+[5s it 258] ADJ BEST 7265 (raw 7565 pen 300)
+[5s it 259] ADJ BEST 7414 (raw 7714 pen 300)
+[5s it 260] ADJ BEST 7584 (raw 7584 pen 0)
+[6s it 303] ADJ BEST 7776 (raw 7776 pen 0)
+[7s it 343] ADJ BEST 7785 (raw 7785 pen 0)
+[7s it 345] ADJ BEST 7789 (raw 7789 pen 0)
+[7s it 346] ADJ BEST 7797 (raw 7797 pen 0)
+[25s it 1005] ADJ BEST 7826 (raw 7826 pen 0)
+[26s it 1041] ADJ BEST 7830 (raw 7830 pen 0)
+[47s] it 2000 acc 488 cur 7794 best 8703 temp 24.9 elite 40 gains 1470/510/1699/380/2060/324/703/569/38/460 acc 95/89/132/37/9/12/45/26/11/32
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[68s it 3127] ADJ BEST 7834 (raw 7834 pen 0)
+[69s it 3177] ADJ BEST 7842 (raw 7842 pen 0)
+[75s it 3490] ADJ BEST 7847 (raw 7847 pen 0)
+[76s it 3542] ADJ BEST 7848 (raw 7848 pen 0)
+[83s] it 4000 acc 820 cur 7845 best 8703 temp 7.7 elite 40 gains 1534/744/2077/397/2060/324/791/650/38/580 acc 165/148/230/64/18/17/66/48/15/49
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[95s it 4657] ADJ BEST 7849 (raw 7849 pen 0)
+[105s it 5198] ADJ BEST 7854 (raw 7854 pen 0)
+[105s it 5200] ADJ BEST 7858 (raw 7858 pen 0)
+[107s it 5371] ADJ BEST 7866 (raw 7866 pen 0)
+[125s it 6304] ADJ BEST 7868 (raw 7868 pen 0)
+[137s it 6897] ADJ BEST 8001 (raw 8001 pen 0)
+[151s it 7748] ADJ BEST 8002 (raw 8002 pen 0)
+[218s] it 12000 acc 1989 cur 7988 best 8703 temp 5.8 elite 40 gains 1932/1540/4429/849/2312/404/1657/974/77/1340 acc 365/389/586/173/42/34/145/103/29/123
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[253s] it 14000 acc 2212 cur 8000 best 8703 temp 1.8 elite 40 gains 1935/1564/4437/853/2312/404/1657/974/77/1340 acc 400/445/661/187/50/34/158/110/30/137
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[288s] it 16000 acc 2511 cur 7931 best 8703 temp 44.6 elite 40 gains 2337/1736/4899/1131/2312/444/1822/1200/77/1816 acc 458/503/745/224/55/38/178/122/31/157
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[322s] it 18000 acc 2810 cur 7993 best 8703 temp 13.9 elite 40 gains 2511/2078/5631/1213/2350/494/2146/1429/117/2132 acc 506/559/835/247/66/47/208/135/34/173
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[429s] it 24000 acc 3635 cur 7911 best 8703 temp 33.3 elite 40 gains 3493/2511/6728/1712/2430/538/2540/1659/197/2682 acc 666/719/1076/327/93/61/264/165/44/220
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[453s it 25307] ADJ BEST 8003 (raw 8003 pen 0)
+[457s it 25543] ADJ BEST 8004 (raw 8004 pen 0)
+[465s] it 26000 acc 3922 cur 8004 best 8703 temp 10.4 elite 40 gains 3620/2705/7019/1838/2618/546/2581/1854/197/2800 acc 718/777/1155/352/102/67/284/180/47/240
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[512s it 28833] ADJ BEST 8005 (raw 8005 pen 0)
+[535s] it 30000 acc 4348 cur 8004 best 8703 temp 80.0 elite 40 gains 3660/2713/7064/1838/2626/546/2583/1860/197/2800 acc 804/878/1267/394/114/68/305/196/55/267
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 4348 best 8703 restarts 16
+elite: 8703 8607 8595 8138 8138 8138 8138 8135 8135 8135 8131 8131 8111 8111 8008 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8005 8004 8004 8004 8004 8004 8004 8004

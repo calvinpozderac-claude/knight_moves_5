@@ -1,0 +1,989 @@
+// Large-neighbourhood search / simulated annealing over whole Knight Moves 5 tours.
+// A tour is a sequence of (target square, dz) moves; dz = alt[q]-alt[p] right after the jump.
+// The wait of each move is implied (pinned): delta = dz - (alt[q]-alt[p]) must be >= 0.
+// Destroy+repair: from the state before move i, DFS up to D pinned moves; at every DFS node whose square
+// equals the square before move j of a source tour Y (j in a window), replay Y[j..] re-deriving waits.
+// When the replay breaks, a small "patch" DFS tries to re-sync further down Y (recursively).
+// Every state passed is checked for a finishing jump into h8 (tour truncated there).
+// sfl (sound free-wait LNS): copy of subagents/lns84/lns.cpp (round 6, --start, add_free) plus an EXACT necessity
+// check of every free sink (nec_ok: replays the tour on scaled-integer rational altitudes with the probes of
+// tools/sim.py necessity_check: t' = 0, t+-1/997, t+1, 2t, later waits fixed in minutes). Search::record rejects
+// any finish whose free sinks are not all necessary, and --fsp runs a greedy free-sink pass on each candidate.
+// usage: lns --tours f1 f2 ... --time SEC --out FILE [--seed N] [--t0 30] [--t1 1]
+#include "../../src/eng.h"
+#include <chrono>
+#include <unordered_set>
+#include <unordered_map>
+
+struct M { uint8_t q; int8_t dz; uint8_t key = 0; uint8_t fr = 255; uint8_t fd = 0; };  // fd: free sink (target in the knight's group)
+static int FREEMAX = 0;  // fr: square the move leaves (255 unknown)  // key: waits in the tour it came from (or final move)
+static int TYP[64][64];
+static long long NOVP = 0, NOVLP = 0, NOVFP = 0; static double NOVJ = 0.5; static bool NOVSIT[64]; static int NOVLV[16], NOVLVN = 0; static int NOVFIRST = -1;
+static inline bool operator==(const M& a, const M& b) { return a.q == b.q && a.dz == b.dz && a.fd == b.fd; }
+
+// apply move m to s; false if illegal (s may be garbage then)
+static inline bool stepM(S& s, M m) {
+  int p = s.pos, q = m.q, t = TYP[p][q];
+  if (t < 0) return false;
+  if (q != H8 && s.vis[q] >= 3) return false;
+  if (!legal_dz(t, m.dz)) return false;
+  int a = s.alt[p];
+  if (s.alt[q] == a && q != 63 - p) { if (m.dz != 0) return false; apply_move(s, m.fd, q); return true; }
+  if (m.fd) return false;
+  int delta = m.dz - (s.alt[q] - a);
+  if (delta < 0) return false;
+  apply_move(s, delta, q);
+  return true;
+}
+
+static vector<M> parse_tour(const string& line, long long* Tout) {
+  vector<M> out; S s = start_state();
+  size_t k = 0;
+  while ((k = line.find('(', k)) != string::npos) {
+    int w; char sq[3];
+    if (sscanf(line.c_str() + k, "(%d, %2s)", &w, sq) != 2) break;
+    k++;
+    int q = (sq[0] - 'a') + 8 * (sq[1] - '1');
+    int p = s.pos; int n = group_n(s, p);
+    vector<pair<int, int>> mv; pinned_moves(s, 3, true, mv);
+    bool found = false;
+    for (auto& [d, qq] : mv) if (qq == q && d * n == w) {
+      apply_move(s, d, q); out.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), (uint8_t)(d > 0 || q == H8), (uint8_t)p}); found = true; break;
+    }
+    if (!found && w > 0 && TYP[p][q] == 0 && s.alt[q] == s.alt[p] && q != 63 - p && w % n == 0) {
+      apply_move(s, w / n, q); M m{(uint8_t)q, 0, 1, (uint8_t)p, (uint8_t)(w / n)}; out.push_back(m); found = true; }
+    if (!found) { fprintf(stderr, "parse: move %zu (%d,%s) not pinned\n", out.size() + 1, w, sq); exit(1); }
+  }
+  if (Tout) *Tout = s.T;
+  return out;
+}
+
+static string fmt_tour(const vector<M>& X, long long* Tout) {
+  S s = start_state(); string o;
+  for (size_t i = 0; i < X.size(); i++) {
+    long long T0 = s.T;
+    if (!stepM(s, X[i])) { fprintf(stderr, "fmt: illegal at %zu\n", i); exit(1); }
+    char b[32]; snprintf(b, sizeof b, "%s(%lld, %s)", i ? ", " : "", s.T - T0, nm(X[i].q).c_str()); o += b;
+  }
+  if (Tout) *Tout = s.T;
+  return o;
+}
+
+// full replay from a1; returns T or -1 if illegal / not ending on h8 / h8 early
+static long long score_full(const vector<M>& X) {
+  S s = start_state();
+  for (size_t i = 0; i < X.size(); i++) {
+    if (X[i].q == H8 && i + 1 != X.size()) return -1;
+    if (!stepM(s, X[i])) return -1;
+  }
+  return (s.pos == H8) ? s.T : -1;
+}
+
+static void mark_keys(vector<M>& X) {
+  S s = start_state();
+  for (auto& m : X) { long long T0 = s.T; m.fr = s.pos; stepM(s, m); m.key = (s.T > T0 || m.q == H8); }
+}
+static long long nov_pen(const vector<M>& X) {
+  if (!NOVP && !NOVLP && !NOVFP) return 0;
+  long long pen = 0;
+  if (NOVFP && !X.empty() && X[0].q == NOVFIRST) pen += NOVFP;
+  if (!NOVP && !NOVLP) return pen;
+  S s = start_state(); int ds = -1, bestn = -1, bi = 0, blo = 0; vector<int> from(X.size()); vector<char> sat(X.size());
+  int lvlo = 0;
+  for (size_t i = 0; i < X.size(); i++) {
+    int a0 = s.alt[s.pos], nm = 0, np = 0, n0 = 0;
+    for (int k = 0; k < 64; k++) { if (s.alt[k] == a0) n0++; else if (s.alt[k] == a0 - 2) nm++; else if (s.alt[k] == a0 + 2) np++; }
+    int n = n0 + max(nm, np), lo = nm >= np ? a0 - 2 : a0;
+    if (n > bestn) { bestn = n; bi = (int)i; blo = lo; }
+    if (ds < 0 && n >= 61 && i >= 40) { ds = (int)i; lvlo = lo; }
+    long long T0 = s.T; from[i] = s.pos; if (!stepM(s, X[i])) return pen; sat[i] = s.T > T0;
+  }
+  if (ds < 0) { ds = bi; lvlo = blo; }
+  if (NOVLP) for (int k = 0; k < NOVLVN; k++) if (NOVLV[k] == lvlo) { pen += NOVLP; break; }
+  if (NOVP) { bool in[64] = {false}; for (size_t i = ds; i < X.size(); i++) if (sat[i]) in[from[i]] = true;
+    int I = 0, U = 0; for (int k = 0; k < 64; k++) { if (in[k] && NOVSIT[k]) I++; if (in[k] || NOVSIT[k]) U++; }
+    double J = U ? (double)I / U : 0; if (J > NOVJ) pen += (long long)(NOVP * (J - NOVJ) / (1 - NOVJ) + 0.5) + NOVP / 4; }
+  return pen;
+}
+// ---- sfl: exact necessity check of free sinks
+typedef __int128 LL;
+static long long NEC_CALLS = 0, NEC_FAIL = 0, NEC_UNK = 0, NEC_PROBES = 0;
+static inline LL gcdL(LL a, LL b) { if (a < 0) a = -a; if (b < 0) b = -b; while (b) { LL t = a % b; a = b; b = t; } return a; }
+// replay moves j >= i from st[i] with wait tn/td minutes at move i and W[j] minutes later (exact rationals as
+// integers over a common denominator D). 1: some jump becomes illegal; 0: all legal; -1: overflow (unknown).
+static int probe(const vector<M>& X, const vector<int>& W, const vector<S>& st, int i, long long tn, long long td) {
+  NEC_PROBES++;
+  LL alt[64], D = 1; for (int k = 0; k < 64; k++) alt[k] = st[i].alt[k];
+  int pos = st[i].pos;
+  for (int j = i; j < (int)X.size(); j++) {
+    LL a = alt[pos]; int O = 63 - pos;
+    LL num = (j == i) ? tn : W[j], den = (j == i) ? td : 1;
+    if (num > 0) {
+      bool rise = alt[O] != a; int n = 0;
+      for (int k = 0; k < 64; k++) if (alt[k] == a && k != O) n++;
+      LL need = den * n, g = gcdL(num * D, need), f = need / g;
+      if (f > 1) { if (D > ((LL)1 << 90) / f) return -1; D *= f; for (int k = 0; k < 64; k++) alt[k] *= f; a = alt[pos]; }
+      LL d = num * D / need;
+      for (int k = 0; k < 64; k++) if (alt[k] == a && k != O) alt[k] -= d;
+      if (rise) alt[O] += d;
+    }
+    int q = X[j].q, t = TYP[pos][q]; if (t < 0) return 1;
+    LL dz = alt[q] - alt[pos];
+    bool ok = t == 0 ? dz == 0 : t == 1 ? (dz == 2 * D || dz == -2 * D) : (dz == D || dz == -D);
+    if (!ok) return 1;
+    pos = q;
+    bool same = true; for (int k = 0; k < 64; k++) if (alt[k] != (LL)st[j + 1].alt[k] * D) { same = false; break; }
+    if (same) return 0;  // back on the unperturbed trajectory: every later jump is legal
+  }
+  return 0;
+}
+// true iff every free sink of X (fd > 0) is necessary (some probe t' breaks a jump); X must be legal
+static bool nec_ok(const vector<M>& X, int* badIdx = nullptr) {
+  bool any = false; for (auto& m : X) if (m.fd) { any = true; break; }
+  if (!any) return true;
+  NEC_CALLS++;
+  vector<S> st(X.size() + 1); vector<int> W(X.size()); S s = start_state(); st[0] = s;
+  for (size_t i = 0; i < X.size(); i++) { long long T0 = s.T; if (!stepM(s, X[i])) return false; W[i] = (int)(s.T - T0); st[i + 1] = s; }
+  for (size_t i = 0; i < X.size(); i++) {
+    if (!X[i].fd || W[i] <= 0) continue;
+    long long t = W[i]; bool broken = false, unk = false;
+    const long long P[5][2] = {{0, 1}, {997 * t + 1, 997}, {997 * t - 1, 997}, {t + 1, 1}, {2 * t, 1}};
+    for (auto& pr : P) { int r = probe(X, W, st, (int)i, pr[0], pr[1]); if (r == 1) { broken = true; break; } if (r < 0) unk = true; }
+    if (!broken) { NEC_FAIL++; if (unk) NEC_UNK++; if (badIdx) *badIdx = (int)i; return false; }
+  }
+  return true;
+}
+static bool NONEC = getenv("NONEC") != nullptr;
+static double RECDUMP = getenv("RECDUMP") ? atof(getenv("RECDUMP")) : 0;  // validation: sample record() candidates
+static FILE* DUMPF = nullptr;
+static string fmt_tour(const std::vector<M>& X, long long* Tout);  // validation only: disable the check in record()
+static inline void add_free(const S& s, vector<pair<int, int>>& mv) {
+  if (!FREEMAX) return; size_t n0 = mv.size();
+  for (size_t k = 0; k < n0; k++) { int q = mv[k].second;
+    if (mv[k].first == 0 && q != H8 && s.alt[q] == s.alt[s.pos]) for (int d = 1; d <= FREEMAX; d++) mv.push_back({-d, q}); }
+}
+static std::mt19937_64 rng;
+static double SKELP = 0, PENV = 4;
+static double U() { return std::uniform_real_distribution<double>(0, 1)(rng); }
+static int RI(int a, int b) { return std::uniform_int_distribution<int>(a, b)(rng); }
+
+static int H8NB[16], H8NBN = 0;
+// freesit: soft penalty VPEN minutes per arrival at a square of VSQ at move index (1-based) in [VLO,VHI]
+static long long VPEN = 0; static bool VSQ[64]; static int VLO = 1, VHI = 91;
+// explore: novelty penalty vs a reference family (descriptor: dance start ds = first state >= 40 with >= 61 points on the knight's
+// level + the denser level +-2 (else the max), level pair, set of squares with a positive wait at or after ds)
+static long long nov_pen(const vector<M>& X);
+static long long pen_of(const vector<M>& X) {
+  long long base = nov_pen(X);
+  if (!VPEN) return base; long long c = base;
+  for (int k = 0; k < (int)X.size() && k + 1 <= VHI; k++) if (k + 1 >= VLO && VSQ[X[k].q]) c++;
+  return (c - base) * VPEN + base;
+}
+
+struct PC { double proxy; vector<M> path; S s; };
+static bool PREFC = false; static vector<PC> PCAND; static int PCMAX = 3; static int PDSMIN = 61;
+static bool is_dance_start(const S& z, int dsmin);
+static double dance_pot2(const S& s);
+struct Search {
+  const vector<M>* Y; vector<int> P0;  // source tour and square before each move
+  const vector<M>* X;                    // tour to avoid reproducing exactly
+  vector<M> path; long long bestT = -1; vector<M> best;
+  long long nodes = 0, budget = 200000; long long bestA = -(1LL<<60);
+  int PD = 2, R = 4;                     // patch depth and resync range
+  std::unordered_set<uint64_t> memo;
+  vector<pair<int, int>> mvbuf[16];
+
+  void setY(const vector<M>& y) {
+    Y = &y; P0.assign(y.size() + 1, 0); P0[0] = A1;
+    for (size_t i = 0; i < y.size(); i++) P0[i + 1] = y[i].q;
+  }
+  void record(long long T, M fin) {
+    path.push_back(fin);
+    for (auto& m : path) if (m.fd) { path.pop_back(); return; }  // strict: no free waits
+    long long A = T - pen_of(path);
+    if (A <= bestA) { path.pop_back(); return; }
+    if (NONEC && DUMPF && U() < RECDUMP) { bool any = false; for (auto& m : path) if (m.fd) any = true;
+      if (any) { long long TT; string s = fmt_tour(path, &TT); fprintf(DUMPF, "%lld\n%s\n", TT, s.c_str()); } }
+    if (!(path.size() == X->size() && std::equal(path.begin(), path.end(), X->begin())) && (NONEC || nec_ok(path))) { bestT = T; bestA = A; best = path; }
+    path.pop_back();
+  }
+  void finish_check(const S& s) {
+    int p = s.pos;
+    if (TYP[p][H8] < 0) return;
+    int t = TYP[p][H8], a = s.alt[p];
+    if (s.alt[H8] == a) { if (t == 0) record(s.T, {(uint8_t)H8, 0}); return; }
+    int diff = s.alt[H8] - a, n = -1;
+    for (int dz : {-2, -1, 0, 1, 2}) {
+      if (!legal_dz(t, dz)) continue;
+      int d = dz - diff; if (d < 0) continue;
+      if (d > 0 && n < 0) n = group_n(s, p);
+      record(s.T + (long long)d * (d > 0 ? n : 0), {(uint8_t)H8, (int8_t)dz});
+    }
+  }
+  // replay Y[j..] from s; on break, patch with depth pd
+  void replay(S s, int j, int pd) {
+    uint64_t key = hashS(s) ^ ((uint64_t)j * 0x9E3779B97F4A7C15ULL) ^ ((uint64_t)s.T << 20) ^ (uint64_t)pd;
+    if (!memo.insert(key).second) return;
+    size_t base = path.size();
+    const vector<M>& y = *Y;
+    int k = j;
+    for (; k < (int)y.size(); k++) {
+      nodes++;
+      finish_check(s);
+      if (y[k].q == H8) break;
+      S s2 = s;
+      if (!stepM(s2, y[k])) { if (SKELP > 0 && U() < SKELP) skel_replay(s, k, 0, (float)PENV); if (pd > 0) patch(s, k, pd - 1); break; }
+      path.push_back(y[k]); s = s2;
+    }
+    if (PREFC && k == (int)y.size() && is_dance_start(s, PDSMIN)) {  // freesit MLNS: prefix candidate at the dance start
+      double pr = dance_pot2(s); bool dup = false;
+      for (auto& c : PCAND) if (c.s.T == s.T && hashS(c.s) == hashS(s)) { dup = true; break; }
+      if (!dup) { if ((int)PCAND.size() < PCMAX) PCAND.push_back({pr, path, s});
+        else { int w = 0; for (int q = 1; q < (int)PCAND.size(); q++) if (PCAND[q].proxy < PCAND[w].proxy) w = q;
+          if (pr > PCAND[w].proxy) PCAND[w] = {pr, path, s}; } }
+    }
+    path.resize(base);
+  }
+  // polish-style repair: keep the key moves of Y[k..] (square + dz, either sign), re-route every zero-wait
+  // stretch by a min-cost zero-wait path when it no longer fits (mode 0), or always (mode 1)
+  bool route(const S& s, int target, const int* res, const float* pen, vector<int>& out) {
+    if (s.pos == target) return true;
+    float dist[64]; int prev[64]; bool done[64];
+    for (int i = 0; i < 64; i++) { dist[i] = 1e30f; prev[i] = -1; done[i] = false; }
+    dist[s.pos] = 0;
+    for (int it = 0; it < 64; it++) {
+      int u = -1; float bu = 1e30f;
+      for (int i = 0; i < 64; i++) if (!done[i] && dist[i] < bu) { bu = dist[i]; u = i; }
+      if (u < 0) return false;
+      if (u == target) break;
+      done[u] = true;
+      for (int k = 0; k < NBN[u]; k++) {
+        int v = NBQ[u][k]; if (v == H8 || done[v]) continue;
+        if (!legal_dz(NBT[u][k], s.alt[v] - s.alt[u])) continue;
+        if (s.vis[v] + 1 + res[v] > 3) continue;
+        float c = bu + 1.f + pen[v];
+        if (c < dist[v]) { dist[v] = c; prev[v] = u; }
+      }
+    }
+    if (dist[target] >= 1e29f) return false;
+    int buf[64], n = 0; for (int v = target; v != s.pos; v = prev[v]) buf[n++] = v;
+    for (int i = n - 1; i >= 0; i--) out.push_back(buf[i]);
+    return true;
+  }
+  long long skel_calls = 0;
+  void skel_replay(S s, int k, int mode, float PEN) {
+    const vector<M>& y = *Y; skel_calls++;
+    int res[64]; float pen[64]; bool isFrom[64]; memset(res, 0, sizeof res); memset(isFrom, 0, sizeof isFrom);
+    auto KF = [&](int m) { return y[m].fr < 64 ? (int)y[m].fr : P0[m]; };
+    for (int m = k; m < (int)y.size(); m++) if (y[m].key) { if (y[m].q != H8) res[y[m].q]++; isFrom[KF(m)] = true; }
+    for (int i = 0; i < 64; i++) pen[i] = (res[i] > 0 || isFrom[i]) ? PEN : 0.f;
+    size_t base = path.size(); vector<int> rt;
+    int m = k;
+    while (m < (int)y.size()) {
+      int e = m; while (e < (int)y.size() && !y[e].key) e++;   // stretch y[m..e), key y[e]
+      if (e >= (int)y.size()) break;
+      nodes += e - m + 1;
+      bool done = false;
+      if (mode == 0 && s.pos == P0[m]) {
+        S c = s; bool ok = true;
+        for (int t = m; t < e; t++) { int p = c.pos, q = y[t].q;
+          if (TYP[p][q] < 0 || !legal_dz(TYP[p][q], c.alt[q] - c.alt[p]) || c.vis[q] + 1 + res[q] > 3) { ok = false; break; }
+          c.vis[q]++; c.pos = q; }
+        if (ok && c.pos == KF(e)) { int p = s.pos; for (int t = m; t < e; t++) { int q = y[t].q; path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[p]), 0}); p = q; } s = c; done = true; }
+      }
+      if (!done) {
+        rt.clear(); if (!route(s, KF(e), res, pen, rt)) break;
+        for (int q : rt) { path.push_back({(uint8_t)q, (int8_t)(s.alt[q] - s.alt[s.pos]), 0}); s.vis[q]++; s.pos = q; }
+      }
+      finish_check(s);
+      int p = s.pos, q = y[e].q, t = TYP[p][q]; if (t < 0) break;
+      int a = s.alt[p], delta, dz = y[e].dz;
+      if (s.alt[q] == a && q != 63 - p) { if (t != 0) break; delta = y[e].fd; dz = 0; }
+      else { int diff = s.alt[q] - a; delta = dz - diff;
+        if (delta < 0) { if (t == 0) break; dz = -dz; delta = dz - diff; if (delta < 0) break; } }
+      if (!legal_dz(t, dz)) break;
+      if (q != H8) { if (s.vis[q] + res[q] > 3) break; res[q]--; }
+      else if (e + 1 != (int)y.size()) break;
+      if (q == H8) { long long T = s.T + (delta ? (long long)delta * group_n(s, p) : 0); record(T, {(uint8_t)H8, (int8_t)dz, 1}); break; }
+      bool sg = s.alt[q] == a && q != 63 - p;
+      apply_move(s, delta, q); path.push_back({(uint8_t)q, (int8_t)dz, 1, (uint8_t)p, (uint8_t)(sg ? delta : 0)});
+      m = e + 1;
+    }
+    path.resize(base);
+  }
+  void patch_dfs(S& s, int k, int d, int pd) {
+    if (nodes > budget) return;
+    if (d > 0) {
+      for (int m = k; m <= min<int>(k + R, (int)Y->size() - 1); m++) if (P0[m] == s.pos) replay(s, m, pd);
+    }
+    if (d >= PD) return;
+    auto& mv = mvbuf[8 + d]; pinned_moves(s, 3, false, mv);
+    auto local = mv; add_free(s, local); std::shuffle(local.begin(), local.end(), rng);
+    for (auto& [dl, q] : local) {
+      S s2 = s; int p = s.pos; apply_move(s2, abs(dl), q);
+      path.push_back({(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl != 0), (uint8_t)p, (uint8_t)(dl < 0 ? -dl : 0)});
+      nodes++; finish_check(s2);
+      patch_dfs(s2, k, d + 1, pd);
+      path.pop_back();
+    }
+  }
+  void patch(const S& s, int k, int pd) { S c = s; patch_dfs(c, k, 0, pd); }
+
+  // window DFS from s (state before X-move i), resync with Y at j in [jlo, jhi]
+  // onX: path so far equals Y[i..i+d) (Y==X case) -> skip identity
+  int D, jlo, jhi, i0; bool sameXY;
+  void win_dfs(S& s, int d, bool onX, int pd) {
+    if (nodes > budget) return;
+    if (d > 0) finish_check(s);
+    for (int j = max(jlo, 0); j <= min<int>(jhi, (int)Y->size() - 1); j++) {
+      if (P0[j] != s.pos) continue;
+      if (sameXY && onX && j == i0 + d) continue;
+      replay(s, j, pd);
+    }
+    if (d >= D) return;
+    vector<pair<int, int>> mv; pinned_moves(s, 3, false, mv); add_free(s, mv); std::shuffle(mv.begin(), mv.end(), rng);
+    for (auto& [dl, q] : mv) {
+      S s2 = s; int p = s.pos; apply_move(s2, abs(dl), q);
+      M m{(uint8_t)q, (int8_t)(s2.alt[q] - s2.alt[p]), (uint8_t)(dl != 0), (uint8_t)p, (uint8_t)(dl < 0 ? -dl : 0)};
+      bool on2 = onX && sameXY && i0 + d < (int)Y->size() && (*Y)[i0 + d] == m;
+      path.push_back(m); nodes++;
+      win_dfs(s2, d + 1, on2, pd);
+      path.pop_back();
+    }
+  }
+};
+
+static vector<S> states_of(const vector<M>& X) {
+  vector<S> st(X.size() + 1); S s = start_state(); st[0] = s;
+  for (size_t i = 0; i < X.size(); i++) { stepM(s, X[i]); st[i + 1] = s; }
+  return st;
+}
+
+// ---- sfl: greedy free-sink pass (fw93's insertion sweep inside the search): at every in-group zero-wait hop
+// (dz 0 knight move to a member of the knight's group) try a free sink of 1..FREEMAX units (or change an existing
+// one); later moves keep their dz (their waits re-derive); keep the best exact-necessary improvement; 3 rounds.
+static double BLOCKP = 0; static int BLO = 85;  // sfl: share of op 4 that moves whole dance blocks, from move BLO
+static int FSP = 0; static long long FSPG = 60, FSP_GAIN = 0, FSP_CALLS = 0, FSP_HIT = 0;
+static long long score_from(S s, const vector<M>& X, size_t i0) {
+  for (size_t i = i0; i < X.size(); i++) { if (X[i].q == H8 && i + 1 != X.size()) return -1; if (!stepM(s, X[i])) return -1; }
+  return (s.pos == H8) ? s.T : -1;
+}
+static void fsp(vector<M>& X, long long& T) {
+  if (!FREEMAX || X.empty()) return; FSP_CALLS++;
+  for (int round = 0; round < 3; round++) {
+    vector<S> st = states_of(X); long long bt = T; vector<M> bx;
+    for (size_t i = 0; i + 1 < X.size(); i++) {
+      const S& si = st[i]; int p = si.pos, q = X[i].q;
+      if (q == H8 || si.alt[q] != si.alt[p] || q == 63 - p || TYP[p][q] != 0) continue;
+      for (int d = 0; d <= FREEMAX; d++) {
+        if (d == X[i].fd) continue;
+        vector<M> Y = X; Y[i].fd = (uint8_t)d; long long T2 = score_from(si, Y, i);
+        if (T2 > bt && nec_ok(Y)) { bt = T2; bx = Y; }
+      }
+    }
+    if (bx.empty()) break;
+    FSP_GAIN += bt - T; FSP_HIT++; X = bx; T = bt;
+  }
+}
+static bool DUMPALL = getenv("DUMPALL") != nullptr; static int DUMPMAX = 3000, DUMPN = 0; static std::unordered_set<string> DUMPSEEN;
+static string fmt_tour(const vector<M>& X, long long* Tout);
+static void dump_cur(const vector<M>& X) {
+  if (!DUMPF || DUMPN >= DUMPMAX) return;
+  bool any = DUMPALL; for (auto& m : X) if (m.fd) { any = true; break; }
+  if (!any) return;
+  long long T; string s = fmt_tour(X, &T);
+  if (!DUMPSEEN.insert(s).second) return;
+  DUMPN++; fprintf(DUMPF, "%lld\n%s\n", T, s.c_str()); fflush(DUMPF);
+}
+
+// ---- idealised dance potential (after nrpa.cpp's dance_pot), knight may be in either group
+static double dance_pot2(const S& s) {
+  int a = s.alt[s.pos], up;
+  int cm2 = 0, cp2 = 0;
+  for (int i = 0; i < 64; i++) { if (s.alt[i] == a - 2) cm2++; else if (s.alt[i] == a + 2) cp2++; }
+  if (cm2 >= cp2 && cm2 > 0) up = a; else if (cp2 > 0) up = a + 2; else return -1e9;
+  int ah = s.alt[H8]; if (ah != up && ah != up - 2) return -1e9;
+  int grp[64], cap[64]; bool alive[64], open_[64]; int nG[2] = {0, 0};
+  for (int i = 0; i < 64; i++) {
+    alive[i] = s.alt[i] == up || s.alt[i] == up - 2; grp[i] = s.alt[i] == up ? 0 : 1;
+    if (alive[i]) nG[grp[i]]++;
+    cap[i] = alive[i] ? 3 - s.vis[i] + (i == s.pos && grp[i] == 0) : 0;
+  }
+  cap[H8] = cap[A1] = 0;
+  for (int i = 0; i < 64; i++) open_[i] = alive[i] && !alive[63 - i];
+  if (alive[s.pos] && grp[s.pos] == 0) open_[s.pos] = true;  // the knight's own sit already happened logically
+  double fut = 0; int g = 0;
+  for (int step = 0; step < 200; step++) {
+    int best = -1, bc = 0;
+    if (step == 0 && alive[s.pos] && grp[s.pos] == 0 && cap[s.pos] > 0) best = s.pos;
+    else {
+      for (int i = 0; i < 64; i++) if (alive[i] && grp[i] == g && open_[i] && cap[i] > bc) { best = i; bc = cap[i]; }
+      if (best < 0) for (int i = 0; i < 64; i++) if (alive[i] && grp[i] == g && cap[i] > bc) { best = i; bc = cap[i]; }
+    }
+    if (best < 0 || cap[best] <= 0) break;
+    int n = nG[g], p = 63 - best;
+    if (!open_[best]) {
+      if (alive[p]) { if (grp[p] == g) n--; nG[grp[p]]--; alive[p] = false; cap[p] = 0; }
+      open_[best] = true;
+    }
+    fut += 4.0 * n; cap[best]--; g ^= 1;
+  }
+  return s.T + fut;
+}
+
+// freesit: dance block-macro beam from state s0 reached by `prefix`; returns best finish (tour in bestX)
+static long long blockbeam(const vector<M>& prefix, const S& s0, int W, bool BBT, vector<M>& bestX, int MAXD = 40, bool verbose = false) {
+  struct BN { S s; int par; vector<M> mv; double h; };
+  vector<vector<BN>> layers; layers.push_back({{s0, -1, {}, 0}});
+  static const vector<M> NOX; Search SR; SR.setY(prefix); SR.X = &NOX; long long best = -1;
+  auto pathOf = [&](int L, int idx) { vector<M> out = prefix; vector<vector<M>*> seq;
+    for (int l = L; l >= 1; l--) { seq.push_back(&layers[l][idx].mv); idx = layers[l][idx].par; }
+    for (int q = (int)seq.size() - 1; q >= 0; q--) out.insert(out.end(), seq[q]->begin(), seq[q]->end()); return out; };
+  vector<pair<int,int>> mv1, mv2, mv3;
+  for (int L = 0; L < MAXD && !layers[L].empty(); L++) {
+    for (size_t i = 0; i < layers[L].size(); i++) { const S& s = layers[L][i].s; if (TYP[s.pos][H8] < 0) continue;
+      SR.path = pathOf(L, (int)i); SR.bestT = -1; SR.bestA = -(1LL<<60); SR.finish_check(s);
+      if (SR.bestT > best && score_full(SR.best) == SR.bestT) { best = SR.bestT; bestX = SR.best; } }
+    vector<BN> nxt; std::unordered_map<uint64_t, int> seenI;
+    auto addN = [&](const S& c, int par, const vector<M>& sq) { double hv = BBT ? c.T : dance_pot2(c); if (hv < -1e8) hv = c.T; uint64_t h = hashS(c); auto it = seenI.find(h);
+      if (it == seenI.end()) { seenI[h] = (int)nxt.size(); nxt.push_back({c, par, sq, hv}); } else if (nxt[it->second].s.T < c.T) nxt[it->second] = {c, par, sq, hv}; };
+    for (size_t i = 0; i < layers[L].size(); i++) {
+      const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv1);
+      for (auto [d1, x] : mv1) {
+        S s1 = s; int p = s.pos; apply_move(s1, d1, x); M m1{(uint8_t)x, (int8_t)(s1.alt[x] - s1.alt[p]), (uint8_t)(d1 > 0), (uint8_t)p};
+        addN(s1, (int)i, vector<M>{m1});
+        pinned_moves(s1, 3, false, mv2);
+        for (auto [d2, y] : mv2) { if (d2 <= 0) continue;
+          vector<M> seq{m1}; S c = s1; int a = x, b = y; int dd = d2;
+          for (int step = 0; step < 6; step++) {
+            int pp = c.pos; apply_move(c, dd, b); seq.push_back({(uint8_t)b, (int8_t)(c.alt[b] - c.alt[pp]), 1, (uint8_t)pp});
+            addN(c, (int)i, seq);
+            pinned_moves(c, 3, false, mv3); int bd = -1;
+            for (auto [d3, z] : mv3) if (z == a && d3 > 0 && d3 > bd) bd = d3;
+            if (bd < 0) break; std::swap(a, b); dd = bd;
+          }
+        }
+      }
+    }
+    if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const BN& u, const BN& v) { return u.h > v.h; }); nxt.resize(W); }
+    if (verbose) { printf("layer %d: %zu nodes, best finish %lld\n", L + 1, nxt.size(), best); fflush(stdout); }
+    layers.push_back(std::move(nxt));
+  }
+  return best;
+}
+// dance-start test: >= dsmin points on the knight's level and the denser neighbouring level (+-2), and dance_pot2 valid
+static bool is_dance_start(const S& z, int dsmin) {
+  if (dance_pot2(z) < -1e8) return false;
+  int a0 = z.alt[z.pos], nm = 0, np = 0, n0 = 0;
+  for (int i = 0; i < 64; i++) { if (z.alt[i] == a0 - 2) nm++; if (z.alt[i] == a0 + 2) np++; if (z.alt[i] == a0) n0++; }
+  return n0 + max(nm, np) >= dsmin;
+}
+static int spare_pairs(const S& s) {
+  int a = s.alt[s.pos], nm = 0, np = 0; for (int i = 0; i < 64; i++) { if (s.alt[i] == a - 2) nm++; if (s.alt[i] == a + 2) np++; }
+  int l1 = nm >= np ? a - 2 : a + 2; int gi[64];
+  for (int i = 0; i < 64; i++) gi[i] = (i == H8 || i == A1) ? -1 : s.alt[i] == a ? 0 : s.alt[i] == l1 ? 1 : -1;
+  int pairs = 0;
+  for (int x = 0; x < 64; x++) if (gi[x] >= 0 && s.vis[x] < 3) for (int k = 0; k < NBN[x]; k++) { int y = NBQ[x][k];
+    if (NBT[x][k] != 0 && gi[y] >= 0 && gi[y] != gi[x] && s.vis[y] < 3 && y > x) pairs++; }
+  return pairs;
+}
+struct BNode { S s; int par; M m; double h; };
+// beam search from s (path = moves leading to s); records finishes into SR via finish_check
+static void beam_tail(Search& SR, const S& s0, int W, double noise, int maxDepth = 200) {
+  struct Rec { int par; M m; };
+  vector<vector<Rec>> layers; vector<BNode> curL{{s0, -1, {0, 0}, 0}}, nxt;
+  size_t base = SR.path.size();
+  vector<pair<int, int>> mv; std::unordered_set<uint64_t> seen;
+  auto rebuild = [&](int L, int idx) {  // set SR.path = base + moves to node idx of layer L
+    vector<M> tail; for (int l = L; l >= 1; l--) { tail.push_back(layers[l - 1][idx].m); idx = layers[l - 1][idx].par; }
+    SR.path.resize(base); for (int k = (int)tail.size() - 1; k >= 0; k--) SR.path.push_back(tail[k]);
+  };
+  for (int depth = 0; depth < maxDepth && !curL.empty(); depth++) {
+    // finishes from this layer
+    for (size_t k = 0; k < curL.size(); k++) {
+      const S& s = curL[k].s;
+      if (TYP[s.pos][H8] < 0) continue;
+      long long before = SR.bestT; rebuild(depth, (int)k);
+      SR.finish_check(s); (void)before;
+    }
+    nxt.clear(); seen.clear();
+    for (size_t k = 0; k < curL.size(); k++) {
+      const S& s = curL[k].s; pinned_moves(s, 3, false, mv);
+      for (auto& [d, q] : mv) {
+        BNode b; b.s = s; int p = s.pos; apply_move(b.s, d, q);
+        uint64_t h = hashS(b.s); if (!seen.insert(h).second) continue;
+        b.par = (int)k; b.m = {(uint8_t)q, (int8_t)(b.s.alt[q] - b.s.alt[p])};
+        b.h = dance_pot2(b.s) + noise * U();
+        if (b.h < -1e8) continue;
+        nxt.push_back(b);
+      }
+    }
+    if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const BNode& x, const BNode& y) { return x.h > y.h; }); nxt.resize(W); }
+    vector<Rec> lay; lay.reserve(nxt.size()); for (auto& b : nxt) lay.push_back({b.par, b.m});
+    layers.push_back(std::move(lay)); curL.swap(nxt);
+  }
+  SR.path.resize(base);
+}
+
+static void dbg_fail(const vector<M>& X) {
+  S z = start_state();
+  for (size_t k = 0; k < X.size(); k++) { S z2 = z; if (!stepM(z2, X[k])) { printf("  fail at %zu: %s->%s dz %d fd %d altdiff %d vis %d samegrp %d\n", k, nm(z.pos).c_str(), nm(X[k].q).c_str(), X[k].dz, X[k].fd, z.alt[X[k].q]-z.alt[z.pos], z.vis[X[k].q], z.alt[X[k].q]==z.alt[z.pos]); return; } z = z2; }
+  printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T);
+}
+struct Elite { long long T; vector<M> X; };
+
+int main(int argc, char** argv) {
+  init_board();
+  for (int i = 0; i < 64; i++) for (int j = 0; j < 64; j++) TYP[i][j] = -1;
+  for (int i = 0; i < 64; i++) for (int k = 0; k < NBN[i]; k++) TYP[i][NBQ[i][k]] = NBT[i][k];
+  vector<string> files; double TIME = 60, T0 = 30, T1 = 1; string out = "best_lns.txt"; uint64_t seed = 1; string startf;
+  long long BUDGET = 200000, ITERS = 0; int PDMAX = 3, RMAX = 6, WIDE = 0; double P9 = 0; int DMAX = 5, XOVER = 1, FLO = 20, FHI = 70; double FOCP = 0;
+  for (int a = 1; a < argc; a++) {
+    string s = argv[a];
+    if (s == "--tours") { while (a + 1 < argc && argv[a + 1][0] != '-') files.push_back(argv[++a]); }
+    else if (s == "--time") TIME = atof(argv[++a]);
+    else if (s == "--iters") ITERS = atoll(argv[++a]);
+    else if (s == "--pdmax") PDMAX = atoi(argv[++a]);
+    else if (s == "--free") FREEMAX = atoi(argv[++a]);
+    else if (s == "--rmax") RMAX = atoi(argv[++a]);
+    else if (s == "--wide") WIDE = atoi(argv[++a]);
+    else if (s == "--skel") SKELP = atof(argv[++a]);
+    else if (s == "--reroute") P9 = atof(argv[++a]);
+    else if (s == "--t0") T0 = atof(argv[++a]);
+    else if (s == "--t1") T1 = atof(argv[++a]);
+    else if (s == "--out") out = argv[++a];
+    else if (s == "--start") startf = argv[++a];  // lns84 r6: start tour (others are donors only)
+    else if (s == "--seed") seed = atoll(argv[++a]);
+    else if (s == "--fsp") FSP = atoi(argv[++a]);          // sfl: greedy free-sink pass on candidates (1 on)
+    else if (s == "--fspgate") FSPG = atoll(argv[++a]);    // sfl: only candidates within this of cur
+    else if (s == "--dump") DUMPF = fopen(argv[++a], "w");  // sfl: accepted tours with free sinks (for validation)
+    else if (s == "--dumpmax") DUMPMAX = atoi(argv[++a]);
+    else if (s == "--vpen") VPEN = atoll(argv[++a]);
+    else if (s == "--novp") NOVP = atoll(argv[++a]);
+    else if (s == "--novj") NOVJ = atof(argv[++a]);
+    else if (s == "--novsit") { string l = argv[++a]; for (size_t k = 0; k + 1 < l.size(); k += 3) NOVSIT[(l[k]-'a')+8*(l[k+1]-'1')] = true; }
+    else if (s == "--novlv") { NOVLP = atoll(argv[++a]); string l = argv[++a]; size_t p = 0; while (p < l.size()) { size_t e = l.find(',', p); if (e == string::npos) e = l.size(); NOVLV[NOVLVN++] = atoi(l.substr(p, e - p).c_str()); p = e + 1; } }
+    else if (s == "--novfirst") { NOVFP = atoll(argv[++a]); string l = argv[++a]; NOVFIRST = (l[0]-'a')+8*(l[1]-'1'); }
+    else if (s == "--vsq") { string l = argv[++a]; for (size_t k = 0; k + 1 < l.size(); k += 3) VSQ[(l[k]-'a')+8*(l[k+1]-'1')] = true; }
+    else if (s == "--vrange") { VLO = atoi(argv[++a]); VHI = atoi(argv[++a]); }
+    else if (s == "--blockp") BLOCKP = atof(argv[++a]);
+    else if (s == "--blo") BLO = atoi(argv[++a]);
+    else if (s == "--budget") BUDGET = atoll(argv[++a]);
+    else if (s == "--dmax") DMAX = atoi(argv[++a]);
+    else if (s == "--xover") XOVER = atoi(argv[++a]);
+    else if (s == "--focus") { FLO = atoi(argv[++a]); FHI = atoi(argv[++a]); FOCP = atof(argv[++a]); }
+  }
+  rng.seed(seed);
+  if (getenv("GENTEST")) {  // sfl: random free-sink mutants (1-3 sinks of 1..6 units at in-group hops) of the --tours inputs
+    int want = atoi(getenv("GENTEST")); int got = 0; std::unordered_set<string> seen;
+    vector<vector<M>> base; for (auto& f : files) { std::ifstream in(f); string l; while (getline(in, l)) if (l.find('(') != string::npos) { long long T; base.push_back(parse_tour(l, &T)); } }
+    for (int tries = 0; got < want && tries < want * 1000; tries++) {
+      vector<M> Y = base[RI(0, (int)base.size() - 1)]; int k = RI(1, 3); bool okk = true;
+      for (int r = 0; r < k && okk; r++) { auto st = states_of(Y); vector<int> hops;
+        for (size_t i = 0; i + 1 < Y.size(); i++) { int p = st[i].pos, q = Y[i].q; if (q != H8 && st[i].alt[q] == st[i].alt[p] && q != 63 - p && TYP[p][q] == 0) hops.push_back(i); }
+        if (hops.empty()) { okk = false; break; }
+        Y[hops[RI(0, (int)hops.size() - 1)]].fd = RI(1, 6); if (score_full(Y) < 0) okk = false; }
+      if (!okk) continue;
+      long long T; string s = fmt_tour(Y, &T); if (!seen.insert(s).second) continue;
+      int bi = -1; bool ok = nec_ok(Y, &bi); printf("%lld %s %d\n%s\n", T, ok ? "OK" : "BAD", bi + 1, s.c_str()); got++;
+    }
+    return 0;
+  }
+  if (getenv("GENTEST2")) {  // sfl: systematic mutants: one or two free sinks (1..6 units) at in-group hops, legal ones only
+    double keep = atof(getenv("GENTEST2"));
+    vector<vector<M>> base; for (auto& f : files) { std::ifstream in(f); string l; while (getline(in, l)) if (l.find('(') != string::npos) { long long T; base.push_back(parse_tour(l, &T)); } }
+    for (auto& X0 : base) { auto st = states_of(X0); vector<int> hops;
+      for (size_t i = 0; i + 1 < X0.size(); i++) { int p = st[i].pos, q = X0[i].q; if (q != H8 && st[i].alt[q] == st[i].alt[p] && q != 63 - p && TYP[p][q] == 0) hops.push_back(i); }
+      for (int i : hops) for (int d = 0; d <= 6; d++) for (int j : hops) for (int e = 0; e <= 3; e++) {
+        if (j < i || (j == i && e > 0) || (j > i && e == 0) || (d == X0[i].fd && j == i)) continue;
+        vector<M> Y = X0; Y[i].fd = d; if (j > i) Y[j].fd = e;
+        long long T2 = score_full(Y); if (T2 < 0) continue;
+        if (U() > keep) continue;
+        long long T; string s = fmt_tour(Y, &T); int bi = -1; bool ok = nec_ok(Y, &bi);
+        printf("%lld\n%s\n", T, s.c_str()); fprintf(stderr, "%s\n", ok ? "OK" : "BAD"); }
+    }
+    return 0;
+  }
+  if (getenv("CHECKONLY")) {  // sfl: print exact necessity verdict for every tour line of the file
+    std::ifstream in(getenv("CHECKONLY")); string l; int k = 0;
+    while (getline(in, l)) if (l.find('(') != string::npos) { long long T; auto X = parse_tour(l, &T); long long T2 = score_full(X);
+      int bi = -1; bool ok = T2 > 0 && nec_ok(X, &bi); int nf = 0; for (auto& m : X) if (m.fd) nf++;
+      printf("%d %lld %d %s %d", k++, T2, nf, ok ? "OK" : "BAD", bi + 1);
+      if (getenv("VERB")) { printf(" fd:"); for (size_t i = 0; i < X.size(); i++) if (X[i].fd) { vector<M> Y = X; for (size_t j = 0; j < Y.size(); j++) if (j != i && Y[j].fd) { /* keep others */ }
+          // test sink i alone: necessity of i in the full tour
+          auto st = states_of(X); vector<int> W(X.size()); for (size_t j = 0; j < X.size(); j++) W[j] = (int)(st[j + 1].T - st[j].T);
+          long long t = W[i]; bool br = false; const long long P[5][2] = {{0, 1}, {997 * t + 1, 997}, {997 * t - 1, 997}, {t + 1, 1}, {2 * t, 1}};
+          for (auto& pr : P) if (probe(X, W, st, (int)i, pr[0], pr[1]) == 1) { br = true; break; }
+          printf(" %zu%s", i + 1, br ? "" : "!"); } }
+      printf("\n"); }
+    printf("probes %lld unk %lld\n", NEC_PROBES, NEC_UNK); return 0;
+  }
+  vector<Elite> recs;
+  for (auto& f : files) {
+    std::ifstream in(f); string l; int cnt = 0;
+    while (getline(in, l)) if (l.find('(') != string::npos) {
+      long long T; auto X = parse_tour(l, &T);
+      long long T2 = score_full(X);
+      if (cnt++ < 3) printf("%s: %zu moves, %lld minutes (replay %lld)\n", f.c_str(), X.size(), T, T2);
+      if (T2 > 0) recs.push_back({T2, X});
+      if (cnt >= 12) break;
+    }
+  }
+  std::sort(recs.begin(), recs.end(), [](const Elite& a, const Elite& b) { return a.T > b.T; });
+  auto t0 = std::chrono::steady_clock::now();
+  auto el = [&]() { return std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count(); };
+  long long itg = 0;
+  Elite gbest = recs[0];
+  if (!startf.empty()) {  // lns84 r6: start from this tour even if a donor scores higher
+    std::ifstream in(startf); string l; bool got = false;
+    while (getline(in, l)) if (l.find('(') != string::npos) { long long T; auto X = parse_tour(l, &T); long long T2 = score_full(X);
+      if (T2 > 0) { gbest = {T2, X}; got = true; printf("start %s: %zu moves, %lld minutes\n", startf.c_str(), X.size(), T2); } break; }
+    if (!got) { printf("bad --start\n"); return 1; }
+  }
+  auto save = [&](const Elite& e, const char* why) {
+    long long T; string s = fmt_tour(e.X, &T);
+    if (!nec_ok(e.X)) { printf("NEC BUG: saving a tour whose free sinks fail the check\n"); fflush(stdout); return; }
+    FILE* f = fopen(out.c_str(), "w"); fprintf(f, "%lld\n%s\n", T, s.c_str()); fclose(f);
+    printf("[%.0fs it %lld] NEW BEST %lld (%s) len %zu\n", el(), itg, T, why, e.X.size()); fflush(stdout);
+  };
+  long long gbA = gbest.T - pen_of(gbest.X);
+  auto adjsave = [&](const Elite& e) { long long T; string s = fmt_tour(e.X, &T); if (!nec_ok(e.X)) return;
+    FILE* f = fopen((out + ".adj").c_str(), "w"); fprintf(f, "%lld\n%s\n", T, s.c_str()); fclose(f);
+    printf("[%.0fs it %lld] ADJ BEST %lld (raw %lld pen %lld)\n", el(), itg, T - pen_of(e.X), T, pen_of(e.X)); fflush(stdout); };
+  vector<Elite> elite = recs;  // pool
+  auto add_elite = [&](const Elite& e) {
+    for (auto& x : elite) if (x.T == e.T && x.X.size() == e.X.size() && std::equal(x.X.begin(), x.X.end(), e.X.begin())) return;
+    elite.push_back(e);
+    std::sort(elite.begin(), elite.end(), [](const Elite& a, const Elite& b) { return a.T > b.T; });
+    if (elite.size() > 40) elite.resize(40);
+  };
+
+  // ---- crossovers: prefix of A (k moves) + small DFS + resync anywhere in B
+  if (XOVER) {
+    for (size_t a = 0; a < recs.size(); a++) for (size_t b = 0; b < recs.size(); b++) {
+      auto stA = states_of(recs[a].X);
+      Search S1; S1.setY(recs[b].X); S1.X = &recs[b].X; S1.budget = 2000000;
+      long long bt = -1; vector<M> bs;
+      for (size_t k = 1; k < recs[a].X.size(); k++) {
+        S1.path.assign(recs[a].X.begin(), recs[a].X.begin() + k);
+        S1.bestT = -1; S1.bestA = -(1LL<<60); S1.best.clear(); S1.nodes = 0; S1.memo.clear();
+        S1.D = 2; S1.jlo = 1; S1.jhi = (int)recs[b].X.size() - 1; S1.i0 = -100; S1.sameXY = false; S1.PD = 2;
+        S st = stA[k]; S1.win_dfs(st, 0, false, 1);
+        if (S1.bestT > bt) { bt = S1.bestT; bs = S1.best; }
+      }
+      printf("xover %lld x %lld: best %lld\n", recs[a].T, recs[b].T, bt); fflush(stdout);
+      if (bt > 0) { Elite e{bt, bs}; if (score_full(bs) != bt) printf("  MISMATCH %lld\n", score_full(bs)); else { add_elite(e); if (bt > gbest.T) { gbest = e; save(gbest, "xover"); } } }
+    }
+  }
+
+  if (getenv("BEAMTEST")) {
+    int W = atoi(getenv("BEAMTEST"));
+    auto st0 = states_of(gbest.X);
+    for (int i : {60, 80, 91, 92, 100, 115}) {
+      Search SR; SR.setY(gbest.X); SR.X = &gbest.X; SR.path.assign(gbest.X.begin(), gbest.X.begin() + i);
+      auto tb = el(); beam_tail(SR, st0[i], W, 0.0);
+      printf("beam W %d from %d: %lld (%.2fs) pot at start %.0f\n", W, i, SR.bestT, el() - tb, dance_pot2(st0[i])); fflush(stdout);
+    }
+    return 0;
+  }
+  if (getenv("DSSCORE")) {  // freesit stage 1 scorer: for every tour line in file DSSCORE: dance start ds = first k >= 60 where
+    // dance_pot2 is valid (two groups); print ds, T(ds), pot(ds), spare visits in groups, paired-spare count, final T
+    std::ifstream in(getenv("DSSCORE")); string l; int idx = 0;
+    while (getline(in, l)) if (l.find('(') != string::npos) { long long T; auto X = parse_tour(l, &T); auto st = states_of(X);
+      int ds = -1; int DSMIN = getenv("DSMIN") ? atoi(getenv("DSMIN")) : 58;
+      for (int k = 60; k < (int)X.size(); k++) if (dance_pot2(st[k]) > -1e8) { const S& z = st[k]; int a0 = z.alt[z.pos], n = 0;
+        for (int i = 0; i < 64; i++) if (z.alt[i] == a0 || z.alt[i] == a0 - 2 || z.alt[i] == a0 + 2) n++;
+        int nm = 0, np = 0; for (int i = 0; i < 64; i++) { if (z.alt[i] == a0 - 2) nm++; if (z.alt[i] == a0 + 2) np++; }
+        n = 0; for (int i = 0; i < 64; i++) if (z.alt[i] == a0 || z.alt[i] == (nm >= np ? a0 - 2 : a0 + 2)) n++;
+        if (n >= DSMIN) { ds = k; break; } }
+      if (ds < 0) { printf("%d -1\n", idx++); continue; }
+      const S& s = st[ds]; int a = s.alt[s.pos]; int lv[2] = {a, a - 2}; int c0 = 0, cm = 0, cp = 0;
+      for (int i = 0; i < 64; i++) { if (s.alt[i] == a - 2) cm++; if (s.alt[i] == a + 2) cp++; }
+      if (cp > cm) { lv[1] = a + 2; }
+      int spare = 0, pairs = 0; bool g[64]; int gi[64];
+      for (int i = 0; i < 64; i++) { gi[i] = s.alt[i] == lv[0] ? 0 : s.alt[i] == lv[1] ? 1 : -1; g[i] = gi[i] >= 0 && i != H8 && i != A1; if (g[i]) spare += 3 - s.vis[i]; }
+      for (int x = 0; x < 64; x++) if (g[x] && s.vis[x] < 3) for (int k = 0; k < NBN[x]; k++) { int y = NBQ[x][k]; if (NBT[x][k] != 0 && g[y] && gi[y] != gi[x] && s.vis[y] < 3 && y > x) pairs++; }
+      (void)c0; printf("%d %d %d %.0f %d %d %lld %016llx\n", idx++, ds, s.T, dance_pot2(s), spare, pairs, score_full(X), (unsigned long long)hashS(s)); }
+    return 0;
+  }
+  if (getenv("BLOCKBEAM")) {
+    int W = atoi(getenv("BLOCKBEAM")); int k0 = atoi(getenv("BBK"));
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0); vector<M> pre(X0.begin(), X0.begin() + k0), bx;
+    long long best = blockbeam(pre, st0[k0], W, getenv("BBT") != nullptr, bx, 40, true);
+    printf("BLOCKBEAM from k %d W %d: best %lld (tour %lld)\n", k0, W, best, gbest.T);
+    if (best > 0) { gbest = {best, bx}; save(gbest, "blockbeam"); }
+    return 0;
+  }
+  if (getenv("MLNS")) {  // freesit: LNS on the merge (moves FLO..ds) scored by the stage-2 dance beam. Each iteration: window
+    // DFS (ops 0-2) from the state before move i, re-sync with the current prefix X[0..ds); every re-synced prefix that ends in a
+    // dance-start state is a candidate (top MLC by dance_pot2); candidates are scored by blockbeam W1 (T-ranked); SA on that.
+    int W1 = atoi(getenv("MLNS")), W2 = getenv("MLW2") ? atoi(getenv("MLW2")) : 20000; PCMAX = getenv("MLC") ? atoi(getenv("MLC")) : 2;
+    PDSMIN = getenv("DSMIN") ? atoi(getenv("DSMIN")) : 61; double temp0 = T0;
+    auto dsidx = [&](const vector<M>& X) { auto st = states_of(X); for (int k = 60; k < (int)X.size(); k++) if (is_dance_start(st[k], PDSMIN)) return k; return -1; };
+    Elite cur = gbest; int ds = dsidx(cur.X); printf("MLNS start %lld ds %d\n", cur.T, ds); fflush(stdout);
+    if (ds < 0) return 1;
+    static const vector<M> NOX; long long it = 0, evals = 0, acc = 0;
+    while (el() < TIME && (ITERS == 0 || it < ITERS)) {
+      it++; double frac = ITERS ? (double)it / ITERS : el() / TIME; double temp = temp0 * pow(T1 / temp0, fmod(frac * 2, 1.0));
+      auto st = states_of(cur.X); vector<M> Yp(cur.X.begin(), cur.X.begin() + ds);
+      int i = RI(max(1, FLO), max(FLO, ds - 1));
+      Search SR; SR.setY(Yp); SR.X = &NOX; SR.budget = BUDGET; SR.path.assign(cur.X.begin(), cur.X.begin() + i);
+      SR.i0 = i; SR.sameXY = true; SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX);
+      int op = RI(0, 2), pd = RI(0, 2);
+      if (op == 0) { SR.D = RI(1, DMAX); SR.jlo = i; SR.jhi = i + SR.D + 2 + WIDE; }
+      else if (op == 1) { SR.D = RI(1, 3); SR.jlo = i + 1; SR.jhi = i + 12 + WIDE; }
+      else { SR.D = RI(2, DMAX + 1); SR.jlo = i - 4 - WIDE / 2; SR.jhi = i + 4 + WIDE; }
+      PREFC = true; PCAND.clear(); S s0 = st[i]; SR.win_dfs(s0, 0, true, pd); PREFC = false;
+      for (auto& c : PCAND) {
+        if (c.path.size() == Yp.size() && std::equal(c.path.begin(), c.path.end(), Yp.begin())) continue;
+        vector<M> bx; long long b = blockbeam(c.path, c.s, W1, true, bx); evals++;
+        if (b < 0) continue;
+        if (b >= cur.T - 10 && W2 > W1) { vector<M> bx2; long long b2 = blockbeam(c.path, c.s, W2, true, bx2); if (b2 > b) { b = b2; bx = bx2; } }
+        long long dT = b - cur.T;
+        if (dT >= 0 || U() < exp(dT / temp)) {
+          if (score_full(bx) != b) { printf("MISMATCH mlns\n"); continue; }
+          acc++; cur = {b, bx}; mark_keys(cur.X); ds = dsidx(cur.X); dump_cur(cur.X);
+          if (cur.T > gbest.T) { gbest = cur; save(gbest, "mlns"); }
+          break;
+        }
+      }
+      if (it % 10 == 0) { printf("[%.0fs] it %lld evals %lld acc %lld cur %lld best %lld temp %.1f ds %d\n", el(), it, evals, acc, cur.T, gbest.T, temp, ds); fflush(stdout); }
+      if (cur.T < gbest.T - 300) { cur = gbest; ds = dsidx(cur.X); }
+    }
+    printf("MLNS done it %lld evals %lld best %lld\n", it, evals, gbest.T);
+    return 0;
+  }
+  if (getenv("MERGEBEAM")) {  // freesit two-stage: stage 1 = beam over pinned moves from the state before move MBK+1 of the
+    // start tour, ranked by T + MBL * spare_pairs (+ noise MBN); states that reach the dance start (is_dance_start, DSMIN)
+    // go to a pool (not expanded); stage 2 = T-ranked blockbeam (W BBW) from the top MBP pool states.
+    int W = atoi(getenv("MERGEBEAM")), k0 = atoi(getenv("MBK")), DSM = getenv("DSMIN") ? atoi(getenv("DSMIN")) : 61;
+    double lam = getenv("MBL") ? atof(getenv("MBL")) : 0, noise = getenv("MBN") ? atof(getenv("MBN")) : 0;
+    int P = getenv("MBP") ? atoi(getenv("MBP")) : 50, W2 = getenv("BBW") ? atoi(getenv("BBW")) : 20000, MD = getenv("MBD") ? atoi(getenv("MBD")) : 90;
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0);
+    struct NN { S s; int par; M m; double h; };
+    vector<vector<NN>> layers; layers.push_back({{st0[k0], -1, {}, 0}});
+    struct PE { double sc; int L, idx; }; vector<PE> pool;
+    vector<pair<int,int>> mv;
+    for (int L = 0; L < MD && !layers[L].empty(); L++) {
+      vector<NN> nxt; std::unordered_set<uint64_t> seen;
+      for (size_t i = 0; i < layers[L].size(); i++) { if (layers[L][i].h < -1e17) continue; const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv);
+        for (auto [d, q] : mv) { NN b; b.s = s; int p = s.pos; apply_move(b.s, d, q); if (!seen.insert(hashS(b.s)).second) continue;
+          b.par = (int)i; b.m = {(uint8_t)q, (int8_t)(b.s.alt[q] - b.s.alt[p]), (uint8_t)(d > 0), (uint8_t)p};
+          b.h = b.s.T + lam * spare_pairs(b.s) + noise * U(); nxt.push_back(b); } }
+      if ((int)nxt.size() > W) { std::nth_element(nxt.begin(), nxt.begin() + W, nxt.end(), [](const NN& u, const NN& v) { return u.h > v.h; }); nxt.resize(W); }
+      vector<NN> keep; for (auto& b : nxt) { if (is_dance_start(b.s, DSM)) pool.push_back({getenv("MBPOT") ? dance_pot2(b.s) : (double)b.s.T + lam * spare_pairs(b.s), L + 1, (int)keep.size()}), keep.push_back(b), keep.back().h = -1e18; else keep.push_back(b); }
+      // pooled nodes stay in the layer only for path reconstruction (h = -inf: not expanded)
+      layers.push_back(std::move(keep));
+      vector<NN>& cur = layers.back(); vector<NN> exp; (void)exp;
+      int npool = 0; for (auto& b : cur) if (b.h < -1e17) npool++;
+      printf("mlayer %d: %zu nodes, pool %zu (+%d), maxT %d\n", L + 1, cur.size(), pool.size(), npool, cur.empty() ? 0 : std::max_element(cur.begin(), cur.end(), [](const NN& u, const NN& v) { return u.s.T < v.s.T; })->s.T); fflush(stdout);
+      // remove pooled nodes from expansion next round: handled by skipping h < -1e17 below
+      vector<NN> tmp; for (auto& b : cur) tmp.push_back(b); layers.back() = tmp;
+      // expansion filter
+      for (auto& b : layers.back()) if (b.h < -1e17) b.s.pos = b.s.pos;  // marker kept
+      // stop expanding pooled nodes
+      { vector<NN>& lb = layers.back(); for (auto& b : lb) if (b.h < -1e17) { /* no children: mark visits full */ } }
+      if (pool.size() > 200000) break;
+      // strip pooled nodes' expansion by setting a flag in par sign? simpler: they are expanded but their children are pruned by pool flag
+    }
+    std::sort(pool.begin(), pool.end(), [](const PE& a, const PE& b) { return a.sc > b.sc; });
+    long long best = -1; vector<M> bestX; std::unordered_set<uint64_t> done; int ran = 0;
+    for (auto& pe : pool) { if (ran >= P) break;
+      const NN& nd = layers[pe.L][pe.idx]; if (!done.insert(hashS(nd.s)).second) continue;
+      vector<M> pre(X0.begin(), X0.begin() + k0); vector<M> tail; int L = pe.L, idx = pe.idx;
+      while (L >= 1) { tail.push_back(layers[L][idx].m); idx = layers[L][idx].par; L--; }
+      for (int q = (int)tail.size() - 1; q >= 0; q--) pre.push_back(tail[q]);
+      vector<M> bx; long long b = blockbeam(pre, nd.s, W2, true, bx); ran++;
+      printf("pool %d: ds %zu T(ds) %d pairs %d pot %.0f -> %lld\n", ran, pre.size(), nd.s.T, spare_pairs(nd.s), dance_pot2(nd.s), b); fflush(stdout);
+      if (b > best) { best = b; bestX = bx; if (best > gbest.T) { Elite e{best, bestX}; save(e, "mergebeam"); } }
+    }
+    printf("MERGEBEAM from k %d W %d lam %.0f: pool %zu, best %lld (start %lld)\n", k0, W, lam, pool.size(), best, gbest.T);
+    return 0;
+  }
+
+  if (getenv("INSWEEP")) {  // freesit: deterministic sit-insertion sweep: at every step k in [INLO, INHI] run a strict
+    // window DFS of depth 1..INSWEEP pinned moves from the state before move k and re-sync anywhere in X[k..k+D+INW]
+    // (later moves keep their dz, waits re-derived; patch DFS / skeleton reroute on a break). Prints best per k.
+    int lo = atoi(getenv("INLO")), hi = atoi(getenv("INHI")), DM = atoi(getenv("INSWEEP"));
+    long long B = getenv("INB") ? atoll(getenv("INB")) : 2000000; int W = getenv("INW") ? atoi(getenv("INW")) : 12;
+    const vector<M> X0 = gbest.X; auto st0 = states_of(X0); long long best = gbest.T - pen_of(X0); vector<M> bx;
+    int N = (int)X0.size();
+    for (int k = lo; k <= min(hi, N - 2); k++) {
+      long long bk = -1, bkA = -(1LL << 60); int bD = 0;
+      for (int D = 1; D <= DM; D++) {
+        Search S1; S1.setY(X0); S1.X = &X0; S1.budget = B; S1.path.assign(X0.begin(), X0.begin() + k);
+        S1.D = D; S1.jlo = k; S1.jhi = k + D + W; S1.i0 = k; S1.sameXY = true; S1.PD = 3; S1.R = 6;
+        S s0 = st0[k]; S1.win_dfs(s0, 0, true, 2);
+        if (S1.bestT >= 0 && S1.bestA > bkA) { bkA = S1.bestA; bk = S1.bestT; bD = D;
+          if (S1.bestA > best && score_full(S1.best) == S1.bestT) { best = S1.bestA; bx = S1.best; gbest = {S1.bestT, S1.best}; save(gbest, "insweep"); } }
+      }
+      printf("k %d best %lld adj %lld (D %d) vs start %lld\n", k, bk, bkA, bD, (long long)(X0.size() ? score_full(X0) - pen_of(X0) : 0)); fflush(stdout);
+    }
+    return 0;
+  }
+  { int bi = -1; bool ok = nec_ok(gbest.X, &bi); int nf = 0; for (auto& m : gbest.X) if (m.fd) nf++;
+    printf("start %lld: %d free sinks, exact necessity %s (bad move %d)\n", gbest.T, nf, ok ? "ok" : "FAIL", bi + 1); fflush(stdout); }
+  if (FSP) { long long T = gbest.T; fsp(gbest.X, T); if (T > gbest.T) { gbest.T = T; mark_keys(gbest.X); save(gbest, "fsp on start"); } }
+  // ---- SA
+  Elite cur = gbest; long long it = 0, acc = 0, impr = 0;
+  long long stat_gain[11] = {0}, stat_cnt[11] = {0};
+  double lastImpr = el(); int restarts = 0;
+  vector<S> st = states_of(cur.X);
+  long long lastImprIt = 0;
+  while (el() < TIME && (ITERS == 0 || it < ITERS)) {
+    it++; itg = it;
+    double frac = ITERS ? (double)it / ITERS : el() / TIME;  // --iters: deterministic schedule
+    double temp = T0 * pow(T1 / T0, fmod(frac * 4, 1.0));  // 4 annealing cycles
+    int N = (int)cur.X.size();
+    Search SR; SR.setY(cur.X); SR.X = &cur.X; SR.budget = BUDGET;
+    int op = RI(0, 7);
+    if (P9 > 0 && U() < P9) {  // op 9: polish-style re-route of every zero-wait stretch after move i (same keys)
+      int i = (U() < FOCP) ? RI(max(0, FLO), min(N - 2, FHI)) : RI(0, N - 2);
+      SR.path.assign(cur.X.begin(), cur.X.begin() + i);
+      SR.skel_replay(st[i], i, RI(0, 1), (float)(U() * 8));
+      if (FSP && SR.bestT >= 0 && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
+      long long dA9 = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
+      if (SR.bestT >= 0 && dA9 >= 0 && score_full(SR.best) == SR.bestT && (dA9 > 0 || SR.best.size() <= cur.X.size())) {
+        long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X)); acc++; stat_cnt[9]++; if (dT > 0) stat_gain[9] += dT;
+        cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; save(gbest, "op 9 reroute"); }
+        { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
+      }
+      continue;
+    }
+    if (op == 5 && U() < 0.7) op = RI(1, 2);  // reversal is mostly invalid: give its share to ops 1/2
+    if (op == 7) {  // two-point crossover: X[0..a) + Z[c..d) + X[b..] with Z another elite/record tour
+      const vector<M>& Z = (U() < 0.5 ? recs[RI(0, (int)recs.size() - 1)] : elite[RI(0, (int)elite.size() - 1)]).X;
+      int a = RI(1, N - 2); int pa = cur.X[a - 1].q;
+      vector<int> cs; for (int c = 1; c < (int)Z.size() - 1; c++) if (Z[c - 1].q == pa) cs.push_back(c);
+      if (cs.empty()) continue;
+      int c = cs[RI(0, (int)cs.size() - 1)];
+      int d = RI(c + 1, min<int>((int)Z.size() - 1, c + 30));
+      int pd_ = Z[d - 1].q;
+      vector<int> bs; for (int b = a; b < N; b++) if (cur.X[b - 1].q == pd_) bs.push_back(b);
+      int b = bs.empty() ? RI(a, N - 1) : bs[RI(0, (int)bs.size() - 1)];
+      vector<M> Y2(cur.X.begin(), cur.X.begin() + a); Y2.insert(Y2.end(), Z.begin() + c, Z.begin() + d); Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.end());
+      SR.setY(Y2); SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX + 2);
+      SR.path.assign(cur.X.begin(), cur.X.begin() + a);
+      S s0 = st[a]; SR.replay(s0, a, RI(2, 4));
+      if (SR.bestT < 0) continue;
+      if (FSP && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
+      long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
+      if (dT >= 0 || U() < exp(dT / temp)) {
+        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d skel %lld full %lld best %lld len %zu\n", op, SR.skel_calls, score_full(SR.best), SR.bestT, SR.best.size());
+          { S z = start_state(); for (size_t k = 0; k < SR.best.size(); k++) { S z2 = z; if (!stepM(z2, SR.best[k])) { printf("  fail at %zu: %s->%s dz %d altdiff %d vis %d\n", k, nm(z.pos).c_str(), nm(SR.best[k].q).c_str(), SR.best[k].dz, z.alt[SR.best[k].q]-z.alt[z.pos], z.vis[SR.best[k].q]); break; } z = z2; } printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T); }
+          continue; }
+        acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
+        cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op 7 a %d c %d d %d b %d", a, c, d, b); save(gbest, w); }
+        { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
+      }
+      continue;
+    }
+    if (op >= 4) {  // segment ops on the whole tour, then replay with patching at the seams
+      int lo = RI(0, 1) ? 34 : 1;
+      if (N - 2 - lo < 6) continue;
+      int a = RI(lo, N - 4), len = RI(1, min(24, N - 2 - a)), b = a + len;
+      int cB = -1;
+      if (op == 4 && BLOCKP > 0 && U() < BLOCKP) {  // sfl: dance order trial: move whole blocks (sit-pair runs)
+        vector<int> B; auto PQ = [&](int k) { return k == 0 ? (int)A1 : (int)cur.X[k - 1].q; };
+        for (int k = max(BLO, 1); k < N - 1; k++) {
+          int p1 = PQ(k - 1), q1 = cur.X[k - 1].q, p2 = PQ(k), q2 = cur.X[k].q;
+          bool same = (p1 == p2 && q1 == q2) || (p1 == q2 && q1 == p2);
+          if (st[k + 1].T == st[k].T || !same) B.push_back(k);
+        }
+        if (B.size() < 3) continue;
+        int ia = RI(0, (int)B.size() - 2), ib = RI(ia + 1, min<int>((int)B.size() - 1, ia + 6));
+        a = B[ia]; b = B[ib]; len = b - a; cB = B[RI(0, (int)B.size() - 1)];
+        if (cB >= a && cB <= b) continue;
+        op = 10;  // stats slot
+      }
+      vector<M> Y2;
+      int from = a;
+      if (op == 4 || op == 10) {  // move segment [a,b) to position c (after b or before a)
+        int c = cB >= 0 ? cB : RI(lo, N - 2);
+        if (c >= a && c <= b) continue;
+        if (c > b) { Y2.assign(cur.X.begin(), cur.X.begin() + a); Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.begin() + c);
+          Y2.insert(Y2.end(), cur.X.begin() + a, cur.X.begin() + b); Y2.insert(Y2.end(), cur.X.begin() + c, cur.X.end()); }
+        else { Y2.assign(cur.X.begin(), cur.X.begin() + c); Y2.insert(Y2.end(), cur.X.begin() + a, cur.X.begin() + b);
+          Y2.insert(Y2.end(), cur.X.begin() + c, cur.X.begin() + a); Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.end()); from = c; }
+      } else if (op == 5) {  // reverse segment [a,b): moves go back along the same squares, dz kept
+        Y2 = cur.X;
+        for (int k = a; k < b; k++) { int src = a + b - 1 - k; bool sit = st[src + 1].T > st[src].T; Y2[k] = {(uint8_t)(src == 0 ? A1 : cur.X[src - 1].q), (int8_t)(sit ? cur.X[src].dz : -cur.X[src].dz)}; }
+        // the move into position b-1's target must lead to cur.X[b-1].q's original start: fix the last one
+        Y2[b - 1].q = (a == 0 ? A1 : cur.X[a - 1].q);
+        // reversed walk: start at P(a) = X[a-1].q, then visit X[b-2].q ... X[a-1].q? (patching repairs the seams)
+      } else {  // duplicate segment [a,b) right after itself (repeat a dance block)
+        Y2.assign(cur.X.begin(), cur.X.begin() + b); Y2.insert(Y2.end(), cur.X.begin() + a, cur.X.begin() + b);
+        Y2.insert(Y2.end(), cur.X.begin() + b, cur.X.end()); from = b;
+      }
+      if (from >= (int)Y2.size()) continue;
+      SR.setY(Y2); SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX + 2);
+      SR.path.assign(cur.X.begin(), cur.X.begin() + from);
+      S s0 = st[from]; SR.replay(s0, from, RI(2, 4));
+      if (SR.bestT < 0) continue;
+      if (FSP && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
+      long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
+      if (dT >= 0 || U() < exp(dT / temp)) {
+        if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d skel %lld full %lld best %lld len %zu\n", op, SR.skel_calls, score_full(SR.best), SR.bestT, SR.best.size());
+          { S z = start_state(); for (size_t k = 0; k < SR.best.size(); k++) { S z2 = z; if (!stepM(z2, SR.best[k])) { printf("  fail at %zu: %s->%s dz %d altdiff %d vis %d\n", k, nm(z.pos).c_str(), nm(SR.best[k].q).c_str(), SR.best[k].dz, z.alt[SR.best[k].q]-z.alt[z.pos], z.vis[SR.best[k].q]); break; } z = z2; } printf("  final pos %s T %d\n", nm(z.pos).c_str(), z.T); }
+          continue; }
+        acc++; stat_cnt[op]++; if (dT > 0) stat_gain[op] += dT;
+        cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
+        if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d a %d len %d", op, a, len); save(gbest, w); }
+        { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
+      }
+      continue;
+    }
+    int i = (U() < FOCP) ? RI(max(0, FLO), min(N - 2, FHI)) : RI(0, N - 2);
+    SR.path.assign(cur.X.begin(), cur.X.begin() + i);
+    SR.i0 = i; SR.sameXY = true; SR.PD = RI(1, PDMAX); SR.R = RI(2, RMAX);
+    int pd = RI(0, 2);
+    if (op == 0) { SR.D = RI(1, DMAX); SR.jlo = i; SR.jhi = i + SR.D + 2 + WIDE; }        // window replace / delete / insert
+    else if (op == 1) { SR.D = RI(1, 3); SR.jlo = i + 1; SR.jhi = i + 12 + WIDE; }       // skip up to 12 moves
+    else if (op == 2) { SR.D = RI(2, DMAX + 1); SR.jlo = i - 4 - WIDE / 2; SR.jhi = i + 4 + WIDE; } // detours, repeat
+    else { SR.D = RI(1, 2); SR.jlo = 0; SR.jhi = N - 1; }                         // jump anywhere in own tour
+    S s0 = st[i];
+    bool walked = false;
+    if (op == 3 && U() < 0.5) {  // op 3b: random walk of r moves first, then DFS + resync further down
+      op = 8; int r = RI(1, 6); vector<pair<int, int>> mv;
+      for (int k = 0; k < r; k++) {
+        pinned_moves(s0, 3, false, mv); if (mv.empty()) break;
+        auto [dl, q] = mv[RI(0, (int)mv.size() - 1)]; int p = s0.pos; apply_move(s0, dl, q);
+        SR.path.push_back({(uint8_t)q, (int8_t)(s0.alt[q] - s0.alt[p])});
+      }
+      walked = true; SR.D = RI(1, 3); SR.jlo = i; SR.jhi = i + r + 10 + WIDE;
+    }
+    SR.win_dfs(s0, 0, !walked, pd);
+    if (SR.bestT < 0) continue;
+      if (FSP && SR.bestT >= cur.T - FSPG) fsp(SR.best, SR.bestT);
+    long long dT = (SR.bestT - pen_of(SR.best)) - (cur.T - pen_of(cur.X));
+    if (dT >= 0 || U() < exp(dT / temp)) {
+      if (score_full(SR.best) != SR.bestT) { printf("MISMATCH op %d\n", op); dbg_fail(SR.best); continue; }
+      acc++; stat_cnt[op]++;
+      if (dT > 0) stat_gain[op] += dT;
+      cur = {SR.bestT, SR.best}; mark_keys(cur.X); st = states_of(cur.X); dump_cur(cur.X);
+      if (cur.T > gbest.T) { gbest = cur; impr++; lastImpr = el(); lastImprIt = it; char w[64]; snprintf(w, 64, "op %d i %d D %d", op, i, SR.D); save(gbest, w); }
+      { long long cA = cur.T - pen_of(cur.X); if (cA > gbA) { gbA = cA; adjsave(cur); } if (cA >= gbA - 30) add_elite(cur); }
+    }
+    if (it % 2000 == 0) {
+      printf("[%.0fs] it %lld acc %lld cur %lld best %lld temp %.1f elite %zu gains %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld acc %lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld/%lld\n", el(), it, acc, cur.T, gbest.T, temp,
+             elite.size(), stat_gain[0], stat_gain[1], stat_gain[2], stat_gain[3], stat_gain[4], stat_gain[5], stat_gain[6], stat_gain[7], stat_gain[8], stat_gain[9],
+             stat_cnt[0], stat_cnt[1], stat_cnt[2], stat_cnt[3], stat_cnt[4], stat_cnt[5], stat_cnt[6], stat_cnt[7], stat_cnt[8], stat_cnt[9]);
+      printf("   nec calls %lld fail %lld unk %lld probes %lld | fsp calls %lld hits %lld gain %lld | dumped %d | block op acc %lld gain %lld\n", NEC_CALLS, NEC_FAIL, NEC_UNK, NEC_PROBES, FSP_CALLS, FSP_HIT, FSP_GAIN, DUMPN, stat_cnt[10], stat_gain[10]);
+      fflush(stdout);
+    }
+    // restart from elite if stuck far below best
+    if (cur.T - pen_of(cur.X) < gbA - 400 || ((ITERS ? (it - lastImprIt > 12000) : (el() - lastImpr > 120)) && U() < 0.001)) {
+      lastImprIt = it;
+      cur = elite[RI(0, (int)elite.size() - 1)]; st = states_of(cur.X); restarts++; lastImpr = el();
+    }
+  }
+  printf("done it %lld acc %lld best %lld restarts %d\n", it, acc, gbest.T, restarts);
+  printf("elite:"); for (auto& e : elite) printf(" %lld", e.T); printf("\n");
+  // dump elite
+  string ef = out + ".elite";
+  FILE* f = fopen(ef.c_str(), "w");
+  for (auto& e : elite) { long long T; string s = fmt_tour(e.X, &T); fprintf(f, "%lld\n%s\n", T, s.c_str()); }
+  fclose(f);
+}

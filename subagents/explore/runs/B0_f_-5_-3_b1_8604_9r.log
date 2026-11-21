@@ -1,0 +1,10 @@
+in/B0_f_-5_-3_b1_8604_9adj.txt: 153 moves, 7700 minutes (replay 7700)
+in/f_-5_-3_b1_8604_9.txt: 156 moves, 8604 minutes (replay 8604)
+in/f_-5_-3_b1_8546_11.txt: 165 moves, 8546 minutes (replay 8546)
+in/f_-5_-3_b1_8553_10.txt: 170 moves, 8553 minutes (replay 8553)
+start in/B0_f_-5_-3_b1_8604_9adj.txt: 153 moves, 7700 minutes
+start 7700: 0 free sinks, exact necessity ok (bad move 0)
+[1s it 35] NEW BEST 7704 (op 1 i 62 D 3) len 157
+[1s it 35] ADJ BEST 7704 (raw 7704 pen 0)
+[74s] it 4000 acc 671 cur 7704 best 7704 temp 6.8 elite 40 gains 310/291/941/110/0/4/340/583/0/0 acc 124/152/211/54/8/11/38/45/6/22
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0

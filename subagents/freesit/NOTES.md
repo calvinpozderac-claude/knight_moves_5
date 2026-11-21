@@ -70,3 +70,4 @@ Files: sfl.cpp (copy of ../sfl/sfl.cpp; to be patched), freesit_saver.sh (checke
 - 17:03 MLNS a-d (50 min each, ~600 its / ~550 beam evaluations each): no gain (9330/9329); current tours wander 9325-9328. e-h running.
 - 18:43 MLNS e-h (t0 10-40) and i-l (dmax 10, wide 12, budget 400k, 4 candidates, t0 60): no gain; best 9330 (9328 from 9328 seeds). In total 12 MLNS jobs, about 7,000 beam-scored merge candidates. The merge neighbourhood around 9330/9329/9328 has no better merge+dance under the beam score.
 - 21:10 resumed after usage limit; saver restarted (9330). MLNS round 3: m-t with later focus windows (30/40/50/60..99), seeds 9330, ties, 9329, 9328.
+- 19:00 MLNS round 3 (m-t) stopped at ~40 min: best 9330/9329, no gain. NEW PHASE: novelty / new families -> subagents/explore/.

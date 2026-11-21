@@ -1,0 +1,17 @@
+in/f_-3_-1_b1_8607_8.txt: 157 moves, 8607 minutes (replay 8607)
+start in/f_-3_-1_b1_8607_8.txt: 157 moves, 8607 minutes
+start 8607: 0 free sinks, exact necessity ok (bad move 0)
+[153s] it 8000 acc 1016 cur 8590 best 8607 temp 2.3 elite 40 gains 458/561/862/60/131/32/608/649/4/0 acc 212/202/303/78/23/23/72/91/6/6
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[270s] it 14000 acc 1781 cur 8421 best 8607 temp 11.7 elite 40 gains 1296/1064/2424/313/435/56/674/1242/4/0 acc 398/334/520/133/46/37/141/152/8/12
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[451s] it 24000 acc 2901 cur 8552 best 8607 temp 11.7 elite 40 gains 1719/1697/3294/661/507/102/1013/1862/14/0 acc 607/574/878/220/72/54/214/244/19/19
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[615s] it 32000 acc 3846 cur 8488 best 8607 temp 26.5 elite 40 gains 2197/1949/4699/878/519/189/1200/2521/18/0 acc 813/756/1162/305/96/72/257/341/22/22
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[654s] it 34000 acc 4126 cur 8599 best 8607 temp 11.7 elite 40 gains 2481/2049/4975/890/523/197/1224/2629/26/0 acc 862/816/1247/328/106/79/276/364/26/22
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[697s] it 36000 acc 4357 cur 8585 best 8607 temp 5.1 elite 40 gains 2531/2063/5009/895/523/205/1237/2699/26/0 acc 909/854/1319/349/113/86/297/381/26/23
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 40000 acc 4702 best 8607 restarts 12
+elite: 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607

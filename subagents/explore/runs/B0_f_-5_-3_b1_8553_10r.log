@@ -1,0 +1,38 @@
+in/B0_f_-5_-3_b1_8553_10adj.txt: 170 moves, 8259 minutes (replay 8259)
+in/f_-5_-3_b1_8553_10.txt: 170 moves, 8553 minutes (replay 8553)
+in/f_-5_-3_b1_8546_11.txt: 165 moves, 8546 minutes (replay 8546)
+in/f_-5_-3_b1_8604_9.txt: 156 moves, 8604 minutes (replay 8604)
+start in/B0_f_-5_-3_b1_8553_10adj.txt: 170 moves, 8259 minutes
+start 8259: 0 free sinks, exact necessity ok (bad move 0)
+[11s it 541] NEW BEST 8262 (op 7 a 136 c 136 d 149 b 149) len 169
+[11s it 541] ADJ BEST 8262 (raw 8262 pen 0)
+[11s it 544] NEW BEST 8319 (op 4 a 48 len 20) len 170
+[11s it 544] ADJ BEST 8319 (raw 8319 pen 0)
+[24s it 1234] NEW BEST 8367 (op 2 i 86 D 6) len 169
+[24s it 1234] ADJ BEST 8367 (raw 8367 pen 0)
+[84s] it 4000 acc 689 cur 8299 best 8367 temp 6.8 elite 40 gains 333/280/889/53/198/12/533/174/88/0 acc 123/145/204/60/18/20/50/34/4/31
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[115s it 5382] NEW BEST 8368 (op 0 i 69 D 7) len 179
+[115s it 5382] ADJ BEST 8368 (raw 8368 pen 0)
+[119s it 5581] NEW BEST 8371 (op 0 i 27 D 2) len 172
+[119s it 5581] ADJ BEST 8371 (raw 8371 pen 0)
+[129s] it 6000 acc 926 cur 8366 best 8371 temp 2.3 elite 40 gains 407/283/919/61/198/15/533/194/88/0 acc 169/200/278/87/24/22/55/43/8/40
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[134s it 6192] NEW BEST 8392 (op 4 a 89 len 5) len 167
+[134s it 6192] ADJ BEST 8392 (raw 8392 pen 0)
+[136s it 6247] NEW BEST 8396 (op 0 i 20 D 7) len 169
+[136s it 6247] ADJ BEST 8396 (raw 8396 pen 0)
+[141s it 6497] NEW BEST 8397 (op 7 a 16 c 20 d 31 b 28) len 166
+[141s it 6497] ADJ BEST 8397 (raw 8397 pen 0)
+[145s it 6669] NEW BEST 8398 (op 0 i 77 D 3) len 175
+[145s it 6669] ADJ BEST 8398 (raw 8398 pen 0)
+[146s it 6700] NEW BEST 8401 (op 4 a 138 len 3) len 176
+[146s it 6700] ADJ BEST 8401 (raw 8401 pen 0)
+[146s it 6737] NEW BEST 8405 (op 2 i 123 D 6) len 172
+[146s it 6737] ADJ BEST 8405 (raw 8405 pen 0)
+[159s it 7309] NEW BEST 8408 (op 1 i 80 D 3) len 173
+[159s it 7309] ADJ BEST 8408 (raw 8408 pen 0)
+[221s] it 10000 acc 1539 cur 8316 best 8408 temp 15.3 elite 40 gains 757/588/1669/304/243/92/788/436/92/0 acc 289/310/464/143/43/31/81/78/16/84
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[308s] it 14000 acc 2072 cur 8364 best 8408 temp 1.7 elite 40 gains 816/606/1809/320/247/96/810/494/92/0 acc 423/415/615/181/54/37/108/91/23/125
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0

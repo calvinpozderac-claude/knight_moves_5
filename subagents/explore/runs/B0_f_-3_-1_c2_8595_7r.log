@@ -1,0 +1,30 @@
+in/B0_f_-3_-1_c2_8595_7adj.txt: 149 moves, 7704 minutes (replay 7704)
+in/f_-3_-1_c2_8595_7.txt: 161 moves, 8595 minutes (replay 8595)
+in/f_-3_-1_c2_8607_6.txt: 157 moves, 8607 minutes (replay 8607)
+in/f_-3_-1_c2_8703_5.txt: 165 moves, 8703 minutes (replay 8703)
+start in/B0_f_-3_-1_c2_8595_7adj.txt: 149 moves, 7704 minutes
+start 7704: 0 free sinks, exact necessity ok (bad move 0)
+[30s it 2585] NEW BEST 7858 (op 0 i 96 D 4) len 151
+[30s it 2585] ADJ BEST 7858 (raw 7858 pen 0)
+[30s it 2589] NEW BEST 7861 (op 2 i 22 D 3) len 152
+[30s it 2589] ADJ BEST 7861 (raw 7861 pen 0)
+[30s it 2616] NEW BEST 7923 (op 2 i 69 D 3) len 155
+[30s it 2616] ADJ BEST 7923 (raw 7923 pen 0)
+[56s it 4669] NEW BEST 7925 (op 6 a 66 len 11) len 162
+[56s it 4669] ADJ BEST 7925 (raw 7925 pen 0)
+[74s] it 6000 acc 959 cur 7910 best 7925 temp 2.3 elite 40 gains 404/104/914/28/4/44/148/468/0/0 acc 169/180/293/80/20/16/77/55/9/60
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[78s it 6314] NEW BEST 7927 (op 1 i 89 D 3) len 158
+[78s it 6314] ADJ BEST 7927 (raw 7927 pen 0)
+[78s it 6337] NEW BEST 7931 (op 2 i 141 D 3) len 168
+[78s it 6337] ADJ BEST 7931 (raw 7931 pen 0)
+[83s it 6723] NEW BEST 7935 (op 2 i 130 D 4) len 162
+[83s it 6723] ADJ BEST 7935 (raw 7935 pen 0)
+[152s] it 12000 acc 1730 cur 7931 best 7935 temp 5.1 elite 40 gains 809/389/1448/141/4/186/162/613/4/0 acc 334/315/525/134/37/34/127/93/19/112
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[312s] it 24000 acc 3202 cur 7885 best 7935 temp 26.5 elite 40 gains 1730/762/2413/303/181/186/311/1043/4/0 acc 642/550/998/244/72/48/227/169/30/222
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[362s] it 28000 acc 3726 cur 7900 best 7935 temp 3.0 elite 40 gains 1864/770/2482/307/181/190/376/1115/4/0 acc 762/631/1154/283/81/55/265/200/36/259
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 3954 best 7935 restarts 8
+elite: 8703 8607 8595 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935 7935

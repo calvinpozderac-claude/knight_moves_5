@@ -1,0 +1,24 @@
+in/f_-2_0_b1_8297_12.txt: 154 moves, 8297 minutes (replay 8297)
+in/f_-2_0_b1_8127_13.txt: 157 moves, 8127 minutes (replay 8127)
+start in/f_-2_0_b1_8297_12.txt: 154 moves, 8297 minutes
+start 8297: 0 free sinks, exact necessity ok (bad move 0)
+[93s] it 4000 acc 796 cur 8263 best 8297 temp 11.7 elite 40 gains 1369/1076/1608/548/32/62/884/802/78/386 acc 128/153/205/83/21/12/80/57/13/44
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[133s] it 6000 acc 1086 cur 8297 best 8297 temp 5.1 elite 40 gains 1401/1108/1749/580/36/70/952/923/110/418 acc 176/215/276/101/29/18/102/87/14/68
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[166s] it 8000 acc 1285 cur 8297 best 8297 temp 2.3 elite 40 gains 1405/1108/1755/585/36/70/952/927/110/418 acc 219/252/332/117/32/19/108/103/18/85
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[206s] it 10000 acc 1458 cur 8297 best 8297 temp 60.0 elite 40 gains 1405/1108/1757/585/36/70/952/931/110/418 acc 254/281/377/137/36/21/115/122/18/97
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[464s] it 22000 acc 3280 cur 8271 best 8297 temp 26.5 elite 40 gains 2651/1975/5052/1091/312/277/2461/2594/174/1196 acc 572/599/856/308/93/53/253/287/28/231
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[551s] it 26000 acc 3858 cur 8274 best 8297 temp 5.1 elite 40 gains 2872/2168/5546/1259/374/317/2957/2659/174/1356 acc 670/703/1026/367/112/57/300/320/36/267
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[723s] it 34000 acc 5055 cur 8271 best 8297 temp 11.7 elite 40 gains 3786/3350/7120/1578/493/476/3355/3478/280/1650 acc 882/920/1384/478/147/80/378/396/47/343
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[767s] it 36000 acc 5302 cur 8295 best 8297 temp 5.1 elite 40 gains 3902/3359/7211/1578/493/476/3355/3500/280/1746 acc 936/955/1457/505/153/81/389/411/50/365
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[808s] it 38000 acc 5537 cur 8297 best 8297 temp 2.3 elite 40 gains 3902/3363/7217/1578/493/476/3359/3507/280/1746 acc 986/1003/1521/527/161/83/400/428/51/377
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 40000 acc 5709 best 8297 restarts 8
+elite: 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297 8297

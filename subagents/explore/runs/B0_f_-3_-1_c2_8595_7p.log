@@ -1,0 +1,61 @@
+in/f_-3_-1_c2_8595_7.txt: 161 moves, 8595 minutes (replay 8595)
+in/f_-3_-1_c2_8607_6.txt: 157 moves, 8607 minutes (replay 8607)
+in/f_-3_-1_c2_8703_5.txt: 165 moves, 8703 minutes (replay 8703)
+start in/f_-3_-1_c2_8595_7.txt: 161 moves, 8595 minutes
+start 8595: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 1] ADJ BEST 6564 (raw 7464 pen 900)
+[0s it 3] ADJ BEST 6788 (raw 6788 pen 0)
+[0s it 11] ADJ BEST 7011 (raw 7011 pen 0)
+[1s it 27] ADJ BEST 7043 (raw 7043 pen 0)
+[3s it 136] ADJ BEST 7151 (raw 7151 pen 0)
+[3s it 140] ADJ BEST 7192 (raw 7192 pen 0)
+[3s it 151] ADJ BEST 7196 (raw 7196 pen 0)
+[5s it 245] ADJ BEST 7200 (raw 7200 pen 0)
+[16s it 824] ADJ BEST 7234 (raw 7234 pen 0)
+[25s it 1386] ADJ BEST 7241 (raw 7241 pen 0)
+[26s it 1447] ADJ BEST 7257 (raw 7257 pen 0)
+[27s it 1508] ADJ BEST 7303 (raw 7303 pen 0)
+[27s it 1510] ADJ BEST 7349 (raw 7349 pen 0)
+[30s it 1759] ADJ BEST 7383 (raw 7383 pen 0)
+[30s it 1768] ADJ BEST 7397 (raw 7397 pen 0)
+[31s it 1817] ADJ BEST 7401 (raw 7401 pen 0)
+[32s it 1841] ADJ BEST 7448 (raw 7448 pen 0)
+[35s] it 2000 acc 454 cur 7350 best 8595 temp 24.9 elite 40 gains 2230/689/510/354/0/84/285/105/0/0 acc 96/95/130/34/14/5/38/23/4/15
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[48s it 3103] ADJ BEST 7461 (raw 7461 pen 0)
+[49s it 3208] ADJ BEST 7492 (raw 7492 pen 0)
+[50s it 3293] ADJ BEST 7504 (raw 7504 pen 0)
+[52s it 3406] ADJ BEST 7508 (raw 7508 pen 0)
+[55s it 3648] ADJ BEST 7512 (raw 7512 pen 0)
+[61s] it 4000 acc 785 cur 7508 best 8595 temp 7.7 elite 40 gains 2304/792/580/414/0/96/386/157/0/0 acc 150/139/236/65/27/10/69/46/7/36
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[69s it 4589] ADJ BEST 7513 (raw 7513 pen 0)
+[70s it 4615] ADJ BEST 7517 (raw 7517 pen 0)
+[118s] it 8000 acc 1391 cur 7317 best 8595 temp 59.7 elite 40 gains 2822/1191/848/710/0/96/398/173/0/0 acc 255/278/416/101/45/16/117/74/17/72
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[145s it 10026] ADJ BEST 7533 (raw 7533 pen 0)
+[151s it 10465] ADJ BEST 7537 (raw 7537 pen 0)
+[173s] it 12000 acc 2022 cur 7522 best 8595 temp 5.8 elite 40 gains 3478/1383/1374/714/0/97/513/453/0/0 acc 378/394/619/152/60/26/156/100/22/115
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[183s it 12680] ADJ BEST 7538 (raw 7538 pen 0)
+[277s] it 20000 acc 3188 cur 7525 best 8595 temp 4.3 elite 40 gains 4144/1874/2456/992/100/188/826/845/35/0 acc 620/612/965/250/97/43/238/154/32/177
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[303s] it 22000 acc 3427 cur 7537 best 8595 temp 1.3 elite 40 gains 4148/1882/2456/996/112/188/826/861/35/0 acc 662/657/1037/272/107/45/253/161/34/199
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[330s] it 24000 acc 3730 cur 7388 best 8595 temp 33.3 elite 40 gains 4292/2255/2864/1059/146/275/1046/1010/35/0 acc 723/705/1130/297/114/55/280/174/38/214
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[343s it 24844] ADJ BEST 7600 (raw 7600 pen 0)
+[344s it 24925] ADJ BEST 7629 (raw 7629 pen 0)
+[347s it 25160] ADJ BEST 7657 (raw 7657 pen 0)
+[347s it 25220] ADJ BEST 7673 (raw 7673 pen 0)
+[349s it 25292] ADJ BEST 7685 (raw 7685 pen 0)
+[349s it 25344] ADJ BEST 7689 (raw 7689 pen 0)
+[350s it 25377] ADJ BEST 7693 (raw 7693 pen 0)
+[358s] it 26000 acc 4072 cur 7693 best 8595 temp 10.4 elite 40 gains 4595/2283/3220/1166/146/275/1094/1010/67/0 acc 785/768/1243/339/118/57/300/182/44/236
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[359s it 26056] ADJ BEST 7697 (raw 7697 pen 0)
+[360s it 26117] ADJ BEST 7701 (raw 7701 pen 0)
+[385s it 28197] ADJ BEST 7702 (raw 7702 pen 0)
+[390s it 28497] ADJ BEST 7704 (raw 7704 pen 0)
+done it 30000 acc 4604 best 8595 restarts 16
+elite: 8703 8607 8595 7704 7704 7704 7704 7704 7704 7704 7704 7704 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7702 7701 7701 7701 7701 7701 7701 7701 7701 7701 7701 7701 7701

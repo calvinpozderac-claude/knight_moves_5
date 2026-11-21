@@ -1,0 +1,22 @@
+in/f_-4_-2_c2_8524_4.txt: 170 moves, 8524 minutes (replay 8524)
+in/f_-4_-2_c2_8887_3.txt: 173 moves, 8887 minutes (replay 8887)
+start in/f_-4_-2_c2_8524_4.txt: 170 moves, 8524 minutes
+start 8524: 0 free sinks, exact necessity ok (bad move 0)
+[208s] it 12000 acc 1874 cur 8508 best 8524 temp 26.5 elite 40 gains 1407/1425/2225/497/315/351/1588/1174/0/1152 acc 365/353/505/158/47/33/131/139/11/132
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[275s] it 16000 acc 2397 cur 8502 best 8524 temp 5.1 elite 40 gains 1611/1683/2721/611/363/357/1728/1380/4/1224 acc 455/461/664/197/61/40/169/171/16/163
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[311s] it 18000 acc 2596 cur 8504 best 8524 temp 2.3 elite 40 gains 1619/1687/2732/611/363/357/1732/1385/4/1224 acc 484/505/728/216/62/42/176/185/16/182
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[346s] it 20000 acc 2773 cur 8508 best 8524 temp 60.0 elite 40 gains 1619/1687/2732/611/363/357/1732/1399/4/1224 acc 518/541/786/225/64/43/186/198/16/196
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[458s] it 26000 acc 3757 cur 8516 best 8524 temp 5.1 elite 40 gains 2535/2390/4317/1125/440/433/2182/2090/40/1694 acc 678/712/1072/310/85/58/276/279/25/262
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[558s] it 32000 acc 4642 cur 8285 best 8524 temp 26.5 elite 40 gains 3092/2832/5892/1623/472/462/2721/2734/126/2054 acc 827/875/1341/383/99/75/349/344/37/312
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[636s] it 36000 acc 5143 cur 8502 best 8524 temp 5.1 elite 40 gains 3295/3057/6407/1753/544/562/2797/2923/162/2126 acc 920/970/1478/430/112/81/382/381/44/345
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[672s] it 38000 acc 5370 cur 8494 best 8524 temp 2.3 elite 40 gains 3295/3067/6418/1757/544/562/2797/2929/162/2126 acc 963/1021/1538/458/119/84/394/389/44/360
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 40000 acc 5589 best 8524 restarts 6
+elite: 8887 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524 8524
