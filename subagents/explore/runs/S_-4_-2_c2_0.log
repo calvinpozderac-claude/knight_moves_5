@@ -1,0 +1,21 @@
+arch/cells/-4_-2_c2_0.txt: 164 moves, 8983 minutes (replay 8983)
+start arch/cells/-4_-2_c2_0.txt: 164 moves, 8983 minutes
+start 8983: 0 free sinks, exact necessity ok (bad move 0)
+[222s] it 4000 acc 895 cur 8971 best 8983 temp 20.1 elite 40 gains 1072/930/2186/675/60/237/1191/1288/8/540 acc 157/139/248/67/20/19/95/100/4/46
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[885s] it 16000 acc 2560 cur 8947 best 8983 temp 45.7 elite 40 gains 1901/1472/2813/1100/101/292/1527/2681/44/830 acc 473/432/686/216/53/41/205/283/15/156
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1117s] it 20000 acc 3298 cur 8935 best 8983 temp 15.3 elite 40 gains 2563/1873/4457/1608/214/364/2103/3369/76/1332 acc 593/554/898/275/70/54/284/351/21/198
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1458s] it 26000 acc 4149 cur 8978 best 8983 temp 3.0 elite 40 gains 2758/1985/4649/1648/223/364/2167/3726/112/1368 acc 760/687/1172/344/85/61/332/436/26/246
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1572s] it 28000 acc 4397 cur 8983 best 8983 temp 1.7 elite 40 gains 2758/1985/4654/1650/223/364/2171/3738/112/1368 acc 807/735/1234/367/92/63/349/455/27/268
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1802s] it 32000 acc 5070 cur 8792 best 8983 temp 34.8 elite 40 gains 3481/2672/6392/1991/223/417/2448/4377/148/1906 acc 919/861/1427/417/108/72/402/512/35/317
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[2012s] it 36000 acc 5837 cur 8975 best 8983 temp 11.7 elite 40 gains 4008/3196/7477/2299/227/632/2722/5092/231/2230 acc 1066/994/1648/481/122/81/451/596/42/356
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[2346s] it 42000 acc 6595 cur 8983 best 8983 temp 2.3 elite 40 gains 4055/3281/7651/2308/229/636/2767/5185/235/2230 acc 1237/1122/1866/551/133/91/489/653/48/405
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 42954 acc 6699 best 8983 restarts 8
+elite: 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983 8983

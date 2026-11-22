@@ -1,0 +1,6 @@
+in/G1_-4_-2_c2_0adj.txt: 131 moves, 7649 minutes (replay 7649)
+arch/cells/-4_-2_c2_0.txt: 164 moves, 8983 minutes (replay 8983)
+start in/G1_-4_-2_c2_0adj.txt: 131 moves, 7649 minutes
+start 7649: 0 free sinks, exact necessity ok (bad move 0)
+[6s it 133] NEW BEST 8983 (op 0 i 83 D 3) len 166
+[6s it 133] ADJ BEST 8983 (raw 8983 pen 0)

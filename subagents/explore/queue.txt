@@ -1,3 +1,4 @@
+./rchain.sh S2_-6_-4_c2_0 71747 arch/cells/-6_-4_c2_0.txt
 ./pchain.sh C1_-5_-3_c2_0 18586 arch/cells/-5_-3_c2_0.txt b7,a8,f7,d4 74 300
 ./pchain.sh C2_-5_-3_c2_0 85711 arch/cells/-5_-3_c2_0.txt a4,e7,f7 74 300
 ./pchain.sh C0_-4_-2_c2_0 24931 arch/cells/-4_-2_c2_0.txt b5,a2,a6,a5,a4 63 300

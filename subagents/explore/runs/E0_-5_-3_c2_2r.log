@@ -1,0 +1,18 @@
+in/E0_-5_-3_c2_2adj.txt: 167 moves, 8915 minutes (replay 8915)
+arch/cells/-5_-3_c2_2.txt: 171 moves, 8937 minutes (replay 8937)
+start in/E0_-5_-3_c2_2adj.txt: 167 moves, 8915 minutes
+start 8915: 0 free sinks, exact necessity ok (bad move 0)
+[116s] it 2000 acc 434 cur 8889 best 8915 temp 20.1 elite 40 gains 184/454/524/176/184/57/364/477/0/34 acc 69/73/135/25/15/14/48/40/2/13
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[204s] it 4000 acc 767 cur 8881 best 8915 temp 6.8 elite 40 gains 246/489/872/196/184/70/470/616/0/34 acc 127/128/235/57/24/19/78/72/4/23
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[317s] it 6000 acc 1009 cur 8905 best 8915 temp 2.3 elite 40 gains 284/514/957/204/188/74/478/664/4/34 acc 170/173/320/71/29/24/89/91/5/37
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[404s it 7477] NEW BEST 8929 (op 0 i 74 D 4) len 167
+[404s it 7477] ADJ BEST 8929 (raw 8929 pen 0)
+[731s] it 14000 acc 2209 cur 8873 best 8929 temp 1.7 elite 40 gains 769/1046/2686/707/293/144/877/893/21/204 acc 368/352/724/155/51/53/188/180/18/120
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1036s] it 20000 acc 3276 cur 8902 best 8929 temp 3.9 elite 40 gains 1213/1534/3648/1088/325/282/1188/1243/38/368 acc 552/513/1076/246/71/85/281/260/22/170
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 23024 acc 3639 best 8929 restarts 2
+elite: 8937 8929 8929 8929 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926 8926
