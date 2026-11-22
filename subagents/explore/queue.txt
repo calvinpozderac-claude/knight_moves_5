@@ -1,3 +1,13 @@
+./rchain.sh R_-3_-1_c2_2 20005 arch/cells/-3_-1_c2_2.txt
+./rchain.sh R_-7_-5_c2_0 20006 arch/cells/-7_-5_c2_0.txt
+./rchain.sh R_-5_-3_c2_3 20007 arch/cells/-5_-3_c2_3.txt
+./pchain.sh C0_-5_-3_c2_0 67097 arch/cells/-5_-3_c2_0.txt f8,f7,b8,b7 74 300
+./pchain.sh C1_-5_-3_c2_0 18586 arch/cells/-5_-3_c2_0.txt b7,a8,f7,d4 74 300
+./pchain.sh C2_-5_-3_c2_0 85711 arch/cells/-5_-3_c2_0.txt a4,e7,f7 74 300
+./pchain.sh C0_-4_-2_c2_0 24931 arch/cells/-4_-2_c2_0.txt b5,a2,a6,a5,a4 63 300
+./pchain.sh C1_-4_-2_c2_0 57742 arch/cells/-4_-2_c2_0.txt a3,f7,d6 63 300
+./pchain.sh C0_-6_-4_c2_0 38556 arch/cells/-6_-4_c2_0.txt e8,a8,c5,b2,d4 76 300
+./pchain.sh C1_-6_-4_c2_0 85827 arch/cells/-6_-4_c2_0.txt a2,d8,a4,c3 76 300
 ./pchain.sh B0_f_-5_-3_c2_9080_1 73305 in/f_-5_-3_c2_9080_1.txt a5,c4,f7,f3,e4,d8 74 300 in/f_-5_-3_c2_9080_0.txt in/f_-5_-3_c2_9080_2.txt
 ./pchain.sh B0_f_-5_-3_c2_9080_2 14409 in/f_-5_-3_c2_9080_2.txt c3,f7,b5 72 300 in/f_-5_-3_c2_9080_0.txt in/f_-5_-3_c2_9080_1.txt
 ./pchain.sh B0_f_0_2_b1_8130_16 9217 in/f_0_2_b1_8130_16.txt d1,f2,a2 62 300 in/f_0_2_b1_8162_15.txt
