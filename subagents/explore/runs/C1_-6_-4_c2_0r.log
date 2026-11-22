@@ -1,0 +1,62 @@
+in/C1_-6_-4_c2_0adj.txt: 159 moves, 7543 minutes (replay 7543)
+arch/cells/-6_-4_c2_0.txt: 163 moves, 8778 minutes (replay 8778)
+start in/C1_-6_-4_c2_0adj.txt: 159 moves, 7543 minutes
+start 7543: 0 free sinks, exact necessity ok (bad move 0)
+[1s it 9] NEW BEST 7631 (op 4 a 131 len 1) len 163
+[1s it 9] ADJ BEST 7631 (raw 7631 pen 0)
+[1s it 15] NEW BEST 7635 (op 3 i 107 D 1) len 161
+[1s it 15] ADJ BEST 7635 (raw 7635 pen 0)
+[1s it 33] NEW BEST 7643 (op 7 a 135 c 142 d 160 b 151) len 153
+[1s it 33] ADJ BEST 7643 (raw 7643 pen 0)
+[1s it 35] NEW BEST 7721 (op 0 i 143 D 8) len 155
+[1s it 35] ADJ BEST 7721 (raw 7721 pen 0)
+[1s it 41] NEW BEST 8057 (op 7 a 110 c 89 d 102 b 111) len 165
+[1s it 41] ADJ BEST 8057 (raw 8057 pen 0)
+[2s it 73] NEW BEST 8077 (op 3 i 121 D 2) len 167
+[2s it 73] ADJ BEST 8077 (raw 8077 pen 0)
+[2s it 78] NEW BEST 8089 (op 2 i 73 D 5) len 167
+[2s it 78] ADJ BEST 8089 (raw 8089 pen 0)
+[2s it 83] NEW BEST 8106 (op 3 i 84 D 1) len 166
+[2s it 83] ADJ BEST 8106 (raw 8106 pen 0)
+[3s it 104] NEW BEST 8134 (op 7 a 82 c 80 d 102 b 102) len 168
+[3s it 104] ADJ BEST 8134 (raw 8134 pen 0)
+[3s it 113] NEW BEST 8174 (op 2 i 164 D 2) len 168
+[3s it 113] ADJ BEST 8174 (raw 8174 pen 0)
+[3s it 119] NEW BEST 8178 (op 2 i 139 D 4) len 168
+[3s it 119] ADJ BEST 8178 (raw 8178 pen 0)
+[3s it 121] NEW BEST 8182 (op 7 a 147 c 133 d 162 b 167) len 168
+[3s it 121] ADJ BEST 8182 (raw 8182 pen 0)
+[4s it 145] NEW BEST 8197 (op 0 i 81 D 3) len 168
+[4s it 145] ADJ BEST 8197 (raw 8197 pen 0)
+[31s it 1293] NEW BEST 8204 (op 0 i 147 D 6) len 173
+[31s it 1293] ADJ BEST 8204 (raw 8204 pen 0)
+[51s it 2146] NEW BEST 8277 (op 1 i 110 D 3) len 170
+[51s it 2146] ADJ BEST 8277 (raw 8277 pen 0)
+[78s it 3344] NEW BEST 8278 (op 2 i 81 D 6) len 172
+[78s it 3344] ADJ BEST 8278 (raw 8278 pen 0)
+[80s it 3490] NEW BEST 8282 (op 0 i 141 D 4) len 168
+[80s it 3490] ADJ BEST 8282 (raw 8282 pen 0)
+[93s] it 4000 acc 530 cur 8277 best 8282 temp 6.8 elite 40 gains 1028/446/920/439/159/42/185/723/103/0 acc 98/102/164/38/16/11/38/40/6/17
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[100s it 4382] NEW BEST 8290 (op 4 a 128 len 11) len 168
+[100s it 4382] ADJ BEST 8290 (raw 8290 pen 0)
+[100s it 4389] NEW BEST 8294 (op 0 i 150 D 8) len 166
+[100s it 4389] ADJ BEST 8294 (raw 8294 pen 0)
+[139s] it 6000 acc 679 cur 8286 best 8294 temp 2.3 elite 40 gains 1056/459/945/439/171/46/185/731/103/0 acc 135/127/206/46/21/16/49/49/6/24
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[248s] it 10000 acc 1179 cur 8270 best 8294 temp 15.3 elite 40 gains 1327/904/1682/451/289/126/491/1365/103/372 acc 222/217/389/71/29/29/86/83/10/43
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[304s] it 12000 acc 1467 cur 8266 best 8294 temp 5.1 elite 40 gains 1359/930/1738/479/289/138/511/1369/103/372 acc 279/284/482/87/32/35/101/90/11/66
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[319s it 12572] NEW BEST 8330 (op 6 a 129 len 6) len 158
+[319s it 12572] ADJ BEST 8330 (raw 8330 pen 0)
+[322s it 12690] NEW BEST 8334 (op 6 a 150 len 1) len 164
+[322s it 12690] ADJ BEST 8334 (raw 8334 pen 0)
+[447s] it 18000 acc 2337 cur 8223 best 8334 temp 11.7 elite 40 gains 2037/1481/2355/732/333/230/1106/1735/103/516 acc 450/432/752/172/41/50/158/140/17/125
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[597s] it 24000 acc 3184 cur 8202 best 8334 temp 26.5 elite 40 gains 2553/1925/3233/856/349/242/1230/1869/111/588 acc 633/591/1011/239/66/67/209/173/27/168
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[766s] it 30000 acc 4007 cur 8322 best 8334 temp 60.0 elite 40 gains 2604/2212/3585/896/365/254/1380/1996/111/588 acc 790/747/1274/312/86/76/249/203/35/235
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 4007 best 8334 restarts 7
+elite: 8778 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334 8334

@@ -1,0 +1,64 @@
+in/B1_f_-2_0_b1_8033_14beam.txt: 134 moves, 7798 minutes (replay 7798)
+in/f_-2_0_b1_8033_14.txt: 134 moves, 8033 minutes (replay 8033)
+in/f_-2_0_b1_8127_13.txt: 157 moves, 8127 minutes (replay 8127)
+in/f_-2_0_b1_8297_12.txt: 154 moves, 8297 minutes (replay 8297)
+start in/B1_f_-2_0_b1_8033_14beam.txt: 134 moves, 7798 minutes
+start 7798: 0 free sinks, exact necessity ok (bad move 0)
+[3s it 91] NEW BEST 7806 (op 1 i 87 D 3) len 139
+[3s it 91] ADJ BEST 7806 (raw 7806 pen 0)
+[15s it 547] NEW BEST 7814 (op 2 i 89 D 4) len 141
+[15s it 547] ADJ BEST 7814 (raw 7814 pen 0)
+[17s it 670] NEW BEST 7833 (op 7 a 101 c 88 d 113 b 129) len 146
+[17s it 670] ADJ BEST 7833 (raw 7833 pen 0)
+[41s] it 2000 acc 468 cur 7776 best 7833 temp 20.1 elite 20 gains 890/733/1343/304/0/66/350/171/0/128 acc 86/91/138/45/4/8/44/26/2/24
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[46s it 2333] NEW BEST 7853 (op 2 i 144 D 3) len 154
+[46s it 2333] ADJ BEST 7853 (raw 7853 pen 0)
+[48s it 2533] NEW BEST 7855 (op 0 i 40 D 1) len 154
+[48s it 2533] ADJ BEST 7855 (raw 7855 pen 0)
+[50s it 2708] NEW BEST 7858 (op 2 i 143 D 7) len 157
+[50s it 2708] ADJ BEST 7858 (raw 7858 pen 0)
+[51s it 2730] NEW BEST 7862 (op 6 a 141 len 4) len 153
+[51s it 2730] ADJ BEST 7862 (raw 7862 pen 0)
+[51s it 2757] NEW BEST 7866 (op 2 i 113 D 3) len 153
+[51s it 2757] ADJ BEST 7866 (raw 7866 pen 0)
+[79s it 4694] NEW BEST 7867 (op 7 a 66 c 60 d 87 b 86) len 158
+[79s it 4694] ADJ BEST 7867 (raw 7867 pen 0)
+[92s it 5463] NEW BEST 7870 (op 1 i 60 D 2) len 149
+[92s it 5463] ADJ BEST 7870 (raw 7870 pen 0)
+[92s it 5468] NEW BEST 7874 (op 0 i 142 D 7) len 149
+[92s it 5468] ADJ BEST 7874 (raw 7874 pen 0)
+[93s it 5589] NEW BEST 7878 (op 1 i 63 D 3) len 141
+[93s it 5589] ADJ BEST 7878 (raw 7878 pen 0)
+[99s it 5975] NEW BEST 7882 (op 3 i 138 D 1) len 153
+[99s it 5975] ADJ BEST 7882 (raw 7882 pen 0)
+[100s] it 6000 acc 1014 cur 7882 best 7882 temp 2.3 elite 40 gains 1089/760/1521/311/0/74/408/223/4/128 acc 187/187/311/95/21/18/77/49/4/65
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[114s it 7005] NEW BEST 7883 (op 5 a 109 len 6) len 154
+[114s it 7005] ADJ BEST 7883 (raw 7883 pen 0)
+[246s it 15725] NEW BEST 7901 (op 2 i 133 D 4) len 139
+[246s it 15725] ADJ BEST 7901 (raw 7901 pen 0)
+[247s it 15767] NEW BEST 7905 (op 6 a 106 len 10) len 151
+[247s it 15767] ADJ BEST 7905 (raw 7905 pen 0)
+[264s it 16581] NEW BEST 7908 (op 2 i 75 D 6) len 150
+[264s it 16581] ADJ BEST 7908 (raw 7908 pen 0)
+[290s it 17834] NEW BEST 7909 (op 1 i 139 D 3) len 149
+[290s it 17834] ADJ BEST 7909 (raw 7909 pen 0)
+[290s it 17838] NEW BEST 7912 (op 2 i 28 D 4) len 154
+[290s it 17838] ADJ BEST 7912 (raw 7912 pen 0)
+[294s] it 18000 acc 2848 cur 7871 best 7912 temp 11.7 elite 40 gains 2236/1679/3667/860/38/78/950/859/91/544 acc 552/528/837/269/71/43/190/141/30/187
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[349s it 20591] NEW BEST 7913 (op 1 i 108 D 2) len 151
+[349s it 20591] ADJ BEST 7913 (raw 7913 pen 0)
+[360s it 21153] NEW BEST 7937 (op 7 a 111 c 122 d 144 b 127) len 143
+[360s it 21153] ADJ BEST 7937 (raw 7937 pen 0)
+[379s] it 22000 acc 3393 cur 7937 best 7937 temp 1.3 elite 40 gains 2320/1727/3713/861/38/78/954/884/91/576 acc 662/625/996/326/83/46/225/158/33/239
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[388s it 22405] NEW BEST 7938 (op 2 i 32 D 6) len 160
+[388s it 22405] ADJ BEST 7938 (raw 7938 pen 0)
+[474s] it 26000 acc 4161 cur 7881 best 7938 temp 8.9 elite 40 gains 3240/2217/4841/1232/70/78/1491/1190/196/992 acc 798/766/1218/398/112/56/290/198/41/284
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[515s it 28087] NEW BEST 7940 (op 4 a 28 len 19) len 155
+[515s it 28087] ADJ BEST 7940 (raw 7940 pen 0)
+done it 30000 acc 4644 best 7940 restarts 5
+elite: 8297 8127 8033 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940 7940

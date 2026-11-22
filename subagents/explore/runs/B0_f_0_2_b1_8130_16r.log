@@ -1,0 +1,27 @@
+in/B0_f_0_2_b1_8130_16adj.txt: 147 moves, 7408 minutes (replay 7408)
+in/f_0_2_b1_8130_16.txt: 156 moves, 8130 minutes (replay 8130)
+in/f_0_2_b1_8162_15.txt: 153 moves, 8162 minutes (replay 8162)
+start in/B0_f_0_2_b1_8130_16adj.txt: 147 moves, 7408 minutes
+start 7408: 0 free sinks, exact necessity ok (bad move 0)
+[2s it 9] NEW BEST 7469 (op 0 i 83 D 5) len 148
+[2s it 9] ADJ BEST 7469 (raw 7469 pen 0)
+[5s it 93] NEW BEST 7593 (op 2 i 106 D 8) len 144
+[5s it 93] ADJ BEST 7593 (raw 7593 pen 0)
+[6s it 103] NEW BEST 7623 (op 3 i 140 D 1) len 145
+[6s it 103] ADJ BEST 7623 (raw 7623 pen 0)
+[6s it 127] NEW BEST 7648 (op 0 i 82 D 5) len 148
+[6s it 127] ADJ BEST 7648 (raw 7648 pen 0)
+[9s it 197] NEW BEST 8130 (op 1 i 40 D 3) len 158
+[9s it 197] ADJ BEST 8130 (raw 8130 pen 0)
+[152s] it 6000 acc 1040 cur 8130 best 8130 temp 2.3 elite 40 gains 1163/328/1325/280/74/65/603/574/0/374 acc 182/163/311/87/35/21/75/82/5/79
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[338s] it 14000 acc 2274 cur 8130 best 8130 temp 1.7 elite 40 gains 2173/980/2565/709/219/157/1524/1276/3/952 acc 406/375/642/201/71/46/171/170/18/174
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[388s] it 16000 acc 2623 cur 8130 best 8130 temp 34.8 elite 40 gains 2405/1234/3229/841/261/191/1720/1454/6/1188 acc 476/440/728/225/82/51/196/201/22/202
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[477s] it 20000 acc 3246 cur 8130 best 8130 temp 3.9 elite 40 gains 2712/1357/3799/1054/357/195/1986/1739/6/1358 acc 589/554/912/275/99/58/231/250/25/253
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[518s] it 22000 acc 3486 cur 8130 best 8130 temp 1.3 elite 40 gains 2712/1357/3799/1058/357/195/1986/1746/6/1358 acc 632/607/970/304/107/59/243/267/25/272
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 4633 best 8130 restarts 8
+elite: 8162 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130 8130

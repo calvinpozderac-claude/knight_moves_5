@@ -1,18 +1,3 @@
-./rchain.sh S2_-6_-4_c2_0 71747 arch/cells/-6_-4_c2_0.txt
-./pchain.sh C1_-5_-3_c2_0 18586 arch/cells/-5_-3_c2_0.txt b7,a8,f7,d4 74 300
-./pchain.sh C2_-5_-3_c2_0 85711 arch/cells/-5_-3_c2_0.txt a4,e7,f7 74 300
-./pchain.sh C0_-4_-2_c2_0 24931 arch/cells/-4_-2_c2_0.txt b5,a2,a6,a5,a4 63 300
-./pchain.sh C1_-4_-2_c2_0 57742 arch/cells/-4_-2_c2_0.txt a3,f7,d6 63 300
-./pchain.sh C0_-6_-4_c2_0 38556 arch/cells/-6_-4_c2_0.txt e8,a8,c5,b2,d4 76 300
-./pchain.sh C1_-6_-4_c2_0 85827 arch/cells/-6_-4_c2_0.txt a2,d8,a4,c3 76 300
-./pchain.sh B0_f_-5_-3_c2_9080_1 73305 in/f_-5_-3_c2_9080_1.txt a5,c4,f7,f3,e4,d8 74 300 in/f_-5_-3_c2_9080_0.txt in/f_-5_-3_c2_9080_2.txt
-./pchain.sh B0_f_-5_-3_c2_9080_2 14409 in/f_-5_-3_c2_9080_2.txt c3,f7,b5 72 300 in/f_-5_-3_c2_9080_0.txt in/f_-5_-3_c2_9080_1.txt
-./pchain.sh B0_f_0_2_b1_8130_16 9217 in/f_0_2_b1_8130_16.txt d1,f2,a2 62 300 in/f_0_2_b1_8162_15.txt
-./pchain.sh B0_f_0_2_b1_8162_15 15120 in/f_0_2_b1_8162_15.txt f6,f7,h2,b5 53 300 in/f_0_2_b1_8130_16.txt
-./pchain.sh B1_f_-2_0_b1_8033_14 4915 in/f_-2_0_b1_8033_14.txt a5,d2,f2,a3,e6,b4 48 300 in/f_-2_0_b1_8127_13.txt in/f_-2_0_b1_8297_12.txt
-./pchain.sh B1_f_-2_0_b1_8127_13 82658 in/f_-2_0_b1_8127_13.txt e2,a3,g8,f1,a5,b5 68 300 in/f_-2_0_b1_8033_14.txt in/f_-2_0_b1_8297_12.txt
-./pchain.sh B1_f_-2_0_b1_8297_12 37960 in/f_-2_0_b1_8297_12.txt e6,h1,b2 59 300 in/f_-2_0_b1_8033_14.txt in/f_-2_0_b1_8127_13.txt
-./pchain.sh B1_f_-3_-1_b1_8607_8 73973 in/f_-3_-1_b1_8607_8.txt b7,d6,a8,c6,d5,a4 55 300 
 ./pchain.sh B1_f_-3_-1_c2_8595_7 23563 in/f_-3_-1_c2_8595_7.txt e4,d3,c5,c1 60 300 in/f_-3_-1_c2_8607_6.txt in/f_-3_-1_c2_8703_5.txt
 ./pchain.sh B1_f_-3_-1_c2_8607_6 21622 in/f_-3_-1_c2_8607_6.txt e5,c7,a6,a5,c5,b8 55 300 in/f_-3_-1_c2_8595_7.txt in/f_-3_-1_c2_8703_5.txt
 ./pchain.sh B1_f_-3_-1_c2_8703_5 77906 in/f_-3_-1_c2_8703_5.txt c7,c8,d3 62 300 in/f_-3_-1_c2_8595_7.txt in/f_-3_-1_c2_8607_6.txt

@@ -66,3 +66,32 @@ G0_-4_-2_c2_0p 0 [790s it 20170] ADJ BEST 6630 (raw 6630 pen 0) | done it 30000 
 G0_-5_-3_c2_2p 0 [676s it 28792] ADJ BEST 7796 (raw 7796 pen 0) | done it 30000 acc 4256 best 8937 restarts 26
 G0_-4_-2_c2_0r 19 [210s it 9132] ADJ BEST 7727 (raw 7727 pen 0) | done it 30000 acc 3402 best 7727 restarts 7
 G1_-4_-2_c2_0p 0 [1153s it 28810] ADJ BEST 7649 (raw 7649 pen 0) | done it 29996 acc 3314 best 8983 restarts 16
+Bn_-3_-1_b1_0 0  | done it 60000 acc 6812 best 8607 restarts 19
+Bn_-5_-3_b1_0 4 [743s it 41741] ADJ BEST 8609 (raw 8609 pen 0) | done it 60000 acc 6817 best 8609 restarts 21
+Bn_-2_0_b1_0 0  | done it 60000 acc 8496 best 8297 restarts 13
+C1_-5_-3_c2_0p 0 [556s it 20776] ADJ BEST 8374 (raw 8374 pen 0) | done it 30000 acc 4560 best 9080 restarts 9
+C2_-5_-3_c2_0p 0 [194s it 6960] ADJ BEST 8228 (raw 8228 pen 0) | done it 30000 acc 4765 best 9080 restarts 29
+Bn_0_2_b1_0 0  | done it 51261 acc 7337 best 8162 restarts 21
+S2_-6_-4_c2_0 0  | done it 60000 acc 8422 best 8778 restarts 19
+C1_-5_-3_c2_0r 3 [3s it 86] ADJ BEST 9080 (raw 9080 pen 0) | done it 30000 acc 4311 best 9080 restarts 4
+C2_-5_-3_c2_0r 2 [4s it 87] ADJ BEST 9080 (raw 9080 pen 0) | done it 30000 acc 4586 best 9080 restarts 3
+C0_-4_-2_c2_0p 0 [855s it 21832] ADJ BEST 7228 (raw 7828 pen 600) | done it 30000 acc 5332 best 8983 restarts 8
+C1_-4_-2_c2_0p 0 [674s it 20576] ADJ BEST 8505 (raw 8505 pen 0) | done it 30000 acc 5171 best 8983 restarts 29
+C1_-6_-4_c2_0p 0 [478s it 20804] ADJ BEST 7543 (raw 7543 pen 0) | done it 30000 acc 3647 best 8778 restarts 24
+C0_-6_-4_c2_0p 0 [965s it 28901] ADJ BEST 7230 (raw 7230 pen 0) | done it 30000 acc 5236 best 8778 restarts 8
+C0_-6_-4_c2_0r 0 [480s it 23659] ADJ BEST 8778 (raw 8778 pen 0) | done it 30000 acc 3747 best 8857 restarts 8
+C1_-6_-4_c2_0r 21 [322s it 12690] ADJ BEST 8334 (raw 8334 pen 0) | done it 30000 acc 4007 best 8334 restarts 7
+C0_-4_-2_c2_0r 19 [401s it 10939] ADJ BEST 8983 (raw 8983 pen 0) | done it 30000 acc 4716 best 8983 restarts 3
+C1_-4_-2_c2_0r 2 [4s it 85] ADJ BEST 8983 (raw 8983 pen 0) | done it 30000 acc 4482 best 8983 restarts 4
+B0_f_-5_-3_c2_9080_1p 0 [198s it 6230] ADJ BEST 7654 (raw 7654 pen 0) | done it 30000 acc 4276 best 9080 restarts 13
+B0_f_-5_-3_c2_9080_2p 0 [911s it 29697] ADJ BEST 8372 (raw 8372 pen 0) | done it 30000 acc 5200 best 9080 restarts 10
+B0_f_0_2_b1_8162_15p 0 [450s it 16225] ADJ BEST 7164 (raw 7164 pen 0) | done it 30000 acc 4330 best 8162 restarts 14
+B0_f_0_2_b1_8130_16p 0 [778s it 20781] ADJ BEST 7408 (raw 7408 pen 0) | done it 30000 acc 4782 best 8130 restarts 27
+B0_f_-5_-3_c2_9080_2r 28 [187s it 5957] ADJ BEST 8848 (raw 8848 pen 0) | done it 30000 acc 5309 best 8848 restarts 3
+B0_f_-5_-3_c2_9080_1r 21 [1017s it 29857] ADJ BEST 8593 (raw 8593 pen 0) | done it 30000 acc 4827 best 8593 restarts 7
+B0_f_0_2_b1_8130_16r 5 [9s it 197] ADJ BEST 8130 (raw 8130 pen 0) | done it 30000 acc 4633 best 8130 restarts 8
+B0_f_0_2_b1_8162_15r 14 [462s it 15192] ADJ BEST 8162 (raw 8162 pen 0) | done it 30000 acc 4340 best 8162 restarts 11
+B1_f_-2_0_b1_8033_14p 1 [874s it 29035] ADJ BEST 6719 (raw 6719 pen 0) | done it 30000 acc 4519 best 8097 restarts 22
+H_8857 0 [1162s it 53217] ADJ BEST 8656 (raw 8656 pen 0) | done it 60000 acc 7719 best 8857 restarts 11
+B1_f_-2_0_b1_8127_13p 0 [960s it 26880] ADJ BEST 6726 (raw 6726 pen 0) | done it 30000 acc 4402 best 8127 restarts 21
+B1_f_-2_0_b1_8033_14r 23 [515s it 28087] ADJ BEST 7940 (raw 7940 pen 0) | done it 30000 acc 4644 best 7940 restarts 5

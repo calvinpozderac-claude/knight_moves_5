@@ -1,0 +1,21 @@
+arch/cells/-11_-9_c2_0.txt: 179 moves, 9330 minutes (replay 9330)
+arch/cells/-4_-2_c2_0.txt: 166 moves, 8983 minutes (replay 8983)
+xover 9330 x 9330: best 9330
+xover 9330 x 8983: best 9330
+xover 8983 x 9330: best 9330
+xover 8983 x 8983: best 8983
+start 9330: 0 free sinks, exact necessity ok (bad move 0)
+[21s] it 2000 acc 327 cur 9314 best 9330 temp 15.0 elite 40 gains 324/246/413/308/33/40/424/269/0/288 acc 51/53/100/31/8/7/27/25/5/20
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[96s] it 10000 acc 1234 cur 9325 best 9330 temp 11.7 elite 40 gains 741/429/1075/530/65/67/771/683/4/674 acc 239/187/394/97/17/21/89/93/9/88
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[117s] it 12000 acc 1455 cur 9316 best 9330 temp 4.4 elite 40 gains 752/478/1131/542/65/67/775/758/4/706 acc 280/234/461/113/19/26/95/113/10/104
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[135s] it 14000 acc 1639 cur 9326 best 9330 temp 1.6 elite 40 gains 756/484/1154/542/65/67/782/770/4/706 acc 318/273/510/128/21/28/102/126/12/121
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[229s] it 24000 acc 2873 cur 9314 best 9330 temp 19.1 elite 40 gains 1706/847/2583/951/162/191/1198/1402/36/1378 acc 577/459/898/216/44/56/191/197/25/210
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[264s] it 28000 acc 3312 cur 9325 best 9330 temp 2.7 elite 40 gains 1762/898/2842/1007/162/195/1313/1558/36/1410 acc 648/540/1043/247/49/62/227/229/29/238
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 3463 best 9330 restarts 2
+elite: 9330 9330 9330 9330 9330 9330 9330 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328

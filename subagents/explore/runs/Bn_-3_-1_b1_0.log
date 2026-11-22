@@ -1,0 +1,35 @@
+arch/cells/-3_-1_b1_0.txt: 157 moves, 8607 minutes (replay 8607)
+start arch/cells/-3_-1_b1_0.txt: 157 moves, 8607 minutes
+start 8607: 0 free sinks, exact necessity ok (bad move 0)
+[134s] it 8000 acc 1149 cur 8590 best 8607 temp 6.8 elite 40 gains 725/276/1158/434/72/184/286/1720/72/0 acc 238/201/358/87/18/17/78/119/17/16
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[342s] it 20000 acc 2518 cur 8573 best 8607 temp 15.3 elite 40 gains 1099/727/2275/707/333/618/1190/3333/81/0 acc 530/446/773/203/51/47/165/248/27/28
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[374s] it 22000 acc 2762 cur 8595 best 8607 temp 8.9 elite 40 gains 1159/783/2331/707/333/618/1236/3418/81/0 acc 599/498/837/223/53/51/174/268/28/31
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[407s] it 24000 acc 2978 cur 8596 best 8607 temp 5.1 elite 40 gains 1184/791/2381/711/337/618/1254/3465/81/0 acc 635/542/907/239/59/51/189/296/29/31
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[443s] it 26000 acc 3135 cur 8590 best 8607 temp 3.0 elite 40 gains 1189/800/2414/715/337/618/1262/3488/81/0 acc 670/576/953/254/63/52/196/310/30/31
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[481s] it 28000 acc 3277 cur 8606 best 8607 temp 1.7 elite 40 gains 1209/800/2426/715/337/618/1264/3513/81/0 acc 702/598/998/271/67/54/200/324/31/32
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[520s] it 30000 acc 3434 cur 8607 best 8607 temp 60.0 elite 40 gains 1211/801/2431/716/337/618/1268/3527/81/0 acc 730/644/1041/286/73/55/208/331/33/33
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[560s] it 32000 acc 3782 cur 8303 best 8607 temp 34.8 elite 40 gains 1382/1049/3072/1088/512/760/1431/4695/149/0 acc 796/703/1133/314/80/62/232/384/39/39
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[633s] it 36000 acc 4326 cur 8559 best 8607 temp 11.7 elite 40 gains 1733/1200/3440/1249/512/764/1736/5109/149/0 acc 914/800/1294/360/90/71/273/433/42/49
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[713s] it 40000 acc 4769 cur 8597 best 8607 temp 3.9 elite 40 gains 1791/1223/3537/1265/518/778/1760/5215/153/0 acc 1007/898/1416/387/97/80/306/480/48/50
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[860s] it 48000 acc 5659 cur 8466 best 8607 temp 26.5 elite 40 gains 2635/1729/4637/1509/596/786/2155/5974/157/0 acc 1188/1070/1681/467/119/92/367/561/55/59
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[932s] it 52000 acc 6149 cur 8589 best 8607 temp 8.9 elite 40 gains 2949/1762/5118/1525/600/802/2184/6296/157/0 acc 1283/1160/1840/512/135/104/394/598/58/65
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1033s] it 56000 acc 6531 cur 8602 best 8607 temp 3.0 elite 40 gains 3013/1782/5184/1537/604/810/2218/6382/161/0 acc 1367/1226/1951/550/144/113/417/634/63/66
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1085s] it 58000 acc 6695 cur 8607 best 8607 temp 1.7 elite 40 gains 3035/1782/5203/1537/604/812/2224/6398/161/0 acc 1404/1254/2007/563/149/115/426/648/63/66
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1140s] it 60000 acc 6812 cur 8607 best 8607 temp 60.0 elite 40 gains 3035/1782/5210/1537/604/812/2224/6399/161/0 acc 1424/1274/2055/572/153/115/432/657/64/66
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 60000 acc 6812 best 8607 restarts 19
+elite: 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607 8607

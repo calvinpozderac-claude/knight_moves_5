@@ -1,0 +1,4 @@
+X1 xover 9330 x 9330: best 9330 xover 9330 x 8983: best 9330 xover 8983 x 9330: best 9330 xover 8983 x 8983: best 8983  | done it 30000 acc 3463 best 9330 restarts 2
+X2 xover 9330 x 9330: best 9330 xover 9330 x 8945: best 9330 xover 8945 x 9330: best 9330 xover 8945 x 8945: best 8945  | done it 30000 acc 3367 best 9330 restarts 2
+X3 xover 9330 x 9330: best 9330 xover 9330 x 8778: best 9330 xover 8778 x 9330: best 9330 xover 8778 x 8778: best 8842  | done it 30000 acc 3568 best 9330 restarts 2
+X4 xover 9282 x 9282: best 9282 xover 9282 x 8983: best 9282 xover 8983 x 9282: best 9282 xover 8983 x 8983: best 8983  | done it 30000 acc 3542 best 9282 restarts 2

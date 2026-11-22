@@ -1,0 +1,23 @@
+arch/cells/-12_-10_c2_0.txt: 177 moves, 9282 minutes (replay 9282)
+arch/cells/-4_-2_c2_0.txt: 166 moves, 8983 minutes (replay 8983)
+xover 9282 x 9282: best 9282
+xover 9282 x 8983: best 9282
+xover 8983 x 9282: best 9282
+xover 8983 x 8983: best 8983
+start 9282: 0 free sinks, exact necessity ok (bad move 0)
+[60s] it 6000 acc 839 cur 9214 best 9282 temp 2.1 elite 21 gains 390/443/807/210/43/45/183/285/0/292 acc 176/162/240/76/22/14/57/40/5/47
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[143s] it 14000 acc 1706 cur 9216 best 9282 temp 1.6 elite 21 gains 911/668/1507/541/59/164/383/604/36/544 acc 357/306/515/156/35/28/104/93/8/104
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[185s] it 18000 acc 2257 cur 9262 best 9282 temp 9.1 elite 40 gains 1213/913/2403/653/111/270/607/1029/72/974 acc 459/386/692/204/47/43/140/140/11/135
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[204s] it 20000 acc 2445 cur 9271 best 9282 temp 3.4 elite 40 gains 1219/933/2436/661/111/270/627/1063/72/974 acc 490/422/745/221/53/45/154/154/13/148
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[243s] it 24000 acc 2890 cur 9044 best 9282 temp 19.1 elite 40 gains 1398/1099/2733/809/111/308/819/1435/72/1302 acc 581/502/884/260/56/50/174/190/13/180
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[260s] it 26000 acc 3162 cur 9190 best 9282 temp 7.2 elite 40 gains 1420/1153/3053/845/111/312/907/1467/72/1374 acc 631/554/965/279/63/56/195/202/15/202
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[278s] it 28000 acc 3385 cur 9204 best 9282 temp 2.7 elite 40 gains 1479/1153/3071/845/147/312/915/1495/72/1374 acc 675/607/1038/283/68/57/208/213/17/219
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 3542 best 9282 restarts 2
+elite: 9282 9282 9282 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280 9280

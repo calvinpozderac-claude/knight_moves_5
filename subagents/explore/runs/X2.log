@@ -1,0 +1,23 @@
+arch/cells/-11_-9_c2_0.txt: 179 moves, 9330 minutes (replay 9330)
+arch/cells/-5_-3_c2_2.txt: 163 moves, 8945 minutes (replay 8945)
+xover 9330 x 9330: best 9330
+xover 9330 x 8945: best 9330
+xover 8945 x 9330: best 9330
+xover 8945 x 8945: best 8945
+start 9330: 0 free sinks, exact necessity ok (bad move 0)
+[21s] it 2000 acc 320 cur 9298 best 9330 temp 15.0 elite 40 gains 457/60/559/153/104/108/268/134/32/256 acc 52/35/105/24/11/7/34/24/4/24
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[58s] it 6000 acc 731 cur 9322 best 9330 temp 2.1 elite 40 gains 475/95/612/209/104/108/292/254/32/320 acc 129/116/219/58/19/14/59/59/9/49
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[78s] it 8000 acc 934 cur 9320 best 9330 temp 31.3 elite 40 gains 511/197/882/273/104/140/583/302/64/480 acc 155/154/286/72/24/16/73/71/16/67
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[142s] it 14000 acc 1590 cur 9320 best 9330 temp 1.6 elite 40 gains 615/333/1226/365/108/180/908/693/64/704 acc 283/263/482/126/38/22/128/122/21/105
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[198s] it 20000 acc 2287 cur 9314 best 9330 temp 3.4 elite 40 gains 963/595/1612/621/124/216/1124/1072/72/1184 acc 429/377/671/185/56/39/172/177/23/158
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[234s] it 24000 acc 2723 cur 9286 best 9330 temp 19.1 elite 40 gains 1147/828/2033/670/124/224/1308/1476/72/1408 acc 516/448/797/222/60/45/211/206/29/189
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[251s] it 26000 acc 2992 cur 9326 best 9330 temp 7.2 elite 40 gains 1235/865/2234/738/124/244/1460/1534/72/1536 acc 565/494/886/243/67/48/234/220/31/204
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 3367 best 9330 restarts 2
+elite: 9330 9330 9330 9330 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328 9328

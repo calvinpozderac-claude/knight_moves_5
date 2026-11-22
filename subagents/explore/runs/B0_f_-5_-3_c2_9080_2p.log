@@ -1,0 +1,50 @@
+in/f_-5_-3_c2_9080_2.txt: 166 moves, 9080 minutes (replay 9080)
+in/f_-5_-3_c2_9080_0.txt: 168 moves, 9080 minutes (replay 9080)
+in/f_-5_-3_c2_9080_1.txt: 166 moves, 9080 minutes (replay 9080)
+start in/f_-5_-3_c2_9080_2.txt: 166 moves, 9080 minutes
+start 9080: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 4] ADJ BEST 7328 (raw 8528 pen 1200)
+[1s it 19] ADJ BEST 7518 (raw 7518 pen 0)
+[1s it 27] ADJ BEST 7620 (raw 7620 pen 0)
+[1s it 29] ADJ BEST 7743 (raw 7743 pen 0)
+[1s it 32] ADJ BEST 7805 (raw 7805 pen 0)
+[2s it 64] ADJ BEST 7808 (raw 7808 pen 0)
+[2s it 65] ADJ BEST 8017 (raw 8017 pen 0)
+[8s it 168] ADJ BEST 8018 (raw 8018 pen 0)
+[14s it 317] ADJ BEST 8069 (raw 8069 pen 0)
+[15s it 348] ADJ BEST 8073 (raw 8073 pen 0)
+[18s it 422] ADJ BEST 8297 (raw 8297 pen 0)
+[19s it 471] ADJ BEST 8301 (raw 8301 pen 0)
+[38s it 1034] ADJ BEST 8337 (raw 8337 pen 0)
+[65s it 2063] ADJ BEST 8340 (raw 8340 pen 0)
+[77s it 2459] ADJ BEST 8347 (raw 8347 pen 0)
+[81s it 2563] ADJ BEST 8351 (raw 8351 pen 0)
+[81s it 2567] ADJ BEST 8352 (raw 8352 pen 0)
+[120s it 3999] ADJ BEST 8364 (raw 8364 pen 0)
+[120s] it 4000 acc 856 cur 8364 best 9080 temp 7.7 elite 40 gains 747/870/2913/681/78/154/699/893/0/540 acc 152/152/248/86/22/20/67/63/3/43
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[122s it 4049] ADJ BEST 8367 (raw 8367 pen 0)
+[130s it 4256] ADJ BEST 8368 (raw 8368 pen 0)
+[183s] it 6000 acc 1137 cur 8366 best 9080 temp 2.4 elite 40 gains 762/890/2933/681/78/154/705/931/0/540 acc 207/215/325/114/30/28/78/80/4/56
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[209s it 6958] ADJ BEST 8370 (raw 8370 pen 0)
+[242s] it 8000 acc 1433 cur 8292 best 9080 temp 59.7 elite 40 gains 1216/920/3275/862/78/192/967/963/0/616 acc 267/272/416/142/37/31/96/92/9/71
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[370s] it 12000 acc 2223 cur 8345 best 9080 temp 5.8 elite 40 gains 1631/1557/4401/1028/212/364/1186/1242/0/998 acc 401/429/659/210/55/42/164/134/13/116
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[557s] it 18000 acc 3287 cur 8335 best 9080 temp 13.9 elite 40 gains 2557/2303/5434/1377/304/437/1609/1709/115/1340 acc 605/636/973/307/86/57/230/200/25/168
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[671s] it 22000 acc 3863 cur 8367 best 9080 temp 1.3 elite 40 gains 2592/2366/5638/1377/304/437/1618/1754/115/1378 acc 711/754/1143/374/99/62/264/230/28/198
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[681s it 22283] ADJ BEST 8371 (raw 8371 pen 0)
+[727s] it 24000 acc 4284 cur 8318 best 9080 temp 33.3 elite 40 gains 3038/3099/7168/1789/324/517/1871/2170/115/1656 acc 778/827/1283/418/105/69/305/262/29/208
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[795s] it 26000 acc 4650 cur 8328 best 9080 temp 10.4 elite 40 gains 3228/3288/7539/1919/356/517/2005/2271/115/1808 acc 849/878/1412/456/113/71/338/282/29/222
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[860s] it 28000 acc 4968 cur 8363 best 9080 temp 3.2 elite 40 gains 3274/3343/7565/1928/356/529/2059/2298/115/1808 acc 925/951/1499/484/117/77/352/299/30/234
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[911s it 29697] ADJ BEST 8372 (raw 8372 pen 0)
+[923s] it 30000 acc 5200 cur 8371 best 9080 temp 80.0 elite 40 gains 3276/3343/7580/1928/358/529/2060/2311/115/1808 acc 960/1005/1562/508/121/77/365/316/33/253
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 30000 acc 5200 best 9080 restarts 10
+elite: 9080 9080 9080 8528 8528 8372 8372 8372 8372 8372 8372 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8371 8370

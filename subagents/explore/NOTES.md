@@ -29,3 +29,22 @@ Record family: levels (-12..-9) c2 start, sitter Jaccard 0.94-1.0 (9150-9330). O
 - 00:56 new-cell relax+beam: (-7,-5) 8293 -> 8621 -> beam 8764 (re-queued); (-5,-3) cell 3 8202 -> 8673; (-3,-1) cell 2 8450 -> 8515; (-6,-4) 8715 -> 8716; (-3,-1) c4 -> 8582.
 - 05:03 Resumed (5 h limit + restart). arch 84 cells: 8983 (-4,-2) J .62, 8937 (-5,-3) J .63, 8778 (-6,-4), 8724 (-4,-2), 8673 (-5,-3). Queue: rchain (relax+beam, iterating) and pchain (perturb->beam->relax) on these, then the old queue.
 - 06:24 S/E round: 8983 and 8945 cells are stable (perturb 3-4 sitters -> relax returns to 8983/8929/8925); (-4,-2) cell 2 8724 -> 8797. Queued G chains: 6-8 sitter perturbation at 500 on 8983/8945 cells.
+- 10:06 Resumed. Bolder moves: graft.sh X1-X4 (crossover at every cut point both ways: 9330 x 8983 (-4,-2), 9330 x 8945 (-5,-3), 9330 x 8778 (-6,-4), 9282 x 8983; then 1200 s LNS); Bn_* rchains on b1-opening cells with --novfirst 3000 c2; then the queued G chains (6-8 sitters at 500).
+- Graft test (graft.sh, crossover at every cut both ways): record x new family always returns the record (9330/9282) and new x
+  new returns the family's own best (8983, 8945; 8778 -> 8842): no cut point gives a hybrid better than either parent.
+  Climb vs dance split (DSSCORE: minutes at the dance start T(ds), final - T(ds) = dance minutes, idealised dance potential):
+  | family | ds | T(ds) | dance minutes | pot | final |
+  | 9330 (-11,-9) c2 | 93 | 1155 | 8175 | 9651 | 9330 |
+  | 9282 (-12,-10) c2 | 92 | 1222 | 8060 | 9722 | 9282 |
+  | 9080 (-5,-3) c2 J.75 | 74 | 757 | 8323 | 8625 | 9080 |
+  | 8983 (-4,-2) c2 J.62 | 67 | 682 | 8301 | 8822 | 8983 |
+  | 8945 (-5,-3) c2 J.63 | 65 | 750 | 8195 | 8906 | 8945 |
+  | 8778 (-6,-4) c2 | 77 | 822 | 7956 | 9474 | 8778 |
+  | 8797 (-4,-2) c2 | 60 | 682 | 8115 | 9154 | 8797 |
+  | 8607 (-3,-1) b1 | 60 | 746 | 7861 | 9474 | 8607 |
+  | 8297 (-2,0) b1 | 60 | 655 | 7642 | 8579 | 8297 |
+  => the (-5,-3)/(-4,-2) families are CLIMB-limited: their dances are as long as the record's (8.2-8.3k) but they reach the dance
+  with ~400-470 fewer minutes (the record's deep climb to levels -11/-9 is its edge). The (-6,-4) and b1 (-3,-1) families are
+  DANCE-limited (potential 9474 but dance 7.9k: ~700 below potential).
+- 10:31 wide T-ranked dance beams (W 60000, k 60-80) on the dance-limited cells: (-6,-4) best 8764 < 8778, b1 (-3,-1) 8072 < 8607 (the beam's minutes ranking is weak there).
+- 11:42 C-chains: (-5,-3) 9080 cell perturbed to 8228 -> block beam 9020 (a different 9020 tour; relax with the 9080 donor fell back to 9080); (-6,-4) 8778 -> perturb 7230 -> beam 8857 -> relax 8857. Queued rchains H_9020 and H_8857 (self-donor only).

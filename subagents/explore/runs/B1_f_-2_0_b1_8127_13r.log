@@ -1,0 +1,30 @@
+in/B1_f_-2_0_b1_8127_13beam.txt: 126 moves, 7430 minutes (replay 7430)
+in/f_-2_0_b1_8127_13.txt: 157 moves, 8127 minutes (replay 8127)
+in/f_-2_0_b1_8033_14.txt: 134 moves, 8033 minutes (replay 8033)
+in/f_-2_0_b1_8297_12.txt: 154 moves, 8297 minutes (replay 8297)
+start in/B1_f_-2_0_b1_8127_13beam.txt: 126 moves, 7430 minutes
+start 7430: 0 free sinks, exact necessity ok (bad move 0)
+[1s it 27] NEW BEST 7551 (op 2 i 107 D 7) len 133
+[1s it 27] ADJ BEST 7551 (raw 7551 pen 0)
+[1s it 62] NEW BEST 7552 (op 2 i 123 D 7) len 130
+[1s it 62] ADJ BEST 7552 (raw 7552 pen 0)
+[1s it 77] NEW BEST 7553 (op 2 i 110 D 5) len 135
+[1s it 77] ADJ BEST 7553 (raw 7553 pen 0)
+[2s it 91] NEW BEST 7586 (op 1 i 87 D 3) len 135
+[2s it 91] ADJ BEST 7586 (raw 7586 pen 0)
+[2s it 108] NEW BEST 7602 (op 2 i 132 D 2) len 137
+[2s it 108] ADJ BEST 7602 (raw 7602 pen 0)
+[49s it 1742] NEW BEST 7609 (op 4 a 90 len 1) len 133
+[49s it 1742] ADJ BEST 7609 (raw 7609 pen 0)
+[51s it 1831] NEW BEST 7617 (op 6 a 120 len 6) len 132
+[51s it 1831] ADJ BEST 7617 (raw 7617 pen 0)
+[54s] it 2000 acc 524 cur 7600 best 7617 temp 20.1 elite 40 gains 566/490/1040/169/84/166/288/198/94/272 acc 89/89/148/48/14/19/53/30/8/26
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[60s it 2139] NEW BEST 7669 (op 7 a 49 c 45 d 69 b 72) len 134
+[60s it 2139] ADJ BEST 7669 (raw 7669 pen 0)
+[62s it 2157] NEW BEST 7682 (op 0 i 127 D 6) len 135
+[62s it 2157] ADJ BEST 7682 (raw 7682 pen 0)
+[108s] it 4000 acc 928 cur 7586 best 7682 temp 6.8 elite 40 gains 653/606/1231/220/84/205/326/382/115/338 acc 169/159/264/88/23/26/80/54/11/54
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[157s] it 6000 acc 1248 cur 7615 best 7682 temp 2.3 elite 40 gains 688/614/1281/220/84/206/346/385/115/338 acc 235/230/364/115/28/34/95/64/12/71
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
