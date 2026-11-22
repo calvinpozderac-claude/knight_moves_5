@@ -18,7 +18,7 @@
 struct M { uint8_t q; int8_t dz; uint8_t key = 0; uint8_t fr = 255; uint8_t fd = 0; };  // fd: free sink (target in the knight's group)
 static int FREEMAX = 0;  // fr: square the move leaves (255 unknown)  // key: waits in the tour it came from (or final move)
 static int TYP[64][64];
-static long long NOVP = 0, NOVLP = 0, NOVFP = 0; static double NOVJ = 0.5; static bool NOVSIT[64]; static int NOVLV[16], NOVLVN = 0; static int NOVFIRST = -1;
+static long long NOVP = 0, NOVLP = 0, NOVFP = 0, NOVCP = 0, NOVOPP = 0; static double NOVCJ = 0.5; static bool NOVCSIT[64]; static int NOVOPSQ[15], NOVOPK = 12; static double NOVJ = 0.5; static bool NOVSIT[64]; static int NOVLV[16], NOVLVN = 0; static int NOVFIRST = -1;
 static inline bool operator==(const M& a, const M& b) { return a.q == b.q && a.dz == b.dz && a.fd == b.fd; }
 
 // apply move m to s; false if illegal (s may be garbage then)
@@ -84,10 +84,11 @@ static void mark_keys(vector<M>& X) {
   for (auto& m : X) { long long T0 = s.T; m.fr = s.pos; stepM(s, m); m.key = (s.T > T0 || m.q == H8); }
 }
 static long long nov_pen(const vector<M>& X) {
-  if (!NOVP && !NOVLP && !NOVFP) return 0;
+  if (!NOVP && !NOVLP && !NOVFP && !NOVCP && !NOVOPP) return 0;
   long long pen = 0;
   if (NOVFP && !X.empty() && X[0].q == NOVFIRST) pen += NOVFP;
-  if (!NOVP && !NOVLP) return pen;
+  if (NOVOPP && X.size() >= 15) { int same = 0; for (int k = 0; k < 15; k++) if (X[k].q == NOVOPSQ[k]) same++; if (same >= NOVOPK) pen += NOVOPP; }
+  if (!NOVP && !NOVLP && !NOVCP) return pen;
   S s = start_state(); int ds = -1, bestn = -1, bi = 0, blo = 0; vector<int> from(X.size()); vector<char> sat(X.size());
   int lvlo = 0;
   for (size_t i = 0; i < X.size(); i++) {
@@ -100,6 +101,9 @@ static long long nov_pen(const vector<M>& X) {
   }
   if (ds < 0) { ds = bi; lvlo = blo; }
   if (NOVLP) for (int k = 0; k < NOVLVN; k++) if (NOVLV[k] == lvlo) { pen += NOVLP; break; }
+  if (NOVCP) { bool in[64] = {false}; for (int i = 0; i < ds; i++) if (sat[i]) in[from[i]] = true;
+    int I = 0, U = 0; for (int k = 0; k < 64; k++) { if (in[k] && NOVCSIT[k]) I++; if (in[k] || NOVCSIT[k]) U++; }
+    double J = U ? (double)I / U : 0; if (J > NOVCJ) pen += (long long)(NOVCP * (J - NOVCJ) / (1 - NOVCJ) + 0.5) + NOVCP / 4; }
   if (NOVP) { bool in[64] = {false}; for (size_t i = ds; i < X.size(); i++) if (sat[i]) in[from[i]] = true;
     int I = 0, U = 0; for (int k = 0; k < 64; k++) { if (in[k] && NOVSIT[k]) I++; if (in[k] || NOVSIT[k]) U++; }
     double J = U ? (double)I / U : 0; if (J > NOVJ) pen += (long long)(NOVP * (J - NOVJ) / (1 - NOVJ) + 0.5) + NOVP / 4; }
@@ -432,6 +436,7 @@ static double dance_pot2(const S& s) {
 }
 
 // freesit: dance block-macro beam from state s0 reached by `prefix`; returns best finish (tour in bestX)
+static double BBMIX = getenv("BBMIX") ? atof(getenv("BBMIX")) : 0;
 static long long blockbeam(const vector<M>& prefix, const S& s0, int W, bool BBT, vector<M>& bestX, int MAXD = 40, bool verbose = false) {
   struct BN { S s; int par; vector<M> mv; double h; };
   vector<vector<BN>> layers; layers.push_back({{s0, -1, {}, 0}});
@@ -445,7 +450,7 @@ static long long blockbeam(const vector<M>& prefix, const S& s0, int W, bool BBT
       SR.path = pathOf(L, (int)i); SR.bestT = -1; SR.bestA = -(1LL<<60); SR.finish_check(s);
       if (SR.bestT > best && score_full(SR.best) == SR.bestT) { best = SR.bestT; bestX = SR.best; } }
     vector<BN> nxt; std::unordered_map<uint64_t, int> seenI;
-    auto addN = [&](const S& c, int par, const vector<M>& sq) { double hv = BBT ? c.T : dance_pot2(c); if (hv < -1e8) hv = c.T; uint64_t h = hashS(c); auto it = seenI.find(h);
+    auto addN = [&](const S& c, int par, const vector<M>& sq) { double pv = dance_pot2(c); double hv = BBT ? c.T : pv; if (BBMIX > 0 && pv > -1e8) hv = c.T + BBMIX * (pv - c.T); if (hv < -1e8) hv = c.T; uint64_t h = hashS(c); auto it = seenI.find(h);
       if (it == seenI.end()) { seenI[h] = (int)nxt.size(); nxt.push_back({c, par, sq, hv}); } else if (nxt[it->second].s.T < c.T) nxt[it->second] = {c, par, sq, hv}; };
     for (size_t i = 0; i < layers[L].size(); i++) {
       const S& s = layers[L][i].s; pinned_moves(s, 3, false, mv1);
@@ -561,6 +566,8 @@ int main(int argc, char** argv) {
     else if (s == "--vpen") VPEN = atoll(argv[++a]);
     else if (s == "--novp") NOVP = atoll(argv[++a]);
     else if (s == "--novj") NOVJ = atof(argv[++a]);
+    else if (s == "--novclimb") { NOVCP = atoll(argv[++a]); NOVCJ = atof(argv[++a]); string l = argv[++a]; for (size_t k = 0; k + 1 < l.size(); k += 3) NOVCSIT[(l[k]-'a')+8*(l[k+1]-'1')] = true; }
+    else if (s == "--novop") { NOVOPP = atoll(argv[++a]); NOVOPK = atoi(argv[++a]); string l = argv[++a]; for (int k = 0; k < 15 && 3 * k + 1 < (int)l.size(); k++) NOVOPSQ[k] = (l[3*k]-'a')+8*(l[3*k+1]-'1'); }
     else if (s == "--novsit") { string l = argv[++a]; for (size_t k = 0; k + 1 < l.size(); k += 3) NOVSIT[(l[k]-'a')+8*(l[k+1]-'1')] = true; }
     else if (s == "--novlv") { NOVLP = atoll(argv[++a]); string l = argv[++a]; size_t p = 0; while (p < l.size()) { size_t e = l.find(',', p); if (e == string::npos) e = l.size(); NOVLV[NOVLVN++] = atoi(l.substr(p, e - p).c_str()); p = e + 1; } }
     else if (s == "--novfirst") { NOVFP = atoll(argv[++a]); string l = argv[++a]; NOVFIRST = (l[0]-'a')+8*(l[1]-'1'); }

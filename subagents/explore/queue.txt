@@ -1,3 +1,9 @@
+./cchain.sh K5 60035 arch/cells/-11_-9_c2_0.txt 3000 0.7 3000
+./cchain.sh K6 60042 arch/cells/-9_-7_c2_0.txt 2000 0.6 2000
+./cchain.sh K7 60049 arch/cells/-10_-8_c2_0.txt 2000 0.6 2000
+./cchain.sh K8 60056 arch/cells/-11_-9_c2_0.txt 2000 0.6 2000
+./rchain.sh H2_9048 50201 runs/H_9020_best.txt
+./rchain.sh H2_8857 50202 arch/cells/-6_-4_c2_0.txt
 ./pchain.sh B1_f_-3_-1_c2_8595_7 23563 in/f_-3_-1_c2_8595_7.txt e4,d3,c5,c1 60 300 in/f_-3_-1_c2_8607_6.txt in/f_-3_-1_c2_8703_5.txt
 ./pchain.sh B1_f_-3_-1_c2_8607_6 21622 in/f_-3_-1_c2_8607_6.txt e5,c7,a6,a5,c5,b8 55 300 in/f_-3_-1_c2_8595_7.txt in/f_-3_-1_c2_8703_5.txt
 ./pchain.sh B1_f_-3_-1_c2_8703_5 77906 in/f_-3_-1_c2_8703_5.txt c7,c8,d3 62 300 in/f_-3_-1_c2_8595_7.txt in/f_-3_-1_c2_8607_6.txt
