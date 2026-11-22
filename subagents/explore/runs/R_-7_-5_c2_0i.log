@@ -1,0 +1,44 @@
+in/R_-7_-5_c2_0_beam.txt: 169 moves, 8764 minutes (replay 8764)
+start in/R_-7_-5_c2_0_beam.txt: 169 moves, 8764 minutes
+start 8764: 0 free sinks, exact necessity ok (bad move 0)
+[0s it 3] ADJ BEST 8700 (raw 8700 pen 0)
+[30s it 854] ADJ BEST 8704 (raw 8704 pen 0)
+[42s it 1159] ADJ BEST 8723 (raw 8723 pen 0)
+[257s it 6651] ADJ BEST 8755 (raw 8755 pen 0)
+[259s it 6706] ADJ BEST 8759 (raw 8759 pen 0)
+[343s it 8785] ADJ BEST 8762 (raw 8762 pen 0)
+[344s it 8797] ADJ BEST 8763 (raw 8763 pen 0)
+[345s it 8809] NEW BEST 8767 (op 2 i 130 D 4) len 166
+[345s it 8809] ADJ BEST 8767 (raw 8767 pen 0)
+[389s] it 10000 acc 1588 cur 8763 best 8767 temp 3.9 elite 40 gains 1466/577/2460/124/51/163/750/921/146/0 acc 324/316/480/114/29/28/108/103/8/78
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[467s] it 12000 acc 1833 cur 8767 best 8767 temp 2.3 elite 40 gains 1473/581/2480/124/51/163/754/929/146/0 acc 382/358/553/133/37/32/121/117/8/92
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[497s it 12792] NEW BEST 8770 (op 0 i 33 D 4) len 167
+[497s it 12792] ADJ BEST 8770 (raw 8770 pen 0)
+[540s] it 14000 acc 2078 cur 8766 best 8770 temp 1.3 elite 40 gains 1476/585/2487/124/51/163/754/933/146/0 acc 435/408/631/150/40/34/129/129/8/114
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[615s] it 16000 acc 2368 cur 8403 best 8770 temp 45.7 elite 40 gains 2017/585/2771/124/51/167/1042/1203/146/0 acc 498/456/715/176/45/36/150/156/10/126
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[689s] it 18000 acc 2734 cur 8621 best 8770 temp 26.5 elite 40 gains 2427/889/3351/148/111/340/1454/1280/230/0 acc 574/510/833/201/50/45/180/178/14/149
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[847s it 22096] NEW BEST 8771 (op 2 i 83 D 3) len 170
+[847s it 22096] ADJ BEST 8771 (raw 8771 pen 0)
+[874s it 22777] NEW BEST 8775 (op 7 a 67 c 74 d 91 b 84) len 164
+[874s it 22777] ADJ BEST 8775 (raw 8775 pen 0)
+[1095s it 28722] NEW BEST 8778 (op 2 i 21 D 4) len 163
+[1095s it 28722] ADJ BEST 8778 (raw 8778 pen 0)
+[1379s] it 36000 acc 5324 cur 8743 best 8778 temp 11.7 elite 40 gains 3311/1813/5246/402/469/514/1815/2468/436/0 acc 1090/1011/1646/416/122/86/317/332/33/271
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1455s] it 38000 acc 5613 cur 8775 best 8778 temp 6.8 elite 40 gains 3377/1813/5293/422/469/514/1831/2512/436/0 acc 1155/1061/1732/442/127/87/335/345/35/294
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1734s] it 46000 acc 6679 cur 8498 best 8778 temp 45.7 elite 40 gains 3672/2198/5951/457/473/602/1863/2668/436/0 acc 1366/1258/2056/539/149/106/385/414/42/364
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1803s] it 48000 acc 6987 cur 8735 best 8778 temp 26.5 elite 40 gains 3858/2250/6325/716/477/602/2451/3161/436/0 acc 1433/1308/2150/561/153/108/409/440/43/382
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1951s] it 52000 acc 7579 cur 8775 best 8778 temp 8.9 elite 40 gains 3971/2455/6509/725/489/606/2483/3254/436/0 acc 1543/1419/2342/597/167/111/448/485/48/419
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[2024s] it 54000 acc 7837 cur 8770 best 8778 temp 5.1 elite 40 gains 3986/2463/6517/729/489/610/2491/3281/440/0 acc 1601/1460/2408/621/172/115/464/505/52/439
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[2090s] it 56000 acc 8073 cur 8778 best 8778 temp 3.0 elite 40 gains 4010/2471/6528/729/489/610/2499/3303/440/0 acc 1646/1509/2484/636/175/118/481/519/53/452
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0

@@ -35,3 +35,9 @@ start 8409: 0 free sinks, exact necessity ok (bad move 0)
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
 [895s] it 40000 acc 6353 cur 8376 best 8443 temp 3.9 elite 40 gains 3533/3697/7191/1097/448/862/2771/3808/196/1502 acc 1153/1140/1815/528/155/112/468/581/65/336
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1073s] it 48000 acc 7581 cur 8312 best 8443 temp 26.5 elite 40 gains 4256/4315/8682/1469/567/948/3270/4496/196/1724 acc 1374/1367/2180/640/176/129/565/678/70/402
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1349s] it 60000 acc 9338 cur 8438 best 8443 temp 60.0 elite 40 gains 4637/4586/9365/1539/623/1077/3738/4883/228/1870 acc 1704/1684/2677/820/215/158/687/819/84/490
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+done it 60000 acc 9338 best 8443 restarts 11
+elite: 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443 8443

@@ -62,3 +62,4 @@ Starting record: 8,123 (data/tours/record_8123.txt)
 | 11 | freesit (strict) | hot strict LNS (t0 150, focus 15-99) from 9,328 with 9,329/9,328 donors; stage-2 dance beam on ~6k dance-start states | **9,330** strict (+1) | checker ok + STRICT, 179 moves |
 | 11 | freesit (strict) | merge LNS scored by dance beam (MLNS, 12+ jobs, ~7k candidates) | 9,330 (no gain) | final; all runs stopped |
 | 2026-11-22 00:01 UTC | explore (new families) | MAP-Elites archive of 1814 strict tours; novelty LNS + perturb/beam/relax chains | best non-record family still (-5,-3) c2 9080; new cells (-9,-7) 9185 [record-like], (-6,-4) 8715; no strict >9330 |
+| 2026-11-22 05:02 UTC | explore (new families) | relax+beam chains on new cells | new distinct families: (-4,-2) c2 8983 (J 0.62 vs 9330 sitters), (-5,-3) c2 8937 (J 0.63), (-6,-4) 8778; no strict >9330 |

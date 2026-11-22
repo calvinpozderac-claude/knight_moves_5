@@ -19,3 +19,21 @@ start 8715: 0 free sinks, exact necessity ok (bad move 0)
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
 [863s] it 24000 acc 3976 cur 8691 best 8715 temp 5.1 elite 40 gains 1740/1604/2669/1459/318/188/1244/2545/39/72 acc 741/745/1230/353/87/53/233/309/31/194
    nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1006s] it 28000 acc 4474 cur 8715 best 8715 temp 1.7 elite 40 gains 1765/1612/2722/1459/318/188/1248/2605/39/72 acc 842/853/1384/388/98/58/252/348/35/216
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1133s] it 32000 acc 5109 cur 8693 best 8715 temp 34.8 elite 40 gains 1958/1995/3456/1606/318/200/1800/3321/39/144 acc 958/972/1562/443/108/72/304/402/42/246
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1272s] it 36000 acc 5801 cur 8669 best 8715 temp 11.7 elite 40 gains 1998/2283/4012/1735/318/269/1832/3644/43/144 acc 1069/1095/1795/517/125/84/352/444/46/274
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1483s] it 42000 acc 6660 cur 8711 best 8715 temp 2.3 elite 40 gains 2038/2315/4082/1789/326/269/1860/3805/43/144 acc 1247/1267/2050/589/147/92/391/509/54/314
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1687s] it 48000 acc 7650 cur 8584 best 8715 temp 26.5 elite 40 gains 2240/2783/5630/2189/326/269/2184/5580/117/144 acc 1438/1478/2327/676/170/105/454/578/63/361
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[1974s] it 56000 acc 8909 cur 8707 best 8715 temp 3.0 elite 40 gains 2364/2880/5913/2245/339/269/2466/6017/117/144 acc 1675/1735/2691/807/198/125/526/671/69/412
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[2045s] it 58000 acc 9177 cur 8710 best 8715 temp 1.7 elite 40 gains 2368/2882/5943/2249/339/277/2468/6041/117/144 acc 1727/1790/2768/835/200/130/541/687/73/426
+   nec calls 0 fail 0 unk 0 probes 0 | fsp calls 0 hits 0 gain 0 | dumped 0 | block op acc 0 gain 0
+[2075s it 58792] NEW BEST 8716 (op 0 i 36 D 7) len 166
+[2075s it 58792] ADJ BEST 8716 (raw 8716 pen 0)
+done it 60000 acc 9399 best 8716 restarts 15
+elite: 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716 8716

@@ -3,3 +3,14 @@ B0_f_-4_-2_c2_8524_4 adj 7472 beam 8202
 B0_f_-4_-2_c2_8887_3 adj 7909 beam 8124
 B0_f_-5_-3_b1_8553_10 adj 8259 beam 8259
 B0_f_-5_-3_b1_8604_9 adj 7700 beam 7700
+R_-3_-1_c2_4 relax 8443 beam 8574
+R_-6_-4_c2_0 relax 8716 beam 8716
+R_-4_-2_c2_3 relax 8457 beam 8457
+R_-4_-2_c2_1 relax 8983 beam 8983
+R_-3_-1_c2_2 relax 8515 beam 8515
+R_-3_-1_c2_4i relax 8582 beam 8582
+R_-5_-3_c2_3 relax 8673 beam 8673
+R_-7_-5_c2_0 relax 8621 beam 8764
+D0_8983 adj 7659 beam 7742
+R8983b relax 8983 beam 8983
+D1_8983 adj 8425 beam 8425

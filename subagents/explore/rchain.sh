@@ -9,3 +9,9 @@ for k in $((DS-4)) $DS $((DS+4)); do
   [ -f runs/${TAG}_b${k}_best.txt ] && v=$(head -1 runs/${TAG}_b${k}_best.txt) && [ "$v" -gt "$B" ] && B=$v
 done
 echo "$TAG relax $(head -1 $BF) beam $B" >> runs/chain_beam.txt
+# iterate: if the beam beat the relax, put a new rchain from the beam tour at the front of the queue (at most 3 rounds)
+R0=$(head -1 $BF)
+if [ "$B" -gt "$R0" ] && [ "$(echo $TAG | grep -o i | wc -l)" -lt 3 ]; then
+  for k in $((DS-4)) $DS $((DS+4)); do f=runs/${TAG}_b${k}_best.txt; [ -f $f ] && [ "$(head -1 $f)" = "$B" ] && { cp $f in/${TAG}_beam.txt; break; }; done
+  flock queue.lock bash -c "{ echo './rchain.sh ${TAG}i $((SEED+7)) in/${TAG}_beam.txt'; cat queue.txt; } > queue.new; mv queue.new queue.txt"
+fi

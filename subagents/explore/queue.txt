@@ -1,7 +1,3 @@
-./rchain.sh R_-3_-1_c2_2 20005 arch/cells/-3_-1_c2_2.txt
-./rchain.sh R_-7_-5_c2_0 20006 arch/cells/-7_-5_c2_0.txt
-./rchain.sh R_-5_-3_c2_3 20007 arch/cells/-5_-3_c2_3.txt
-./pchain.sh C0_-5_-3_c2_0 67097 arch/cells/-5_-3_c2_0.txt f8,f7,b8,b7 74 300
 ./pchain.sh C1_-5_-3_c2_0 18586 arch/cells/-5_-3_c2_0.txt b7,a8,f7,d4 74 300
 ./pchain.sh C2_-5_-3_c2_0 85711 arch/cells/-5_-3_c2_0.txt a4,e7,f7 74 300
 ./pchain.sh C0_-4_-2_c2_0 24931 arch/cells/-4_-2_c2_0.txt b5,a2,a6,a5,a4 63 300
