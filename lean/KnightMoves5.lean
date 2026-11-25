@@ -5,4 +5,6 @@ import KnightMoves5.StrictBound
 import KnightMoves5.Unbounded
 import KnightMoves5.Pinned
 import KnightMoves5.Certify
+import KnightMoves5.General
+import KnightMoves5.Example4
 import KnightMoves5.Main

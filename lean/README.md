@@ -12,6 +12,9 @@ Machine-checked proofs, in Lean 4 with Mathlib, of the results in `proofs/UPPER_
 | `KnightMoves5/Pinned.lean` | `strict_iff_strictSem`: `Strict` is exactly "every positive wait is pinned by its own jump", meaning every change of the wait by less than n/2 minutes breaks that jump |
 | `KnightMoves5/Certify.lean` | `valid_of_certificate`: reduces `Valid tour` for a concrete tour to kernel-decidable checks |
 | `KnightMoves5/Certs/R8348.lean` | Example certificate: the 8,348 tour, whose 3 non-strict waits are each broken by an explicit t′. Not in the default build: `lake build KnightMoves5.Certs.R8348` |
+| `KnightMoves5/General.lean` | The same rules on an n × n board with any start and target. `toGen_valid` proves that the 8 × 8 rules are exactly the instance n = 8 |
+| `KnightMoves5/Example4.lean` | The puzzle's own 4 × 4 worked example (19 moves, 28 minutes) obeys the rules (`valid`). Three of its waits are pinned only by later moves (`waits_5_6_7_not_strict`), so the example itself relies on the literal reading of the necessity rule |
+| `test/DiffTest.lean` | Differential test: on 200 tours (real ones and mutants), Lean's `MovesOK` agrees with the Python simulator. Each verdict is proved by the kernel. Regenerate with `python3 test/gen_difftest.py` |
 | `KnightMoves5/Main.lean` | The main statements in one place |
 
 The main statements:
