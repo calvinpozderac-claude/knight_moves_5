@@ -23,7 +23,15 @@ Attempts to narrow that gap are described in [Attempts to narrow the strict gap]
 
 Every result depends only on Lean's standard axioms (`propext`, `Classical.choice`, `Quot.sound`):
 there is no `sorry`, and no `native_decide`. Concrete tours are evaluated by the kernel itself, in
-exact rational arithmetic. See `lean/README.md`.
+exact rational arithmetic.
+
+The formal rules are checked against the puzzle in three ways:
+- the puzzle's own 4 × 4 worked example (28 minutes) is valid under them, three waits pinned only by
+  later moves included (`KM5.Example4.valid`);
+- the 8 × 8 rules are exactly the general n × n rules at n = 8 (`KM5.toGen_valid`);
+- on 200 real and mutated tours, Lean agrees with `tools/sim.py` (`lean/test/DiffTest.lean`).
+
+Any tour file can be certified with `lean/tools/certify.py`. See `lean/README.md`.
 
 Python cross-checks (exact rational arithmetic, a few minutes):
 ```
