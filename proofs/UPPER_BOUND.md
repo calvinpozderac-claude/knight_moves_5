@@ -231,6 +231,16 @@ forbids 2–4 of the record's sitting squares, then plain LNS (`lns`, `--free 0`
 the result. Every candidate was re-checked with `tools/check_tour.py` and `subagents/strict_check.py`.
 It found no strict tour above 9,329. Run counts are in the session report.
 
+The record is close to saturated within its family:
+- its dance has a sitter in 31 of the 32 opposite pairs (all except a1/h8, since h8 can never be sat
+  on);
+- only 4 visits are unused (e2 once, h1 three times), and both squares are in the half that the
+  dance knocks out;
+- four sitter squares lose dance sits to the opening (d5, f7, f8 and g8, 6 sits in all), and the
+  visit trial that found 9,329 penalised exactly those visits; no tour avoided them all.
+
+So a longer strict tour most likely needs a different opening or merge, not a better dance.
+
 **A tighter bound.** The slack in Theorem 2 is the final height of points above the floor: its proof
 assumes all 64 points end on the floor. In the record, the average point ends 46 units above it.
 Most of that comes from **knock-outs**: every sit raises its opposite by d, and a sit with d > 2 lifts
