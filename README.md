@@ -19,6 +19,14 @@ agent: C++ tree search plus a small neural network trained by self-play.
   - The tour ends on the first arrival at h8.
 - **Goal:** maximize the total time.
 
+## Upper bound
+
+See `proofs/UPPER_BOUND.md`.
+- **Literal rule** ("some t′ breaks a move"): there is no longest tour. A legal family of
+  288 + W minutes exists for every W > 286 (`proofs/verify_unbounded.py`).
+- **Strict tours** (every wait pinned by its own jump, like all the records): T ≤ 24,329 minutes.
+  The 9,329 record is the best known, and the exact optimum is open.
+
 ## Results so far
 
 | Tour | Minutes | How it was found |
