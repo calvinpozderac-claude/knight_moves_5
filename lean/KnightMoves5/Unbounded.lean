@@ -233,3 +233,14 @@ theorem every_length_above_574 (T : ℚ) (hT : 574 < T) : ∃ tour, Valid tour �
     by rw [longTour_time]; ring⟩
 
 end KM5
+
+namespace KM5
+
+/-- **There is no longest route:** no tour that obeys every rule is at least as long as every
+other such tour. -/
+theorem no_longest_tour : ¬ ∃ best, Valid best ∧ ∀ tour, Valid tour → time tour ≤ time best := by
+  rintro ⟨best, -, h⟩
+  obtain ⟨tour, hv, hlt⟩ := unbounded (time best)
+  exact absurd (h tour hv) (not_le.mpr hlt)
+
+end KM5

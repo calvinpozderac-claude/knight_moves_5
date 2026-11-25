@@ -5,6 +5,7 @@ import KnightMoves5.Pinned
 /-!
 # Main results
 
+* `KM5.no_longest_tour`: no tour that obeys every rule is a longest one.
 * `KM5.unbounded`: under the puzzle's rules as worded (every wait `t > 0` must have some `t'` that
   makes a move of the tour illegal), there are legal tours longer than any given number of minutes.
 * `KM5.longTour_100288`: an explicit 100,288-minute tour that obeys every rule.
@@ -19,6 +20,7 @@ import KnightMoves5.Pinned
 
 namespace KM5
 
+example : ¬ ∃ best, Valid best ∧ ∀ tour, Valid tour → time tour ≤ time best := no_longest_tour
 example : ∀ N : ℚ, ∃ tour, Valid tour ∧ N < time tour := unbounded
 example : ∀ tour, Legal tour → Strict start tour → time tour ≤ 24329 := strict_bound
 example : Valid record9329 ∧ Strict start record9329 ∧ time record9329 = 9329 := record9329_valid

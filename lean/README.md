@@ -8,7 +8,7 @@ Machine-checked proofs, in Lean 4 with Mathlib, of the results in `proofs/UPPER_
 | `KnightMoves5/Lemmas.lean` | Runs split over `++`. A point and its opposite are never one jump apart. A strict wait is never free (`strict_allNecessary`) |
 | `KnightMoves5/Record.lean` | The 9,329-minute record as data, and `record9329_valid` (it obeys every rule, is strict, and lasts 9,329 minutes) |
 | `KnightMoves5/StrictBound.lean` | **Theorem 2** `strict_bound`: every strict tour lasts at most 24,329 minutes |
-| `KnightMoves5/Unbounded.lean` | **Theorem 1** `unbounded`: for every N there is a tour obeying every rule that lasts more than N minutes. Also `every_length_above_574` (every length above 574 minutes is achieved exactly) and `longTour_100288`, a concrete 100,288-minute tour |
+| `KnightMoves5/Unbounded.lean` | **Theorem 1** `no_longest_tour` and `unbounded`: for every N there is a tour obeying every rule that lasts more than N minutes. Also `every_length_above_574` (every length above 574 minutes is achieved exactly) and `longTour_100288`, a concrete 100,288-minute tour |
 | `KnightMoves5/Pinned.lean` | `strict_iff_strictSem`: `Strict` is exactly "every positive wait is pinned by its own jump", meaning every change of the wait by less than n/2 minutes breaks that jump |
 | `KnightMoves5/Certify.lean` | `valid_of_certificate`: reduces `Valid tour` for a concrete tour to kernel-decidable checks |
 | `KnightMoves5/Certs/R8348.lean` | Example certificate: the 8,348 tour, whose 3 non-strict waits are each broken by an explicit t′. Not in the default build: `lake build KnightMoves5.Certs.R8348` |
