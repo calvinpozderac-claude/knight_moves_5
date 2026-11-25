@@ -252,3 +252,30 @@ theorem strict_bound (tour : List Move) (hL : Legal tour) (hS : Strict start tou
   nlinarith
 
 end KM5
+
+namespace KM5
+
+/-- **Theorem 2, by length.** A strict tour of `M` moves lasts at most `132·M − 619` minutes
+(at most 24,329 since `M ≤ 189`). -/
+theorem strict_bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
+    time tour ≤ 132 * tour.length - 619 := by
+  obtain ⟨a, hI, hT, hM⟩ := inv_run tour start _ inv_start hL.1 hS
+  simp only [zero_add] at hT hM
+  obtain ⟨hsum, hk, hmf, hB, hmf0, hRD, hZ, hBc, hcM, hh, hH8⟩ := hI
+  have hpos : (run start tour).pos = h8 := run_pos _ _ _ hL.2.1
+  rw [hpos] at hk hh
+  have hMq : (a.M : ℚ) = tour.length := by rw [hM]
+  have hfloor : 64 * a.mf ≤ ∑ x, (run start tour).alt x := by
+    have := Finset.card_nsmul_le_sum Finset.univ (fun x => (run start tour).alt x) a.mf
+      (fun x _ => hmf x)
+    simpa using this
+  have hc8 : (8 : ℚ) ≤ a.c := by
+    rcases hH8 with h | h
+    · have := hmf h8
+      exact_mod_cast two_mul_succ_ge (by linarith)
+    · exact_mod_cast h
+  have hk' := hmf h8
+  rw [← hT, ← hMq]
+  nlinarith
+
+end KM5

@@ -193,7 +193,8 @@ needs. The Lean proof does the same.)
 
   T ≤ 421 + 65·B_fl + 2M ≤ 421 + 130·(M − 8) + 2M = 132·M − 619 ≤ 132·189 − 619 = **24,329**. ∎
 
-Lean: `KM5.strict_bound` (`lean/KnightMoves5/StrictBound.lean`). It carries all of the above as a
+Lean: `KM5.strict_bound` (`lean/KnightMoves5/StrictBound.lean`), and `KM5.strict_bound_length`
+for the bound by length, T ≤ 132·M − 619. It carries all of the above as a
 single invariant `Inv` along the tour and proves that each move preserves it (`inv_step`).
 
 The middle line, 421 + 65·B_fl + 2M, is also a bound for each tour on its own. Every lemma was
