@@ -17,6 +17,7 @@ Machine-checked proofs, in Lean 4 with Mathlib, of the results in `proofs/UPPER_
 The main statements:
 
 ```lean
+theorem no_longest_tour : ¬ ∃ best, Valid best ∧ ∀ tour, Valid tour → time tour ≤ time best
 theorem unbounded (N : ℚ) : ∃ tour, Valid tour ∧ N < time tour
 theorem strict_bound (tour : List Move) (hL : Legal tour) (hS : Strict start tour) : time tour ≤ 24329
 theorem record9329_valid : Valid record9329 ∧ Strict start record9329 ∧ time record9329 = 9329
