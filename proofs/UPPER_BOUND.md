@@ -235,7 +235,25 @@ floor-lowering sits. This also gives a clean trade-off:
 The record follows this pattern exactly. Moves 1–98 bring all 64 points within 2 of the floor (64
 "alive" at move 75). The dance, moves 99–185, then has knight height 2, floor drop 2 and sink 4 at
 every sit, and its alive count falls from 64 to 33. That is about one knock-out per new sitter,
-since each point sits 3 times. Counting this way (each sitter knocks out one opposite, at most 3 sits
-per point, and a long opening first) suggests that the strict optimum is around 12,000–13,000. A proof has to bound **rescues**, though. A single elevated
-sit can bring back every knocked-out point that happens to sit at its height, so it depends on how
-many such points can line up. That part is not proved, so the proven bound stays at 24,329.
+since each point sits 3 times. Counting this way (each sitter knocks out one opposite, at most 3 sits per point, and a long opening
+first) suggests that the strict optimum is around 12,000–13,000.
+
+**Why this is not yet a proof.** The natural way to make the knock-out argument rigorous is a
+potential that charges a point's height above the floor at full rate up to 2 and at a reduced rate
+w < 1 above that. With w = 1 it is exactly the Theorem 2 identity. With w < 1, every sit is still
+paid for except one term: sits where the knight stands more than 2 above the floor. Such a sit brings
+a whole same-height class of stranded points back down, and earns n·(h − 2)·(1 − w) beyond what the
+potential pays.
+- Bounding that term needs a bound on **how many stranded points can share one height**.
+- The cost of reaching such a height is easy to bound: one move that is not a floor-lowering sit per
+  2 units climbed.
+- Without board geometry, the batch size can only be bounded by tracking when each point was
+  stranded. A point stranded during a run of full floor drops is at a height no other point shares
+  for long, so batches are small. With small floor drops they can be large, but then the floor barely
+  moves.
+- A rough model of this trade-off with cheap rescues gives an optimum around 15,000. That suggests
+  no argument that ignores where points are on the board can go much below that. Real rescues are
+  far more expensive: a stranded point is the mirror image of the sitter, usually on the far side of
+  the board, and the record has only 4 spare visits.
+
+So the proven bound stays at 24,329.
