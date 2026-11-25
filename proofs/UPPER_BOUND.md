@@ -232,7 +232,10 @@ floor-lowering sits. This also gives a clean trade-off:
   drops;
 - so either the floor drops by 1 or less per sit on average, or each sit knocks out its opposite.
 
-Counting this way (each sitter knocks out one opposite, at most 3 sits per point) suggests that the
-strict optimum is around 12,000–13,000. A proof has to bound **rescues**, though. A single elevated
+The record follows this pattern exactly. Moves 1–98 bring all 64 points within 2 of the floor (64
+"alive" at move 75). The dance, moves 99–185, then has knight height 2, floor drop 2 and sink 4 at
+every sit, and its alive count falls from 64 to 33. That is about one knock-out per new sitter,
+since each point sits 3 times. Counting this way (each sitter knocks out one opposite, at most 3 sits
+per point, and a long opening first) suggests that the strict optimum is around 12,000–13,000. A proof has to bound **rescues**, though. A single elevated
 sit can bring back every knocked-out point that happens to sit at its height, so it depends on how
 many such points can line up. That part is not proved, so the proven bound stays at 24,329.
