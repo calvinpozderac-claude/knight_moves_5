@@ -5,3 +5,5 @@ __pycache__/
 experiments/cpp/bin/
 .venv/
 subagents/*/tmp/
+lean/.lake/
+lean/scratch/

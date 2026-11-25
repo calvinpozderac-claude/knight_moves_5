@@ -1,17 +1,31 @@
 # How long can a tour be?
 
-The answer depends on how the "necessary sink" rule is read.
+**Terminology.** Following the puzzle's own rule, a **free wait** is a wait t > 0 for which *no*
+other value t′ makes that move or a later move illegal. Free waits are forbidden, and every other wait
+is allowed. (The older notes in `subagents/` use "free wait" for something else: a wait that leaves its
+*own* jump legal for every t. Under the puzzle's rule, such a wait is allowed whenever some t′ breaks a
+later move.) A **strict** tour is a narrower class: every wait is pinned by its own jump, meaning any
+small change of t breaks the very next jump. Every record tour in this repo is strict.
 
-| Reading of the rule | Result | Status |
+| Tours considered | Result | Status |
 |---|---|---|
-| **Literal**: a wait t > 0 is allowed if *some* t′ makes that move or a later one illegal. This is the puzzle's wording, and the ruling this repo adopted (`subagents/SUMMARY.md`) | **No upper bound.** For every W > 286 there is a legal tour of 288 + W minutes | Proved (Theorem 1), checked exactly |
-| **Strict**: every wait is pinned by its own jump, so changing t breaks the very next jump. Every record from 9,328 on is strict, and so are 8,830, 7,911 and 6,303 | **T ≤ 24,329 minutes** | Proved (Theorem 2), each step checked on 1,282 tours |
-| **Local**: a wait may be "free" for its own jump, as long as every small change of t breaks some later move | No bound proved | Open |
+| **All tours that obey the rules** (no free waits) | **There is no longest tour.** For every W > 286 there is a legal tour of 288 + W minutes, none of whose waits is free. Example: a 100,288-minute tour | Proved (Theorem 1). Machine-checked in Lean: `KM5.unbounded`, `KM5.longTour_100288` |
+| **Strict tours** (each wait pinned by its own jump) | **T ≤ 24,329 minutes.** The best known is 9,329 | Proved (Theorem 2). Machine-checked in Lean: `KM5.strict_bound`. The record is checked as `KM5.record9329_valid` |
 
-The best strict tour known is 9,329 minutes (`data/tours/record_9329.txt`). The exact optimum of the
-strict puzzle is not known. Theorem 2 puts it between 9,329 and 24,329.
+The exact optimum over strict tours is not known; Theorem 2 puts it between 9,329 and 24,329.
+Attempts to narrow that gap are described in [Attempts to narrow the strict gap](#attempts-to-narrow-the-strict-gap).
 
-Reproduce everything (exact rational arithmetic, a few minutes):
+**Lean formalization** (`lean/`, Lean 4 + Mathlib). It covers:
+- the rules themselves (`KnightMoves5/Rules.lean`);
+- both theorems;
+- the record's validity;
+- the lemma that a strict wait is never free (`KM5.strict_allNecessary`).
+
+Every result depends only on Lean's standard axioms (`propext`, `Classical.choice`, `Quot.sound`):
+there is no `sorry`, and no `native_decide`. Concrete tours are evaluated by the kernel itself, in
+exact rational arithmetic. See `lean/README.md`.
+
+Python cross-checks (exact rational arithmetic, a few minutes):
 ```
 python3 proofs/verify_unbounded.py            # Theorem 1: the tour family, its legality and necessity
 python3 proofs/bound_terms.py data/tours/*.txt # Theorem 2: every lemma, checked on real tours
@@ -37,7 +51,7 @@ python3 proofs/find_unbounded.py data/tours/record_9329.txt data/tours/record_88
 
 ---
 
-## Theorem 1 (literal rule): there is no longest tour
+## Theorem 1: tours that obey the rules can be arbitrarily long
 
 **Tour(W).** Take the first 53 moves of the 9,329 record. They take 238 minutes and end with the
 knight on d5 at altitude 6. Then play:
@@ -88,12 +102,16 @@ route exists.
 - The construction is not a fluke of one tour. Any time the knight is level with h8, some point lies
   below, and both points of an opposite pair in the group are reachable, it works.
   `find_unbounded.py` finds one in the 8,830 record as well (after move 48).
-- The trick needs the literal reading. A small change of W breaks nothing, so under the strict or
-  the local reading the wait is not necessary.
+- The wait W is not *free* (t′ = 52 breaks a later move), but it is not *strict* either: a small
+  change of W breaks nothing. That is why Theorem 2, which does give a finite bound, is about strict
+  tours.
+- Lean: `KM5.longTour_legal`, `KM5.longTour_allNecessary`, `KM5.longTour_time` and `KM5.unbounded`
+  (`lean/KnightMoves5/Unbounded.lean`). They prove the claims above for a symbolic W > 286, not
+  just for sampled values.
 
 ---
 
-## Theorem 2 (strict rule): every strict tour lasts at most 24,329 minutes
+## Theorem 2: every strict tour lasts at most 24,329 minutes
 
 **Strict** means that for every sit (t, Q) on P, the target Q is not in the sinking group G.
 
@@ -106,7 +124,8 @@ route exists.
 Notation:
 - M is the number of moves.
 - k is the knight's altitude.
-- m is the **floor**, the lowest altitude on the board. It starts at 0 and only changes during sits.
+- m is the **floor**: the lowest altitude the board has had so far (a running minimum). It starts at
+  0, never rises, and only changes during sits. Every altitude is always ≥ m.
 - For a sit, d is its sink.
 
 **Fact 1: M ≤ 189.** Before each move the knight stands on a point other than h8. These are visits,
@@ -118,7 +137,8 @@ m. The knight ends the sit at k − d, and its jump needs a(Q) − (k − d) ≤
 This also covers Q = O: O either rose or stayed put.
 
 **Lemma 2: a sit lowers the floor by at most min(d, 2).**
-During a sit only G moves down, and it ends at k − d, so the new floor is min(m, k − d).
+During a sit only G moves down, and it ends at k − d. Every other point stays put or rises, so it
+stays ≥ m. The new floor is therefore min(m, k − d).
 - By Lemma 1, k − d ≥ m − 2.
 - Since k ≥ m, also k − d ≥ m − d.
 
@@ -144,6 +164,10 @@ Now consider h8:
 
 So at least 8 moves contain no floor-lowering sit.
 
+(The floor is a running minimum rather than the current lowest altitude because the lowest point can
+be the opposite point and rise. With the running minimum, m ≤ 0 holds throughout, which Lemma 3
+needs. The Lean proof does the same.)
+
 **Identity.**
 - Each sit's t = n·d gives a sink of d to each of its n points, so T = Σ_x σ(x), where σ(x) is the
   total sinking of point x.
@@ -160,6 +184,9 @@ So at least 8 moves contain no floor-lowering sit.
 4. Therefore
 
   T ≤ 421 + 65·B_fl + 2M ≤ 421 + 130·(M − 8) + 2M = 132·M − 619 ≤ 132·189 − 619 = **24,329**. ∎
+
+Lean: `KM5.strict_bound` (`lean/KnightMoves5/StrictBound.lean`). It carries all of the above as a
+single invariant `Inv` along the tour and proves that each move preserves it (`inv_step`).
 
 The middle line, 421 + 65·B_fl + 2M, is also a bound for each tour on its own. Every lemma was
 checked exactly on the records and on all 1,272 tours in `data/tours/curriculum.txt` (1,268 of
@@ -188,13 +215,24 @@ climb back to it, and that visits run out. That is the structure the record's da
 record's own move counts, the bound is already down to 12,751, so the remaining slack in the
 worst case comes mostly from tours with far more floor-lowering sits than any known tour has.
 
-### The local reading
+## Attempts to narrow the strict gap
 
-Here a wait may leave its own jump legal for every t, as long as every small change of t breaks
-some later move (the repo's "free waits"). Lemma 1 can fail for such a wait, because its target is
-inside the sinking group. So Theorem 2 does not cover these tours, and no bound is proved for this
-reading.
+**A longer strict tour.** The repo's diversity search ran in the background: a penalty trial (`dlns`)
+forbids 2–4 of the record's sitting squares, then plain LNS (`lns`, `--free 0`, strict only) starts from
+the result. Every candidate was re-checked with `tools/check_tour.py` and `subagents/strict_check.py`.
+It found no strict tour above 9,329. Run counts are in the session report.
 
-Theorem 1's construction does not work here either, since a small change of W breaks nothing. The
-free-wait records in the repo (8,348, for example) still satisfy the per-tour bound and all the
-lemmas.
+**A tighter bound.** The slack in Theorem 2 is the final height of points above the floor: its proof
+assumes all 64 points end on the floor. In the record, the average point ends 46 units above it.
+Most of that comes from **knock-outs**: every sit raises its opposite by d, and a sit with d > 2 lifts
+that point more than 2 above the floor. From there it sinks again only at a sit where the knight
+stands more than 2 above the floor, and getting the knight that high takes moves that are not
+floor-lowering sits. This also gives a clean trade-off:
+- in a run of consecutive floor-lowering sits, the next sink is at least the sum of the two floor
+  drops;
+- so either the floor drops by 1 or less per sit on average, or each sit knocks out its opposite.
+
+Counting this way (each sitter knocks out one opposite, at most 3 sits per point) suggests that the
+strict optimum is around 12,000–13,000. A proof has to bound **rescues**, though. A single elevated
+sit can bring back every knocked-out point that happens to sit at its height, so it depends on how
+many such points can line up. That part is not proved, so the proven bound stays at 24,329.

@@ -1,0 +1,10 @@
+name = "KnightMoves5"
+defaultTargets = ["KnightMoves5"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "348837d3aa976624060d7c35c183fff587c5a24a"
+
+[[lean_lib]]
+name = "KnightMoves5"
