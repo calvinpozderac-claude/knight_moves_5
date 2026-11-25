@@ -8,7 +8,7 @@ Machine-checked proofs, in Lean 4 with Mathlib, of the results in `proofs/UPPER_
 | `KnightMoves5/Lemmas.lean` | Runs split over `++`. A point and its opposite are never one jump apart. A strict wait is never free (`strict_allNecessary`) |
 | `KnightMoves5/Record.lean` | The 9,329-minute record as data, and `record9329_valid` (it obeys every rule, is strict, and lasts 9,329 minutes) |
 | `KnightMoves5/StrictBound.lean` | **Theorem 2** `strict_bound`: every strict tour lasts at most 24,329 minutes |
-| `KnightMoves5/Unbounded.lean` | **Theorem 1** `unbounded`: for every N there is a tour obeying every rule that lasts more than N minutes. Also `longTour_100288`, a concrete 100,288-minute tour |
+| `KnightMoves5/Unbounded.lean` | **Theorem 1** `unbounded`: for every N there is a tour obeying every rule that lasts more than N minutes. Also `every_length_above_574` (every length above 574 minutes is achieved exactly) and `longTour_100288`, a concrete 100,288-minute tour |
 | `KnightMoves5/Main.lean` | The main statements in one place |
 
 The main statements:

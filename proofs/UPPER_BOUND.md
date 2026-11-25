@@ -9,7 +9,7 @@ small change of t breaks the very next jump. Every record tour in this repo is s
 
 | Tours considered | Result | Status |
 |---|---|---|
-| **All tours that obey the rules** (no free waits) | **There is no longest tour.** For every W > 286 there is a legal tour of 288 + W minutes, none of whose waits is free. Example: a 100,288-minute tour | Proved (Theorem 1). Machine-checked in Lean: `KM5.unbounded`, `KM5.longTour_100288` |
+| **All tours that obey the rules** (no free waits) | **There is no longest tour.** For every W > 286 there is a legal tour of 288 + W minutes, none of whose waits is free. Every length above 574 minutes is achieved exactly. Example: a 100,288-minute tour | Proved (Theorem 1). Machine-checked in Lean: `KM5.unbounded`, `KM5.every_length_above_574`, `KM5.longTour_100288` |
 | **Strict tours** (each wait pinned by its own jump) | **T ≤ 24,329 minutes.** The best known is 9,329 | Proved (Theorem 2). Machine-checked in Lean: `KM5.strict_bound`. The record is checked as `KM5.record9329_valid` |
 
 The exact optimum over strict tours is not known; Theorem 2 puts it between 9,329 and 24,329.

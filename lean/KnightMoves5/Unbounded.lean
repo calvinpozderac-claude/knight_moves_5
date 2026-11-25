@@ -224,3 +224,12 @@ theorem longTour_100288 : Valid (longTour 100000) ∧ time (longTour 100000) = 1
     by rw [longTour_time]; norm_num⟩
 
 end KM5
+
+namespace KM5
+
+/-- Every length above 574 minutes is achieved exactly by a tour that obeys every rule. -/
+theorem every_length_above_574 (T : ℚ) (hT : 574 < T) : ∃ tour, Valid tour ∧ time tour = T :=
+  ⟨longTour (T - 288), ⟨longTour_legal (by linarith), longTour_allNecessary (by linarith)⟩,
+    by rw [longTour_time]; ring⟩
+
+end KM5

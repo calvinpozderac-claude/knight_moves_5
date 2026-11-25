@@ -7,6 +7,7 @@ import KnightMoves5.StrictBound
 * `KM5.unbounded`: under the puzzle's rules as worded (every wait `t > 0` must have some `t'` that
   makes a move of the tour illegal), there are legal tours longer than any given number of minutes.
 * `KM5.longTour_100288`: an explicit 100,288-minute tour that obeys every rule.
+* `KM5.every_length_above_574`: every length above 574 minutes is achieved exactly.
 * `KM5.strict_bound`: a legal tour in which every wait is pinned by its own jump lasts at most
   24,329 minutes.
 * `KM5.record9329_valid`: the 9,329-minute record obeys every rule and is strict.
