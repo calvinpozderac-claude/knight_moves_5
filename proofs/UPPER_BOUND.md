@@ -251,8 +251,9 @@ potential pays.
   stranded. A point stranded during a run of full floor drops is at a height no other point shares
   for long, so batches are small. With small floor drops they can be large, but then the floor barely
   moves.
-- A rough model of this trade-off with cheap rescues gives an optimum around 15,000. That suggests
-  no argument that ignores where points are on the board can go much below that. Real rescues are
+- A back-of-the-envelope estimate of that trade-off suggests that no argument ignoring where points
+  are on the board can go much below roughly 15,000. The estimate assumes rescues of about two
+  stranded points for two extra moves; it is not a computed optimum. Real rescues are
   far more expensive: a stranded point is the mirror image of the sitter, usually on the far side of
   the board, and the record has only 4 spare visits.
 
