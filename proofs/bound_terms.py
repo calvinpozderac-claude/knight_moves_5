@@ -2,12 +2,14 @@
 
 Exact arithmetic. For each tour it checks:
   Lemma 1  every sit whose jump target is outside the knight's group sinks d <= k - m + 2
-           (k = knight's altitude, m = lowest altitude on the board, both just before the sit)
+           (k = knight's altitude, m = the floor, both just before the sit)
   Lemma 2  the floor m never drops below -B_fl, where B_fl = sum of min(d, 2) over the sits that
            lower the floor
   Lemma 3  at least 8 moves are not floor-lowering sits (S_fl <= M - 8)
   Identity T = 421 - sum(final altitudes) + R   (R = total rise of opposite points)
 and prints the bound for that tour, 421 + 65*B_fl + 2*M, next to its length.
+The floor m is the running minimum, the lowest altitude the board has had so far, as in the proof
+and in lean/KnightMoves5/StrictBound.lean.
 A tour is "strict" when every wait's own jump goes to a point outside the sinking group.
 
 Run:  python3 proofs/bound_terms.py data/tours/record_9329.txt [more tour files]
@@ -24,6 +26,7 @@ from sim import MAIN_ROWS, init_alt, parse  # noqa: E402
 def run(moves):
     alt = init_alt(MAIN_ROWS)
     pos = parse('a1')
+    mrun = F(0)  # running minimum of all altitudes so far
     T = R = B_fl = F(0)
     S = S_fl = 0
     lemma1 = floor_ok = strict = True
@@ -32,7 +35,7 @@ def run(moves):
         Q = parse(q)
         if t > 0:
             k = alt[pos]
-            m = min(alt.values())
+            m = mrun
             O = (7 - pos[0], 7 - pos[1])
             G = [p for p in alt if alt[p] == k and p != O]
             rise = alt[O] != k
@@ -46,7 +49,8 @@ def run(moves):
             if rise:
                 alt[O] += d
                 R += d
-            new_m = min(alt.values())
+            new_m = min(mrun, min(alt.values()))
+            mrun = new_m
             if new_m < m:
                 S_fl += 1
                 B_fl += min(d, F(2))
@@ -55,13 +59,13 @@ def run(moves):
             S += 1
             T += t
         pos = Q
-        if min(alt.values()) < -B_fl:
+        if mrun < -B_fl or min(alt.values()) < mrun:
             floor_ok = False
     M = len(moves)
     return dict(M=M, S=S, S_fl=S_fl, B_fl=B_fl, R=R, T=T, strict=strict, lemma1=lemma1,
                 floor=floor_ok, lemma3=S_fl <= M - 8,
                 identity=(T == 421 - sum(alt.values()) + R),
-                m_end=min(alt.values()), bound=421 + 65 * B_fl + 2 * M)
+                m_end=mrun, bound=421 + 65 * B_fl + 2 * M)
 
 
 def load(path):
