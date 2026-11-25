@@ -1,5 +1,6 @@
 import KnightMoves5.Unbounded
 import KnightMoves5.StrictBound
+import KnightMoves5.Pinned
 
 /-!
 # Main results
@@ -12,6 +13,8 @@ import KnightMoves5.StrictBound
   24,329 minutes.
 * `KM5.record9329_valid`: the 9,329-minute record obeys every rule and is strict.
 * `KM5.strict_allNecessary`: strict waits are necessary in the puzzle's sense.
+* `KM5.strict_iff_strictSem`: `Strict` is exactly "every positive wait is pinned by its own jump"
+  (every small change of the wait breaks that move's jump).
 -/
 
 namespace KM5

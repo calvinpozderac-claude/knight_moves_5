@@ -9,6 +9,9 @@ Machine-checked proofs, in Lean 4 with Mathlib, of the results in `proofs/UPPER_
 | `KnightMoves5/Record.lean` | The 9,329-minute record as data, and `record9329_valid` (it obeys every rule, is strict, and lasts 9,329 minutes) |
 | `KnightMoves5/StrictBound.lean` | **Theorem 2** `strict_bound`: every strict tour lasts at most 24,329 minutes |
 | `KnightMoves5/Unbounded.lean` | **Theorem 1** `unbounded`: for every N there is a tour obeying every rule that lasts more than N minutes. Also `every_length_above_574` (every length above 574 minutes is achieved exactly) and `longTour_100288`, a concrete 100,288-minute tour |
+| `KnightMoves5/Pinned.lean` | `strict_iff_strictSem`: `Strict` is exactly "every positive wait is pinned by its own jump", meaning every change of the wait by less than n/2 minutes breaks that jump |
+| `KnightMoves5/Certify.lean` | `valid_of_certificate`: reduces `Valid tour` for a concrete tour to kernel-decidable checks |
+| `KnightMoves5/Certs/R8348.lean` | Example certificate: the 8,348 tour, whose 3 non-strict waits are each broken by an explicit t′. Not in the default build: `lake build KnightMoves5.Certs.R8348` |
 | `KnightMoves5/Main.lean` | The main statements in one place |
 
 The main statements:
@@ -38,5 +41,10 @@ lake exe cache get   # prebuilt Mathlib (needs cache.mathlib.org)
 lake build           # about 2 minutes
 ```
 
-`tools/gen_tour.py NAME TOURFILE DOC` turns a tour file into a Lean `List Move`, for checking
-another tour the way `Record.lean` checks the record.
+**Certify any tour:**
+```
+python3 tools/certify.py ../data/tours/record_9329.txt R9329 > KnightMoves5/Certs/R9329.lean
+lake build KnightMoves5.Certs.R9329        # about 45 s for a record-length tour
+```
+The script finds, with the exact Python simulator, a breaking t′ for every non-strict wait. The
+generated file proves `Valid tour` and `time tour = T`, with every check run by the kernel.
