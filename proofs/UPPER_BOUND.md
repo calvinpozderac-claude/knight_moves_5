@@ -437,6 +437,16 @@ the 1,300 strict stored tours. `tools/prefix_bound.py` computes it (`trace`, `bf
     holds a 9,329 tour, does no better here than the top-bound one. Telling the branches apart
     would need the long evolutions that produced the records.
 
+- **A\* from the root.** Always expanding the position with the highest bound, with finished tours as
+  goal nodes at their exact length, is exact if it completes, but it cannot complete.
+  - After 120,000 expansions the frontier's highest bound was 15,178, and the frontier held 625,157
+    positions.
+  - The 18 finished tours generated (best 24 minutes) sat far below the frontier, so none was ever
+    expanded.
+  - Every live position after 7 moves has a bound above 15,075, and the smallest bound falls by
+    only 67 per move. So A\* would have to expand essentially every position to about depth 90
+    before it could discard any.
+
 So this bound cannot guide a branch and bound. It measures wasted rescue budget, and the prefixes
 it ranks highest are the ones that skip necessary preparation, like the record's lift of g8. A
 useful branch-and-bound bound would also have to know whether h8 can still be reached and what the
