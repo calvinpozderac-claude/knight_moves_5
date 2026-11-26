@@ -264,7 +264,9 @@ move adds at most 2 to the left side.
 - A knock-out adds only its floor drop, which is at most 2.
 - A floor-lowering sit with d ≤ 2 adds twice its drop δ. But d = h + δ, so the knight was at height
   h ≤ 2 − δ. Right after a floor-lowering sit, the knight's height is exactly its jump, and that
-  jump is at least that sit's own drop. So the previous sit left 2 − δ unused.
+  jump is at least that sit's own drop. So if the previous move was a floor-lowering sit, it
+  dropped at most 2 − δ and left at least δ of its 2 unused. If it was any other move, it added
+  nothing.
 - **Covering** knock-out k means that O sinks again. That only happens at a sit at O's altitude, so
   the knight must stand at height at least d_k + (floor drop since k).
   - Right after a floor-lowering sit the knight is at most 2 up, and each further jump climbs at
