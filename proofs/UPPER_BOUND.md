@@ -384,3 +384,49 @@ points can share one height. Theorem 3 avoids that. It measures a rescue by floo
 by rescued points: everything rescued in one climb was knocked out within the last few units of
 floor drop, whatever the batch size. What remains between 9,329 and 15,606 is mostly the geometry
 of rescues, described at the end of Theorem 3.
+
+**Branch and bound from the start.** Theorem 3's invariant gives a bound for every partial tour:
+- replay the invariant along the moves played so far;
+- then bound every strict completion by the visits left, the rescue budget already spent, the jumps
+  so far, and the climb to h8 still owed.
+
+The climb owed is the waste of the stretch where h8 first sinks: h8's altitude, minus 2, minus the
+highest floor at which a rescuable knock-out can have happened.
+
+At the start this bound equals 15,606⅚. It is never below a tour's final length at any prefix of
+the 1,300 strict stored tours. `tools/prefix_bound.py` computes it (`trace`, `bfs`, `best`, `check`).
+
+- **Along the record** it falls from 15,607 to 10,193 during the 98-move opening, then stays flat
+  through the whole dance (10,149–10,162), and ends at 10,215. In the bound's accounting, nearly all
+  of the record's waste is in its opening.
+- **Breadth-first over all strict prefixes.**
+  - 35,796 distinct positions after 6 moves, with bounds from 15,142 to 15,477; 14,610 of them are
+    not pits.
+  - Among those, the record's 6-move prefix (15,242) ranks 5,166th.
+- **The top-ranked 6-move prefix is a dead end.** (3,a2)(12,a3)(12,a2)(12,a3)(12,a2)(12,a1) dances on
+  a1–a3 at once and wastes nothing in the bound's terms. But it sinks a1, a2, a3, c2, c3 and d2 to
+  −11…−9 while every other point stays at 2 or more. A jump climbs at most 2, so the knight can never
+  leave. Exhaustive search confirms that no strict tour starts this way.
+- **With pits pruned,** 68,261 live positions remain after 7 moves, with bounds from 15,075 to
+  15,376. The pit test is a gap of more than 2 in the altitudes above the knight, below h8.
+  - The top one, (0,c2)(3,d2)(0,b2)(35,c2)(0,d2)(0,d1)(0,e1), is the record's opening two moves
+    faster. It is the same position as the record after 9 moves, except that it lifts g7 to 19
+    instead of g8 to 15.
+  - The record needs that lift: h8 can only be entered from a neighbour at altitude 15 or more,
+    and g8 at 15 is the record's stepping stone.
+  - From this prefix a goal-directed search found no way to h8 in 200 million nodes. From the
+    record's own prefix the same search finds one in 29 nodes.
+  - Nine of the twelve top-ranked prefixes are stuck the same way, and none of the twelve grafts
+    onto a known tour.
+- **Best-first search inside a top branch** barely moves the bound.
+  - In the top branch it fell from 15,376 to about 15,005 after 220,000 expansions, reaching only
+    23 moves deep.
+  - In the best branch that can still reach h8, it fell from 15,375 to 15,075 after 60,000
+    expansions.
+  - Pruning a branch would need its bound below 9,329.
+
+So this bound cannot guide a branch and bound. It measures wasted rescue budget, and the prefixes
+it ranks highest are the ones that skip necessary preparation, like the record's lift of g8. A
+useful branch-and-bound bound would also have to know whether h8 can still be reached and what the
+opening costs. The record's opening, which this bound charges about 5,400 minutes, is the target.
+
