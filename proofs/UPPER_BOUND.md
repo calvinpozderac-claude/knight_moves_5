@@ -425,6 +425,18 @@ the 1,300 strict stored tours. `tools/prefix_bound.py` computes it (`trace`, `bf
     expansions.
   - Pruning a branch would need its bound below 9,329.
 
+- **Real tours from a top branch.** `subagents/families/bin/lnsfix.cpp` is LNS with the prefix held
+  fixed.
+  - For the best completable top prefix, (0,c2)(0,a2)(9,a1)(0,b1)(0,c1)(0,e1)(4,f1), the start tour
+    came from the goal-directed search: 22 moves, 22 minutes.
+  - Three 20-minute seeds reached 645, 745 and 1,017 minutes.
+  - The control fixes the record's own 7-move prefix and also starts from a short completion
+    (34 moves, 49 minutes). It reached 765 in the same time.
+  - All four results are legal, strict and free of unnecessary waits.
+  - So 20 minutes of LNS from a short start rebuilds neither branch: the record's branch, which
+    holds a 9,329 tour, does no better here than the top-bound one. Telling the branches apart
+    would need the long evolutions that produced the records.
+
 So this bound cannot guide a branch and bound. It measures wasted rescue budget, and the prefixes
 it ranks highest are the ones that skip necessary preparation, like the record's lift of g8. A
 useful branch-and-bound bound would also have to know whether h8 can still be reached and what the
