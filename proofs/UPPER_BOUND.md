@@ -10,9 +10,9 @@ small change of t breaks the very next jump. Every record tour in this repo is s
 | Tours considered | Result | Status |
 |---|---|---|
 | **All tours that obey the rules** (no free waits) | **There is no longest tour.** For every W > 286 there is a legal tour of 288 + W minutes, none of whose waits is free. Every length above 574 minutes is achieved exactly. Example: a 100,288-minute tour | Proved (Theorem 1). Machine-checked in Lean: `KM5.no_longest_tour`, `KM5.unbounded`, `KM5.every_length_above_574`, `KM5.longTour_100288` |
-| **Strict tours** (each wait pinned by its own jump) | **T ≤ 16,094⅓ minutes** (Theorem 3), down from 24,329 (Theorem 2). The best known is 9,329 | Proved. Machine-checked in Lean: `KM5.strict_bound3` (and the weaker `KM5.strict_bound`). The record is checked as `KM5.record9329_valid` |
+| **Strict tours** (each wait pinned by its own jump) | **T ≤ 15,606⅚ minutes** (Theorem 3), down from 24,329 (Theorem 2). The best known is 9,329 | Proved. Machine-checked in Lean: `KM5.strict_bound3` (and the weaker `KM5.strict_bound`). The record is checked as `KM5.record9329_valid` |
 
-The exact optimum over strict tours is not known; Theorem 3 puts it between 9,329 and 16,094.
+The exact optimum over strict tours is not known; Theorem 3 puts it between 9,329 and 15,606.
 Attempts to narrow that gap are described in [Attempts to narrow the strict gap](#attempts-to-narrow-the-strict-gap).
 
 **Lean formalization** (`lean/`, Lean 4 + Mathlib). It covers:
@@ -216,7 +216,7 @@ The proof charges every floor-lowering sit for all 64 points following the floor
 cannot do that: every sit raises its opposite point out of the dance, and in the record the average
 point ends 46 above the floor. Theorem 3 makes this loss part of the proof.
 
-## Theorem 3: every strict tour lasts at most 16,094⅓ minutes
+## Theorem 3: every strict tour lasts at most 15,606⅚ minutes
 
 Notation as in Theorem 2, with m the running floor and B = −m_end its total drop. A floor-lowering
 sit with sink d > 2 is a **knock-out**. Its opposite point O ends the sit at least d above the new
@@ -283,18 +283,30 @@ Formally, the potential
 
 starts at 2 and is never negative. The last sum runs over the knock-outs that are still open, plus
 those covered since the last floor-lowering sit, with h_k the knight's height at sit k. Every move
-raises B + B_nK + B_cov + Ψ by at most 2. Hence W = B − B_nK − B_cov ≥ 2B − 2M − 2.
+raises B + B_nK + B_cov + Ψ by at most 2, so B + B_nK + B_cov ≤ 2M + 2.
+
+**Step 5: the climb to h8 is wasted.** h8 starts at altitude 17 and only rises until it first
+sinks. So the knight stands at altitude ≥ 17 at some sit, the one where h8 first sinks. If h8
+never sinks, the knight stands there at the end, on h8. Take the stretch between two
+floor-lowering sits that contains that moment:
+- its best height is H ≥ 17 − m;
+- the knock-outs it rescues fit under the floor drop since the oldest of them, which is at most
+  −m, because every knock-out happened with the floor at or below 0.
+
+So at least 17 − 2 = 15 of the climbing stored in Ψ is never used for a rescue. Hence
+
+  B + B_nK + B_cov ≤ 2M + 2 − 15 = 2M − 13, and W = B − B_nK − B_cov ≥ 2B − 2M + 13.
 
 **Proof of the bound.** Steps 1–3 give
 
   T ≤ 421 + 2M + 65·B − (7/6)·W − W²/12.
 
-Let u = 2B − 2M − 2.
-- If u ≤ 0, then T ≤ 421 + 2M + 65·(M + 1) = 486 + 67M.
-- Otherwise W ≥ u by Step 4, and T ≤ 486 + 67M + (94/3)·u − u²/12 ≤ 486 + 67M + 8,836/3, with the
+Let u = 2B − 2M + 13.
+- If u ≤ 0, then B ≤ M − 6.5 and T ≤ 421 + 2M + 65·(M − 6.5) = 67M − 1.5.
+- Otherwise W ≥ u by Step 5, and T ≤ 67M − 1.5 + (94/3)·u − u²/12 ≤ 67M − 1.5 + 8,836/3, with the
   maximum at u = 188.
 
-Either way T ≤ 67·M + 3,431⅓, and M ≤ 189 gives **T ≤ 48,283/3 = 16,094⅓**. ∎
+Either way T ≤ 67·M + 2,943⅚, and M ≤ 189 gives **T ≤ 93,641/6 = 15,606⅚**. ∎
 
 Lean: `KM5.strict_bound3` and, by length, `KM5.strict_bound3_length`
 (`lean/KnightMoves5/StrictBound3.lean`). As in Theorem 2, a single invariant (`XInv`) is carried
@@ -302,7 +314,8 @@ along the tour, and one lemma shows that every move preserves it (`xinv_step`). 
 holds:
 - the floor at each point's last sink;
 - a list of the knock-outs not yet covered, with their drops, heights and floors;
-- the potential Ψ.
+- the potential Ψ;
+- whether h8 has sunk yet, and whether the stretch where it did has been closed.
 
 Every step was checked exactly on the records and on all 1,268 strict tours in
 `data/tours/curriculum.txt`, with no violations (`proofs/bound3_terms.py`). Each tour also satisfies
@@ -315,17 +328,36 @@ the middle inequality with its own M, B and W:
 | record_8830 | 8,830 | 173 | 171 | 164 | 4 | 9,449 |
 | record_7911 | 7,911 | 142 | 153 | 151 | 2 | 8,574 |
 
-**Why 16,094 is still above 9,329.** With the record's own numbers the bound is 9,819, only 5%
+**Why 15,607 is still above 9,329.** With the record's own numbers the bound is 9,819, only 5%
 above the record. The worst case of the proof is a different kind of tour:
-- about 47 one-move climbs, each rescuing one knocked-out opposite within one floor drop of its
+- a short opening (the 8-move climb to h8 and nothing else);
+- about 44 one-move climbs, each rescuing one knocked-out opposite within one floor drop of its
   knock-out;
-- so about 96 of the 284 units of floor drop are covered;
+- so about 88 of the 277 units of floor drop are covered;
 - and W ≈ 188 remains open.
 
 The known tours cover at most 6. The proof allows a rescue whenever the knight's height reaches
 the opposite's altitude. On the real board that point is the mirror image of the sitter, usually
 on the far side of the board. After a dance step to a neighbour of the sitter, one more step
 reaches the opposite only for sitters on d4, d5, e4 and e5. A tighter bound needs this geometry.
+
+Three further ideas were measured and not proved, all against a model of the worst case built from
+rescue cycles and plain knock-outs:
+- **Rescues strand the layer the knight left.** In a worst-case rescue cycle, the rescue sit is a
+  floor-lowering sit at height 4. It lifts every point at the knight's previous position's
+  altitude more than 2 above the floor, which in a real dance is half the dance. Counting even one
+  such point as lost makes rescues useless, and the model's optimum drops to about 13,000.
+  - But in the abstract model the stranded point can double as the knocked-out opposite of a
+    later sitter, which cancels most of the gain.
+  - On the real board the stranded point and that sitter are mirror images far apart, so
+    excluding this again needs geometry.
+- **Open knock-outs from rescues come early.** Each rescue cycle leaves its rescue sit's own
+  opposite open, early in the tour, while the loss bound pretends that all open knock-outs come
+  last. In the model this is worth about 480 minutes.
+- **The opening.** Every one of the 13 distinct starting altitudes above 2 needs a sit at that
+  altitude. In a single climb-and-merge cascade, each sit after the top costs another 2 of the
+  budget, about 24 in all, worth roughly 780 minutes. But rises can merge single points into
+  other levels, and sits during the climb cost less, so this is not yet a proof.
 
 ## Attempts to narrow the strict gap
 
@@ -350,5 +382,5 @@ So a longer strict tour most likely needs a different opening or merge, not a be
 a whole batch of stranded points back at once: bounding it seemed to need a bound on how many
 points can share one height. Theorem 3 avoids that. It measures a rescue by floor drop instead of
 by rescued points: everything rescued in one climb was knocked out within the last few units of
-floor drop, whatever the batch size. What remains between 9,329 and 16,094 is the geometry of
-rescues, described at the end of Theorem 3.
+floor drop, whatever the batch size. What remains between 9,329 and 15,606 is mostly the geometry
+of rescues, described at the end of Theorem 3.

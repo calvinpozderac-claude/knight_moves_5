@@ -25,8 +25,8 @@ See `proofs/UPPER_BOUND.md`. Everything below is machine-checked in Lean 4 (`lea
 - **The rules as worded** (a wait is free, and forbidden, only if no t′ makes a move illegal): there is
   no longest tour (`KM5.no_longest_tour`). Every length above 574 minutes is achieved exactly, for
   example 100,288 minutes (`KM5.every_length_above_574`, `proofs/verify_unbounded.py`).
-- **Strict tours** (every wait pinned by its own jump, like all the records): T ≤ 16,094⅓ minutes
-  (`KM5.strict_bound3`), and T ≤ 67·M + 3,431⅓ for a tour of M moves. The proof charges every
+- **Strict tours** (every wait pinned by its own jump, like all the records): T ≤ 15,606⅚ minutes
+  (`KM5.strict_bound3`), and T ≤ 67·M + 2,943⅚ for a tour of M moves. The proof charges every
   knocked-out opposite point either for the depth it never reaches or for the climb that rescues it.
   The earlier bound, 24,329, is `KM5.strict_bound`. The 9,329 record is the best known
   (`KM5.record9329_valid`), and the exact optimum is open.

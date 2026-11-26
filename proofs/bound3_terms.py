@@ -1,4 +1,4 @@
-"""Check every step of Theorem 3 (strict tours last at most 16,094 1/3 minutes) on real tours.
+"""Check every step of Theorem 3 (strict tours last at most 15,606 5/6 minutes) on real tours.
 
 Exact arithmetic, following proofs/UPPER_BOUND.md and lean/KnightMoves5/StrictBound3.lean.
 Floor m = running minimum, B = its total drop. A *knock-out* is a floor-lowering sit with sink d > 2;
@@ -8,7 +8,9 @@ For each strict tour it checks
                                              R_b = rises that happened before the point's last sink)
   unpaid     R_b <= 2M + B - W
   loss       L >= (W^2 + 2W) / 12           (at most 3 knock-outs per sitter, tail condition)
-  rescue     B + B_nK + B_cov <= 2M + 2     (B_nK: floor-lowering sits with d <= 2)
+  rescue     B + B_nK + B_cov <= 2M - 13    (B_nK: floor-lowering sits with d <= 2; the climb to h8,
+                                             altitude >= 17, wastes 15 of the 2M + 2 budget)
+  h8 climb   the knight stands at altitude >= 17 when h8 first sinks (or at the end)
   windows    every covered knock-out's opposite sinks again at a sit where the knight's height is at
              least d + (floor drop since), and that sit follows a move that is not floor-lowering
 and prints the tour's own bound 421 + 2M + 65B - 7W/6 - W^2/12 next to its length.
@@ -38,6 +40,8 @@ def analyse(moves):
     pos = parse('a1')
     m = F(0)
     recs, sinks, T = [], {p: [] for p in alt}, F(0)
+    h8 = parse('h8')
+    h8_alt = None  # the knight's altitude when h8 first sinks
     for i, (t, q) in enumerate(moves):
         Q = parse(q)
         k = alt[pos]
@@ -46,6 +50,8 @@ def analyse(moves):
         d = t / len(G) if t > 0 else F(0)
         rise = t > 0 and alt[O] != k
         strict = not (t > 0 and Q in G)
+        if h8_alt is None and h8 in G:
+            h8_alt = k
         if t > 0:
             for p in G:
                 alt[p] -= d
@@ -57,11 +63,13 @@ def analyse(moves):
         m = nm
         T += t
         pos = Q
-    return recs, sinks, T, m
+    if h8_alt is None:
+        h8_alt = alt[pos]  # h8 never sank: the knight ends on it
+    return recs, sinks, T, m, h8_alt
 
 
 def check(moves):
-    recs, sinks, T, m_end = analyse(moves)
+    recs, sinks, T, m_end, h8_alt = analyse(moves)
     if not all(r['strict'] for r in recs):
         return None
     M, B = len(recs), -m_end
@@ -82,7 +90,7 @@ def check(moves):
     for r in opn:
         by.setdefault(r['P'], []).append(r)
     ok = dict(depth=T <= 421 + Rb + 64 * B - L, unpaid=Rb <= 2 * M + B - W,
-              loss=L >= (W * W + 2 * W) / 12, rescue=B + BnK + Bcov <= 2 * M + 2,
+              loss=L >= (W * W + 2 * W) / 12, rescue=B + BnK + Bcov <= 2 * M - 13, h8=h8_alt >= 17,
               windows=windows, visits=all(len(g) <= 3 for g in by.values()))
     bound = 421 + 2 * M + 65 * B - F(7, 6) * W - W * W / 12
     return dict(T=T, M=M, B=B, W=W, Bcov=Bcov, BnK=BnK, L=L, ok=ok, bound=bound)

@@ -13,8 +13,8 @@ import KnightMoves5.Example4
 * `KM5.longTour_100288`: an explicit 100,288-minute tour that obeys every rule.
 * `KM5.every_length_above_574`: every length above 574 minutes is achieved exactly.
 * `KM5.strict_bound3`: a legal tour in which every wait is pinned by its own jump lasts at most
-  16,094⅓ minutes (Theorem 3, `StrictBound3.lean`).
-* `KM5.strict_bound3_length`: a strict tour of `M` moves lasts at most `67·M + 3431⅓` minutes.
+  15,606⅚ minutes (Theorem 3, `StrictBound3.lean`).
+* `KM5.strict_bound3_length`: a strict tour of `M` moves lasts at most `67·M + 2943⅚` minutes.
 * `KM5.strict_bound`, `KM5.strict_bound_length`: the weaker Theorem 2, 24,329 minutes and
   `132·M − 619`.
 * `KM5.record9329_valid`: the 9,329-minute record obeys every rule and is strict.
@@ -30,7 +30,7 @@ namespace KM5
 
 example : ¬ ∃ best, Valid best ∧ ∀ tour, Valid tour → time tour ≤ time best := no_longest_tour
 example : ∀ N : ℚ, ∃ tour, Valid tour ∧ N < time tour := unbounded
-example : ∀ tour, Legal tour → Strict start tour → time tour ≤ 48283 / 3 := strict_bound3
+example : ∀ tour, Legal tour → Strict start tour → time tour ≤ 93641 / 6 := strict_bound3
 example : ∀ tour, Legal tour → Strict start tour → time tour ≤ 24329 := strict_bound
 example : Valid record9329 ∧ Strict start record9329 ∧ time record9329 = 9329 := record9329_valid
 

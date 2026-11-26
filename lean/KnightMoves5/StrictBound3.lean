@@ -1,7 +1,7 @@
 import KnightMoves5.StrictBound
 
 /-!
-# Theorem 3: every strict tour lasts at most 16,094⅓ minutes
+# Theorem 3: every strict tour lasts at most 15,606⅚ minutes
 
 The proof of Theorem 2 (`StrictBound.lean`) charges every floor-lowering sit for all 64 points
 following the floor down. This file proves that they cannot: a sit that lowers the floor and sinks
@@ -21,12 +21,15 @@ height above the floor.
   altitude, so the knight must climb back up to the altitude it had at the knocked-out sit. The
   potential `Psi` (the segment's best height, the knight's current height, and a bonus per record)
   shows `B + B_nK + B_cov ≤ 2M + 2`, where `B_cov` is the drop of the records whose opposite sank
-  again and `B_nK` the drop of floor-lowering sits that sink at most 2 (`xinv_step`). Hence
-  `W ≥ 2B - 2M - 2`.
+  again and `B_nK` the drop of floor-lowering sits that sink at most 2 (`xinv_step`).
+* **The climb to h8.** h8 starts at altitude 17 and only rises until it first sinks, so the knight
+  must stand at altitude ≥ 17 at some sit (or end there). The climbing budget of that stretch can
+  only rescue records made before it, whose floors are all `≤ 0`, so 15 of it is wasted
+  (`h8s`, `covSum_le`). Hence `B + B_nK + B_cov ≤ 2M - 13` and `W ≥ 2B - 2M + 13`.
 * **Unpaid rises.** The rise of an open record's opposite is still in `ρ`, so `W ≤ ∑ ρ + (D - R)`.
 
-Together: `T ≤ 421 + 2M + 65B - 7W/6 - W²/12` with `W ≥ max 0 (2B - 2M - 2)`, which is at most
-`67 M + 3431⅓`, and `M ≤ 189` gives `16,094⅓`.
+Together: `T ≤ 421 + 2M + 65B - 7W/6 - W²/12`, which is at most `67 M + 2943⅚`, and `M ≤ 189`
+gives `15,606⅚`.
 -/
 
 namespace KM5.B3
@@ -211,6 +214,8 @@ structure XS where
   Bcov : ℚ
   M : ℕ
   vis : Sq → ℕ
+  /-- `0`: h8 has not sunk yet; `1`: it sank since the last floor-lowering sit; `2`: paid for. -/
+  h8s : ℕ
 
 def rise (A : Alt) (P : Sq) (t : ℚ) : ℚ := ∑ x, (if Rises A P x then sinkAmt A P t else 0)
 
@@ -231,7 +236,8 @@ def XS.step (e : XS) (mv : Move) : XS :=
       BnK := e.BnK + (if 2 < sinkAmt e.alt e.pos mv.wait then 0
         else e.m - (e.alt e.pos - sinkAmt e.alt e.pos mv.wait)),
       Bcov := e.Bcov + dsum (e.recs.filter (hit e.alt e.pos)), M := e.M + 1,
-      vis := fun x => e.vis x + if x = mv.dest then 1 else 0 }
+      vis := fun x => e.vis x + if x = mv.dest then 1 else 0,
+      h8s := if e.h8s = 2 then 2 else if e.h8s = 1 ∨ InGroup e.alt e.pos h8 then 2 else 0 }
   else
     { alt := sit e.alt e.pos mv.wait, pos := mv.dest, m := e.m,
       mu := fun x => if InGroup e.alt e.pos x then e.m else e.mu x,
@@ -242,7 +248,8 @@ def XS.step (e : XS) (mv : Move) : XS :=
       T := e.T + mv.wait, R := e.R + rise e.alt e.pos mv.wait, D := e.D + sinkAmt e.alt e.pos mv.wait,
       Z := e.Z + (sit e.alt e.pos mv.wait mv.dest - sit e.alt e.pos mv.wait e.pos),
       B := e.B, BnK := e.BnK, Bcov := e.Bcov + dsum (e.recs.filter (hit e.alt e.pos)), M := e.M + 1,
-      vis := fun x => e.vis x + if x = mv.dest then 1 else 0 }
+      vis := fun x => e.vis x + if x = mv.dest then 1 else 0,
+      h8s := if e.h8s = 2 then 2 else if e.h8s = 1 ∨ InGroup e.alt e.pos h8 then 1 else 0 }
 
 /-- The potential of the rescue argument. -/
 def Psi (e : XS) : ℚ :=
@@ -382,6 +389,21 @@ lemma sit_rise {A : Alt} {P x : Sq} (t : ℚ) (hx : ¬ InGroup A P x) :
     sit A P t x = A x + if Rises A P x then sinkAmt A P t else 0 := by
   rw [sit_eq]; simp [hx]
 
+/-- Everything covered fits under the floor's total drop: the records' floors are all `≤ 0`. -/
+lemma covSum_le {m : ℚ} {l : List Rec} (ht : TailOK m 0 l) (hd : ∀ r ∈ l, 0 ≤ r.del)
+    (hmb : ∀ r ∈ l, r.mb ≤ 0) (hm : m ≤ 0) : covSum l ≤ -m := by
+  by_cases hex : ∃ r ∈ l, r.cov = true
+  · obtain ⟨r, hr, -, hle⟩ := ht.exists_cover (fun r => r.cov) hd hex
+    have := hmb r hr; simp only [covSum] at hle ⊢; linarith
+  · push Not at hex
+    have : l.filter (fun r => r.cov) = [] := List.filter_eq_nil_iff.mpr (fun r hr => by simpa using hex r hr)
+    simp [covSum, this, hm]
+
+lemma psi_ge (e : XS) : e.Hm - 2 - covSum e.recs ≤ Psi e := by
+  unfold Psi
+  have := le_max_right 0 (e.Hm - 2); have := le_max_left 0 (2 - (e.alt e.pos - e.m))
+  have := bsum_nonneg e.recs; linarith
+
 structure XInv (e : XS) : Prop where
   sum : ∑ x, e.alt x = 421 - e.T + e.R
   knight : e.alt e.pos = e.Z - e.D
@@ -400,7 +422,11 @@ structure XInv (e : XS) : Prop where
   pend : ∀ r ∈ e.recs, r.cov = false → r.mb ≤ e.mu r.own ∧ r.mb + r.h ≤ e.alt r.own
   cov : ∀ r ∈ e.recs, r.cov = true → r.mb + r.h ≤ e.m + e.Hm
   hm : e.alt e.pos - e.m ≤ e.Hm
-  pot : e.B + e.BnK + e.Bcov + Psi e ≤ 2 * e.M + 2
+  pot : e.B + e.BnK + e.Bcov + Psi e + (if e.h8s = 2 then 15 else 0) ≤ 2 * e.M + 2
+  h8a : e.h8s = 0 → 17 ≤ e.alt h8
+  h8b : e.h8s = 1 → 17 - e.m ≤ e.Hm
+  h8c : e.h8s ≤ 2
+  mb0 : ∀ r ∈ e.recs, r.mb ≤ 0
   split : e.B = e.BnK + e.Bcov + pendSum e.recs
   cnt : ∀ x, (e.recs.filter (fun r => decide (r.own = opp x))).length +
     (if x = e.pos then 1 else 0) ≤ e.vis x
@@ -451,11 +477,11 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
     (hj : JumpOK (sit e.alt e.pos mv.wait) e.pos mv.dest)
     (hst : 0 < mv.wait → ¬ InGroup e.alt e.pos mv.dest) : XInv (e.step mv) := by
   have hmc := marked_cov hI
-  obtain ⟨A, P, m, mu, rho, recs, Hm, T, R, D, Z, B, BnK, Bcov, M, vis⟩ := e
+  obtain ⟨A, P, m, mu, rho, recs, Hm, T, R, D, Z, B, BnK, Bcov, M, vis, h8s⟩ := e
   obtain ⟨t, Q⟩ := mv
   obtain ⟨hsum, hk, hfloor, hB, hB0, hRD, hZM, hmu, hrho0, hrl, hrdown, hlvl, htail, hdel, hpend, hcov,
-    hhm, hpot, hsplit, hcnt⟩ := hI
-  simp only at h0 hj hst hsum hk hfloor hB hB0 hRD hZM hmu hrho0 hrl hrdown hlvl htail hdel hpend hcov hhm hpot hsplit hcnt hmc
+    hhm, hpot, hh8a, hh8b, hh8c, hmb0, hsplit, hcnt⟩ := hI
+  simp only at h0 hj hst hsum hk hfloor hB hB0 hRD hZM hmu hrho0 hrl hrdown hlvl htail hdel hpend hcov hhm hpot hh8a hh8b hh8c hmb0 hsplit hcnt hmc
   have hrise0 : 0 ≤ rise A P t := rise_nonneg A P h0
   have hrlm : ∀ r ∈ recs.map (mark A P), 0 ≤ r.rd ∧ 0 ≤ r.lv ∧ r.del ≤ r.rd + r.lv := by
     intro r hr; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr; simpa using hrl r0 h0'
@@ -483,6 +509,34 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
   have hdelm : ∀ r ∈ recs.map (mark A P), 0 ≤ r.del ∧ r.del ≤ 2 := by
     intro r hr; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr; simpa using hdel r0 h0'
   have hbr := cover_bracket htailm (fun r hr => (hdelm r hr).1) hmc
+  have hmbm : ∀ r ∈ recs.map (mark A P), r.mb ≤ 0 := by
+    intro r hr; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr; simpa using hmb0 r0 h0'
+  have hcovle : covSum (recs.map (mark A P)) ≤ -m :=
+    covSum_le htailm (fun r hr => (hdelm r hr).1) hmbm (by linarith)
+  -- the climb to h8 is paid for once
+  have hH8 : (h8s = 1 ∨ (h8s = 0 ∧ InGroup A P h8)) → 17 - m ≤ Hm := by
+    rintro (h | ⟨h, hg⟩)
+    · exact hh8b h
+    · have := hh8a h; rw [hg.1] at this; linarith
+  have hτ : (if (if h8s = 2 then 2 else if h8s = 1 ∨ InGroup A P h8 then 2 else 0) = 2 then (15 : ℚ)
+      else 0) ≤ (if h8s = 2 then 15 else 0) -
+        (covSum (recs.map (mark A P)) - max 0 (Hm - 2) - bsum ((recs.map (mark A P)).filter (fun r => r.cov))) := by
+    have hb := bsum_nonneg ((recs.map (mark A P)).filter (fun r => r.cov))
+    have hmx := le_max_right 0 (Hm - 2)
+    by_cases h2 : h8s = 2
+    · simp only [h2, if_true]; linarith
+    · by_cases h1 : h8s = 1 ∨ InGroup A P h8
+      · have hH : 17 - m ≤ Hm := hH8 (by
+          by_cases h1' : h8s = 1
+          · exact Or.inl h1'
+          · exact Or.inr ⟨by omega, h1.resolve_left h1'⟩)
+        simp only [h2, h1, if_true, if_false]; linarith
+      · simp only [h2, h1, if_false]; norm_num; linarith
+  have hτn : (if (if h8s = 2 then 2 else if h8s = 1 ∨ InGroup A P h8 then 1 else 0) = 2 then (15 : ℚ)
+      else 0) = (if h8s = 2 then 15 else 0) := by
+    by_cases h2 : h8s = 2
+    · simp [h2]
+    · by_cases h1 : h8s = 1 ∨ InGroup A P h8 <;> simp [h2, h1]
   have hpendmk : ∀ r ∈ recs.map (mark A P), r.cov = false →
       ¬ InGroup A P r.own ∧ r.mb ≤ mu r.own ∧ r.mb + r.h ≤ A r.own := by
     intro r hr hc; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr
@@ -516,7 +570,8 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
     have hLlen : ∀ y, (L.filter (fun r => decide (r.own = y))).length ≤
         (recs.filter (fun r => decide (r.own = y))).length := by
       intro y; rw [← hlen y]; exact len_filter_le _ _ _
-    refine ⟨hsum', ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> dsimp only
+    refine ⟨hsum', ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+      dsimp only
     · linarith
     · intro x; by_cases hg : InGroup A P x
       · rw [hgrp x hg]
@@ -607,15 +662,30 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
       by_cases hK : 2 < sinkAmt A P t
       · simp only [hK, if_true, List.singleton_append, covSum, bsum_cons, List.filter_cons,
           Bool.false_eq_true, if_false]
-        simp only [covSum] at hLc hbr hcovm hpot; rw [hLc]
+        simp only [covSum] at hLc hbr hcovm hpot hτ; rw [hLc]
         have hbon : bonus ⟨opp P, m - (A P - sinkAmt A P t), A P - m, m, false, rise A P t,
             sinkAmt A P t - rise A P t⟩ = max 0 (2 - (A P - m)) := rfl
         rw [hbon, hLb]; push_cast; linarith
       · simp only [hK, if_false, List.nil_append]
-        simp only [covSum] at hLc hbr hcovm hpot ⊢; rw [hLc, hLb]
+        simp only [covSum] at hLc hbr hcovm hpot hτ ⊢; rw [hLc, hLb]
         have : m - (A P - sinkAmt A P t) ≤ max 0 (2 - (A P - m)) :=
           le_trans (by linarith) (le_max_right _ _)
         push_cast; linarith
+    · intro h; have : h8s = 0 ∧ ¬ InGroup A P h8 := by
+        by_cases h2 : h8s = 2
+        · simp [h2] at h
+        · by_cases h1 : h8s = 1 ∨ InGroup A P h8
+          · simp [h2, h1] at h
+          · push Not at h1; exact ⟨by omega, h1.2⟩
+      exact le_trans (hh8a this.1) (hlow h8 this.2)
+    · intro h; split_ifs at h <;> simp at h
+    · split_ifs <;> omega
+    · intro r hr
+      rcases List.mem_append.mp hr with hr | hr
+      · split_ifs at hr
+        · simp at hr; subst hr; dsimp only; linarith
+        · simp at hr
+      · exact hmbm r (hLm r hr).1
     · by_cases hK : 2 < sinkAmt A P t
       · simp only [hK, if_true, List.singleton_append, pendSum, List.filter_cons, Bool.not_false,
           if_true, dsum_cons]
@@ -635,8 +705,8 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
         split_ifs at h1 ⊢ <;> omega
   · simp only [if_neg hfl]
     push Not at hfl
-    refine ⟨hsum', ?_, ?_, hB, hB0, ?_, ?_, ?_, ?_, hrlm, ?_, ?_, htailm, hdelm, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-      dsimp only
+    refine ⟨hsum', ?_, ?_, hB, hB0, ?_, ?_, ?_, ?_, hrlm, ?_, ?_, htailm, hdelm, ?_, ?_, ?_, ?_, ?_, ?_,
+      ?_, hmbm, ?_, ?_⟩ <;> dsimp only
     · linarith
     · intro x; by_cases hg : InGroup A P x
       · rw [hgrp x hg]; exact hfl
@@ -672,7 +742,27 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
         · rw [hgrp Q hg]; linarith
         · have := hlow Q hg; have := hfloor Q; linarith
       have := pot_nonfl Hm (A P - m) (sit A P t Q - m) hhm hq0 (by rw [hP'] at hdz; linarith [hdz.2])
-      push_cast; linarith
+      rw [hτn]; push_cast; linarith
+    · intro h; have : h8s = 0 ∧ ¬ InGroup A P h8 := by
+        by_cases h2 : h8s = 2
+        · simp [h2] at h
+        · by_cases h1 : h8s = 1 ∨ InGroup A P h8
+          · simp [h2, h1] at h
+          · push Not at h1; exact ⟨by omega, h1.2⟩
+      exact le_trans (hh8a this.1) (hlow h8 this.2)
+    · intro h
+      have h1 : h8s = 1 ∨ (h8s = 0 ∧ InGroup A P h8) := by
+        by_cases h2 : h8s = 2
+        · simp [h2] at h
+        · by_cases h1 : h8s = 1 ∨ InGroup A P h8
+          · rcases h1 with h1 | h1
+            · exact Or.inl h1
+            · by_cases h1' : h8s = 1
+              · exact Or.inl h1'
+              · exact Or.inr ⟨by omega, h1⟩
+          · simp [h2, h1] at h
+      have := hH8 h1; have := le_max_left Hm (sit A P t Q - m); linarith
+    · split_ifs <;> omega
     · rw [hpendm]; linarith
     · intro x; have h1 := hcnt x; rw [hlen (opp x)]; split_ifs at h1 ⊢ <;> omega
 
@@ -719,12 +809,13 @@ lemma xinv_run : ∀ (l : List Move) (e : XS), XInv e → MovesOK ⟨e.alt, e.po
 def xstart : XS :=
   { alt := init, pos := a1, m := 0, mu := fun _ => 0, rho := fun _ => 0, recs := [], Hm := 0, T := 0,
     R := 0, D := 0,
-    Z := 0, B := 0, BnK := 0, Bcov := 0, M := 0, vis := fun x => if x = a1 then 1 else 0 }
+    Z := 0, B := 0, BnK := 0, Bcov := 0, M := 0, vis := fun x => if x = a1 then 1 else 0, h8s := 0 }
 
 lemma xinv_start : XInv xstart := by
   have ha1 : init a1 = 0 := by decide +kernel
-  refine ⟨?_, ?_, init_nonneg, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, trivial, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-    simp [xstart, init_sum, ha1, Psi, covSum, pendSum, init_nonneg, ownF, pendF]
+  have hh8 : (17 : ℚ) ≤ init h8 := by decide +kernel
+  refine ⟨?_, ?_, init_nonneg, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, trivial, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+    simp [xstart, init_sum, ha1, Psi, covSum, pendSum, init_nonneg, ownF, pendF, hh8]
   all_goals first | (intros; exact le_rfl) | norm_num
 
 /-- Group a sum over records by their opposite points. -/
@@ -741,9 +832,9 @@ lemma group_sum (f : Rec → ℚ) (g : Sq → ℚ) : ∀ l : List Rec, (∀ r �
       List.map_cons, List.sum_cons]
     linarith
 
-/-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 3431⅓` minutes. -/
+/-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 2943⅚` minutes. -/
 theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
-    time tour ≤ 67 * tour.length + 10294 / 3 := by
+    time tour ≤ 67 * tour.length + 17663 / 6 := by
   obtain ⟨hI, hst, hT, hM, hV⟩ := xinv_run tour xstart xinv_start hL.1 hS
   set e := xstart.run tour
   have hT' : e.T = time tour := by rw [hT]; simp [xstart]
@@ -763,7 +854,17 @@ theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tou
     simp only [hW, dsum]
     exact List.sum_nonneg (by simp only [List.mem_map]; rintro _ ⟨r, hr, rfl⟩
                               exact (hI.del r (List.mem_of_mem_filter hr)).1)
-  have hWB : 2 * e.B - 2 * e.M - 2 ≤ W := by linarith
+  -- the climb to h8 wastes 15 of the budget
+  have hm0 : e.m ≤ 0 := by linarith [hI.hB, hI.B0]
+  have hcl := covSum_le hI.tail (fun r hr => (hI.del r hr).1) hI.mb0 hm0
+  have hpg := psi_ge e
+  have h15 : 15 ≤ Psi e + (if e.h8s = 2 then 15 else 0) := by
+    rcases (by have := hI.h8c; omega : e.h8s = 0 ∨ e.h8s = 1 ∨ e.h8s = 2) with h | h | h
+    · have h1 := hI.h8a h; have h2 := hI.hm; rw [hpos] at h2
+      simp only [h]; norm_num; linarith
+    · have h1 := hI.h8b h; simp only [h]; norm_num; linarith
+    · simp only [h, if_true]; linarith
+  have hWB : 2 * e.B - 2 * e.M + 13 ≤ W := by linarith
   -- the loss of the knocked-out points: 12 ∑ (mu - m) ≥ W² + 2W
   have hpt : TailOK e.m 0 (e.recs.filter (fun r => !r.cov)) := hI.tail.filter _ (fun r hr => (hI.del r hr).1)
   have hq := hpt.quad le_rfl (fun r hr => hI.del r (List.mem_of_mem_filter hr))
@@ -812,15 +913,15 @@ theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tou
   rw [← hT', ← hM']
   -- T ≤ 421 + 2M + 65B - 7W/6 - W²/12
   have hmain : e.T ≤ 421 + 2 * e.M + 65 * e.B - 7 / 6 * W - W ^ 2 / 12 := by nlinarith
-  by_cases hu : 2 * e.B - 2 * e.M - 2 ≤ 0
+  by_cases hu : 2 * e.B - 2 * e.M + 13 ≤ 0
   · nlinarith
   · push Not at hu
-    have hW2 : (2 * e.B - 2 * e.M - 2) ^ 2 ≤ W ^ 2 := by nlinarith
-    nlinarith [sq_nonneg (2 * e.B - 2 * e.M - 2 - 188)]
+    have hW2 : (2 * e.B - 2 * e.M + 13) ^ 2 ≤ W ^ 2 := by nlinarith
+    nlinarith [sq_nonneg (2 * e.B - 2 * e.M + 13 - 188)]
 
-/-- **Theorem 3.** A strict tour that obeys the rules lasts at most 16,094⅓ minutes. -/
+/-- **Theorem 3.** A strict tour that obeys the rules lasts at most 15,606⅚ minutes. -/
 theorem bound (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
-    time tour ≤ 48283 / 3 := by
+    time tour ≤ 93641 / 6 := by
   have h1 := bound_length tour hL hS
   have h2 : (tour.length : ℚ) ≤ 189 := by exact_mod_cast length_le tour hL
   linarith
@@ -829,12 +930,12 @@ end KM5.B3
 
 namespace KM5
 
-/-- **Theorem 3.** A strict tour that obeys the rules lasts at most 16,094⅓ minutes. -/
+/-- **Theorem 3.** A strict tour that obeys the rules lasts at most 15,606⅚ minutes. -/
 theorem strict_bound3 (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
-    time tour ≤ 48283 / 3 := B3.bound tour hL hS
+    time tour ≤ 93641 / 6 := B3.bound tour hL hS
 
-/-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 3431⅓` minutes. -/
+/-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 2943⅚` minutes. -/
 theorem strict_bound3_length (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
-    time tour ≤ 67 * tour.length + 10294 / 3 := B3.bound_length tour hL hS
+    time tour ≤ 67 * tour.length + 17663 / 6 := B3.bound_length tour hL hS
 
 end KM5
