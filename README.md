@@ -29,14 +29,14 @@ except the exhaustive search of Theorem 4, which prunes only by Lean-proved lemm
 - **Strict tours** (every wait pinned by its own jump, like all the records): T ≤ 15,606⅚ minutes
   (`KM5.strict_bound3`), and T ≤ 67·M + 2,943⅚ for a tour of M moves. The proof charges every
   knocked-out opposite point either for the depth it never reaches or for the climb that rescues it.
-  The earlier bound, 24,329, is `KM5.strict_bound`. The 9,329 record is the best known
-  (`KM5.record9329_valid`), and the exact optimum is open.
+  The earlier bound, 24,329, is `KM5.strict_bound`. The 9,330 record is the best known
+  (`KM5.Cert.R9330.valid`, `lean/KnightMoves5/Certs/R9330.lean`), and the exact optimum is open.
 - **Theorem 4 (computer-assisted): strict tours last at most 15,114 minutes.** Theorem 3 holds
   from any partial tour (`KM5.strict_prefix_bound`), and a prefix that ends in a pit cannot be
   finished (`KM5.pit_dead`). An exhaustive search over strict prefixes that prunes only by these
   two lemmas finishes in 84 s (`tools/prove_bound.cpp`, cross-checked by `tools/prefix_bound.py`).
-- **The record's last 21 moves are optimal:** an exhaustive search over every strict completion of
-  its first 164 moves finds nothing longer (`subagents/exact/sweep9329_nobound.log`).
+- **The 9,329 tour's last 21 moves are optimal:** an exhaustive search over every strict completion
+  of its first 164 moves finds nothing longer (`subagents/exact/sweep9329_nobound.log`).
 - **The formal rules match the puzzle:** its own 4×4 worked example is valid under them
   (`KM5.Example4.valid`), and they agree with `tools/sim.py` on 200 test tours. Any tour can be
   certified with `lean/tools/certify.py`.
@@ -45,7 +45,8 @@ except the exhaustive search of Theorem 4, which prunes only by Lean-proved lemm
 
 | Tour | Minutes | How it was found |
 |---|---|---|
-| `data/tours/record_9329.txt` | **9,329** | Family search v3 (strict tours only), about 2h20m into the run: a visit trial on the 9,328 tour (heavy penalty on visits to d5, f7, f8 and g8 before move 89). No tour avoided them all, but the penalised search itself found this 185-move tour |
+| `data/tours/record_9330.txt` | **9,330** | Plain strict LNS (`subagents/families/bin/lns.cpp`, `--free 0`) from the 9,329 tour, destroy-and-repair focused on moves 60–130, donors the eight best tours. It took 29 minutes (132,000 iterations, seed 2102). The tour has 181 moves and differs from 9,329 from move 4 on. It is strict, `tools/check_tour.py` accepts it, and Lean checks it (`lean/KnightMoves5/Certs/R9330.lean`: `Valid tour`, `time tour = 9330`) |
+| `data/tours/record_9329.txt` | 9,329 | Family search v3 (strict tours only), about 2h20m into the run: a visit trial on the 9,328 tour (heavy penalty on visits to d5, f7, f8 and g8 before move 89). No tour avoided them all, but the penalised search itself found this 185-move tour |
 | `data/tours/record_9328.txt` | 9,328 | Family search v3 (strict tours only: no free waits), 33 min into the run: a flip trial (penalty on the a2 and b3 sits) on a 9,165 tour; raw 8,368, then LNS reached 9,328 in 9 min in a new merge class (merge sits e5 e6 f3 f7, groups up to 35) with 1 pair flip vs 8,830. A visit-penalty trial (no prefix visits to d5, g8) independently reached the same family at 9,321 |
 | `data/tours/record_9282.txt` | 9,282 | Family search v2, about 9h30m into the run: a transplant trial on a 9,272 tour (penalty on its c6 and e7 sits toward a 2-flip family's sitters); the run kept no tour free of the penalised sits, so plain LNS started from the penalised best (raw 8,720) and reached 9,282 in 9 min, back in the leading merge (f3/f7, g6/h3; groups up to 36) with a new dance order (0 pair flips, family distance 8 from 9,275 and 10 from 9,279) |
 | `data/tours/record_9279.txt` | 9,279 | Family search v2 (merge-aware families), about 6h50m into the run: a dance graft (donor 8,919 prefix-resynced into a 9,236 tour) started a family in the second merge class (early sits d3/g6 and f7/h3 instead of f3/f7 and g6/h3) at 9,181; an order trial raised it to 9,213, a flip trial (a8, b7, b8) to 9,274 and a plain LNS seed to 9,279 (0 pair flips vs 9,275, family distance 18, groups up to 36 points) |

@@ -10,9 +10,9 @@ small change of t breaks the very next jump. Every record tour in this repo is s
 | Tours considered | Result | Status |
 |---|---|---|
 | **All tours that obey the rules** (no free waits) | **There is no longest tour.** For every W > 286 there is a legal tour of 288 + W minutes, none of whose waits is free. Every length above 574 minutes is achieved exactly. Example: a 100,288-minute tour | Proved (Theorem 1). Machine-checked in Lean: `KM5.no_longest_tour`, `KM5.unbounded`, `KM5.every_length_above_574`, `KM5.longTour_100288` |
-| **Strict tours** (each wait pinned by its own jump) | **T ≤ 15,114 minutes** (Theorem 4), down from 15,606⅚ (Theorem 3) and 24,329 (Theorem 2). The best known is 9,329 | Theorems 2 and 3 are machine-checked in Lean: `KM5.strict_bound3`, `KM5.strict_bound`. Theorem 4 is computer-assisted: an exhaustive search (`tools/prove_bound.cpp`, 84 s) that prunes only with two Lean-proved lemmas, `KM5.strict_prefix_bound` and `KM5.pit_dead`. The record is checked as `KM5.record9329_valid` |
+| **Strict tours** (each wait pinned by its own jump) | **T ≤ 15,114 minutes** (Theorem 4), down from 15,606⅚ (Theorem 3) and 24,329 (Theorem 2). The best known is 9,330 | Theorems 2 and 3 are machine-checked in Lean: `KM5.strict_bound3`, `KM5.strict_bound`. Theorem 4 is computer-assisted: an exhaustive search (`tools/prove_bound.cpp`, 84 s) that prunes only with two Lean-proved lemmas, `KM5.strict_prefix_bound` and `KM5.pit_dead`. The record is checked as `KM5.record9329_valid` |
 
-The exact optimum over strict tours is not known; Theorem 4 puts it between 9,329 and 15,114.
+The exact optimum over strict tours is not known; Theorem 4 puts it between 9,330 and 15,114.
 Attempts to narrow that gap are described in [Attempts to narrow the strict gap](#attempts-to-narrow-the-strict-gap).
 
 **Lean formalization** (`lean/`, Lean 4 + Mathlib). It covers:
