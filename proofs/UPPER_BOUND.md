@@ -577,7 +577,21 @@ completion of a fixed prefix of the record, with a transposition table and no bo
 | **last 21** (from move 164) | 412,658,901 | 286 s | **9,329** |
 | last 23 | more than 1.3 billion | > 15 min | not finished |
 
-So the record's last 21 moves are the best possible after its first 164: a longer strict tour must
-differ from the record somewhere in its first 164 moves. Searches pruned by the heuristic suffix
+So the 9,329 tour's last 21 moves are the best possible after its first 164: a longer strict tour
+must differ from it somewhere in its first 164 moves. The same holds for the 9,330 record: its last
+21 moves are optimal after its first 160 (411,811,705 positions, 251 s;
+`subagents/exact/sweep9330_nobound.log`).
+
+**The 9,330 record is the 9,329 tour with a better opening.** After 95 moves it reaches exactly the
+position the 9,329 tour reaches after 99:
+- the same altitudes everywhere and the knight on d4;
+- 63 points in two levels 2 apart (28 and 35 points), with only e6 out;
+- the same 87-move dance afterwards, 8,175 minutes.
+
+It arrives with one more minute spent and 8 visits unused instead of 4. For a fixed position the
+opening's time is 421 + R − Σ altitudes, so only the total rise R of opposite points (89 instead
+of 88) can differ. Every dance sit sinks its group by 3 or 4, and the groups shrink from 34 to 16 as
+the opposite of each new sitter leaves. A longer tour needs either more rise on the way to this
+position, or a different position. Searches pruned by the heuristic suffix
 bound of `bb.cpp`, which is not proved, found nothing better from moves 150, 140 or 130 either.
 

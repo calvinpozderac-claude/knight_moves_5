@@ -1,0 +1,6 @@
+# Exhaustive suffix search of record_9330 (bb.cpp --nobound --alpha 0 --tt 26 --time 1800): moves k+1.. free, first k fixed
+k=168 FOUND 9330 (0.0s, 13 nodes) DONE k=168 0.1s nodes=133640 tthits=19918 EXACT suffix optimum from k: 9330 (prefix T=8448) [sound: exhaustive] 
+k=166 FOUND 9330 (0.0s, 15 nodes) DONE k=166 0.9s nodes=1441616 tthits=189699 EXACT suffix optimum from k: 9330 (prefix T=8296) [sound: exhaustive] 
+k=164 FOUND 9330 (0.0s, 17 nodes) DONE k=164 5.0s nodes=7845402 tthits=1017378 EXACT suffix optimum from k: 9330 (prefix T=8176) [sound: exhaustive] 
+k=162 FOUND 9330 (0.0s, 19 nodes) DONE k=162 45.5s nodes=73320378 tthits=7746193 EXACT suffix optimum from k: 9330 (prefix T=8016) [sound: exhaustive] 
+k=160 FOUND 9330 (0.0s, 21 nodes) DONE k=160 251.2s nodes=411811705 tthits=40541318 EXACT suffix optimum from k: 9330 (prefix T=7852) [sound: exhaustive] 

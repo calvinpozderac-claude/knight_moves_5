@@ -35,8 +35,9 @@ except the exhaustive search of Theorem 4, which prunes only by Lean-proved lemm
   from any partial tour (`KM5.strict_prefix_bound`), and a prefix that ends in a pit cannot be
   finished (`KM5.pit_dead`). An exhaustive search over strict prefixes that prunes only by these
   two lemmas finishes in 84 s (`tools/prove_bound.cpp`, cross-checked by `tools/prefix_bound.py`).
-- **The 9,329 tour's last 21 moves are optimal:** an exhaustive search over every strict completion
-  of its first 164 moves finds nothing longer (`subagents/exact/sweep9329_nobound.log`).
+- **The records' last 21 moves are optimal:** an exhaustive search over every strict completion of
+  the first 160 moves of the 9,330 tour (and of the first 164 of the 9,329 tour) finds nothing longer
+  (`subagents/exact/sweep9330_nobound.log`, `sweep9329_nobound.log`).
 - **The formal rules match the puzzle:** its own 4×4 worked example is valid under them
   (`KM5.Example4.valid`), and they agree with `tools/sim.py` on 200 test tours. Any tour can be
   certified with `lean/tools/certify.py`.
