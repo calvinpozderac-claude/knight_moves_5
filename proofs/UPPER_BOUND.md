@@ -429,11 +429,11 @@ Finishing jumps are evaluated exactly; a finish above X would be reported as a c
 |---|---|---|---|
 | 15,300 | 4,844 | 0.0 s | proved |
 | 15,200 | 100,040 | 0.4 s | proved |
-| 15,150 | 497,524 | 1.6 s | proved |
+| 15,150 | 497,519 | 1.6 s | proved |
 | 15,120 | 15,053,741 | 35 s | proved; largest pruned bound 15,119⅓ |
 | **15,115** | **30,157,964** | **84 s** | **proved; largest pruned bound 15,114⅓**, no finish above 57 |
 | 15,112 | — | > 25 min | not finished |
-| 15,110 | > 537 million | > 40 min | not finished (table full) |
+| 15,110 | > 537 million | > 29 min | not finished (table full) |
 
 ```
 g++ -O2 -std=c++17 -o prove_bound tools/prove_bound.cpp
