@@ -229,7 +229,9 @@ worst case comes mostly from tours with far more floor-lowering sits than any kn
 **A longer strict tour.** The repo's diversity search ran in the background: a penalty trial (`dlns`)
 forbids 2–4 of the record's sitting squares, then plain LNS (`lns`, `--free 0`, strict only) starts from
 the result. Every candidate was re-checked with `tools/check_tour.py` and `subagents/strict_check.py`.
-It found no strict tour above 9,329. Run counts are in the session report.
+It found no strict tour above 9,329. Over about 8 CPU-hours it completed 16 polishing runs, starting
+from the ten best tours (8,900–9,329) with 2–4 sitting squares penalised early or late in the tour.
+Six runs returned exactly 9,329, and the rest returned 9,166–9,282.
 
 The record is close to saturated within its family:
 - its dance has a sitter in 31 of the 32 opposite pairs (all except a1/h8, since h8 can never be sat
