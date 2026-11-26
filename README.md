@@ -21,12 +21,16 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 ## Upper bound
 
-See `proofs/UPPER_BOUND.md`. Both theorems are machine-checked in Lean 4 (`lean/`, no `sorry`).
+See `proofs/UPPER_BOUND.md`. Everything below is machine-checked in Lean 4 (`lean/`, no `sorry`).
 - **The rules as worded** (a wait is free, and forbidden, only if no t′ makes a move illegal): there is
-  no longest tour. A legal family of 288 + W minutes exists for every W > 286, for example
-  100,288 minutes (`KM5.unbounded`, `proofs/verify_unbounded.py`).
+  no longest tour (`KM5.no_longest_tour`). Every length above 574 minutes is achieved exactly, for
+  example 100,288 minutes (`KM5.every_length_above_574`, `proofs/verify_unbounded.py`).
 - **Strict tours** (every wait pinned by its own jump, like all the records): T ≤ 24,329 minutes
-  (`KM5.strict_bound`). The 9,329 record is the best known, and the exact optimum is open.
+  (`KM5.strict_bound`), and T ≤ 132·M − 619 for a tour of M moves. The 9,329 record is the best
+  known (`KM5.record9329_valid`), and the exact optimum is open.
+- **The formal rules match the puzzle:** its own 4×4 worked example is valid under them
+  (`KM5.Example4.valid`), and they agree with `tools/sim.py` on 200 test tours. Any tour can be
+  certified with `lean/tools/certify.py`.
 
 ## Results so far
 
