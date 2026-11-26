@@ -1,6 +1,7 @@
 import KnightMoves5.Unbounded
 import KnightMoves5.StrictBound
 import KnightMoves5.StrictBound3
+import KnightMoves5.Pit
 import KnightMoves5.Pinned
 import KnightMoves5.Example4
 
@@ -15,6 +16,11 @@ import KnightMoves5.Example4
 * `KM5.strict_bound3`: a legal tour in which every wait is pinned by its own jump lasts at most
   15,606⅚ minutes (Theorem 3, `StrictBound3.lean`).
 * `KM5.strict_bound3_length`: a strict tour of `M` moves lasts at most `67·M + 2943⅚` minutes.
+* `KM5.strict_prefix_bound`: Theorem 3 from any partial tour. Every strict tour that starts with the
+  moves `pre` lasts at most `B3.ubF` of the state they reach.
+* `KM5.pit_dead`: no legal tour continues past a prefix that ends in a pit (`Pit.lean`). With
+  `strict_prefix_bound`, this is what `tools/prove_bound.cpp` uses to show by exhaustive search that
+  every strict tour lasts at most 15,114⅓ minutes (Theorem 4, computer-assisted).
 * `KM5.strict_bound`, `KM5.strict_bound_length`: the weaker Theorem 2, 24,329 minutes and
   `132·M − 619`.
 * `KM5.record9329_valid`: the 9,329-minute record obeys every rule and is strict.
@@ -32,6 +38,9 @@ example : ¬ ∃ best, Valid best ∧ ∀ tour, Valid tour → time tour ≤ tim
 example : ∀ N : ℚ, ∃ tour, Valid tour ∧ N < time tour := unbounded
 example : ∀ tour, Legal tour → Strict start tour → time tour ≤ 93641 / 6 := strict_bound3
 example : ∀ tour, Legal tour → Strict start tour → time tour ≤ 24329 := strict_bound
+example : ∀ pre suf, Legal (pre ++ suf) → Strict start (pre ++ suf) →
+    time (pre ++ suf) ≤ B3.ubF (B3.xstart.run pre) := strict_prefix_bound
+example : ∀ pre suf c, Pit c (run start pre) → Legal (pre ++ suf) → suf = [] := pit_dead
 example : Valid record9329 ∧ Strict start record9329 ∧ time record9329 = 9329 := record9329_valid
 
 end KM5

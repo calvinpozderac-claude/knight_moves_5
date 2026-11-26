@@ -21,7 +21,8 @@ agent: C++ tree search plus a small neural network trained by self-play.
 
 ## Upper bound
 
-See `proofs/UPPER_BOUND.md`. Everything below is machine-checked in Lean 4 (`lean/`, no `sorry`).
+See `proofs/UPPER_BOUND.md`. Everything below is machine-checked in Lean 4 (`lean/`, no `sorry`),
+except the exhaustive search of Theorem 4, which prunes only by Lean-proved lemmas.
 - **The rules as worded** (a wait is free, and forbidden, only if no t′ makes a move illegal): there is
   no longest tour (`KM5.no_longest_tour`). Every length above 574 minutes is achieved exactly, for
   example 100,288 minutes (`KM5.every_length_above_574`, `proofs/verify_unbounded.py`).
@@ -30,6 +31,12 @@ See `proofs/UPPER_BOUND.md`. Everything below is machine-checked in Lean 4 (`lea
   knocked-out opposite point either for the depth it never reaches or for the climb that rescues it.
   The earlier bound, 24,329, is `KM5.strict_bound`. The 9,329 record is the best known
   (`KM5.record9329_valid`), and the exact optimum is open.
+- **Theorem 4 (computer-assisted): strict tours last at most 15,114 minutes.** Theorem 3 holds
+  from any partial tour (`KM5.strict_prefix_bound`), and a prefix that ends in a pit cannot be
+  finished (`KM5.pit_dead`). An exhaustive search over strict prefixes that prunes only by these
+  two lemmas finishes in 84 s (`tools/prove_bound.cpp`, cross-checked by `tools/prefix_bound.py`).
+- **The record's last 21 moves are optimal:** an exhaustive search over every strict completion of
+  its first 164 moves finds nothing longer (`subagents/exact/sweep9329_nobound.log`).
 - **The formal rules match the puzzle:** its own 4×4 worked example is valid under them
   (`KM5.Example4.valid`), and they agree with `tools/sim.py` on 200 test tours. Any tour can be
   certified with `lean/tools/certify.py`.

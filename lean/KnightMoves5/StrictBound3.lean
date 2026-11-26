@@ -30,6 +30,10 @@ height above the floor.
 
 Together: `T ≤ 421 + 2M + 65B - 7W/6 - W²/12`, which is at most `67 M + 2943⅚`, and `M ≤ 189`
 gives `15,606⅚`.
+
+* **From a partial tour.** The invariant holds for any constants (`Par`), so it can be restarted at
+  the state any prefix reaches. `prefix_bound` bounds every strict tour with that prefix by
+  `ubF`, which is what the exhaustive search of Theorem 4 (`tools/prove_bound.cpp`) prunes with.
 -/
 
 namespace KM5.B3
@@ -390,28 +394,38 @@ lemma sit_rise {A : Alt} {P x : Sq} (t : ℚ) (hx : ¬ InGroup A P x) :
   rw [sit_eq]; simp [hx]
 
 /-- Everything covered fits under the floor's total drop: the records' floors are all `≤ 0`. -/
-lemma covSum_le {m : ℚ} {l : List Rec} (ht : TailOK m 0 l) (hd : ∀ r ∈ l, 0 ≤ r.del)
-    (hmb : ∀ r ∈ l, r.mb ≤ 0) (hm : m ≤ 0) : covSum l ≤ -m := by
+lemma covSum_le {m μ : ℚ} {l : List Rec} (ht : TailOK m 0 l) (hd : ∀ r ∈ l, 0 ≤ r.del)
+    (hmb : ∀ r ∈ l, r.mb ≤ μ) (hm : m ≤ μ) : covSum l ≤ μ - m := by
   by_cases hex : ∃ r ∈ l, r.cov = true
   · obtain ⟨r, hr, -, hle⟩ := ht.exists_cover (fun r => r.cov) hd hex
     have := hmb r hr; simp only [covSum] at hle ⊢; linarith
   · push Not at hex
     have : l.filter (fun r => r.cov) = [] := List.filter_eq_nil_iff.mpr (fun r hr => by simpa using hex r hr)
-    simp [covSum, this, hm]
+    simp only [covSum, this]; simp; linarith
 
 lemma psi_ge (e : XS) : e.Hm - 2 - covSum e.recs ≤ Psi e := by
   unfold Psi
   have := le_max_right 0 (e.Hm - 2); have := le_max_left 0 (2 - (e.alt e.pos - e.m))
   have := bsum_nonneg e.recs; linarith
 
-structure XInv (e : XS) : Prop where
+/-- The constants of the invariant. Theorem 3 uses `pstart`; `prefix_bound` restarts the invariant
+from any partial tour with constants read off its state. The climb to h8 wastes `a8 - 2 - μ`. -/
+structure Par where
+  c : ℚ
+  cz : ℚ
+  cb : ℚ
+  b0 : ℚ
+  a8 : ℚ
+  μ : ℚ
+
+structure XInv (p : Par) (e : XS) : Prop where
   sum : ∑ x, e.alt x = 421 - e.T + e.R
   knight : e.alt e.pos = e.Z - e.D
   floor : ∀ x, e.m ≤ e.alt x
   hB : e.B = -e.m
   B0 : 0 ≤ e.B
   RD : e.R ≤ e.D
-  ZM : e.Z ≤ 2 * e.M
+  ZM : e.Z ≤ 2 * e.M + p.cz
   mu : ∀ x, e.m ≤ e.mu x ∧ e.mu x + e.rho x ≤ e.alt x
   rho0 : ∀ x, 0 ≤ e.rho x
   rl : ∀ r ∈ e.recs, 0 ≤ r.rd ∧ 0 ≤ r.lv ∧ r.del ≤ r.rd + r.lv
@@ -422,14 +436,17 @@ structure XInv (e : XS) : Prop where
   pend : ∀ r ∈ e.recs, r.cov = false → r.mb ≤ e.mu r.own ∧ r.mb + r.h ≤ e.alt r.own
   cov : ∀ r ∈ e.recs, r.cov = true → r.mb + r.h ≤ e.m + e.Hm
   hm : e.alt e.pos - e.m ≤ e.Hm
-  pot : e.B + e.BnK + e.Bcov + Psi e + (if e.h8s = 2 then 15 else 0) ≤ 2 * e.M + 2
-  h8a : e.h8s = 0 → 17 ≤ e.alt h8
-  h8b : e.h8s = 1 → 17 - e.m ≤ e.Hm
+  pot : e.B + e.BnK + e.Bcov + Psi e + (if e.h8s = 2 then p.a8 - 2 - p.μ else 0) ≤ 2 * e.M + p.c
+  h8a : e.h8s = 0 → p.a8 ≤ e.alt h8
+  h8b : e.h8s = 1 → p.a8 - e.m ≤ e.Hm
   h8c : e.h8s ≤ 2
-  mb0 : ∀ r ∈ e.recs, r.mb ≤ 0
+  mb0 : ∀ r ∈ e.recs, r.mb ≤ p.μ
   split : e.B = e.BnK + e.Bcov + pendSum e.recs
   cnt : ∀ x, (e.recs.filter (fun r => decide (r.own = opp x))).length +
     (if x = e.pos then 1 else 0) ≤ e.vis x
+  mμ : e.m ≤ p.μ
+  BM : e.B ≤ 2 * e.M + p.cb
+  Blo : p.b0 ≤ e.B
 
 lemma opp_opp (x : Sq) : opp (opp x) = x := by simp [opp]
 
@@ -440,7 +457,7 @@ lemma hit_iff {A : Alt} {P : Sq} {r : Rec} : hit A P r = true ↔ r.cov = false 
   simp [hit]
 
 /-- The covered records after a sit (old ones and the newly hit ones) still fit. -/
-lemma marked_cov {e : XS} (hI : XInv e) (r : Rec) (hr : r ∈ e.recs.map (mark e.alt e.pos))
+lemma marked_cov {p : Par} {e : XS} (hI : XInv p e) (r : Rec) (hr : r ∈ e.recs.map (mark e.alt e.pos))
     (hc : r.cov = true) : r.mb + r.h ≤ e.m + e.Hm := by
   obtain ⟨r0, h0, rfl⟩ := List.mem_map.mp hr
   rw [mark_cov] at hc; simp only [mark_mb, mark_h]
@@ -473,15 +490,15 @@ lemma opp_le_sit {A : Alt} {P : Sq} {t m : ℚ} (h0 : 0 ≤ t) (hfloor : ∀ x, 
       by_contra hne; exact hr ⟨rfl, hne⟩
     rw [this]
 
-lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
+lemma xinv_step {p : Par} {e : XS} {mv : Move} (hI : XInv p e) (h0 : 0 ≤ mv.wait)
     (hj : JumpOK (sit e.alt e.pos mv.wait) e.pos mv.dest)
-    (hst : 0 < mv.wait → ¬ InGroup e.alt e.pos mv.dest) : XInv (e.step mv) := by
+    (hst : 0 < mv.wait → ¬ InGroup e.alt e.pos mv.dest) : XInv p (e.step mv) := by
   have hmc := marked_cov hI
   obtain ⟨A, P, m, mu, rho, recs, Hm, T, R, D, Z, B, BnK, Bcov, M, vis, h8s⟩ := e
   obtain ⟨t, Q⟩ := mv
   obtain ⟨hsum, hk, hfloor, hB, hB0, hRD, hZM, hmu, hrho0, hrl, hrdown, hlvl, htail, hdel, hpend, hcov,
-    hhm, hpot, hh8a, hh8b, hh8c, hmb0, hsplit, hcnt⟩ := hI
-  simp only at h0 hj hst hsum hk hfloor hB hB0 hRD hZM hmu hrho0 hrl hrdown hlvl htail hdel hpend hcov hhm hpot hh8a hh8b hh8c hmb0 hsplit hcnt hmc
+    hhm, hpot, hh8a, hh8b, hh8c, hmb0, hsplit, hcnt, hmμ, hBM, hBlo⟩ := hI
+  simp only at h0 hj hst hsum hk hfloor hB hB0 hRD hZM hmu hrho0 hrl hrdown hlvl htail hdel hpend hcov hhm hpot hh8a hh8b hh8c hmb0 hsplit hcnt hmc hmμ hBM hBlo
   have hrise0 : 0 ≤ rise A P t := rise_nonneg A P h0
   have hrlm : ∀ r ∈ recs.map (mark A P), 0 ≤ r.rd ∧ 0 ≤ r.lv ∧ r.del ≤ r.rd + r.lv := by
     intro r hr; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr; simpa using hrl r0 h0'
@@ -509,31 +526,31 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
   have hdelm : ∀ r ∈ recs.map (mark A P), 0 ≤ r.del ∧ r.del ≤ 2 := by
     intro r hr; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr; simpa using hdel r0 h0'
   have hbr := cover_bracket htailm (fun r hr => (hdelm r hr).1) hmc
-  have hmbm : ∀ r ∈ recs.map (mark A P), r.mb ≤ 0 := by
+  have hmbm : ∀ r ∈ recs.map (mark A P), r.mb ≤ p.μ := by
     intro r hr; obtain ⟨r0, h0', rfl⟩ := List.mem_map.mp hr; simpa using hmb0 r0 h0'
-  have hcovle : covSum (recs.map (mark A P)) ≤ -m :=
-    covSum_le htailm (fun r hr => (hdelm r hr).1) hmbm (by linarith)
+  have hcovle : covSum (recs.map (mark A P)) ≤ p.μ - m :=
+    covSum_le htailm (fun r hr => (hdelm r hr).1) hmbm hmμ
   -- the climb to h8 is paid for once
-  have hH8 : (h8s = 1 ∨ (h8s = 0 ∧ InGroup A P h8)) → 17 - m ≤ Hm := by
+  have hH8 : (h8s = 1 ∨ (h8s = 0 ∧ InGroup A P h8)) → p.a8 - m ≤ Hm := by
     rintro (h | ⟨h, hg⟩)
     · exact hh8b h
     · have := hh8a h; rw [hg.1] at this; linarith
-  have hτ : (if (if h8s = 2 then 2 else if h8s = 1 ∨ InGroup A P h8 then 2 else 0) = 2 then (15 : ℚ)
-      else 0) ≤ (if h8s = 2 then 15 else 0) -
+  have hτ : (if (if h8s = 2 then 2 else if h8s = 1 ∨ InGroup A P h8 then 2 else 0) = 2 then p.a8 - 2 - p.μ
+      else 0) ≤ (if h8s = 2 then p.a8 - 2 - p.μ else 0) -
         (covSum (recs.map (mark A P)) - max 0 (Hm - 2) - bsum ((recs.map (mark A P)).filter (fun r => r.cov))) := by
     have hb := bsum_nonneg ((recs.map (mark A P)).filter (fun r => r.cov))
     have hmx := le_max_right 0 (Hm - 2)
     by_cases h2 : h8s = 2
     · simp only [h2, if_true]; linarith
     · by_cases h1 : h8s = 1 ∨ InGroup A P h8
-      · have hH : 17 - m ≤ Hm := hH8 (by
+      · have hH : p.a8 - m ≤ Hm := hH8 (by
           by_cases h1' : h8s = 1
           · exact Or.inl h1'
           · exact Or.inr ⟨by omega, h1.resolve_left h1'⟩)
         simp only [h2, h1, if_true, if_false]; linarith
       · simp only [h2, h1, if_false]; norm_num; linarith
-  have hτn : (if (if h8s = 2 then 2 else if h8s = 1 ∨ InGroup A P h8 then 1 else 0) = 2 then (15 : ℚ)
-      else 0) = (if h8s = 2 then 15 else 0) := by
+  have hτn : (if (if h8s = 2 then 2 else if h8s = 1 ∨ InGroup A P h8 then 1 else 0) = 2 then p.a8 - 2 - p.μ
+      else 0) = (if h8s = 2 then p.a8 - 2 - p.μ else 0) := by
     by_cases h2 : h8s = 2
     · simp [h2]
     · by_cases h1 : h8s = 1 ∨ InGroup A P h8 <;> simp [h2, h1]
@@ -570,8 +587,8 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
     have hLlen : ∀ y, (L.filter (fun r => decide (r.own = y))).length ≤
         (recs.filter (fun r => decide (r.own = y))).length := by
       intro y; rw [← hlen y]; exact len_filter_le _ _ _
-    refine ⟨hsum', ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-      dsimp only
+    refine ⟨hsum', ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
+      ?_, ?_, ?_⟩ <;> dsimp only
     · linarith
     · intro x; by_cases hg : InGroup A P x
       · rw [hgrp x hg]
@@ -703,10 +720,13 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
           split_ifs at h1 ⊢ <;> omega
       · simp only [hK, if_false, List.nil_append]
         split_ifs at h1 ⊢ <;> omega
+    · linarith
+    · push_cast; linarith
+    · linarith
   · simp only [if_neg hfl]
     push Not at hfl
     refine ⟨hsum', ?_, ?_, hB, hB0, ?_, ?_, ?_, ?_, hrlm, ?_, ?_, htailm, hdelm, ?_, ?_, ?_, ?_, ?_, ?_,
-      ?_, hmbm, ?_, ?_⟩ <;> dsimp only
+      ?_, hmbm, ?_, ?_, hmμ, ?_, hBlo⟩ <;> dsimp only
     · linarith
     · intro x; by_cases hg : InGroup A P x
       · rw [hgrp x hg]; exact hfl
@@ -765,6 +785,7 @@ lemma xinv_step {e : XS} {mv : Move} (hI : XInv e) (h0 : 0 ≤ mv.wait)
     · split_ifs <;> omega
     · rw [hpendm]; linarith
     · intro x; have h1 := hcnt x; rw [hlen (opp x)]; split_ifs at h1 ⊢ <;> omega
+    · push_cast; linarith
 
 
 /-! ### Along the tour -/
@@ -777,8 +798,8 @@ def XS.run (e : XS) (l : List Move) : XS := l.foldl XS.step e
 lemma step_st (e : XS) (mv : Move) : (⟨(e.step mv).alt, (e.step mv).pos⟩ : St) = St.next ⟨e.alt, e.pos⟩ mv := by
   unfold XS.step St.next; split_ifs <;> rfl
 
-lemma xinv_run : ∀ (l : List Move) (e : XS), XInv e → MovesOK ⟨e.alt, e.pos⟩ l → Strict ⟨e.alt, e.pos⟩ l →
-    XInv (e.run l) ∧ (⟨(e.run l).alt, (e.run l).pos⟩ : St) = run ⟨e.alt, e.pos⟩ l ∧
+lemma xinv_run {p : Par} : ∀ (l : List Move) (e : XS), XInv p e → MovesOK ⟨e.alt, e.pos⟩ l →
+    Strict ⟨e.alt, e.pos⟩ l → XInv p (e.run l) ∧ (⟨(e.run l).alt, (e.run l).pos⟩ : St) = run ⟨e.alt, e.pos⟩ l ∧
     (e.run l).T = e.T + time l ∧ (e.run l).M = e.M + l.length ∧
     ∀ x, (e.run l).vis x = e.vis x + (l.map Move.dest).count x
   | [], e, hI, _, _ => ⟨hI, rfl, by simp [time], by simp, by simp⟩
@@ -811,11 +832,15 @@ def xstart : XS :=
     R := 0, D := 0,
     Z := 0, B := 0, BnK := 0, Bcov := 0, M := 0, vis := fun x => if x = a1 then 1 else 0, h8s := 0 }
 
-lemma xinv_start : XInv xstart := by
+/-- The constants for a whole tour: the climb to h8 (altitude 17, floors at most 0) wastes 15. -/
+def pstart : Par := ⟨2, 0, 0, 0, 17, 0⟩
+
+lemma xinv_start : XInv pstart xstart := by
   have ha1 : init a1 = 0 := by decide +kernel
   have hh8 : (17 : ℚ) ≤ init h8 := by decide +kernel
-  refine ⟨?_, ?_, init_nonneg, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, trivial, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
-    simp [xstart, init_sum, ha1, Psi, covSum, pendSum, init_nonneg, ownF, pendF, hh8]
+  refine ⟨?_, ?_, init_nonneg, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, trivial, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
+    ?_, ?_, ?_⟩ <;>
+    simp [xstart, pstart, init_sum, ha1, Psi, covSum, pendSum, init_nonneg, ownF, pendF, hh8]
   all_goals first | (intros; exact le_rfl) | norm_num
 
 /-- Group a sum over records by their opposite points. -/
@@ -832,18 +857,13 @@ lemma group_sum (f : Rec → ℚ) (g : Sq → ℚ) : ∀ l : List Rec, (∀ r �
       List.map_cons, List.sum_cons]
     linarith
 
-/-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 2943⅚` minutes. -/
-theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
-    time tour ≤ 67 * tour.length + 17663 / 6 := by
-  obtain ⟨hI, hst, hT, hM, hV⟩ := xinv_run tour xstart xinv_start hL.1 hS
-  set e := xstart.run tour
-  have hT' : e.T = time tour := by rw [hT]; simp [xstart]
-  have hM' : (e.M : ℚ) = tour.length := by rw [hM]; simp [xstart]
-  have hpos : e.pos = h8 := by
-    have := congrArg St.pos hst; simp only at this; rw [this]; exact run_pos _ _ _ hL.2.1
-  have hvis : ∀ x, e.vis x = (visits tour).count x := by
-    intro x; rw [hV x]; simp [xstart, visits, List.count_cons]; split_ifs <;> simp_all; omega
-  -- the rescue argument: W ≥ 2B - 2M - 2
+/-- The end of the argument, for any constants: a run that stands on h8, with every point visited
+at most 3 times, has `T ≤ 421 + Z + 65B - 7W/6 - W²/12` for some `W ≥ 0` with
+`W ≥ 2B - 2M - c + (a8 - 2 - μ)`. -/
+lemma end_bound {p : Par} {e : XS} (hI : XInv p e) (hpos : e.pos = h8) (hv : ∀ x, e.vis x ≤ 3) :
+    ∃ W : ℚ, 0 ≤ W ∧ 2 * e.B - 2 * e.M - p.c + (p.a8 - 2 - p.μ) ≤ W ∧
+      e.T ≤ 421 + e.Z + 65 * e.B - 7 / 6 * W - W ^ 2 / 12 := by
+  -- the rescue argument
   have hpsi := psi_nonneg hI.tail (fun r hr => (hI.del r hr).1) hI.cov
   have hpot := hI.pot
   have hsplit := hI.split
@@ -854,17 +874,16 @@ theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tou
     simp only [hW, dsum]
     exact List.sum_nonneg (by simp only [List.mem_map]; rintro _ ⟨r, hr, rfl⟩
                               exact (hI.del r (List.mem_of_mem_filter hr)).1)
-  -- the climb to h8 wastes 15 of the budget
-  have hm0 : e.m ≤ 0 := by linarith [hI.hB, hI.B0]
-  have hcl := covSum_le hI.tail (fun r hr => (hI.del r hr).1) hI.mb0 hm0
+  -- the climb to h8 wastes a8 - 2 - μ
+  have hcl := covSum_le hI.tail (fun r hr => (hI.del r hr).1) hI.mb0 hI.mμ
   have hpg := psi_ge e
-  have h15 : 15 ≤ Psi e + (if e.h8s = 2 then 15 else 0) := by
+  have h15 : p.a8 - 2 - p.μ ≤ Psi e + (if e.h8s = 2 then p.a8 - 2 - p.μ else 0) := by
     rcases (by have := hI.h8c; omega : e.h8s = 0 ∨ e.h8s = 1 ∨ e.h8s = 2) with h | h | h
     · have h1 := hI.h8a h; have h2 := hI.hm; rw [hpos] at h2
       simp only [h]; norm_num; linarith
     · have h1 := hI.h8b h; simp only [h]; norm_num; linarith
     · simp only [h, if_true]; linarith
-  have hWB : 2 * e.B - 2 * e.M + 13 ≤ W := by linarith
+  have hWB : 2 * e.B - 2 * e.M - p.c + (p.a8 - 2 - p.μ) ≤ W := by linarith
   -- the loss of the knocked-out points: 12 ∑ (mu - m) ≥ W² + 2W
   have hpt : TailOK e.m 0 (e.recs.filter (fun r => !r.cov)) := hI.tail.filter _ (fun r hr => (hI.del r hr).1)
   have hq := hpt.quad le_rfl (fun r hr => hI.del r (List.mem_of_mem_filter hr))
@@ -875,11 +894,8 @@ theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tou
   have hcnt3 : ∀ y, ((e.recs.filter (fun r => !r.cov)).filter (fun r => decide (r.own = y))).length ≤ 3 := by
     intro y
     have h1 := len_filter_le (fun r => decide (r.own = y)) (fun r => !r.cov) e.recs
-    have h2 := hI.cnt (opp y); rw [opp_opp, hvis] at h2
-    have h3 : (visits tour).count (opp y) ≤ 3 := by
-      by_cases hy : opp y = h8
-      · rw [hy, hL.2.2.1]; norm_num
-      · exact hL.2.2.2 _ hy
+    have h2 := hI.cnt (opp y); rw [opp_opp] at h2
+    have h3 := hv (opp y)
     omega
   have hgrp := group_sum (fun r => r.mb - e.m) (fun x => e.mu x - e.m) (e.recs.filter (fun r => !r.cov))
     (fun r hr => by
@@ -909,10 +925,29 @@ theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tou
     rw [Finset.sum_sub_distrib]; simp
   have hk := hI.knight; rw [hpos] at hk
   have hk8 := hI.floor h8
-  have hRD := hI.RD; have hZM := hI.ZM; have hB := hI.hB
+  have hRD := hI.RD; have hB := hI.hB
+  exact ⟨W, hW0, hWB, by nlinarith⟩
+
+/-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 2943⅚` minutes. -/
+theorem bound_length (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
+    time tour ≤ 67 * tour.length + 17663 / 6 := by
+  obtain ⟨hI, hst, hT, hM, hV⟩ := xinv_run tour xstart xinv_start hL.1 hS
+  set e := xstart.run tour
+  have hT' : e.T = time tour := by rw [hT]; simp [xstart]
+  have hM' : (e.M : ℚ) = tour.length := by rw [hM]; simp [xstart]
+  have hpos : e.pos = h8 := by
+    have := congrArg St.pos hst; simp only at this; rw [this]; exact run_pos _ _ _ hL.2.1
+  have hvis : ∀ x, e.vis x = (visits tour).count x := by
+    intro x; rw [hV x]; simp [xstart, visits, List.count_cons]; split_ifs <;> simp_all; omega
+  have hv : ∀ x, e.vis x ≤ 3 := by
+    intro x; rw [hvis x]
+    by_cases hx : x = h8
+    · rw [hx, hL.2.2.1]; norm_num
+    · exact hL.2.2.2 x hx
+  obtain ⟨W, hW0, hWB, hmain⟩ := end_bound hI hpos hv
+  have hZM := hI.ZM; have hB0 := hI.B0
+  simp only [pstart] at hWB hZM
   rw [← hT', ← hM']
-  -- T ≤ 421 + 2M + 65B - 7W/6 - W²/12
-  have hmain : e.T ≤ 421 + 2 * e.M + 65 * e.B - 7 / 6 * W - W ^ 2 / 12 := by nlinarith
   by_cases hu : 2 * e.B - 2 * e.M + 13 ≤ 0
   · nlinarith
   · push Not at hu
@@ -926,6 +961,153 @@ theorem bound (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
   have h2 : (tour.length : ℚ) ≤ 189 := by exact_mod_cast length_le tour hL
   linarith
 
+/-! ### The bound from a partial tour
+
+`ubF e` bounds every strict tour that starts with the moves that led to `e`. The invariant is
+restarted at `e` with constants read off `e` (`parOf`): the rescue budget already spent, the jumps
+so far, the floor, and the climb to h8 still owed. At most `dMoves e` moves remain (the unused
+visits), each adds at most 2 to the budget, the jumps and the floor drop, and the bound is the
+largest value the end of Theorem 3's argument allows for the final floor drop. -/
+
+/-- The largest floor among the records, or the current floor. -/
+def recMax (m : ℚ) : List Rec → ℚ
+  | [] => m
+  | r :: l => max r.mb (recMax m l)
+
+lemma le_recMax (m : ℚ) : ∀ l : List Rec, m ≤ recMax m l
+  | [] => le_rfl
+  | r :: l => le_trans (le_recMax m l) (le_max_right _ _)
+
+lemma mb_le_recMax (m : ℚ) : ∀ l : List Rec, ∀ r ∈ l, r.mb ≤ recMax m l
+  | [], _, h => by simp at h
+  | r :: l, r', h => by
+    rcases List.mem_cons.mp h with rfl | h
+    · exact le_max_left _ _
+    · exact le_trans (mb_le_recMax m l r' h) (le_max_right _ _)
+
+/-- At most this many moves remain: h8 once, and every other point up to 3 visits. -/
+def dMoves (e : XS) : ℚ := 1 + ∑ x ∈ Finset.univ.erase h8, (3 - (e.vis x : ℚ))
+
+/-- The altitude the knight must still reach before h8 sinks (`h8s = 2`: nothing owed). -/
+def a8of (e : XS) : ℚ :=
+  if e.h8s = 0 then e.alt h8 else if e.h8s = 1 then e.m + e.Hm else recMax e.m e.recs + 2
+
+def usedB (e : XS) : ℚ := e.B + e.BnK + e.Bcov + Psi e
+
+def parOf (e : XS) : Par := ⟨usedB e - 2 * e.M, e.Z - 2 * e.M, e.B - 2 * e.M, e.B, a8of e, recMax e.m e.recs⟩
+
+/-- The budget left for the final floor drop. -/
+def Kof (e : XS) : ℚ := usedB e + 2 * dMoves e - (a8of e - 2 - recMax e.m e.recs)
+
+/-- Theorem 3's last line as a function of the final floor drop `x`. -/
+def gB (K x : ℚ) : ℚ := 65 * x - 7 / 6 * max 0 (2 * x - K) - (max 0 (2 * x - K)) ^ 2 / 12
+
+/-- **The prefix bound.** -/
+def ubF (e : XS) : ℚ :=
+  421 + e.Z + 2 * dMoves e + gB (Kof e) (min (max ((Kof e + 188) / 2) e.B) (e.B + 2 * dMoves e))
+
+lemma xinv_restart {p : Par} {e : XS} (hI : XInv p e) : XInv (parOf e) e := by
+  have hτ : (if e.h8s = 2 then a8of e - 2 - recMax e.m e.recs else 0) = 0 := by
+    unfold a8of; split_ifs <;> simp_all
+  exact { hI with
+    ZM := by simp only [parOf]; linarith
+    pot := by simp only [parOf]; rw [hτ]; unfold usedB; linarith
+    h8a := fun h => by simp [parOf, a8of, h]
+    h8b := fun h => by simp [parOf, a8of, h]
+    mb0 := fun r hr => mb_le_recMax _ _ r hr
+    mμ := le_recMax _ _
+    BM := by simp only [parOf]; linarith
+    Blo := le_rfl }
+
+/-- The largest value of Theorem 3's last line over the possible final floor drops. -/
+lemma gB_max {K B D x W : ℚ} (hD : 0 ≤ D) (hx1 : B ≤ x) (hx2 : x ≤ B + 2 * D) (hW0 : 0 ≤ W)
+    (hW : 2 * x - K ≤ W) :
+    65 * x - 7 / 6 * W - W ^ 2 / 12 ≤ gB K (min (max ((K + 188) / 2) B) (B + 2 * D)) := by
+  unfold gB
+  rcases le_or_gt ((K + 188) / 2) B with h1 | h1
+  · -- the budget is already exceeded: the best final drop is the current one
+    rw [max_eq_right h1, min_eq_left (by linarith)]
+    rw [max_eq_right (by linarith : (0 : ℚ) ≤ 2 * B - K)]
+    nlinarith [mul_nonneg (by linarith : (0 : ℚ) ≤ W - (2 * x - K)) (by linarith : (0 : ℚ) ≤ W + (2 * x - K) + 14),
+      mul_nonneg (by linarith : (0 : ℚ) ≤ x - B) (by linarith : (0 : ℚ) ≤ 2 * B - K - 188)]
+  · rw [max_eq_left h1.le]
+    rcases le_or_gt ((K + 188) / 2) (B + 2 * D) with h2 | h2
+    · -- the unconstrained best: 2x - K = 188
+      rw [min_eq_left h2, max_eq_right (by linarith : (0 : ℚ) ≤ 2 * ((K + 188) / 2) - K)]
+      nlinarith [sq_nonneg (W - 188)]
+    · rw [min_eq_right h2.le]
+      rcases le_or_gt (2 * (B + 2 * D) - K) 0 with h3 | h3
+      · rw [max_eq_left h3]; nlinarith
+      · rw [max_eq_right h3.le]
+        rcases le_or_gt (2 * x - K) 0 with h4 | h4
+        · nlinarith [mul_nonneg h3.le (by linarith : (0 : ℚ) ≤ 376 - (2 * (B + 2 * D) - K))]
+        · nlinarith [mul_nonneg (by linarith : (0 : ℚ) ≤ W - (2 * x - K)) (by linarith : (0 : ℚ) ≤ W + (2 * x - K) + 14),
+            mul_nonneg (by linarith : (0 : ℚ) ≤ 2 * (B + 2 * D) - K - (2 * x - K))
+              (by linarith : (0 : ℚ) ≤ 376 - (2 * (B + 2 * D) - K) - (2 * x - K))]
+
+/-- **Prefix bound.** Every strict tour that starts with `pre` lasts at most `ubF (xstart.run pre)`. -/
+theorem prefix_bound (pre suf : List Move) (hL : Legal (pre ++ suf)) (hS : Strict start (pre ++ suf)) :
+    time (pre ++ suf) ≤ ubF (xstart.run pre) := by
+  have hm := hL.1; rw [movesOK_append] at hm
+  have hs := hS; rw [strict_append] at hs
+  obtain ⟨hI, hst, hT, hM, hV⟩ := xinv_run pre xstart xinv_start hm.1 hs.1
+  set e := xstart.run pre with he
+  have hst0 : (⟨e.alt, e.pos⟩ : St) = run start pre := hst
+  have hm2 : MovesOK ⟨e.alt, e.pos⟩ suf := by rw [hst0]; exact hm.2
+  have hs2 : Strict ⟨e.alt, e.pos⟩ suf := by rw [hst0]; exact hs.2
+  obtain ⟨hI', hst', hT', hM', hV'⟩ := xinv_run suf e (xinv_restart hI) hm2 hs2
+  set e' := e.run suf with he'
+  have hpos : e'.pos = h8 := by
+    have := congrArg St.pos hst'; simp only at this; rw [this, hst0, ← run_append]
+    exact run_pos _ _ _ hL.2.1
+  have hvis : ∀ x, e'.vis x = (visits (pre ++ suf)).count x := by
+    intro x; rw [hV' x, hV x]; simp [xstart, visits, List.count_cons]; split_ifs <;> simp_all <;> omega
+  have hv : ∀ x, e'.vis x ≤ 3 := by
+    intro x; rw [hvis x]
+    by_cases hx : x = h8
+    · rw [hx, hL.2.2.1]; norm_num
+    · exact hL.2.2.2 x hx
+  obtain ⟨W, hW0, hWB, hmain⟩ := end_bound hI' hpos hv
+  -- at most dMoves e moves remain
+  have hcount : ∀ x, e.vis x + (suf.map Move.dest).count x ≤ 3 := fun x => by rw [← hV' x]; exact hv x
+  have h8c : e.vis h8 + (suf.map Move.dest).count h8 ≤ 1 := by
+    rw [← hV' h8, hvis h8, hL.2.2.1]
+  have hsumc : ∑ x : Sq, ((suf.map Move.dest).count x : ℚ) = suf.length := by
+    have := Multiset.sum_count_eq_card (s := (Finset.univ : Finset Sq))
+      (m := ((suf.map Move.dest : List Sq) : Multiset Sq)) (fun a _ => Finset.mem_univ a)
+    exact_mod_cast (by simpa using this)
+  have hsplit : ∑ x : Sq, ((suf.map Move.dest).count x : ℚ) = ((suf.map Move.dest).count h8 : ℚ) +
+      ∑ x ∈ Finset.univ.erase h8, ((suf.map Move.dest).count x : ℚ) :=
+    (Finset.add_sum_erase Finset.univ (fun x => ((suf.map Move.dest).count x : ℚ)) (Finset.mem_univ h8)).symm
+  have hle : ∑ x ∈ Finset.univ.erase h8, ((suf.map Move.dest).count x : ℚ) ≤
+      ∑ x ∈ Finset.univ.erase h8, (3 - (e.vis x : ℚ)) := by
+    apply Finset.sum_le_sum; intro x _
+    have : ((e.vis x : ℕ) : ℚ) + ((suf.map Move.dest).count x : ℚ) ≤ 3 := by exact_mod_cast hcount x
+    linarith
+  have hle0 : ∑ x ∈ Finset.univ.erase h8, (0 : ℚ) ≤ ∑ x ∈ Finset.univ.erase h8, (3 - (e.vis x : ℚ)) := by
+    apply Finset.sum_le_sum; intro x _
+    have : ((e.vis x : ℕ) : ℚ) + ((suf.map Move.dest).count x : ℚ) ≤ 3 := by exact_mod_cast hcount x
+    have : (0 : ℚ) ≤ ((suf.map Move.dest).count x : ℚ) := by positivity
+    linarith
+  have h8c' : ((suf.map Move.dest).count h8 : ℚ) ≤ 1 := by
+    have : ((e.vis h8 : ℕ) : ℚ) + ((suf.map Move.dest).count h8 : ℚ) ≤ 1 := by exact_mod_cast h8c
+    have : (0 : ℚ) ≤ ((e.vis h8 : ℕ) : ℚ) := by positivity
+    linarith
+  simp only [Finset.sum_const_zero] at hle0
+  have hlen : (suf.length : ℚ) ≤ dMoves e := by unfold dMoves; linarith
+  have hD0 : 0 ≤ dMoves e := by unfold dMoves; linarith
+  -- the end of the argument with the restarted constants
+  have hZM := hI'.ZM; have hBM := hI'.BM; have hBlo := hI'.Blo
+  simp only [parOf] at hWB hZM hBM hBlo
+  have hM'' : (e'.M : ℚ) = e.M + suf.length := by rw [hM']; push_cast; ring
+  have hT'' : e'.T = time (pre ++ suf) := by
+    rw [hT', hT]; simp [xstart, time, List.map_append, List.sum_append]
+  rw [← hT'']
+  have hx2 : e'.B ≤ e.B + 2 * dMoves e := by linarith
+  have hW' : 2 * e'.B - Kof e ≤ W := by unfold Kof; linarith
+  have := gB_max hD0 hBlo hx2 hW0 hW'
+  unfold ubF; linarith
+
 end KM5.B3
 
 namespace KM5
@@ -937,5 +1119,11 @@ theorem strict_bound3 (tour : List Move) (hL : Legal tour) (hS : Strict start to
 /-- **Theorem 3, by length.** A strict tour of `M` moves lasts at most `67 M + 2943⅚` minutes. -/
 theorem strict_bound3_length (tour : List Move) (hL : Legal tour) (hS : Strict start tour) :
     time tour ≤ 67 * tour.length + 17663 / 6 := B3.bound_length tour hL hS
+
+/-- **Theorem 3 from a partial tour.** Every strict tour that starts with the moves `pre` lasts at
+most `B3.ubF` of the state they reach (`tools/prefix_bound.py`, `tools/prove_bound.cpp`). -/
+theorem strict_prefix_bound (pre suf : List Move) (hL : Legal (pre ++ suf))
+    (hS : Strict start (pre ++ suf)) : time (pre ++ suf) ≤ B3.ubF (B3.xstart.run pre) :=
+  B3.prefix_bound pre suf hL hS
 
 end KM5

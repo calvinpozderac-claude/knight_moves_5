@@ -19,6 +19,8 @@ usage:
   python3 tools/prefix_bound.py bfs DEPTH              all strict prefixes of DEPTH moves, ranked
   python3 tools/prefix_bound.py best "(t,sq) ..." N    best-first search below a prefix, N expansions
   python3 tools/prefix_bound.py check                  bound >= final time on every stored strict tour
+  python3 tools/prefix_bound.py prove X                Theorem 4's search without a table (compare
+                                                       with `tools/prove_bound check X`)
 """
 import sys, re, heapq, itertools, glob
 from fractions import Fraction as F
@@ -93,24 +95,21 @@ def psi(s):
     return max(F(0), s.Hm - 2) - cov + max(F(0), 2 - (s.alt[s.pos] - s.m)) + sum((max(F(0), 2 - r[2]) for r in s.recs), F(0))
 
 def h8_waste(s):
-    """Budget the climb to h8 will still waste (0 once paid)."""
+    """Budget the climb to h8 will still waste (0 once paid): a8of - 2 - recMax in the Lean file."""
     if s.h8s == 2: return F(0)
     mus = max([s.m] + [r[3] for r in s.recs])
-    a8 = s.h8alt if s.h8s == 1 else s.alt[H8]
+    a8 = s.m + s.Hm if s.h8s == 1 else s.alt[H8]
     return a8 - 2 - mus
 
 def ub(s):
-    """Upper bound on the total time of every strict tour that starts with s.moves (Theorem 3 from s)."""
+    """Upper bound on the total time of every strict tour that starts with s.moves: `ubF` of
+    lean/KnightMoves5/StrictBound3.lean (theorem `strict_prefix_bound`)."""
     dM = 1 + sum(3 - s.vis[x] for x in SQ if x != H8)
     used = s.B + s.BnK + s.Bcov + psi(s)
     K = used + 2 * dM - h8_waste(s)
-    Bmax = s.B + 2 * dM
-    def f(B):
-        u = max(F(0), 2 * B - K)
-        return 65 * B - F(7, 6) * u - u * u / 12
-    Bstar = (K + 188) / 2
-    cands = [min(max(Bstar, s.B), Bmax), s.B, min(max(K / 2, s.B), Bmax)]
-    return 421 + s.Z + 2 * dM + max(f(B) for B in cands)
+    x = min(max((K + 188) / 2, s.B), s.B + 2 * dM)
+    u = max(F(0), 2 * x - K)
+    return 421 + s.Z + 2 * dM + 65 * x - F(7, 6) * u - u * u / 12
 
 def load(path):
     lines = open(path).read().splitlines()
@@ -223,9 +222,35 @@ def cmd_check():
                 n += 1; bad += any(b < s.T for b in bs)
     print(f"{n} strict tours, {bad} with a prefix bound below the final time")
 
+def cmd_prove(X):
+    """Theorem 4's search without the transposition table, in exact fractions: every strict prefix,
+    pruned when its bound is <= X or it ends in a pit. Same counts as `prove_bound check X`."""
+    sys.setrecursionlimit(10000)
+    X = F(X); cnt = {}; st = dict(pruned=0, pits=0, best=-1)
+    def dfs(s, L):
+        cnt[L] = cnt.get(L, 0) + 1
+        A = s.alt; P = s.pos; k = A[P]; O = opp(P); n = sum(1 for x in SQ if A[x] == k and x != O)
+        for dx, dy, adz in SHAPES:                       # finishing jumps, exact
+            if (P[0] + dx, P[1] + dy) != H8: continue
+            for dz in {adz, -adz}:
+                if A[H8] == k and H8 != O: d = F(0) if dz == 0 else None
+                else: d = dz - A[H8] + k
+                if d is not None and d >= 0:
+                    T = s.T + n * d; st['best'] = max(st['best'], T)
+                    if T > X: print(f"COUNTEREXAMPLE: {float(T)}")
+        for t, Q in moves(s):
+            c = step(s, t, Q)
+            if not alive(c): st['pits'] += 1; continue
+            if ub(c) <= X: st['pruned'] += 1; continue
+            dfs(c, L + 1)
+    dfs(start(), 0)
+    print(f"nodes {sum(cnt.values())}, pruned by the bound {st['pruned']}, pits {st['pits']}, longest finish {st['best']}")
+    print(' '.join(f'{k}:{v}' for k, v in sorted(cnt.items())))
+
 if __name__ == '__main__':
     c = sys.argv[1]
     if c == 'trace': cmd_trace(sys.argv[2])
     elif c == 'bfs': cmd_bfs(int(sys.argv[2]))
     elif c == 'best': cmd_best([(int(a), b) for a, b in (x.strip('()').split(',') for x in sys.argv[2].split())], int(sys.argv[3]))
     elif c == 'check': cmd_check()
+    elif c == 'prove': cmd_prove(sys.argv[2])

@@ -8,7 +8,8 @@ Machine-checked proofs, in Lean 4 with Mathlib, of the results in `proofs/UPPER_
 | `KnightMoves5/Lemmas.lean` | Runs split over `++`. A point and its opposite are never one jump apart. A strict wait is never free (`strict_allNecessary`) |
 | `KnightMoves5/Record.lean` | The 9,329-minute record as data, and `record9329_valid` (it obeys every rule, is strict, and lasts 9,329 minutes) |
 | `KnightMoves5/StrictBound.lean` | **Theorem 2** `strict_bound`: every strict tour lasts at most 24,329 minutes. By length, `strict_bound_length`: a strict tour of M moves lasts at most 132·M − 619 |
-| `KnightMoves5/StrictBound3.lean` | **Theorem 3** `strict_bound3`: every strict tour lasts at most 15,606⅚ minutes. By length, `strict_bound3_length`: at most 67·M + 2,943⅚. The invariant `XInv` tracks each point's floor at its last sink, the knocked-out opposite points not yet rescued, and the rescue potential `Psi`. `xinv_step` shows that one move preserves it |
+| `KnightMoves5/StrictBound3.lean` | **Theorem 3** `strict_bound3`: every strict tour lasts at most 15,606⅚ minutes. By length, `strict_bound3_length`: at most 67·M + 2,943⅚. The invariant `XInv` tracks each point's floor at its last sink, the knocked-out opposite points not yet rescued, and the rescue potential `Psi`. `xinv_step` shows that one move preserves it, for any constants `Par`. `strict_prefix_bound` restarts it from any partial tour: every strict tour that starts with `pre` lasts at most `ubF` of the state `pre` reaches |
+| `KnightMoves5/Pit.lean` | `pit_dead`: if the knight stands at most `c` high, no altitude lies in (c, c + 2], h8 and the opposite of every point at most `c` high are above c + 2, then no legal tour continues. With `strict_prefix_bound` this justifies the search in `tools/prove_bound.cpp` (Theorem 4) |
 | `KnightMoves5/Unbounded.lean` | **Theorem 1** `no_longest_tour` and `unbounded`: for every N there is a tour obeying every rule that lasts more than N minutes. Also `every_length_above_574` (every length above 574 minutes is achieved exactly) and `longTour_100288`, a concrete 100,288-minute tour |
 | `KnightMoves5/Pinned.lean` | `strict_iff_strictSem`: `Strict` is exactly "every positive wait is pinned by its own jump", meaning every change of the wait by less than n/2 minutes breaks that jump |
 | `KnightMoves5/Certify.lean` | `valid_of_certificate`: reduces `Valid tour` for a concrete tour to kernel-decidable checks |
@@ -25,6 +26,9 @@ theorem no_longest_tour : ¬ ∃ best, Valid best ∧ ∀ tour, Valid tour → t
 theorem unbounded (N : ℚ) : ∃ tour, Valid tour ∧ N < time tour
 theorem strict_bound3 (tour : List Move) (hL : Legal tour) (hS : Strict start tour) : time tour ≤ 93641 / 6
 theorem strict_bound (tour : List Move) (hL : Legal tour) (hS : Strict start tour) : time tour ≤ 24329
+theorem strict_prefix_bound (pre suf : List Move) (hL : Legal (pre ++ suf)) (hS : Strict start (pre ++ suf)) :
+    time (pre ++ suf) ≤ B3.ubF (B3.xstart.run pre)
+theorem pit_dead (pre suf : List Move) (c : ℚ) (hp : Pit c (run start pre)) (hL : Legal (pre ++ suf)) : suf = []
 theorem record9329_valid : Valid record9329 ∧ Strict start record9329 ∧ time record9329 = 9329
 ```
 

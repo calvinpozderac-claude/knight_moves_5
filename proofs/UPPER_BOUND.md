@@ -10,14 +10,14 @@ small change of t breaks the very next jump. Every record tour in this repo is s
 | Tours considered | Result | Status |
 |---|---|---|
 | **All tours that obey the rules** (no free waits) | **There is no longest tour.** For every W > 286 there is a legal tour of 288 + W minutes, none of whose waits is free. Every length above 574 minutes is achieved exactly. Example: a 100,288-minute tour | Proved (Theorem 1). Machine-checked in Lean: `KM5.no_longest_tour`, `KM5.unbounded`, `KM5.every_length_above_574`, `KM5.longTour_100288` |
-| **Strict tours** (each wait pinned by its own jump) | **T ≤ 15,606⅚ minutes** (Theorem 3), down from 24,329 (Theorem 2). The best known is 9,329 | Proved. Machine-checked in Lean: `KM5.strict_bound3` (and the weaker `KM5.strict_bound`). The record is checked as `KM5.record9329_valid` |
+| **Strict tours** (each wait pinned by its own jump) | **T ≤ 15,114 minutes** (Theorem 4), down from 15,606⅚ (Theorem 3) and 24,329 (Theorem 2). The best known is 9,329 | Theorems 2 and 3 are machine-checked in Lean: `KM5.strict_bound3`, `KM5.strict_bound`. Theorem 4 is computer-assisted: an exhaustive search (`tools/prove_bound.cpp`, 84 s) that prunes only with two Lean-proved lemmas, `KM5.strict_prefix_bound` and `KM5.pit_dead`. The record is checked as `KM5.record9329_valid` |
 
-The exact optimum over strict tours is not known; Theorem 3 puts it between 9,329 and 15,606.
+The exact optimum over strict tours is not known; Theorem 4 puts it between 9,329 and 15,114.
 Attempts to narrow that gap are described in [Attempts to narrow the strict gap](#attempts-to-narrow-the-strict-gap).
 
 **Lean formalization** (`lean/`, Lean 4 + Mathlib). It covers:
 - the rules themselves (`KnightMoves5/Rules.lean`);
-- all three theorems;
+- Theorems 1–3, and the two lemmas that Theorem 4's search relies on;
 - the record's validity;
 - the lemma that a strict wait is never free (`KM5.strict_allNecessary`).
 
@@ -359,6 +359,106 @@ rescue cycles and plain knock-outs:
   budget, about 24 in all, worth roughly 780 minutes. But rises can merge single points into
   other levels, and sits during the climb cost less, so this is not yet a proof.
 
+## Theorem 4: every strict tour lasts at most 15,114 minutes
+
+This one is computer-assisted. A search goes through every strict partial tour from the start, and
+it stops extending a partial tour only for reasons proved in Lean.
+
+**Theorem 4.** Every strict tour lasts at most 15,114⅓ minutes. Strict waits are whole multiples of
+their group size on integer altitudes, so tour times are integers, and a strict tour lasts at most
+15,114 minutes.
+
+**Lemma A (Theorem 3 from a partial tour; Lean: `KM5.strict_prefix_bound`).** Let `pre` be the
+start of a strict tour, and let e be the state of Theorem 3's invariant after `pre`. Then the whole
+tour lasts at most ubF(e), where:
+- dM = 1 + Σ_{x ≠ h8} (3 − visits(x)) bounds the moves left (h8 once, every other point up to 3
+  visits);
+- used = B + B_nK + B_cov + Ψ is the rescue budget spent so far;
+- the climb to h8 still owed is w = a8 − 2 − μ. Here μ is the highest floor among the current floor
+  and the open records. a8 is h8's altitude if h8 has not sunk; if it sank since the last
+  floor-lowering sit, a8 is the floor plus the segment's best height. Once paid, w = 0;
+- K = used + 2·dM − w;
+- ubF(e) = 421 + Z + 2·dM + g(b), with g(b) = 65b − (7/6)u − u²/12, u = max(0, 2b − K), and
+  b = (K + 188)/2 clamped to [B, B + 2·dM].
+
+*Proof.* Theorem 3's invariant is proved for any constants (`Par`): the budget constant `c` in
+B + B_nK + B_cov + Ψ + τ ≤ 2M + c, the jump constant `cz` in Z ≤ 2M + cz, the floor-drop constants
+`cb` and `b0` in b0 ≤ B ≤ 2M + cb, and the h8 constants a8 and μ. For a whole tour these are 2, 0, 0, 0,
+17 and 0, which give back Theorem 3.
+
+Restarted at e with the constants read off e (`parOf`), each further move adds at most 2 to the
+budget, to Z, and to the floor drop B. A floor-lowering sit lands the knight within 2 of a point
+that was above the floor, so the floor drops at most 2 per move.
+
+So at the end, with Δ ≤ dM moves played after `pre`, the end of Theorem 3's argument (`end_bound`)
+gives:
+- T ≤ 421 + Z_end + 65·B_end − (7/6)W − W²/12;
+- W ≥ 2·B_end − (used + 2Δ − w), and W ≥ 0;
+- Z_end ≤ Z + 2Δ;
+- B ≤ B_end ≤ B + 2Δ.
+
+The right side only grows with Δ, so Δ = dM is the worst case. Over B_end ∈ [B, B + 2·dM], the
+maximum is at the clamp of (K + 188)/2 (`gB_max`): g rises with slope 65 while u = 0, and is
+concave with its peak at u = 188 after that. ∎
+
+At the start, ubF equals Theorem 3's 15,606⅚. It is at least the final time at every prefix of the
+1,300 stored strict tours (`python3 tools/prefix_bound.py check`).
+
+**Lemma B (pits; Lean: `KM5.pit_dead`).** Suppose the knight stands at most c high, no point has an
+altitude in (c, c + 2], h8 is above c + 2, and the opposite of every point at most c high is above
+c + 2. Then no legal tour continues.
+
+*Proof.* A sit sinks only points at the knight's altitude (at most c), and only the sitter's
+opposite rises, which is above c + 2. So low points stay low and high points stay high. A jump
+climbs at most 2, so the knight lands on a low point. h8 stays high. ∎
+
+The search takes for c the top of the run of altitudes at most 2 apart that starts at the knight's
+altitude. Lemma B needs no strictness.
+
+**The search** (`tools/prove_bound.cpp`) is a depth-first search over every strict prefix: all pinned
+moves, at most 3 visits per point, h8 only as the final jump. It carries Theorem 3's state along
+(`XS.step`, on the integer engine `src/eng.h`) and does not extend a prefix when:
+- ubF ≤ X (Lemma A), or
+- it ends in a pit (Lemma B), or
+- its game state (altitudes, visits, position) has already been searched completely from a prefix
+  that took at least as long. The same suffixes are legal from both, so their totals are no larger.
+
+Finishing jumps are evaluated exactly; a finish above X would be reported as a counterexample.
+
+| X | Positions searched | Time | Result |
+|---|---|---|---|
+| 15,300 | 4,844 | 0.0 s | proved |
+| 15,200 | 100,040 | 0.4 s | proved |
+| 15,150 | 497,524 | 1.6 s | proved |
+| 15,120 | 15,053,741 | 35 s | proved; largest pruned bound 15,119⅓ |
+| **15,115** | **30,157,964** | **84 s** | **proved; largest pruned bound 15,114⅓**, no finish above 57 |
+| 15,112 | — | > 25 min | not finished |
+| 15,110 | > 537 million | > 40 min | not finished (table full) |
+
+```
+g++ -O2 -std=c++17 -o prove_bound tools/prove_bound.cpp
+./prove_bound 15115 27      # about 84 s and 3.2 GB
+```
+
+**What is trusted.** Lemmas A and B are proved in Lean, with the standard axioms only. The
+enumeration itself is C++. It is cross-checked against `tools/prefix_bound.py`, which uses exact
+fractions and its own move generator. Run without the table (`./prove_bound check X` and
+`python3 tools/prefix_bound.py prove X`), the two searches agree node for node, at every depth:
+- at X = 15,300: 4,890 positions, 22,131 bound prunings, 6,350 pits;
+- at X = 15,200: 104,830 positions, 521,535 bound prunings, 115,026 pits.
+
+The table is keyed by two independent 64-bit hashes. A collision could only skip a state wrongly,
+and at 30 million entries the chance of one is below 10⁻²⁰.
+
+**Why it stops at 15,115.** Below that the positions left are long early dances whose bound hardly
+falls. One example is (0,b1)(0,b3)(2,d4)(0,c4)(0,b4)(25,a2)(24,a3)(0,a4)… Its bound falls from
+15,111 to 15,101 over 25 moves while 750 minutes pass.
+
+Each such dance move adds exactly 2 to the rescue budget, the most Theorem 3 allows, and climbs
+2. So the bound sees no loss, and the search would have to enumerate every dance of that kind. To
+go lower, the bound itself has to charge dances, which again needs the geometry described at the
+end of Theorem 3.
+
 ## Attempts to narrow the strict gap
 
 **A longer strict tour.** The repo's diversity search ran in the background: a penalty trial (`dlns`)
@@ -447,8 +547,37 @@ the 1,300 strict stored tours. `tools/prefix_bound.py` computes it (`trace`, `bf
     only 67 per move. So A\* would have to expand essentially every position to about depth 90
     before it could discard any.
 
-So this bound cannot guide a branch and bound. It measures wasted rescue budget, and the prefixes
-it ranks highest are the ones that skip necessary preparation, like the record's lift of g8. A
-useful branch-and-bound bound would also have to know whether h8 can still be reached and what the
-opening costs. The record's opening, which this bound charges about 5,400 minutes, is the target.
+So this bound cannot guide a search towards long tours. It measures wasted rescue budget, and the
+prefixes it ranks highest are the ones that skip necessary preparation, like the record's lift of
+g8. It can still prune exhaustively near the top, which is Theorem 4: depth-first with a fixed
+target, the pit test, and a transposition table, instead of best-first. That proves every strict
+tour lasts at most 15,114 in 84 s. Below that, the cheap early dances described there keep the
+bound flat.
+
+**Weighted A\* and beam search** (`tools/wbeam.cpp`) try to use the bound to build tours, not to
+prune them.
+- Layers by depth keep the W states with the highest T + w·(UB − T). With w = 1 this is the bound
+  alone; with w = 0 it is greedy on time spent.
+- With W = 2,000, w = 1 finished at best 29 minutes and w = 0.5 at 16. With w ≤ 0.2 nothing
+  finished: the beam died near move 60 with about 2,800 minutes spent.
+- With W = 20,000, w = 0.7 reached 24 minutes, and w = 0.3 died at move 61 with 2,886 spent.
+- So a beam either follows the bound into short tours or follows time into positions with no way
+  to h8. Neither comes near the LNS records.
+
+**The record's endgame is optimal.** `subagents/exact/bb.cpp --nobound` enumerates every strict
+completion of a fixed prefix of the record, with a transposition table and no bound
+(`subagents/exact/sweep9329_nobound.log`).
+
+| Moves left free | Positions | Time | Best completion |
+|---|---|---|---|
+| last 13 (from move 172) | 133,640 | 0.1 s | 9,329: the record's own |
+| last 15 | 1,441,645 | 0.9 s | 9,329 |
+| last 17 | 7,845,375 | 5.5 s | 9,329 |
+| last 19 | 73,317,135 | 50 s | 9,329 |
+| **last 21** (from move 164) | 412,658,901 | 286 s | **9,329** |
+| last 23 | more than 1.3 billion | > 15 min | not finished |
+
+So the record's last 21 moves are the best possible after its first 164: a longer strict tour must
+differ from the record somewhere in its first 164 moves. Searches pruned by the heuristic suffix
+bound of `bb.cpp`, which is not proved, found nothing better from moves 150, 140 or 130 either.
 
