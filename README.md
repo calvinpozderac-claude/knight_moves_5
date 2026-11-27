@@ -259,6 +259,41 @@ runs), `best.txt` and `pool.txt`.
 
 The full list is in `python -m nnastar.run -h`.
 
+## Bound-guided AlphaZero (`UB=1`)
+
+With `UB=1`, `build/az selfplay` carries Theorem 3's state along every path of its search and uses
+the Lean-proved prefix bound ubF (`KM5.strict_prefix_bound`):
+- **Value relative to the bound:** the value head predicts the fraction of ubF the tour will reach,
+  so a leaf is worth clamp(v, 0, 1) × ubF minutes. The bound is loose early (15,607 at a1) and
+  within about 10% of real tours in the last few dozen moves.
+- **Exploration that shrinks with room:** the exploration term is multiplied by
+  ((ubF − `UB_PRUNE`) / (room at a1))^`UB_K`.
+- **Sound pruning:** moves into a pit, or to a position with ubF ≤ `UB_PRUNE`, are never added to
+  the tree.
+- **Targets:** value targets are stored as the final minutes divided by ubF.
+
+`train/az_train.py` works unchanged; set `UB=1 UB_PRUNE=9000 UB_K=0.5` in its environment.
+
+**Experiment (CPU only, 4 cores).** Two runs with identical settings: 32 games of 512 simulations
+per round, and a reverse curriculum that starts 10 moves before the end of the 9 tours of 9,000
+minutes or more and moves one move back per round. The control (`UB=0`) starts from
+`weights/seeded_record_net.bin`. The `UB=1` run starts from the same network with its value head
+reset to 0.6. The round-80 networks then played greedily from 20, 40, 60 and 80 moves before the
+end of the 16 tours of 8,800 minutes or more:
+
+| Start | Control: mean / best | Bound-guided: mean / best | Bound-guided ahead / behind |
+|---|---|---|---|
+| 20 moves before the end | 9,055 / 9,330 | 9,087 / 9,330 | 4 / 1 |
+| 40 moves before the end | 8,524 / 9,330 | 8,849 / 9,328 | 8 / 5 |
+| 60 moves before the end | 8,112 / 9,256 | 7,799 / 9,227 | 8 / 8 |
+| 80 moves before the end | 6,669 / 9,213 | 6,985 / 9,136 | 6 / 10 |
+
+Overall the bound-guided agent was ahead on 26 positions and behind on 24.
+- It helps where the bound is tight, within about 40 moves of the end.
+- Further back it does not help: through the middle of the dance the bound stays near 10,150
+  whatever the knight does.
+- Neither run found a tour above 9,330.
+
 ## Searching for longer tours with NRPA
 
 AlphaZero is built for two-player games. It learns a reusable policy over millions of positions.
