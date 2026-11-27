@@ -598,9 +598,10 @@ position, or a different position.
 **The end of the opening is optimal for this position.** `subagents/exact/bridge.cpp` fixes the
 first k moves of the 9,330 tour and tries every strict continuation that reaches the dance-start
 position exactly, with enough visits left for the dance. A longer bridge would give a longer tour.
-None exists from move 77 on: 661,704,965 positions, 209 s, and the best bridge is the tour's own
-1,155 minutes (`subagents/exact/bridge9330.log`). So the last 18 moves of the opening are the best
-way to reach that position. Each step back costs roughly 2.5 to 18 times more, because nothing
+None exists from move 76 on: 2,899,187,756 positions, 952 s, and the best bridge is the tour's own
+1,155 minutes (`subagents/exact/bridge9330.log`). So the last 19 moves of the opening are the best
+way to reach that position. From move 75 the search did not finish in 30 minutes (6 billion
+positions, nothing better). Each step back costs roughly 2.5 to 18 times more, because nothing
 bounds the rise still to come: a sit on a lone point can pump rise without growing any group. Searches pruned by the heuristic suffix
 bound of `bb.cpp`, which is not proved, found nothing better from moves 150, 140 or 130 either.
 

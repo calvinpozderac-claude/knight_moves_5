@@ -8,3 +8,6 @@ DONE k=85: nodes 22323, bridges 21, best bridge T=1155
 DONE k=80: nodes 14427318, bridges 27, best bridge T=1155, 6.0s
 DONE k=78: nodes 258106570, bridges 27, best bridge T=1155, 77.2s
 DONE k=77: nodes 661704965, bridges 27, best bridge T=1155, 208.9s
+DONE k=76: nodes 2899187756, bridges 29, best bridge T=1155, 952.1s
+TIMEOUT k=75 after 1800 s: nodes 5985271808, 33 bridges found, best T=1155 (not complete)
+TIMEOUT k=70 after 1800 s: nodes 6693060608, no bridge found yet (not complete)
