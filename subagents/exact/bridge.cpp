@@ -12,6 +12,8 @@
 //   - transposition table on (altitudes, visits, position): a state reached again with no more time
 //     spent is skipped.
 //   - depth: at most `extra` moves more than the tour's own bridge (and the visits bound it anyway).
+// With RELATIVE=1 the target is the same altitudes relative to the knight at any depth (the rest of the
+// tour only depends on relative altitudes and visits), and the rise-feasibility pruning is off.
 //
 // build: g++ -O2 -std=c++17 -o bridge subagents/exact/bridge.cpp
 // usage: ./bridge TOURFILE K k [extra=6] [lgTT=24] [time=1800]
@@ -29,7 +31,7 @@ static vector<pair<int, int>> load(const char* f) {  // (delta, q) per move, rep
   return out;
 }
 
-static S target; static int cap[64], maxDepth; static long long nodes = 0, hits = 0, found = 0;
+static S target; static int cap[64], maxDepth; static bool RELATIVE = false; static long long nodes = 0, hits = 0, found = 0;
 static int bestT = -1; static vector<pair<int, int>> path, bestPath;
 struct TE { uint64_t h; int32_t T; };
 static vector<TE> tt; static uint64_t mask;
@@ -38,7 +40,7 @@ static double TLIM; static std::chrono::steady_clock::time_point t0; static bool
 static bool feasible(const S& s) {
   for (int x = 0; x < 64; x++) {
     if (s.vis[x] > cap[x]) return false;
-    if (s.alt[x] < target.alt[x]) { int o = 63 - x; if (s.pos != o && s.vis[o] >= cap[o]) return false; }
+    if (!RELATIVE && s.alt[x] < target.alt[x]) { int o = 63 - x; if (s.pos != o && s.vis[o] >= cap[o]) return false; }
   }
   return true;
 }
@@ -47,7 +49,12 @@ static void dfs(const S& s, int depth) {
   if (timedOut) return;
   if ((++nodes & 0xFFFFF) == 0 &&
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count() > TLIM) { timedOut = true; return; }
-  if (s.pos == target.pos && memcmp(s.alt, target.alt, sizeof s.alt) == 0) {
+  bool hit = s.pos == target.pos;
+  if (hit) {  // RELATIVE=1: the same altitudes relative to the knight (any depth) also count
+    if (RELATIVE) { int sh = s.alt[s.pos] - target.alt[target.pos]; for (int i = 0; i < 64 && hit; i++) hit = s.alt[i] - sh == target.alt[i]; }
+    else hit = memcmp(s.alt, target.alt, sizeof s.alt) == 0;
+  }
+  if (hit) {
     found++;
     if (s.T > bestT) { bestT = s.T; bestPath = path; printf("  bridge reaching the target with T=%d (%zu moves)\n", s.T, path.size()); fflush(stdout); }
   }
@@ -64,7 +71,7 @@ static void dfs(const S& s, int depth) {
 }
 
 int main(int argc, char** argv) {
-  init_board();
+  init_board(); RELATIVE = getenv("RELATIVE") != nullptr;
   if (argc < 4) { fprintf(stderr, "usage: %s TOUR K k [extra] [lgTT] [time]\n", argv[0]); return 1; }
   auto tour = load(argv[1]); int K = atoi(argv[2]), k = atoi(argv[3]);
   int extra = argc > 4 ? atoi(argv[4]) : 6, lg = argc > 5 ? atoi(argv[5]) : 24; TLIM = argc > 6 ? atof(argv[6]) : 1800;
