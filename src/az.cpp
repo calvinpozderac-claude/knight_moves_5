@@ -33,6 +33,67 @@
 #include <unordered_map>
 #include <random>
 
+// ---- Theorem 3 prefix bound (env UB=1, self-play only) ----
+// The search carries Theorem 3's state along every path (lean/KnightMoves5/StrictBound3.lean, XS.step) and
+// computes ubF, the Lean-proved bound on every strict tour through the position (KM5.strict_prefix_bound;
+// same code as tools/prove_bound.cpp). With UB=1:
+//   - the value head predicts the fraction of ubF the tour will reach: a leaf is worth clamp(v,0,1) * ubF
+//     minutes in total, so values are wide where the bound is loose (early) and sharp where it is tight;
+//   - the PUCT exploration term is scaled by ((ubF - UB_PRUNE) / (ubF(start) - UB_PRUNE))^UB_K: positions
+//     that can only just beat UB_PRUNE are explored less;
+//   - moves into a pit (KM5.pit_dead) or to a position with ubF <= UB_PRUNE are never added to the tree
+//     (no tour through them can beat UB_PRUNE, so this is exact for the goal of beating it);
+//   - value targets are stored as (final minutes) / ubF of the position.
+struct URec { uint8_t own; int16_t del, h, mb; uint8_t cov; };
+struct XB { int m = 0, Hm = 0, B = 0, BnK = 0, Bcov = 0, Z = 0, h8s = 0; vector<URec> recs; };
+static bool UBM = false; static double UB_PRUNE = 0, UB_K = 0.5, ROOM0 = 1;
+static double ubF(const XB& x, const S& s) {
+  int dM = 1; for (int i = 0; i < 64; i++) if (i != H8) dM += 3 - s.vis[i];
+  int cov = 0, bon = 0, recMax = x.m;
+  for (auto& r : x.recs) { if (r.cov) cov += r.del; bon += max(0, 2 - r.h); recMax = max<int>(recMax, r.mb); }
+  int psi = max(0, x.Hm - 2) - cov + max(0, 2 - (s.alt[s.pos] - x.m)) + bon;
+  int used = x.B + x.BnK + x.Bcov + psi;
+  int w8 = x.h8s == 2 ? 0 : ((x.h8s == 1 ? x.m + x.Hm : s.alt[H8]) - 2 - recMax);
+  double K = used + 2.0 * dM - w8;
+  double b = min(max((K + 188) / 2, (double)x.B), x.B + 2.0 * dM);
+  double u = max(0.0, 2 * b - K);
+  return 421 + x.Z + 2.0 * dM + 65 * b - 7.0 / 6 * u - u * u / 12;
+}
+// XS.step for "sink d at the knight's point, then jump to q": s before the move, s2 after it
+static void stepXB(const XB& x, const S& s, int d, int q, const S& s2, XB& y) {
+  y = x; int P = s.pos, O = 63 - P, k = s.alt[P];
+  auto inG = [&](int i) { return s.alt[i] == k && i != O; };
+  int C = 0; for (auto& r : y.recs) if (!r.cov && inG(r.own)) { r.cov = 1; C += r.del; }
+  bool h8in = inG(H8); int low = k - d; bool fl = low < x.m;
+  if (fl) {
+    vector<URec> nr; if (d > 2) nr.push_back({(uint8_t)O, (int16_t)(x.m - low), (int16_t)(k - x.m), (int16_t)x.m, 0});
+    for (auto& r : y.recs) if (!r.cov) nr.push_back(r);
+    y.recs.swap(nr); y.m = low; y.Hm = s2.alt[q] - low;
+    y.B += x.m - low; if (d <= 2) y.BnK += x.m - low;
+    y.h8s = x.h8s == 2 ? 2 : ((x.h8s == 1 || h8in) ? 2 : 0);
+  } else {
+    y.Hm = max(x.Hm, s2.alt[q] - x.m);
+    y.h8s = x.h8s == 2 ? 2 : ((x.h8s == 1 || h8in) ? 1 : 0);
+  }
+  y.Bcov += C; y.Z += s2.alt[q] - low;
+}
+// a pit (KM5.Pit): no legal tour continues from here
+static bool pit(const S& s) {
+  int k = s.alt[s.pos]; int a[64]; for (int i = 0; i < 64; i++) a[i] = s.alt[i]; std::sort(a, a + 64);
+  int c = k; for (int v : a) { if (v <= c + 2) c = max(c, v); else break; }
+  if (s.alt[H8] <= c + 2) return false;
+  for (int x = 0; x < 64; x++) if (s.alt[x] <= c && s.alt[63 - x] <= c) return false;
+  return true;
+}
+static XB xb_replay(const vector<pair<int, string>>& mv) {
+  S s = start_state(); XB x;
+  for (auto& [w, sq] : mv) {
+    int q = (sq[0] - 'a') + 8 * (sq[1] - '1'); int n = group_n(s, s.pos); int d = w ? w / n : 0;
+    S s2 = s; apply_move(s2, d, q); XB y; stepXB(x, s, d, q, s2, y); x = y; s = s2;
+  }
+  return x;
+}
+
 static const int NA = 24;
 static int ADX[NA], ADY[NA], ADZ[NA];
 static const int D_IN = 64 * 21 + 64 + 10;  // 1418
@@ -128,6 +189,7 @@ struct Node {
   // whole subtree has been searched (then exactG is this node's true value)
   double exactG = -1e18; bool solved = false; int nsolved = 0;
   double finG = -1e18;  // best result over paths that reached h8 (the only lines worth following)
+  XB xb; float ub = 0, ex = 1; uint32_t okmask = 0xFFFFFFu;  // UB=1: bound state, ubF, exploration factor, moves kept
 };
 static vector<Node> T;
 static double QMIN, QMAX;
@@ -160,6 +222,15 @@ static void ensure_state(int id) {
   nd.s = ps; apply_move(nd.s, delta, q); nd.hasState = true;
   nd.r = (float)((nd.s.T - ps.T) / TSCALE);
   if (q == H8) { nd.terminal = true; nd.tval = 0.f; }
+  if (UBM) {
+    stepXB(T[nd.parent].xb, ps, delta, q, nd.s, nd.xb); nd.ub = (float)ubF(nd.xb, nd.s);
+    nd.ex = UB_K > 0 ? (float)pow(min(1.0, max(0.02, (nd.ub - UB_PRUNE) / ROOM0)), UB_K) : 1.f;
+  }
+}
+// UB=1: the network's value v is the fraction of ubF the tour reaches; return the future minutes / TSCALE
+static inline double leafv(int id, double v) {
+  double f = v < 0 ? 0 : (v > 1 ? 1 : v);
+  return (f * T[id].ub - T[id].s.T) / TSCALE;
 }
 
 // expansion in two halves so evaluations can be batched: prep (terminal check + features), finish (priors)
@@ -169,16 +240,29 @@ static bool expand_prep(int id, Feat& F, float& tv) {
   bool any = false;
   for (int a = 0; a < NA && !any; a++) { int q; if (act_legal(nd.s, a, q) >= 0) any = true; }
   if (!any) { nd.terminal = true; nd.tval = (float)(-(1.0 - stuck_credit(nd.s)) * nd.s.T / TSCALE); tv = nd.tval; return false; }
+  if (UBM) {  // keep only moves that finish, or lead to a non-pit with a bound above UB_PRUNE
+    uint32_t ok = 0;
+    for (int a = 0; a < NA; a++) {
+      int q; int d = act_legal(nd.s, a, q); if (d < 0) continue;
+      if (q == H8) { ok |= 1u << a; continue; }
+      S c = nd.s; apply_move(c, d, q); if (pit(c)) continue;
+      XB y; stepXB(nd.xb, nd.s, d, q, c, y); if (ubF(y, c) <= UB_PRUNE) continue;
+      ok |= 1u << a;
+    }
+    nd.okmask = ok;
+    if (!ok) { nd.terminal = true; nd.tval = (float)(-(1.0 - stuck_credit(nd.s)) * nd.s.T / TSCALE); tv = nd.tval; return false; }
+  }
   featurize(nd.s, F); return true;
 }
 static void expand_finish(int id, const float* lg) {
   int legal[NA], nl = 0;
-  for (int a = 0; a < NA; a++) { int q; if (act_legal(T[id].s, a, q) >= 0) legal[nl++] = a; }
+  for (int a = 0; a < NA; a++) { int q; if (act_legal(T[id].s, a, q) >= 0 && (T[id].okmask >> a & 1)) legal[nl++] = a; }
   float mx = -1e30f; for (int i = 0; i < nl; i++) mx = max(mx, lg[legal[i]]);
   float sum = 0, pr[NA]; for (int i = 0; i < nl; i++) { pr[i] = expf(lg[legal[i]] - mx); sum += pr[i]; }
   int first = (int)T.size();
   for (int i = 0; i < nl; i++) { Node c; c.parent = id; c.act = legal[i]; c.prior = pr[i] / sum; T.push_back(c); }
   T[id].first = first; T[id].nch = nl; T[id].expanded = true;
+  if (UBM) for (int c = first; c < first + nl; c++) ensure_state(c);
 }
 // expand node: returns value estimate
 static float expand(int id) {
@@ -213,7 +297,7 @@ static int select_child(int id) {
     double q;
     if (ch.N || ch.solved) { double qe = node_q(ch); q = rng_q > 1e-9 ? (qe - QMIN) / rng_q : 0.5; }
     else q = qpn;
-    double u = q + CPUCT * ch.prior * sq / (1 + ch.N);
+    double u = q + CPUCT * ch.prior * sq / (1 + ch.N) * ch.ex;
     if (u > best) { best = u; bc = c; }
   }
   return bc;
@@ -334,6 +418,9 @@ int main(int argc, char** argv) {
   }
   H = (int)envd("NET_H", 256); NLAYERS = max(1, (int)envd("NET_LAYERS", 2));
   string mode = argv[1];
+  UBM = mode == "selfplay" && envd("UB", 0) != 0; UB_PRUNE = envd("UB_PRUNE", 0); UB_K = envd("UB_K", 0.5);
+  ROOM0 = max(1.0, ubF(XB(), start_state()) - UB_PRUNE);
+  if (UBM) fprintf(stderr, "UB mode: prune at %.0f, exploration exponent %.2f, room at the start %.1f\n", UB_PRUNE, UB_K, ROOM0);
   if (!NET.load(argv[2])) { fprintf(stderr, "cannot load weights %s for NET_H=%d NET_LAYERS=%d\n", argv[2], H, NLAYERS); return 1; }
   if (mode == "selfplay") {
     const char* out = argv[3]; int EP = atoi(argv[4]), SIMS = atoi(argv[5]); rng.seed(atoi(argv[6]));
@@ -403,6 +490,7 @@ int main(int argc, char** argv) {
       int mv = 0; long long score = 0; bool done = false, rootPending = false; int phase = 0, simsDone = 0, pending = 0;
       vector<Node> tree; double qmin = 1e9, qmax = -1e9;
       long long bestFound = 0; vector<pair<int, string>> bestFoundTour;
+      XB xb; vector<float> rootUB;
     };
     struct Pend { int game, leaf; uint64_t key; vector<pair<int, double>> vl; };
     // a terminal at h8 inside the tree: the played moves plus the tree path form a complete tour
@@ -446,7 +534,7 @@ int main(int argc, char** argv) {
       int bestc = rootSolved ? best_exact_child() : -1;
       if (rootSolved) { for (int a = 0; a < NA; a++) sm.pi[a] = 0; sm.pi[T[bestc].act] = 1; }
       else for (int a = 0; a < NA; a++) sm.pi[a] /= max(1, tot);
-      G.traj.push_back(sm);
+      G.traj.push_back(sm); G.rootUB.push_back(T[0].ub);
       double est = rootSolved ? T[0].exactG : (T[0].N ? (SP && T[0].bestG > -1e17 ? (1 - BETA) * T[0].W / T[0].N + BETA * T[0].bestG : T[0].W / T[0].N) : 0.0);
       G.rootEst.push_back((float)est); G.rootExact.push_back(T[0].exactG);
       if (rootSolved) return bestc;
@@ -490,6 +578,10 @@ int main(int argc, char** argv) {
           G.traj[i].z = (float)max(ex, EST_W * G.rootEst[i] + (1 - EST_W) * ex);
           next = ex;
         }
+        if (UBM) for (int i = 0; i < n; i++) {  // target: final minutes as a fraction of the position's bound
+          double tot = G.traj[i].z * TSCALE + G.traj[i].T;
+          G.traj[i].z = (float)min(1.0, max(0.0, tot / max(1.0, (double)G.rootUB[i])));
+        }
       }
       for (int i = 0; i < n; i++) fwrite(&G.traj[i], sizeof(Sample), 1, fo);
       long long found = max(G.bestFound, score);
@@ -517,7 +609,7 @@ int main(int argc, char** argv) {
     };
 
     vector<Game> games(EP);
-    for (auto& G : games) G.s = make_start(G.moves);
+    for (auto& G : games) { G.s = make_start(G.moves); if (UBM) G.xb = xb_replay(G.moves); }
     int active = EP; vector<EvalReq> reqs; vector<Feat> feats; vector<Pend> owners; vector<float> evout;
     while (active > 0) {
       reqs.clear(); feats.clear(); owners.clear();
@@ -528,7 +620,8 @@ int main(int argc, char** argv) {
         if (G.phase == 1 && !G.rootPending && G.pending == 0 && (G.simsDone >= SIMS || (SP && T[0].solved))) {
           int pick = record_and_pick(G);
           int a = T[pick].act, q; int delta = act_legal(G.s, a, q);
-          int before = G.s.T; apply_move(G.s, delta, q); G.moves.push_back({G.s.T - before, nm(q)}); G.mv++;
+          int before = G.s.T; S pre = G.s; apply_move(G.s, delta, q); G.moves.push_back({G.s.T - before, nm(q)}); G.mv++;
+          if (UBM) { XB y; stepXB(G.xb, pre, delta, q, G.s, y); G.xb = y; }
           if (q == H8) { G.score = G.s.T; G.done = true; } else if (G.mv > 400) G.done = true;
           else if (SP) { ensure_state(pick); reroot(pick); }
           else T.clear();
@@ -536,7 +629,7 @@ int main(int argc, char** argv) {
         }
         // 2) new move: set up the root (reused subtree, cached output, or one evaluation)
         if (!G.done && G.phase == 0) {
-          if (T.empty()) { Node r; r.s = G.s; r.hasState = true; T.push_back(r); QMIN = 1e9; QMAX = -1e9; }
+          if (T.empty()) { Node r; r.s = G.s; r.hasState = true; if (UBM) { r.xb = G.xb; r.ub = (float)ubF(G.xb, G.s); } T.push_back(r); QMIN = 1e9; QMAX = -1e9; }
           T.reserve(T.size() + (size_t)SIMS * 8 + 16);
           if (T[0].solved && !T[0].expanded) T[0].solved = false;  // solved via cache: expand to find the move
           G.phase = 1; G.simsDone = 0; G.pending = 0; G.rootPending = false;
@@ -575,7 +668,7 @@ int main(int argc, char** argv) {
               auto is = SOLVED_CACHE.find(key);
               if (is != SOLVED_CACHE.end()) { backup(id, is->second.first, true, is->second.second); mark_solved(id); G.simsDone++; continue; }
               auto ie = evalCache.find(key);
-              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); scan_finish(G, id); backup(id, max(ie->second[NA], value_floor(T[id].s))); G.simsDone++; continue; }
+              if (ie != evalCache.end()) { expand_finish(id, ie->second.data()); scan_finish(G, id); backup(id, UBM ? leafv(id, ie->second[NA]) : max(ie->second[NA], value_floor(T[id].s))); G.simsDone++; continue; }
             }
             Pend pd{gi, id, key, {}};
             bool haveQ = QMAX >= QMIN;
@@ -598,7 +691,7 @@ int main(int argc, char** argv) {
         else {
           for (auto& [x, amt] : pd.vl) { T[x].N--; T[x].W -= amt; }
           T[pd.leaf].pendingEval = false; expand_finish(pd.leaf, lg); scan_finish(G, pd.leaf);
-          backup(pd.leaf, SP ? max(v, value_floor(T[pd.leaf].s)) : v); G.simsDone++; G.pending--;
+          backup(pd.leaf, UBM ? leafv(pd.leaf, v) : (SP ? max(v, value_floor(T[pd.leaf].s)) : v)); G.simsDone++; G.pending--;
         }
         G.qmin = QMIN; G.qmax = QMAX; std::swap(T, G.tree);
       }
