@@ -595,6 +595,34 @@ of 88) can differ. Every dance sit sinks its group by 3 or 4, and the groups shr
 the opposite of each new sitter leaves. A longer tour needs either more rise on the way to this
 position, or a different position.
 
+**How far can this kind of tour go?** Every good strict tour has the same shape: an opening that
+merges the board into two levels 2 apart, then a dance in which each sit sinks one level by 4.
+- **Dance value:** each dance step is worth about 2 minutes per point still dancing.
+- **Knock-outs:** each new sitter knocks its opposite point out, and a sitter gives at most 3 sits.
+  So the points still dancing fall by about one per three sits, whatever the order.
+- **Ideal dance:** for D sits from 63 points it is worth about 2 Σ_t (63 − t/3).
+  - For the record's 86 sits that is 8,342; the record's dance gets 8,175. The gap is sits of 3
+    instead of 4 when the dance moves between pairs.
+  - For the 93 sits that 31 sitters allow it is 8,804. With the record's 1,155-minute opening that
+    makes about 9,960, so a strict tour over 10,000 is beyond even the idealised version of this
+    structure.
+- **Where the record loses sits:** 7 of the 93, to the opening's visits to f7 (2), g8 (2), f8, d3 and
+  d5. To sink h8 the knight has to stand at altitude 17. It lifts g8 and f8 by sitting on their
+  opposites b1 and c1, then climbs on them. That uses both points of the pairs (b1, g8), (c1, f8)
+  and (c2, f7) in the opening.
+- **Worth of those visits:** in a hypothetical run of the exact ending search with those visits given
+  back, the best ending from move 168 is 9,482, and from move 162 at least 9,562 (that search did
+  not finish).
+- **Searches for that gain:**
+  - NRPA with fresh weights after the first 40–94 moves (2.5 hours, 3 threads) found 9,330 again
+    twice, one of them a different 183-move tour (`data/tours/record_9330b.txt`). Restarts after
+    fewer moves found weaker dances (6,889–8,576).
+  - NRPA's opening search found one opening scoring above the record's on its idealised measure
+    (9,548 against 9,479). It spends 65 more minutes, but its extra sit on h1 swaps the levels of
+    a7 and a8. The record's dance then breaks at move 144, and the best re-planned endings reach
+    9,279 (LNS) and 9,096 (re-planned from move 143).
+  - LNS that charges each opening visit to f7, f8 or g8 found no opening that avoids them.
+
 **The end of the opening is optimal for this position.** `subagents/exact/bridge.cpp` fixes the
 first k moves of the 9,330 tour and tries every strict continuation that reaches the dance-start
 position exactly, with enough visits left for the dance. A longer bridge would give a longer tour.
