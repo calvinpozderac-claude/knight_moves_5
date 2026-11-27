@@ -70,6 +70,7 @@ struct Result { double score = -1e18; long long minutes = 0; bool finished = fal
 // A dance start has the knight in the upper of two groups two apart (together >= DMIN points, h8 among
 // them). Its potential is T plus the minutes of an idealised dance from there (path constraints ignored).
 static int OBJ = 0, DMIN = 56, MAXSTEPS = 60;
+static uint64_t FORBID = 0;  // env FORBID="f7,f8,g8": the opening search never jumps to these squares
 static double dance_pot(const S& s) {
   int a = s.alt[s.pos], nG[2] = {0, 0};
   for (int i = 0; i < 64; i++) { if (s.alt[i] == a) nG[0]++; else if (s.alt[i] == a - 2) nG[1]++; }
@@ -126,6 +127,9 @@ static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
   while (true) {
     if (OBJ == 1 && (int)r.seq.size() >= MAXSTEPS) break;
     pinned_moves(s, 3, OBJ == 0, mv);
+    if (FORBID && OBJ == 1) {  // env FORBID: squares an opening may not jump to (their visits stay free)
+      size_t k = 0; for (auto& m : mv) if (!(FORBID >> m.second & 1)) mv[k++] = m; mv.resize(k);
+    }
     w.clear(); double z = 0; int nonfin = 0;
     for (auto& [d, q] : mv) {
       if (q == H8) {  // a chance to finish: remember the best one
@@ -251,6 +255,10 @@ int main(int argc, char** argv) {
   int LEVEL = 3, THREADS = max(1u, std::thread::hardware_concurrency() / 2), SEEDADAPT = 10, AMIN = 0, AMAX = 0;
   double TIME = 0, SEEDBEST = 0; bool WATCH = false, WARM = true; string poolFile; long long POOLMIN = 0; int SEEDTOP = 0; double SEEDALPHA = -1;
   unsigned RNG = 1; string seedFile, outFile = "nrpa_best.txt", prefixFile;
+  if (const char* fb = getenv("FORBID")) {
+    for (const char* p = fb; p[0] && p[1]; p += (p[2] == ',' ? 3 : 2)) { FORBID |= 1ULL << ((p[0] - 'a') + 8 * (p[1] - '1')); if (!p[2]) break; }
+    printf("opening search: forbidden squares mask %016llx\n", (unsigned long long)FORBID);
+  }
   for (int i = 1; i < argc; i++) {
     string a = argv[i]; auto nx = [&]() { if (i + 1 >= argc) { fprintf(stderr, "missing value for %s\n", a.c_str()); exit(1); } return string(argv[++i]); };
     if (a == "--level") LEVEL = stoi(nx()); else if (a == "--iters") ITERS = stoi(nx()); else if (a == "--alpha") ALPHA = stod(nx());
