@@ -1,0 +1,10 @@
+# bridge.cpp on record_9330: target = the position after 95 moves (the dance start), first k moves fixed,
+# every strict continuation (depth <= 95 - k + 6) that reaches the target with room for the dance's visits.
+DONE k=94: nodes 3, bridges 1, best bridge T=1155 (tour's own 1155)
+DONE k=92: nodes 120, bridges 2, best bridge T=1155
+DONE k=90: nodes 1746, bridges 19, best bridge T=1155
+DONE k=88: nodes 7466, bridges 21, best bridge T=1155
+DONE k=85: nodes 22323, bridges 21, best bridge T=1155
+DONE k=80: nodes 14427318, bridges 27, best bridge T=1155, 6.0s
+DONE k=78: nodes 258106570, bridges 27, best bridge T=1155, 77.2s
+DONE k=77: nodes 661704965, bridges 27, best bridge T=1155, 208.9s

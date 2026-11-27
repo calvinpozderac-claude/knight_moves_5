@@ -588,10 +588,19 @@ position the 9,329 tour reaches after 99:
 - 63 points in two levels 2 apart (28 and 35 points), with only e6 out;
 - the same 87-move dance afterwards, 8,175 minutes.
 
-It arrives with one more minute spent and 8 visits unused instead of 4. For a fixed position the
+It arrives with one more minute spent and 8 visits unused instead of 4. The 9,328 tour reaches the
+same position too, after 90 moves and 1,153 minutes. For a fixed position the
 opening's time is 421 + R − Σ altitudes, so only the total rise R of opposite points (89 instead
 of 88) can differ. Every dance sit sinks its group by 3 or 4, and the groups shrink from 34 to 16 as
 the opposite of each new sitter leaves. A longer tour needs either more rise on the way to this
-position, or a different position. Searches pruned by the heuristic suffix
+position, or a different position.
+
+**The end of the opening is optimal for this position.** `subagents/exact/bridge.cpp` fixes the
+first k moves of the 9,330 tour and tries every strict continuation that reaches the dance-start
+position exactly, with enough visits left for the dance. A longer bridge would give a longer tour.
+None exists from move 77 on: 661,704,965 positions, 209 s, and the best bridge is the tour's own
+1,155 minutes (`subagents/exact/bridge9330.log`). So the last 18 moves of the opening are the best
+way to reach that position. Each step back costs roughly 2.5 to 18 times more, because nothing
+bounds the rise still to come: a sit on a lone point can pump rise without growing any group. Searches pruned by the heuristic suffix
 bound of `bb.cpp`, which is not proved, found nothing better from moves 150, 140 or 130 either.
 
