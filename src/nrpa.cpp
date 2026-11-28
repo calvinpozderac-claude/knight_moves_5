@@ -25,6 +25,10 @@
 //  - --prefix-file FILE: every restart keeps FILE's (possibly unfinished) moves and searches the rest
 //    from fresh weights (for finishing the openings found with --objective opening)
 //  - --bias B adds B x (minutes the move waits) / 100 to every move's weight (Gibbs-NRPA prior)
+//  - env FORBID="f7,f8,g8": the opening search never jumps to these squares
+//  - env TEMPLATE=FILE TEMPLATE_FROM=k [TEMPLATE_LAMBDA=0.9]: with --objective opening, score an opening by
+//    replaying FILE's moves k.. (a dance) from wherever the knight reaches their first square, re-deriving
+//    the waits; a replay that reaches h8 is a real tour and scores its exact minutes
 // Independent searches run on --threads threads; improvements go to --out (line 1 minutes, line 2 tour).
 //
 // usage: nrpa [--level 3] [--iters 100] [--alpha 1] [--threads N] [--time SECONDS] [--rng SEED]
@@ -115,6 +119,41 @@ static double shaping(const S& s) {
   return -5e6 + 1000.0 * (nA + max(nB, nC)) + s.T;
 }
 
+// env TEMPLATE=FILE TEMPLATE_FROM=k: a fixed dance (FILE's moves k.., as (square, altitude change) pairs).
+// With --objective opening, a rollout that puts the knight on the template's first square replays the
+// template from there, re-deriving every wait from the actual position. If it reaches h8 the rollout is a
+// real tour and scores its exact minutes; if it breaks, it scores the minutes so far plus TEMPLATE_LAMBDA
+// times the idealised dance from where it broke.
+static vector<pair<int, int>> TMPL; static int TSTART = -1; static double TLAMBDA = 0.9;
+static bool tmpl_replay(const S& s0, long long& Tout, S& sfail, vector<Mv>& moves) {
+  S s = s0; moves.clear();
+  for (auto& [q, dz] : TMPL) {
+    int p = s.pos, t = -1;
+    for (int k = 0; k < NBN[p]; k++) if (NBQ[p][k] == q) t = NBT[p][k];
+    bool ok = t >= 0 && legal_dz(t, dz) && (q == H8 || s.vis[q] < 3);
+    int delta = 0;
+    if (ok) {
+      int a = s.alt[p];
+      if (s.alt[q] == a && q != 63 - p) ok = dz == 0;
+      else { delta = dz - (s.alt[q] - a); ok = delta >= 0; }
+    }
+    if (!ok) { sfail = s; Tout = s.T; return false; }
+    moves.push_back({delta, q}); apply_move(s, delta, q);
+    if (q == H8) { Tout = s.T; return true; }
+  }
+  sfail = s; Tout = s.T; return false;
+}
+// the opening score of a position: the idealised dance, or (with a template) the template's result
+static double pot_of(const S& s, vector<Mv>& tail) {
+  tail.clear();
+  if (TMPL.empty()) return dance_pot(s);
+  if (s.pos != TSTART) return -1e18;
+  long long T; S sf;
+  if (tmpl_replay(s, T, sf, tail)) return (double)T;
+  tail.clear(); double dp = dance_pot(sf);
+  return (double)T + (dp > -1e17 ? TLAMBDA * (dp - (double)T) : 0.0);
+}
+
 static std::atomic<bool> STOP{false};
 static std::atomic<long long> PLAYOUTS{0};
 
@@ -123,7 +162,8 @@ static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
   S s = root; Result r; vector<pair<int, int>> mv; vector<double> w;
   long long finT = -1; size_t finLen = 0; Mv finMove{0, H8};
   double bestPot = -1e18; size_t potLen = 0; long long potT = 0; int qual = 0; double shaped = -1e9;
-  if (OBJ == 1) { double p = dance_pot(s); if (p > bestPot) { bestPot = p; potLen = 0; potT = s.T; } }
+  vector<Mv> tail, bestTail;
+  if (OBJ == 1) { double p = pot_of(s, tail); if (p > bestPot) { bestPot = p; potLen = 0; potT = s.T; bestTail = tail; } }
   while (true) {
     if (OBJ == 1 && (int)r.seq.size() >= MAXSTEPS) break;
     pinned_moves(s, 3, OBJ == 0, mv);
@@ -146,13 +186,13 @@ static Result playout(const S& root, const Policy& pol, std::mt19937& rng) {
     apply_move(s, mv[pick].first, mv[pick].second);
     if (OBJ == 1) {  // the dance has begun once states qualify; a few of them are enough
       shaped = max(shaped, shaping(s));
-      double p = dance_pot(s);
-      if (p > -1e17) { if (p > bestPot) { bestPot = p; potLen = r.seq.size(); potT = s.T; } if (++qual >= 6) break; }
+      double p = pot_of(s, tail);
+      if (p > -1e17) { if (p > bestPot) { bestPot = p; potLen = r.seq.size(); potT = s.T; bestTail = tail; } if (++qual >= 6) break; }
     }
   }
   PLAYOUTS++;
   if (OBJ == 1) {
-    if (bestPot > -1e17) { r.seq.resize(potLen); r.minutes = potT; r.score = bestPot; }
+    if (bestPot > -1e17) { r.seq.resize(potLen); r.seq.insert(r.seq.end(), bestTail.begin(), bestTail.end()); r.minutes = potT; r.score = bestPot; }
     else { r.minutes = s.T; r.score = shaped; }  // no dance start: reward the climb, then the merging
     r.finished = false;
     return r;
@@ -229,11 +269,12 @@ static vector<Mv> read_partial(const char* fn) {  // the first line with moves, 
 
 static Result as_result(const S& root, const vector<Mv>& seq) {
   if (OBJ == 1) {  // the best dance start along seq
-    Result r; S s = root; double best = dance_pot(s); size_t len = 0; long long T = s.T;
+    Result r; S s = root; vector<Mv> tail, bestTail; double best = pot_of(s, tail); size_t len = 0; long long T = s.T; bestTail = tail;
     for (size_t i = 0; i < seq.size() && seq[i].q != H8 && (int)i < MAXSTEPS; i++) {
-      apply_move(s, seq[i].delta, seq[i].q); double p = dance_pot(s); if (p > best) { best = p; len = i + 1; T = s.T; }
+      apply_move(s, seq[i].delta, seq[i].q); double p = pot_of(s, tail); if (p > best) { best = p; len = i + 1; T = s.T; bestTail = tail; }
     }
-    r.seq.assign(seq.begin(), seq.begin() + len); r.minutes = T; r.score = best > -1e17 ? best : -1e7; return r;
+    r.seq.assign(seq.begin(), seq.begin() + len); r.seq.insert(r.seq.end(), bestTail.begin(), bestTail.end());
+    r.minutes = T; r.score = best > -1e17 ? best : -1e7; return r;
   }
   Result r; r.seq = seq; S s = root; for (const Mv& m : seq) apply_move(s, m.delta, m.q);
   r.minutes = s.T; r.finished = !seq.empty() && seq.back().q == H8; r.score = r.finished ? (double)s.T : -1e7;
@@ -255,6 +296,17 @@ int main(int argc, char** argv) {
   int LEVEL = 3, THREADS = max(1u, std::thread::hardware_concurrency() / 2), SEEDADAPT = 10, AMIN = 0, AMAX = 0;
   double TIME = 0, SEEDBEST = 0; bool WATCH = false, WARM = true; string poolFile; long long POOLMIN = 0; int SEEDTOP = 0; double SEEDALPHA = -1;
   unsigned RNG = 1; string seedFile, outFile = "nrpa_best.txt", prefixFile;
+  if (const char* tf = getenv("TEMPLATE")) {
+    vector<Mv> tv = read_partial(tf); int from = getenv("TEMPLATE_FROM") ? atoi(getenv("TEMPLATE_FROM")) : 0;
+    if (getenv("TEMPLATE_LAMBDA")) TLAMBDA = atof(getenv("TEMPLATE_LAMBDA"));
+    S t = start_state();
+    for (int i = 0; i < (int)tv.size(); i++) {
+      if (i == from) TSTART = t.pos;
+      int p = t.pos; apply_move(t, tv[i].delta, tv[i].q);
+      if (i >= from) TMPL.push_back({tv[i].q, t.alt[tv[i].q] - t.alt[p]});
+    }
+    printf("template: %zu dance moves from %s, starting on %s\n", TMPL.size(), tf, nm(TSTART).c_str());
+  }
   if (const char* fb = getenv("FORBID")) {
     for (const char* p = fb; p[0] && p[1]; p += (p[2] == ',' ? 3 : 2)) { FORBID |= 1ULL << ((p[0] - 'a') + 8 * (p[1] - '1')); if (!p[2]) break; }
     printf("opening search: forbidden squares mask %016llx\n", (unsigned long long)FORBID);
