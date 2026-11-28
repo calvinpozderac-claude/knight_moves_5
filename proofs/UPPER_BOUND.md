@@ -623,6 +623,40 @@ merges the board into two levels 2 apart, then a dance in which each sit sinks o
     9,279 (LNS) and 9,096 (re-planned from move 143).
   - LNS that charges each opening visit to f7, f8 or g8 found no opening that avoids them.
 
+**Can the climb avoid the dance's squares?** `subagents/exact/climb.cpp` searches, by iterative
+deepening, for strict moves that put the knight on a point at h8's altitude without jumping to given
+squares. From the 9,330 tour's moves 16–29:
+- **f8 forbidden** (alone, or with f7 or g8): no climb within 15–18 moves. f8 is the point the
+  record lifts to 17 and sits on to sink h8.
+- **f7 and g8 forbidden:** no climb within 24 moves.
+- **f7 alone:** a 6-move climb exists from move 20.
+- **All three forbidden:** a 19-move climb exists from move 15 of an NRPA opening, but it passes
+  through eight of the dance's left-side sitters. Openings built on it score only about 8,300.
+
+**What freeing visits is worth.** The exact ending search from move 166, with visits hypothetically
+given back:
+
+| Freed visits | Best tour |
+|---|---|
+| f7 ×2 | 9,350 |
+| f8 ×1 | 9,360 |
+| g8 ×2 | 9,330 |
+| f7 ×2 + f8 | 9,482 |
+| f8 + g8 ×2 | 9,462 |
+
+The gain needs f8, the one square the climb cannot avoid. Freeing only f7 is worth +20. An NRPA
+opening search with f7 forbidden, scored by replaying the record's dance (`TEMPLATE`, below), found
+no opening reaching more than 8,447.
+
+**Other searches in this round, none above 9,330:**
+- **Crossover:** every pair of 79 strong tours (one tour's opening, the other's continuation;
+  6,241 pairs).
+- **NRPA's opening search with a dance template:** `TEMPLATE=FILE TEMPLATE_FROM=k` replays a fixed
+  dance from wherever the knight reaches its first square, so every opening it rates is a real tour
+  of exact length. Warm-started from the record, all 131 openings it rated came out at 9,330.
+- **A self-feeding LNS campaign:** 30-minute jobs on random windows, each starting from the best
+  tour so far.
+
 **The end of the opening is optimal for this position.** `subagents/exact/bridge.cpp` fixes the
 first k moves of the 9,330 tour and tries every strict continuation that reaches the dance-start
 position exactly, with enough visits left for the dance. A longer bridge would give a longer tour.
